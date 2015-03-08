@@ -2,7 +2,7 @@
 
 BigPotAudioStream::BigPotAudioStream()
 {
-	volume = control->getMaxVolume() / 2;
+	volume = engine->getMaxVolume() / 2;
 	//预解包数量
 	//除非知道音频包定长，否则不应设为0，一般情况下都不建议为0
 	maxSize = 100;
@@ -19,6 +19,8 @@ BigPotAudioStream::~BigPotAudioStream()
 		av_free(data);
 	if (resampleBuffer)
 		av_free(resampleBuffer);
+	engine->setAudioCallback(nullptr);
+	closeAudioDevice();
 }
 
 void BigPotAudioStream::openAudioDevice()
@@ -27,13 +29,13 @@ void BigPotAudioStream::openAudioDevice()
 		return;
 	freq = codecCtx->sample_rate;
 	channels = codecCtx->channels;
-	control->openAudio(freq, channels, codecCtx->frame_size,
+	engine->openAudio(freq, channels, codecCtx->frame_size,
 		2048, bind(&BigPotAudioStream::mixAudioData, this, placeholders::_1, placeholders::_2));
 }
 
 int BigPotAudioStream::closeAudioDevice()
 {
-	control->closeAudio();
+	engine->closeAudio();
 	return 0;
 }
 
@@ -41,7 +43,7 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 {
 	if (!useMap())
 	{
-		control->mixAudio(stream, (uint8_t*)resampleBuffer, len, volume);
+		engine->mixAudio(stream, (uint8_t*)resampleBuffer, len, volume);
 		dropDecoded();
 		return;
 	}
@@ -55,12 +57,12 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 	//一次或者两次，保证缓冲区大小足够
 	if (len <= rest)
 	{
-		control->mixAudio(stream, data1 + pos, len, volume);
+		engine->mixAudio(stream, data1 + pos, len, volume);
 	}
 	else
 	{
-		control->mixAudio(stream, data1 + pos, rest, volume);
-		control->mixAudio(stream + rest, data1, len - rest, volume);
+		engine->mixAudio(stream, data1 + pos, rest, volume);
+		engine->mixAudio(stream + rest, data1, len - rest, volume);
 	}
 	//auto readp = data1 + pos;
 	//int i = t->_map.size();
@@ -79,7 +81,7 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 			if (dataRead == f.info)
 			{
 				timeShown = f.time;
-				ticksShown = control->getTicks();
+				ticksShown = engine->getTicks();
 				break;
 			}
 		}
@@ -133,7 +135,7 @@ void BigPotAudioStream::freeData(void* p)
 int BigPotAudioStream::setVolume(int v)
 {
 	v = max(v, 0);
-	v = min(v, control->getMaxVolume());
+	v = min(v, engine->getMaxVolume());
 	//printf("\rvolume is %d\t\t\t\t\t", v);
 	return volume = v;
 }
@@ -159,7 +161,7 @@ void BigPotAudioStream::resetDecodeState()
 
 bool BigPotAudioStream::setPause(bool pause)
 {
-	control->pauseAudio(pause);
+	engine->pauseAudio(pause);
 	return pause;
 }
 

@@ -4,43 +4,60 @@
 BigPotPlayer::BigPotPlayer()
 {
 	UI = new BigPotUI;
-	init();
+	config = new BigPotConfig;
 }
 
 
 BigPotPlayer::~BigPotPlayer()
 {
 	delete UI;
+	delete config;
 	//delete media;
 }
 
-int BigPotPlayer::init()
+int BigPotPlayer::beginWithFile(const string &filename)
 {
-	return 0;
-}
+	if (engine->init()) return -1;
+	config->init();
+	config->getString(sys_encode, "sys_encode");
+	volume = BP_AUDIO_MIX_MAXVOLUME / 2;
+	config->getInteger(volume, "volume");
 
-int BigPotPlayer::playFile(const string &filename)
-{
 	this->filename = filename;
-	media = new BigPotMedia;
-	media->openFile(filename);
+	run = true;
+	while (run)
+	{
+		media = nullptr;
+		media = new BigPotMedia;
 
-	control->getWindowSize(w, h);
-	media->videoStream->getSize(w, h);
+		media->openFile(this->filename);
 
-	control->setWindowSize(w, h);
-	control->createMainTexture(w, h);
-	control->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-	auto s = BigPotConv::cp936toutf8(filename);
-	control->setWindowTitle(s);
+		engine->getWindowSize(w, h);
+		media->videoStream->getSize(w, h);
+		media->audioStream->setVolume(volume);
 
-	this->eventLoop();
+		engine->setWindowSize(w, h);
+		engine->createMainTexture(w, h);
+		engine->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+		auto s = BigPotConv::conv(this->filename, sys_encode, BP_encode);
+		engine->setWindowTitle(s);
+
+		this->eventLoop();
+
+		volume = media->audioStream->getVolume();
+		engine->destroyMainTexture();
+		delete media;
+	}
+	config->setInteger(volume, "volume");
+	config->write();
+	engine->destroy();
 	return 0;
 }
 
 int BigPotPlayer::eventLoop()
 {
 	BP_Event e; 
+
 	bool loop = true, pause = false;
 	int drawUI = 128;
 	int finished, i=0, x, y;
@@ -51,10 +68,10 @@ int BigPotPlayer::eventLoop()
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
 
 	int maxDelay = 0;
-	while (loop && control->pollEvent(e) >= 0)
+	while (loop && engine->pollEvent(e) >= 0)
 	{
 		media->decodeFrame();
-		control->getMouseState(x, y);
+		engine->getMouseState(x, y);
 		if (drawUI > 0) 
 			drawUI--;
 		if (h - y < 50 || (w - x) < 200 && y < 150)
@@ -127,6 +144,7 @@ int BigPotPlayer::eventLoop()
 		}
 		case BP_QUIT:
 			loop = false;
+			run = false;
 			break;
 		case BP_WINDOWEVENT:
 			if (e.window.event == BP_WINDOWEVENT_RESIZED)
@@ -139,6 +157,10 @@ int BigPotPlayer::eventLoop()
 				drawUI = 0;
 			}
 			break;
+		case BP_DROPFILE:
+			loop = false;
+			filename = BigPotConv::conv(e.drop.file, BP_encode, sys_encode);
+			engine->free(e.drop.file);
 		default:
 			break;
 		}
@@ -149,7 +171,7 @@ int BigPotPlayer::eventLoop()
 		if (!pause&&!media->videoStream->showTexture(audioTime))
 		{
 			UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
-			control->renderPresent();
+			engine->renderPresent();
 
 			//以下均是为了显示信息，可以全部去掉
 			int videoTime = (media->videoStream->getTimedts());
@@ -163,18 +185,8 @@ int BigPotPlayer::eventLoop()
 			media->audioStream->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);	
 		}
 		i++;
-		control->delay(1);
+		engine->delay(1);
 	}
-	return 0;
-}
-
-int BigPotPlayer::createScreenTexture()
-{
-	/*if (tex)
-		SDL_DestroyTexture(tex);
-	int w, h;
-	SDL_GetWindowSize(win, &w, &h);
-	//tex = SDL_CreateTexture(ren,);*/
 	return 0;
 }
 
