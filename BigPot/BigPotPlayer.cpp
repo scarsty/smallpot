@@ -63,11 +63,12 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		engine->destroyMainTexture();
 		engine->renderClear();
 		engine->renderPresent();
+
+		if (media->isMedia())
+			config->setRecord(cur_time, filename0.c_str());
+
 		delete media;
 		first = false;
-
-		config->setRecord(cur_time, filename0.c_str());
-
 	}
 	config->setString(sys_encode, "sys_encode");
 	config->setInteger(volume, "volume");
@@ -199,7 +200,8 @@ int BigPotPlayer::eventLoop()
 			{
 				UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
 				engine->renderPresent();
-				//以下均是为了显示信息，可以全部去掉
+				//以下均是为了显示信息，可以去掉
+#ifdef _DEBUG
 				int videoTime = (media->videoStream->getTimedts());
 				int delay = -videoTime + audioTime;
 				maxDelay = max(maxDelay, abs(delay));
@@ -209,6 +211,7 @@ int BigPotPlayer::eventLoop()
 				}
 				printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
 					media->audioStream->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
+#endif
 			}
 			else if ((videostate == -1 || videostate == 2) && i % 50 == 0)
 			{
