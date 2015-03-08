@@ -89,9 +89,6 @@
     <ClInclude Include="BigPotConv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BigPotEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>

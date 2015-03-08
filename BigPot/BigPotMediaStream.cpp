@@ -4,54 +4,54 @@
 BigPotMediaStream::BigPotMediaStream()
 {
 	av_register_all();
-	formatCtx = avformat_alloc_context();
-	frame = av_frame_alloc();
+	formatCtx_ = avformat_alloc_context();
+	frame_ = av_frame_alloc();
 	//mutex_cpp.;
-	timeShown = 0;
-	ticksShown = engine->getTicks();
+	time_shown_ = 0;
+	ticks_shown_ = engine_->getTicks();
 }
 
 
 BigPotMediaStream::~BigPotMediaStream()
 {
-	av_frame_free(&frame);
-	avformat_close_input(&formatCtx);
+	av_frame_free(&frame_);
+	avformat_close_input(&formatCtx_);
 	clearMap();
-	streamIndex = -1;
+	stream_index_ = -1;
 	//DestroyMutex(mutex_cpp);
 }
 
 //返回为非负才正常
 int BigPotMediaStream::openFile(const string & filename, BigPotMediaType type)
 {
-	streamIndex = -1;
-	this->filename = filename;
-	if (avformat_open_input(&formatCtx, filename.c_str(), nullptr, nullptr) == 0)
+	stream_index_ = -1;
+	this->filename_ = filename;
+	if (avformat_open_input(&formatCtx_, filename.c_str(), nullptr, nullptr) == 0)
 	{
-		avformat_find_stream_info(formatCtx, nullptr);
-		this->type = type;
-		for (int i = 0; i < formatCtx->nb_streams; ++i)
+		avformat_find_stream_info(formatCtx_, nullptr);
+		this->type_ = type;
+		for (int i = 0; i < formatCtx_->nb_streams; ++i)
 		{
-			if (formatCtx->streams[i]->codec->codec_type == type)
+			if (formatCtx_->streams[i]->codec->codec_type == type)
 			{
 				//printf("finded media stream: %d\n", type);
-				stream = formatCtx->streams[i];
-				codecCtx = stream->codec;
+				stream_ = formatCtx_->streams[i];
+				codecCtx_ = stream_->codec;
 				//timebase = av_q2d(formatCtx->streams[i]->time_base);
-				if (stream->r_frame_rate.den)
-					timePerFrame = 1e3 / av_q2d(stream->r_frame_rate);
-				timePerPacket = 1e3*av_q2d(stream->time_base);
-				totalTime = formatCtx->duration *1e3 / AV_TIME_BASE;
-				startTime = formatCtx->start_time *1e3 / AV_TIME_BASE;
+				if (stream_->r_frame_rate.den)
+					time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
+				time_per_packet_ = 1e3*av_q2d(stream_->time_base);
+				total_time_ = formatCtx_->duration *1e3 / AV_TIME_BASE;
+				start_time_ = formatCtx_->start_time *1e3 / AV_TIME_BASE;
 				//totalTime = (int)stream->nb_frames * timePerFrame;
-				streamIndex = i;
-				codec = avcodec_find_decoder(codecCtx->codec_id);
-				avcodec_open2(codecCtx, codec, nullptr);
+				stream_index_ = i;
+				codec_ = avcodec_find_decoder(codecCtx_->codec_id);
+				avcodec_open2(codecCtx_, codec_, nullptr);
 				break;
 			}
 		}
 	}
-	return streamIndex;
+	return stream_index_;
 }
 
 //解压帧，同时会更新当前的时间戳
@@ -62,34 +62,34 @@ int BigPotMediaStream::decodeFramePre()
 	while (ret==0)
 	{
 		//auto packet = new AVPacket;
-		if (av_read_frame(formatCtx, &packet) >= 0)
+		if (av_read_frame(formatCtx_, &packet_) >= 0)
 		{
-			if (packet.stream_index == streamIndex)
+			if (packet_.stream_index == stream_index_)
 			{
-				switch (type)
+				switch (type_)
 				{
 				case BPMEDIA_TYPE_VIDEO:
-					avcodec_decode_video2(codecCtx, frame, &ret, &packet);
+					avcodec_decode_video2(codecCtx_, frame_, &ret, &packet_);
 					break;
 				case BPMEDIA_TYPE_AUDIO:
-					avcodec_decode_audio4(codecCtx, frame, &ret, &packet);
+					avcodec_decode_audio4(codecCtx_, frame_, &ret, &packet_);
 					break;
 				}
 			}
-			ended = false;
+			_ended = false;
 		}
 		else
 		{
 			ret = -1;
-			ended = true;
+			_ended = true;
 			break;
 		}
 		if (ret > 0)
 		{
-			timepts = packet.pts * timePerPacket;
-			timedts = packet.dts * timePerPacket;
+			time_pts_ = packet_.pts * time_per_packet_;
+			time_dts_ = packet_.dts * time_per_packet_;
 		}
-		av_free_packet(&packet);
+		av_free_packet(&packet_);
 	}
 	return ret;
 }
@@ -117,7 +117,7 @@ int BigPotMediaStream::decodeFrame()
 
 int BigPotMediaStream::getTotalTime()
 {
-	return totalTime;
+	return total_time_;
 }
 
 int BigPotMediaStream::seek(int time, int direct)
@@ -130,7 +130,7 @@ int BigPotMediaStream::seek(int time, int direct)
 		int flag = AVSEEK_FLAG_FRAME;
 		if (direct < 0)
 			flag = flag | AVSEEK_FLAG_BACKWARD;
-		av_seek_frame(formatCtx, -1, i, flag);
+		av_seek_frame(formatCtx_, -1, i, flag);
 		setDecoded(false);
 	}
 	return 0;
@@ -138,7 +138,7 @@ int BigPotMediaStream::seek(int time, int direct)
 
 int BigPotMediaStream::dropFrameData(int key)
 {
-	mutex_cpp.lock();
+	mutex_.lock();
 	if (_map.size() > 0)
 	{
 		auto p = _map.begin()->second.data;
@@ -148,7 +148,7 @@ int BigPotMediaStream::dropFrameData(int key)
 		}
 		_map.erase(_map.begin());
 	}
-	mutex_cpp.unlock();
+	mutex_.unlock();
 	return 0;
 }
 
@@ -157,13 +157,13 @@ void BigPotMediaStream::clearMap()
 	//SDL_LockMutex(mutex_cpp);
 	//printf("clear buffer begin with %d\n", _map.size());
 	//for (auto i = _map.begin(); i != _map.end(); i++)
-	mutex_cpp.lock();
+	mutex_.lock();
 	for (auto &i : _map)
 	{
 		freeData(i.second.data);
 	}
 	_map.clear();
-	mutex_cpp.unlock();
+	mutex_.unlock();
 	//printf("clear buffer end with %d\n", _map.size());
 	//SDL_UnlockMutex(mutex_cpp);
 }
@@ -178,14 +178,14 @@ bool BigPotMediaStream::needDecode()
 	if (!needDecode2())
 		return false;
 	if (useMap())
-		return (_map.size() < maxSize);
+		return (_map.size() < maxSize_);
 	else
-		return !decoded;
+		return !_decoded;
 }
 
 void BigPotMediaStream::setDecoded(bool b)
 {
-	decoded = b;
+	_decoded = b;
 }
 
 void BigPotMediaStream::dropDecoded()
@@ -193,12 +193,12 @@ void BigPotMediaStream::dropDecoded()
 	if (useMap())
 		dropFrameData();
 	else
-		decoded = false;
+		_decoded = false;
 }
 
 bool BigPotMediaStream::useMap()
 {
-	return maxSize > 0;
+	return maxSize_ > 0;
 }
 
 BigPotMediaStream::FrameData BigPotMediaStream::getCurrentFrameData()
@@ -212,7 +212,7 @@ BigPotMediaStream::FrameData BigPotMediaStream::getCurrentFrameData()
 	}
 	else
 	{
-		return{ timedts, datalength, data };
+		return{ time_dts_, data_length_, data_ };
 	}
 }
 
@@ -224,28 +224,28 @@ bool BigPotMediaStream::haveDecoded()
 	}
 	else
 	{
-		return decoded;
+		return _decoded;
 	}
 }
 
 
 int BigPotMediaStream::getTime()
 {
-	if (exist() && !ended)
-		return timeShown - ticksShown + engine->getTicks();
+	if (exist() && !_ended)
+		return time_shown_ - ticks_shown_ + engine_->getTicks();
 	else
-		return totalTime;
+		return total_time_;
 }
 
 int BigPotMediaStream::setAnotherTime(int time)
 {
-	return time_another = time;
+	return time_other_ = time;
 }
 
 int BigPotMediaStream::skipFrame(int time)
 {
 	int n = 0;
-	while (timedts < time)
+	while (time_dts_ < time)
 	{
 		n++;
 		if (decodeFramePre() < 0)
@@ -258,8 +258,8 @@ void BigPotMediaStream::getSize(int &w, int&h)
 {
 	if (exist())
 	{
-		w = codecCtx->width;
-		h = codecCtx->height;
+		w = codecCtx_->width;
+		h = codecCtx_->height;
 	}
 }
 

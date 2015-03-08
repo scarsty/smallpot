@@ -2,40 +2,40 @@
 
 BigPotAudioStream::BigPotAudioStream()
 {
-	volume = engine->getMaxVolume() / 2;
+	_volume = engine_->getMaxVolume() / 2;
 	//预解包数量
 	//除非知道音频包定长，否则不应设为0，一般情况下都不建议为0
-	maxSize = 100;
+	maxSize_ = 100;
 	//缓冲区大小4M保存
 	if (useMap()) 
-		data = av_mallocz(screamSize);
-	resampleBuffer =  (decltype(resampleBuffer))av_mallocz(convertSize);
+		data_ = av_mallocz(_scream_size);
+	_resample_buffer =  (decltype(_resample_buffer))av_mallocz(_convert_size);
 }
 
 
 BigPotAudioStream::~BigPotAudioStream()
 {
 	if (useMap())
-		av_free(data);
-	if (resampleBuffer)
-		av_free(resampleBuffer);
-	engine->setAudioCallback(nullptr);
+		av_free(data_);
+	if (_resample_buffer)
+		av_free(_resample_buffer);
+	engine_->setAudioCallback(nullptr);
 	closeAudioDevice();
 }
 
 void BigPotAudioStream::openAudioDevice()
 {
-	if (streamIndex < 0)
+	if (stream_index_ < 0)
 		return;
-	freq = codecCtx->sample_rate;
-	channels = codecCtx->channels;
-	engine->openAudio(freq, channels, codecCtx->frame_size,
+	_freq = codecCtx_->sample_rate;
+	_channels = codecCtx_->channels;
+	engine_->openAudio(_freq, _channels, codecCtx_->frame_size,
 		2048, bind(&BigPotAudioStream::mixAudioData, this, placeholders::_1, placeholders::_2));
 }
 
 int BigPotAudioStream::closeAudioDevice()
 {
-	engine->closeAudio();
+	engine_->closeAudio();
 	return 0;
 }
 
@@ -43,26 +43,26 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 {
 	if (!useMap())
 	{
-		engine->mixAudio(stream, (uint8_t*)resampleBuffer, len, volume);
+		engine_->mixAudio(stream, (uint8_t*)_resample_buffer, len, _volume);
 		dropDecoded();
 		return;
 	}
 
-	if (dataWrite <= dataRead)
+	if (_data_write <= _data_read)
 		return;
 	//SDL_LockMutex(t->mutex_cpp);
-	auto data1 = (uint8_t*)data;
-	int pos = dataRead % screamSize;
-	int rest = screamSize - pos;
+	auto data1 = (uint8_t*)data_;
+	int pos = _data_read % _scream_size;
+	int rest = _scream_size - pos;
 	//一次或者两次，保证缓冲区大小足够
 	if (len <= rest)
 	{
-		engine->mixAudio(stream, data1 + pos, len, volume);
+		engine_->mixAudio(stream, data1 + pos, len, _volume);
 	}
 	else
 	{
-		engine->mixAudio(stream, data1 + pos, rest, volume);
-		engine->mixAudio(stream + rest, data1, len - rest, volume);
+		engine_->mixAudio(stream, data1 + pos, rest, _volume);
+		engine_->mixAudio(stream + rest, data1, len - rest, _volume);
 	}
 	//auto readp = data1 + pos;
 	//int i = t->_map.size();
@@ -74,14 +74,14 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 			dropDecoded();
 			break;
 		}
-		if (dataRead >= f.info)
+		if (_data_read >= f.info)
 		{
 			//printf("drop %I64d\n", t->dataRead - f.info);
 			dropDecoded();
-			if (dataRead == f.info)
+			if (_data_read == f.info)
 			{
-				timeShown = f.time;
-				ticksShown = engine->getTicks();
+				time_shown_ = f.time;
+				ticks_shown_ = engine_->getTicks();
 				break;
 			}
 		}
@@ -91,39 +91,39 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 		}
 		
 	}
-	dataRead += len;
+	_data_read += len;
 	//SDL_UnlockMutex(t->mutex_cpp);
 }
 
 BigPotMediaStream::FrameData BigPotAudioStream::convert(void* p /*= nullptr*/)
 {
-	datalength = BigPotResample::convert(codecCtx, frame, 
-		BP_AUDIO_RESAMPLE_FORMAT, freq, channels, resampleBuffer);
+	data_length_ = BigPotResample::convert(codecCtx_, frame_, 
+		BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
 	if (useMap())
 	{
 		//计算写入位置
 		//printf("%I64d,%I64d, %d\n", dataWrite, dataRead, _map.size());
-		int pos = dataWrite % screamSize;
-		int rest = screamSize - pos;
+		int pos = _data_write % _scream_size;
+		int rest = _scream_size - pos;
 		//够长一次写入，不够长两次写入，不考虑更长情况，如更长是缓冲区不够，效果也不会正常
-		if (datalength <= rest)
+		if (data_length_ <= rest)
 		{
-			memcpy((uint8_t*)data + pos, resampleBuffer, datalength);
+			memcpy((uint8_t*)data_ + pos, _resample_buffer, data_length_);
 		}
 		else
 		{
-			memcpy((uint8_t*)data + pos, resampleBuffer, rest);
-			memcpy((uint8_t*)data, resampleBuffer, datalength - rest);
+			memcpy((uint8_t*)data_ + pos, _resample_buffer, rest);
+			memcpy((uint8_t*)data_, _resample_buffer, data_length_ - rest);
 		}
-		FrameData f = { timedts, dataWrite, data };
-		dataWrite += datalength;
+		FrameData f = { time_dts_, _data_write, data_ };
+		_data_write += data_length_;
 		//返回的是指针位置
 		return f;
 	}
 	else
 	{
-		memcpy(data, resampleBuffer, datalength);
-		return{ timedts, datalength, data };
+		memcpy(data_, _resample_buffer, data_length_);
+		return{ time_dts_, data_length_, data_ };
 	}
 }
 
@@ -135,33 +135,33 @@ void BigPotAudioStream::freeData(void* p)
 int BigPotAudioStream::setVolume(int v)
 {
 	v = max(v, 0);
-	v = min(v, engine->getMaxVolume());
+	v = min(v, engine_->getMaxVolume());
 	//printf("\rvolume is %d\t\t\t\t\t", v);
-	return volume = v;
+	return _volume = v;
 }
 
 int BigPotAudioStream::changeVolume(int v)
 {
 	if (v == 0)
-		return volume;
-	return setVolume(volume + v);
+		return _volume;
+	return setVolume(_volume + v);
 }
 
 bool BigPotAudioStream::needDecode2()
 {
 	//return true;
-	return dataWrite - dataRead < screamSize / 2;
+	return _data_write - _data_read < _scream_size / 2;
 }
 
 void BigPotAudioStream::resetDecodeState()
 {
-	dataWrite = dataRead = 0;
+	_data_write = _data_read = 0;
 	//memset(data, 0, screamSize);
 }
 
 bool BigPotAudioStream::setPause(bool pause)
 {
-	engine->pauseAudio(pause);
+	engine_->pauseAudio(pause);
 	return pause;
 }
 

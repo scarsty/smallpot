@@ -12,16 +12,16 @@ public:
 	BigPotPlayer();
 	virtual ~BigPotPlayer();
 private:
-	string drop_filename = "";
-	int cur_time = 0;
-	BigPotMedia* media = nullptr;
-	BigPotUI* UI = nullptr;
-	BigPotConfig *config = nullptr;
-	int w, h;
-	bool run = true;
+	string _drop_filename = "";
+	int _cur_time = 0;
+	BigPotMedia* _media = nullptr;
+	BigPotUI* _UI = nullptr;
+	BigPotConfig *_config = nullptr;
+	int _w, _h;
+	bool _run = true;
 
-	string sys_encode = "cp936", BP_encode = "utf-8";
-	int cur_volume;
+	string _sys_encode = "cp936", _BP_encode = "utf-8";
+	int _cur_volume;
 	int eventLoop();
 
 	int drawTex2();

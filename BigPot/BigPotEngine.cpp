@@ -16,7 +16,7 @@ BigPotEngine::~BigPotEngine()
 void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h)
 {
 	SDL_Rect r = { x, y, w, h };
-	SDL_RenderCopy(ren, t, nullptr, &r);
+	SDL_RenderCopy(_ren, t, nullptr, &r);
 }
 
 int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
@@ -34,31 +34,31 @@ int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, Au
 	//want.userdata = this;
 	want.silence = 0;
 
-	callback = f;
+	_callback = f;
 	//if (useMap())
 	{
 		want.samples = max(size, minsize);
 	}
 
-	device = 0;
-	while (device == 0)
+	_device = 0;
+	while (_device == 0)
 	{
-		device = SDL_OpenAudioDevice(NULL, 0, &want, &spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
+		_device = SDL_OpenAudioDevice(NULL, 0, &want, &_spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
 		want.channels--;
 	}
-	printf("device %d / %d\n", spec.freq, spec.channels);
+	printf("device %d / %d\n", _spec.freq, _spec.channels);
 
-	if (device)
+	if (_device)
 	{
-		SDL_PauseAudioDevice(device, 0);
+		SDL_PauseAudioDevice(_device, 0);
 	}
 	else
 	{
 		printf("failed to open audio: %s\n", SDL_GetError());
 	}
 
-	freq = spec.freq;
-	channels = spec.channels;
+	freq = _spec.freq;
+	channels = _spec.channels;
 
 	return 0;
 }
@@ -66,9 +66,9 @@ int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, Au
 void BigPotEngine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 {
 	SDL_memset(stream, 0, len);
-	if (_control.callback)
+	if (_control._callback)
 	{
-		_control.callback(stream, len);
+		_control._callback(stream, len);
 	}
 }
 
@@ -89,11 +89,11 @@ BP_Texture* BigPotEngine::createSquareTexture()
 	}
 	}
 	*/
-	square = SDL_CreateTextureFromSurface(ren, square_s);
-	SDL_SetTextureBlendMode(square, SDL_BLENDMODE_BLEND);
-	SDL_SetTextureAlphaMod(square, 128);
+	_square = SDL_CreateTextureFromSurface(_ren, square_s);
+	SDL_SetTextureBlendMode(_square, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(_square, 128);
 	SDL_FreeSurface(square_s);
-	return square;
+	return _square;
 }
 
 void BigPotEngine::drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align)
@@ -104,7 +104,7 @@ void BigPotEngine::drawText(const string &fontname, const string &text, int size
 	if (!font) return;
 	SDL_Color c = { 255, 255, 255, 128 };
 	auto text_s = TTF_RenderUTF8_Blended(font, text.c_str(), c);
-	auto text_t = SDL_CreateTextureFromSurface(ren, text_s);
+	auto text_t = SDL_CreateTextureFromSurface(_ren, text_s);
 	SDL_SetTextureAlphaMod(text_t, alpha);
 	SDL_Rect rect;
 	rect.h = text_s->h;
@@ -123,7 +123,7 @@ void BigPotEngine::drawText(const string &fontname, const string &text, int size
 		break;
 	}
 
-	SDL_RenderCopy(ren, text_t, nullptr, &rect);
+	SDL_RenderCopy(_ren, text_t, nullptr, &rect);
 	SDL_DestroyTexture(text_t);
 	SDL_FreeSurface(text_s);
 	TTF_CloseFont(font);
@@ -135,22 +135,26 @@ int BigPotEngine::init()
 	{
 		return -1;
 	}
-	win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_RESIZABLE);
-	ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
-	SDL_RenderPresent(ren);
+	_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 320, 150, SDL_WINDOW_RESIZABLE);
+	_ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
+	SDL_RenderPresent(_ren);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+
+	_logo = loadImage("logo.png");
+
 	TTF_Init();
 	return 0;
 }
 
 void BigPotEngine::toggleFullscreen()
 {
-	isfullscreen = !isfullscreen;
-	if (isfullscreen)
-		SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	_isfullscreen = !_isfullscreen;
+	if (_isfullscreen)
+		SDL_SetWindowFullscreen(_win, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	else
-		SDL_SetWindowFullscreen(win, 0);
-	SDL_RenderClear(ren);	
+		SDL_SetWindowFullscreen(_win, 0);
+	SDL_RenderClear(_ren);	
 }
+
 
