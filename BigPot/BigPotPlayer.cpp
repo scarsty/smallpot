@@ -200,7 +200,7 @@ int BigPotPlayer::eventLoop()
 		e.type = BP_FIRSTEVENT;
 		//media->audioStream->setAnotherTime(media->getVideoTime());
 		//if (!media->showVideoFrame(i*100))
-		int audioTime = media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间增加2微秒
+		int audioTime = media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间
 		if (havemedia && !pause)
 		{
 			int videostate = media->videoStream->showTexture(audioTime);
