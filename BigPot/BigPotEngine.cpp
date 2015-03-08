@@ -137,12 +137,12 @@ int BigPotEngine::init()
 	}
 	_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 320, 150, SDL_WINDOW_RESIZABLE);
 	_ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
-	SDL_RenderPresent(_ren);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
 
 	_logo = loadImage("logo.png");
-
+	showLogo();
+	renderPresent();
 	TTF_Init();
 	return 0;
 }
