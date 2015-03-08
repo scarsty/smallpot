@@ -27,5 +27,6 @@ public:
 	void resetDecodeState();
 	int setVolume(int v);
 	int changeVolume(int v);
+	int getVolume() { return volume; };
 	bool setPause(bool pause);
 };

@@ -8,11 +8,13 @@
 
 int main(int argc, char* argv[])
 {
+	auto bp = new BigPotPlayer;
+	char *s = "";
 	if (argc > 1)
 	{
-		auto bp = new BigPotPlayer;
-		bp->playFile(argv[1]);
+		s = argv[1];
 	}
+	bp->beginWithFile(s);
 	return 0;
 }
 
