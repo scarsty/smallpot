@@ -144,3 +144,13 @@ int BigPotEngine::init()
 	return 0;
 }
 
+void BigPotEngine::toggleFullscreen()
+{
+	isfullscreen = !isfullscreen;
+	if (isfullscreen)
+		SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else
+		SDL_SetWindowFullscreen(win, 0);
+	SDL_RenderClear(ren);	
+}
+
