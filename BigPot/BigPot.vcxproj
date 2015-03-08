@@ -59,11 +59,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\include\ffmpeg;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;libiconv.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;libiconv.dll.lib;json_vc71_libmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
@@ -86,7 +87,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;libiconv.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;libiconv.dll.lib;json_vc71_libmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>
@@ -109,7 +110,7 @@
     <ClCompile Include="BigPotMedia.cpp" />
     <ClCompile Include="BigPotUI.cpp" />
     <ClCompile Include="BigPotVideoStream.cpp" />
-    <ClCompile Include="BigPotControl.cpp" />
+    <ClCompile Include="BigPotEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotAudioStream.h" />
@@ -122,7 +123,7 @@
     <ClInclude Include="BigPotResample.h" />
     <ClInclude Include="BigPotUI.h" />
     <ClInclude Include="BigPotVideoStream.h" />
-    <ClInclude Include="BigPotControl.h" />
+    <ClInclude Include="BigPotEngine.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource1.h" />
   </ItemGroup>

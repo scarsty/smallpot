@@ -30,5 +30,6 @@ public:
 	int showVideoFrame(int time);
 	int getTotalTime() { return totalTime; }
 	int getTime();
+	void destroy();
 };
 

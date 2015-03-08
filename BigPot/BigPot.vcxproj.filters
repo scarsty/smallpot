@@ -51,7 +51,7 @@
     <ClCompile Include="BigPotConv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotControl.cpp">
+    <ClCompile Include="BigPotEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,10 +89,10 @@
     <ClInclude Include="BigPotConv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotControl.h">
+    <ClInclude Include="resource1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h">
+    <ClInclude Include="BigPotEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

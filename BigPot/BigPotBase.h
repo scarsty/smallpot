@@ -1,8 +1,9 @@
 #pragma once
 
-#include "BigPotControl.h"
+#include "BigPotEngine.h"
 #include <string>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -12,9 +13,12 @@ using namespace std;
 class BigPotBase
 {
 protected:
-	BigPotControl* control;
+	BigPotEngine* engine;
 public:
-	BigPotBase() { control = BigPotControl::getInstance(); };
+	BigPotBase() { engine = BigPotEngine::getInstance(); };
 	~BigPotBase() {};
+	void safedelete(void* p){ if(p) delete p; p = nullptr; };
+	bool fileexist(const string& filename);
+	string readStringFromFile(const string& filename);
 };
 

@@ -15,6 +15,8 @@ BigPotMedia::~BigPotMedia()
 
 int BigPotMedia::openFile(const string &filename)
 {
+	if (!fileexist(filename))
+		return -1;
 	videoStream->openFile(filename, BPMEDIA_TYPE_VIDEO);
 	audioStream->openFile(filename, BPMEDIA_TYPE_AUDIO);
 
@@ -92,5 +94,10 @@ int BigPotMedia::getTime()
 		return audioStream->getTime();
 	else
 		return videoStream->getTime();
+}
+
+void BigPotMedia::destroy()
+{
+
 }
 
