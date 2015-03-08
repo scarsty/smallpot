@@ -1,0 +1,1 @@
+copy ..\bigpotdebug\*.exe .
