@@ -12,6 +12,7 @@ BigPotConfig::~BigPotConfig()
 
 void BigPotConfig::init()
 {
+	//value.
 	Json::Reader reader;
 	content = readStringFromFile("config.json");
 	reader.parse(content, value);

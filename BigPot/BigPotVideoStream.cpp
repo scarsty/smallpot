@@ -12,10 +12,11 @@ BigPotVideoStream::~BigPotVideoStream()
 {
 }
 
+//-1œ‘ æ ß∞‹
 int BigPotVideoStream::showTexture(int time)
 {
 	if (streamIndex < 0)
-		return 0;
+		return -1;
 	auto f = getCurrentFrameData();
 	int time_c = f.time;
 	if (haveDecoded() && time >= time_c)

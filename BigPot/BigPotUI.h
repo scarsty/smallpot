@@ -8,7 +8,7 @@ public:
 	BigPotUI();
 	virtual ~BigPotUI();
 
-	SDL_Texture* square, *text;
+	BP_Texture* square, *text;
 
 	int time, totoalTime, volume;
 	int win_h, win_w;
@@ -16,7 +16,7 @@ public:
 	int x = 0, y = 0, w = 0, h = 0;
 	uint8_t alpha;
 
-	void init(SDL_Window* win, SDL_Renderer* ren);
+	void init();
 	void setTime(int t) { time = t; };
 	void setTotalTime(int t) { totoalTime = t; };
 	void drawBall();

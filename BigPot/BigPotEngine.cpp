@@ -1,35 +1,25 @@
-#include "BigPotControl.h"
+#include "BigPotEngine.h"
 
-BigPotControl BigPotControl::_control;
+BigPotEngine BigPotEngine::_control;
 
-BigPotControl::BigPotControl()
+BigPotEngine::BigPotEngine()
 {
 	_this = &_control;
-	if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
-	{
-		return;
-	}
-	win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_RESIZABLE);
-	ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-	SDL_RenderPresent(ren);
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-	TTF_Init();
 }
 
 
-BigPotControl::~BigPotControl()
+BigPotEngine::~BigPotEngine()
 {
-	//SDL_DestroyRenderer(ren);
-	SDL_DestroyWindow(win);
+	//destroy();
 }
 
-void BigPotControl::renderCopy(BP_Texture* t, int x, int y, int w, int h)
+void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h)
 {
 	SDL_Rect r = { x, y, w, h };
 	SDL_RenderCopy(ren, t, nullptr, &r);
 }
 
-int BigPotControl::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
+int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
 {
 	SDL_AudioSpec want;
 	SDL_zero(want);
@@ -73,7 +63,7 @@ int BigPotControl::openAudio(int& freq, int& channels, int& size, int minsize, A
 	return 0;
 }
 
-void BigPotControl::mixAudioCallback(void* userdata, Uint8* stream, int len)
+void BigPotEngine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 {
 	SDL_memset(stream, 0, len);
 	if (_control.callback)
@@ -82,13 +72,13 @@ void BigPotControl::mixAudioCallback(void* userdata, Uint8* stream, int len)
 	}
 }
 
-BP_Texture* BigPotControl::createSquareTexture()
+BP_Texture* BigPotEngine::createSquareTexture()
 {
 	int d = 10;
 	auto square_s = SDL_CreateRGBSurface(0, d, d, 32, 0xff0000, 0xff00, 0xff, 0xff000000);
 	SDL_FillRect(square_s, nullptr, 0xffffffff);
-	SDL_Rect r = { 0, 0, 1, 1 };
-	/*auto &x = r.x;
+	/*SDL_Rect r = { 0, 0, 1, 1 };
+	auto &x = r.x;
 	auto &y = r.y;
 	for (x = 0; x < d; x++)
 	for (y = 0; y < d; y++)
@@ -106,7 +96,7 @@ BP_Texture* BigPotControl::createSquareTexture()
 	return square;
 }
 
-void BigPotControl::drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align)
+void BigPotEngine::drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align)
 {
 	if (alpha == 0)
 		return;
@@ -137,5 +127,20 @@ void BigPotControl::drawText(const string &fontname, const string &text, int siz
 	SDL_DestroyTexture(text_t);
 	SDL_FreeSurface(text_s);
 	TTF_CloseFont(font);
+}
+
+int BigPotEngine::init()
+{
+	if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
+	{
+		return -1;
+	}
+	win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_RESIZABLE);
+	ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+	SDL_RenderPresent(ren);
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+	TTF_Init();
+	return 0;
 }
 
