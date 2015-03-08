@@ -11,7 +11,7 @@ BigPotResample::~BigPotResample()
 }
 
 int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame, 
-	int out_sample_format, int out_channels, int out_sample_rate, uint8_t* out_buf)
+	int out_sample_format, int out_sample_rate, int out_channels, uint8_t* out_buf)
 {
 	SwrContext * swr_ctx = NULL;
 	int data_size = 0;

@@ -96,7 +96,7 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 BigPotMediaStream::FrameData BigPotAudioStream::convert(void* p /*= nullptr*/)
 {
 	datalength = BigPotResample::convert(codecCtx, frame, 
-		BP_AUDIO_RESAMPLE_FORMAT, channels, freq, resampleBuffer);
+		BP_AUDIO_RESAMPLE_FORMAT, freq, channels, resampleBuffer);
 	if (useMap())
 	{
 		//º∆À„–¥»ÎŒª÷√
