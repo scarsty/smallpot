@@ -31,16 +31,16 @@ typedef SDL_AudioSpec BP_AudioSpec;
 //这里直接使用SDL的事件结构，如果更换底层需重新实现一套相同的
 typedef SDL_Event BP_Event;
 
-class BigPotControl
+class BigPotEngine
 {
 private:
-	BigPotControl();
-	virtual ~BigPotControl();
+	BigPotEngine();
+	virtual ~BigPotEngine();
 private:
-	static BigPotControl _control;
-	BigPotControl* _this;
+	static BigPotEngine _control;
+	BigPotEngine* _this;
 public:
-	static BigPotControl* getInstance(){ return &_control; };
+	static BigPotEngine* getInstance(){ return &_control; };
 	//图形相关
 private:
 	BP_Window* win;
@@ -49,6 +49,7 @@ private:
 	BP_AudioSpec want, spec;
 	BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->tex; };
 public:
+	int init();
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(win, &w, &h); }
 	void setWindowSize(int w, int h) { SDL_SetWindowSize(win, w, h); }
 	void setWindowPosition(int x, int y)
@@ -57,6 +58,7 @@ public:
 	}
 	void setWindowTitle(const string &str){ SDL_SetWindowTitle(win, str.c_str()); }
 	void createMainTexture(int w, int h) { tex = createYUVTexture(w, h); }
+	void destroyMainTexture() { destroyTexture(tex); }
 	BP_Texture* createYUVTexture(int w, int h) 
 	{
 		return SDL_CreateTexture(ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
@@ -75,6 +77,12 @@ public:
 	void createWindow();
 	void createRenderer();
 	void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0);
+	void destroy()
+	{
+		SDL_DestroyTexture(tex);
+		SDL_DestroyRenderer(ren);
+		SDL_DestroyWindow(win);
+	}
 
 	//声音相关
 private:
@@ -91,6 +99,7 @@ public:
 
 	int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
 	static void mixAudioCallback(void* userdata, Uint8* stream, int len);
+	void setAudioCallback(AudioCallback cb = nullptr){ callback = cb; };
 	//事件相关
 private:
 	SDL_Event e;
@@ -102,6 +111,7 @@ public:
 	void toc() 	{ printf("%d\n", SDL_GetTicks() - _time); }
 	void getMouseState(int &x, int& y){ SDL_GetMouseState(&x, &y); };
 	int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); };
+	void free(void* mem){ SDL_free(mem); }
 	//UI相关
 private:
 	BP_Texture* square;

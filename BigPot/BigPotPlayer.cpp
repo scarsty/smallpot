@@ -18,13 +18,16 @@ BigPotPlayer::~BigPotPlayer()
 int BigPotPlayer::beginWithFile(const string &filename)
 {
 	if (engine->init()) return -1;
+	
 	config->init();
 	config->getString(sys_encode, "sys_encode");
 	volume = BP_AUDIO_MIX_MAXVOLUME / 2;
 	config->getInteger(volume, "volume");
+	UI->init();
 
 	this->filename = filename;
 	run = true;
+	bool first = true;
 	while (run)
 	{
 		media = nullptr;
@@ -38,7 +41,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 
 		engine->setWindowSize(w, h);
 		engine->createMainTexture(w, h);
-		engine->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+		if (first) engine->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
 		auto s = BigPotConv::conv(this->filename, sys_encode, BP_encode);
 		engine->setWindowTitle(s);
 
@@ -46,8 +49,12 @@ int BigPotPlayer::beginWithFile(const string &filename)
 
 		volume = media->audioStream->getVolume();
 		engine->destroyMainTexture();
+		engine->renderClear();
+		engine->renderPresent();
 		delete media;
+		first = false;
 	}
+	config->setString(sys_encode, "sys_encode");
 	config->setInteger(volume, "volume");
 	config->write();
 	engine->destroy();
@@ -63,7 +70,7 @@ int BigPotPlayer::eventLoop()
 	int finished, i=0, x, y;
 	int t = 5000;
 	int v = 4;
-
+	bool havemedia = media->audioStream->exist() || media->videoStream->exist();
 	int totalTime = media->getTotalTime();
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
 
@@ -168,7 +175,8 @@ int BigPotPlayer::eventLoop()
 		//media->audioStream->setAnotherTime(media->getVideoTime());
 		//if (!media->showVideoFrame(i*100))
 		int audioTime = media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间增加2微秒
-		if (!pause&&!media->videoStream->showTexture(audioTime))
+		if (havemedia && !pause 
+			&& !media->videoStream->showTexture(audioTime))
 		{
 			UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
 			engine->renderPresent();
@@ -182,7 +190,7 @@ int BigPotPlayer::eventLoop()
 				maxDelay = 0;
 			}
 			printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
-			media->audioStream->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);	
+				media->audioStream->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
 		}
 		i++;
 		engine->delay(1);

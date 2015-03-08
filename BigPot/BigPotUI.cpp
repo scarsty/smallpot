@@ -4,12 +4,14 @@
 
 BigPotUI::BigPotUI()
 {
-	square = engine->createSquareTexture();
+
 }
 
 
 BigPotUI::~BigPotUI()
 {
+	engine->destroyTexture(square);
+	//engine->destroyTexture(text);
 }
 
 void BigPotUI::drawBall()
@@ -54,4 +56,9 @@ std::string BigPotUI::convertTimeToString(int time)
 	sprintf(s, "%d:%02d:%04.2f",
 		time / 3600000, time % 3600000 / 60000, time % 60000 / 1e3);
 	return s;
+}
+
+void BigPotUI::init()
+{
+	square = engine->createSquareTexture();
 }
