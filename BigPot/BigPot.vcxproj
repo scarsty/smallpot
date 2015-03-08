@@ -125,7 +125,6 @@
     <ClInclude Include="BigPotVideoStream.h" />
     <ClInclude Include="BigPotEngine.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BigPot.rc" />

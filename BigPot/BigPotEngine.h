@@ -43,26 +43,26 @@ public:
 	static BigPotEngine* getInstance(){ return &_control; };
 	//图形相关
 private:
-	BP_Window* win;
-	BP_Renderer* ren;
-	BP_Texture* tex;
-	BP_AudioSpec want, spec;
-	BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->tex; };
-	bool isfullscreen;
+	BP_Window* _win;
+	BP_Renderer* _ren;
+	BP_Texture* _tex, *_logo;
+	BP_AudioSpec _want, _spec;
+	BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->_tex; };
+	bool _isfullscreen;
 public:
 	int init();
-	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(win, &w, &h); }
-	void setWindowSize(int w, int h) { SDL_SetWindowSize(win, w, h); }
+	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
+	void setWindowSize(int w, int h) { SDL_SetWindowSize(_win, w, h); }
 	void setWindowPosition(int x, int y)
 	{
-		SDL_SetWindowPosition(win, x, y);
+		SDL_SetWindowPosition(_win, x, y);
 	}
-	void setWindowTitle(const string &str){ SDL_SetWindowTitle(win, str.c_str()); }
-	void createMainTexture(int w, int h) { tex = createYUVTexture(w, h); }
-	void destroyMainTexture() { destroyTexture(tex); }
+	void setWindowTitle(const string &str){ SDL_SetWindowTitle(_win, str.c_str()); }
+	void createMainTexture(int w, int h) { _tex = createYUVTexture(w, h); }
+	void destroyMainTexture() { destroyTexture(_tex); }
 	BP_Texture* createYUVTexture(int w, int h) 
 	{
-		return SDL_CreateTexture(ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
+		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
 	};
 	void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
 	void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
@@ -70,9 +70,10 @@ public:
 		SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 	}
 
-	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(ren, testTexture(t), nullptr, nullptr); }
-	void renderPresent() { SDL_RenderPresent(ren); renderClear(); };
-	void renderClear() { SDL_RenderClear(ren); }
+	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(_ren, testTexture(t), nullptr, nullptr); }
+	void showLogo() { SDL_RenderCopy(_ren, _logo, nullptr, nullptr); }
+	void renderPresent() { SDL_RenderPresent(_ren); renderClear(); };
+	void renderClear() { SDL_RenderClear(_ren); }
 	void setTextureAlphaMod(BP_Texture* t, uint8_t alpha) { SDL_SetTextureAlphaMod(t, alpha); };
 
 	void createWindow();
@@ -80,19 +81,23 @@ public:
 	void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0);
 	void destroy()
 	{
-		SDL_DestroyTexture(tex);
-		SDL_DestroyRenderer(ren);
-		SDL_DestroyWindow(win);
+		SDL_DestroyTexture(_tex);
+		SDL_DestroyRenderer(_ren);
+		SDL_DestroyWindow(_win);
 	}
 	void toggleFullscreen();
+	BP_Texture* loadImage(const string& filename)
+	{
+		return IMG_LoadTexture(_ren, filename.c_str());
+	}
 
 	//声音相关
 private:
-	SDL_AudioDeviceID device;
-	AudioCallback callback = nullptr;
+	SDL_AudioDeviceID _device;
+	AudioCallback _callback = nullptr;
 public:
-	void pauseAudio(int pause) { SDL_PauseAudioDevice(device, pause); };
-	void closeAudio(){ SDL_CloseAudioDevice(device); };
+	void pauseAudio(int pause) { SDL_PauseAudioDevice(_device, pause); };
+	void closeAudio(){ SDL_CloseAudioDevice(_device); };
 	int getMaxVolume() { return BP_AUDIO_MIX_MAXVOLUME; };
 	void mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume) 
 	{
@@ -101,10 +106,10 @@ public:
 
 	int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
 	static void mixAudioCallback(void* userdata, Uint8* stream, int len);
-	void setAudioCallback(AudioCallback cb = nullptr){ callback = cb; };
+	void setAudioCallback(AudioCallback cb = nullptr){ _callback = cb; };
 	//事件相关
 private:
-	SDL_Event e;
+	SDL_Event _e;
 	int _time;
 public:
 	void delay(const int t) { SDL_Delay(t); }
@@ -116,7 +121,7 @@ public:
 	void free(void* mem){ SDL_free(mem); }
 	//UI相关
 private:
-	BP_Texture* square;
+	BP_Texture* _square;
 public:
 	BP_Texture* createSquareTexture();
 	void drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);

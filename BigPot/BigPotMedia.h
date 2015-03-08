@@ -11,16 +11,18 @@ class BigPotMedia : public BigPotBase
 public:
 	BigPotMedia();
 	virtual ~BigPotMedia();
-
-	BigPotVideoStream *videoStream;
-	BigPotAudioStream *audioStream;
 private:
-	int count = 0;
-	int totalTime = 0;
-	int lastdts = 0;
-	int timebase = 0;
-	bool seeking = false;
+	BigPotVideoStream *_videoStream;
+	BigPotAudioStream *_audioStream;
+private:
+	int _count = 0;
+	int _totalTime = 0;
+	int _lastdts = 0;
+	int _timebase = 0;
+	bool _seeking = false;
 public:
+	BigPotVideoStream *getVideoStream(){ return _videoStream; };
+	BigPotAudioStream *getAudioStream(){ return _audioStream; };
 	int decodeFrame();
 	int openFile(const string &filename);
 	int getAudioTime();
@@ -28,12 +30,12 @@ public:
 	int seekTime(int time, int direct = 1);
 	int seekPos(double pos);
 	int showVideoFrame(int time);
-	int getTotalTime() { return totalTime; }
+	int getTotalTime() { return _totalTime; }
 	int getTime();
 	void destroy();
 	bool isMedia()
 	{
-		return audioStream->exist() || videoStream->exist();
+		return _audioStream->exist() || _videoStream->exist();
 	}
 };
 

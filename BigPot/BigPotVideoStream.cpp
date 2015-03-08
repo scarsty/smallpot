@@ -4,7 +4,7 @@
 BigPotVideoStream::BigPotVideoStream()
 {
 	//视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
-	maxSize = 0;
+	maxSize_ = 0;
 }
 
 
@@ -17,7 +17,7 @@ BigPotVideoStream::~BigPotVideoStream()
 //2已经没有可显示的包
 int BigPotVideoStream::showTexture(int time)
 {
-	if (streamIndex < 0)
+	if (stream_index_ < 0)
 		return -1;
 	auto f = getCurrentFrameData();
 	int time_c = f.time;
@@ -26,9 +26,9 @@ int BigPotVideoStream::showTexture(int time)
 		if (time >= time_c)
 		{
 			auto tex = (BP_Texture*)f.data;
-			engine->renderCopy(tex);
-			timeShown = time_c;
-			ticksShown = engine->getTicks();
+			engine_->renderCopy(tex);
+			time_shown_ = time_c;
+			ticks_shown_ = engine_->getTicks();
 			dropDecoded();
 			return 0;
 		}
@@ -42,19 +42,19 @@ int BigPotVideoStream::showTexture(int time)
 
 void BigPotVideoStream::freeData(void* p)
 {
-	engine->destroyTexture((BP_Texture*)p);
+	engine_->destroyTexture((BP_Texture*)p);
 }
 
 BigPotMediaStream::FrameData BigPotVideoStream::convert(void* p /*= nullptr*/)
 {
-	auto &f = frame;
-	auto tex = (BP_Texture*)data;
+	auto &f = frame_;
+	auto tex = (BP_Texture*)data_;
 	if (useMap())
 	{
-		tex = engine->createYUVTexture(codecCtx->width, codecCtx->height);
+		tex = engine_->createYUVTexture(codecCtx_->width, codecCtx_->height);
 	}
-	engine->updateYUVTexture(tex, f->data[0], f->linesize[0], f->data[1], f->linesize[1], f->data[2], f->linesize[2]);
-	return{ timedts, f->linesize[0], tex };
+	engine_->updateYUVTexture(tex, f->data[0], f->linesize[0], f->data[1], f->linesize[1], f->data[2], f->linesize[2]);
+	return{ time_dts_, f->linesize[0], tex };
 }
 
 int BigPotVideoStream::dropTexture()
