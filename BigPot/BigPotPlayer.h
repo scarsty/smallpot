@@ -12,7 +12,8 @@ public:
 	BigPotPlayer();
 	virtual ~BigPotPlayer();
 private:
-	string filename;
+	string cur_filename;
+	int cur_time = 0;
 	BigPotMedia* media = nullptr;
 	BigPotUI* UI = nullptr;
 	BigPotConfig *config = nullptr;
