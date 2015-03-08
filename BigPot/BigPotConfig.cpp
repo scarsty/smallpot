@@ -14,22 +14,22 @@ void BigPotConfig::init()
 {
 	//value.
 	Json::Reader reader;
-	content = readStringFromFile("config.json");
-	reader.parse(content, value);
+	_content = readStringFromFile("config.json");
+	reader.parse(_content, _value);
 
-	if (value["record"].isObject())
-		record = value["record"];
+	if (_value["record"].isObject())
+		_record = _value["record"];
 }
 
 void BigPotConfig::write()
 {
 	Json::StyledWriter writer;
 
-	value["record"] = record;
-	content = writer.write(value);
+	_value["record"] = _record;
+	_content = writer.write(_value);
 
 	ofstream ofs;
 	ofs.open("config.json");
-	ofs << content;
+	ofs << _content;
 }
 

@@ -9,13 +9,13 @@ public:
 	BigPotAudioStream();
 	virtual ~BigPotAudioStream();
 private:
-	const int screamSize = 0x400000, convertSize = 192000;
-	int volume;
-	int screamLength = 0;
-	uint32_t readed = 0;
-	uint8_t* resampleBuffer = nullptr;
-    int64_t dataRead = 0, dataWrite = 0;  //读取和写入字节数，实际位置由该值与尺寸的余数计算
-	int freq, channels;
+	const int _scream_size = 0x400000, _convert_size = 192000;
+	int _volume;
+	int _scream_length = 0;
+	//uint32_t _readed = 0;
+	uint8_t* _resample_buffer = nullptr;
+    int64_t _data_read = 0, _data_write = 0;  //读取和写入字节数，实际位置由该值与尺寸的余数计算
+	int _freq, _channels;
 
 	void mixAudioData(uint8_t* stream, int len);
 	int closeAudioDevice();
@@ -27,6 +27,6 @@ public:
 	void resetDecodeState();
 	int setVolume(int v);
 	int changeVolume(int v);
-	int getVolume() { return volume; };
+	int getVolume() { return _volume; };
 	bool setPause(bool pause);
 };

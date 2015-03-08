@@ -7,18 +7,18 @@ class BigPotUI : public BigPotBase
 public:
 	BigPotUI();
 	virtual ~BigPotUI();
+private:
+	BP_Texture* _square, *_text;
 
-	BP_Texture* square, *text;
-
-	int time, totoalTime, volume;
-	int win_h, win_w;
+	int _time, _totoalTime, _volume;
+	int _win_w, _win_h;
 
 	int x = 0, y = 0, w = 0, h = 0;
-	uint8_t alpha;
-
+	uint8_t _alpha;
+public:
 	void init();
-	void setTime(int t) { time = t; };
-	void setTotalTime(int t) { totoalTime = t; };
+	void setTime(int t) { _time = t; };
+	void setTotalTime(int t) { _totoalTime = t; };
 	void drawBall();
 	void drawText(const string &text);
 	void drawUI(uint8_t alpha, int time, int totoalTime, int volume);

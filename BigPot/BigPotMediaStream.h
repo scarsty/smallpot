@@ -32,32 +32,32 @@ public:
 	BigPotMediaStream();
 	virtual ~BigPotMediaStream();
 protected:
-	BigPotMediaType type;
-	AVFormatContext* formatCtx;
-	AVStream* stream;
-	AVCodecContext *codecCtx;
-	AVCodec *codec;
-	AVPacket packet;
-	int streamIndex = -1;
-	double timePerFrame = 0, timePerPacket=0;
-	int maxSize = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
+	BigPotMediaType type_;
+	AVFormatContext* formatCtx_;
+	AVStream* stream_;
+	AVCodecContext *codecCtx_;
+	AVCodec *codec_;
+	AVPacket packet_;
+	int stream_index_ = -1;
+	double time_per_frame_ = 0, time_per_packet_ = 0;
+	int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
 
-	AVFrame *frame;
-	string filename;
-	mutex mutex_cpp;
+	AVFrame *frame_;
+	string filename_;
+	mutex mutex_;
 	
-	int ticksShown = -1;
-	int timedts = 0, timepts = 0, timeShown = 0;  //解压时间，应展示时间，最近已经展示的时间
-	int time_another = 0;
-	int startTime = 0;
-	int totalTime = 0;
+	int ticks_shown_ = -1;
+	int time_dts_ = 0, time_pts_ = 0, time_shown_ = 0;  //解压时间，应展示时间，最近已经展示的时间
+	int time_other_ = 0;
+	int start_time_ = 0;
+	int total_time_ = 0;
 
-	void* data = nullptr;	//无缓冲时的用户数据, 可能为纹理或音频缓冲区
-	uint32_t datalength = 0;
+	void* data_ = nullptr;	//无缓冲时的用户数据, 可能为纹理或音频缓冲区
+	uint32_t data_length_ = 0;
 private:
 
 	map<int, FrameData> _map;
-	bool decoded = false, skip = false, ended = false;
+	bool _decoded = false, _skip = false, _ended = false;
 
 private:
 	int decodeFramePre();
@@ -85,12 +85,12 @@ public:
 
 	void setSkip(bool b)
 	{
-		skip = b;
+		_skip = b;
 	}
 
 	void resetTimeBegin()
 	{
-		ticksShown = -1;
+		ticks_shown_ = -1;
 	}
 
 	int seek(int time, int direct = 1);
@@ -101,13 +101,13 @@ public:
 	void getSize(int &w, int&h);
 	int getTimedts()
 	{
-		return timedts;
+		return time_dts_;
 	}
 	int getTimeShown()
 	{
-		return timeShown;
+		return time_shown_;
 	}
-	bool exist(){ return streamIndex >= 0; }
+	bool exist(){ return stream_index_ >= 0; }
 	void resetTimeAxis();
 };
 
