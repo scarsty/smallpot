@@ -7,8 +7,12 @@
 class BigPotConfig : public BigPotBase
 {
 private:
-	Json::Value value;
+	Json::Value value, record;
 	string content;
+	Json::Value& getValue(Json::Value& v)
+	{
+		return v;
+	}
 public:
 	BigPotConfig();
 	virtual ~BigPotConfig();
@@ -24,7 +28,6 @@ public:
 	{
 		if (value[name].isString())
 			v = value[name].asString();
-		cout << value[name].asString();
 	}
 	void getDouble(double &v, const char * name)
 	{
@@ -40,5 +43,13 @@ public:
 	void setString(const string v, const char * name) { value[name] = v; }
 	void setDouble(double v, const char * name) { value[name] = v; }
 	void setBool(bool v, const char * name) { value[name] = v; }
+
+	void getRecord(int &v, const char * name)
+	{
+		if (record[name].isInt())
+			v = record[name].asInt();
+	}
+	void setRecord(int v, const char * name) { record[name] = v; }
+	void clearRecord() { record.clear(); }
 };
 
