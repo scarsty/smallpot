@@ -31,5 +31,9 @@ public:
 	int getTotalTime() { return totalTime; }
 	int getTime();
 	void destroy();
+	bool isMedia()
+	{
+		return audioStream->exist() || videoStream->exist();
+	}
 };
 

@@ -25,15 +25,16 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	config->getInteger(volume, "volume");
 	UI->init();
 
-	this->filename = filename;
+	this->cur_filename = filename;
 	run = true;
 	bool first = true;
+
 	while (run)
 	{
 		media = nullptr;
 		media = new BigPotMedia;
 
-		media->openFile(this->filename);
+		media->openFile(this->cur_filename);
 
 		engine->getWindowSize(w, h);
 		media->videoStream->getSize(w, h);
@@ -42,7 +43,18 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		engine->setWindowSize(w, h);
 		engine->createMainTexture(w, h);
 		if (first) engine->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-		auto s = BigPotConv::conv(this->filename, sys_encode, BP_encode);
+		auto s = BigPotConv::conv(this->cur_filename, sys_encode, BP_encode);
+		
+		cur_time = 0;
+		string filename0 = cur_filename;
+		if (this->cur_filename != "")
+		{
+			config->getRecord(cur_time, filename0.c_str());
+			if (cur_time >= media->getTotalTime())
+				cur_time = 0;
+			media->seekTime(cur_time, -1);
+		}
+		
 		engine->setWindowTitle(s);
 
 		this->eventLoop();
@@ -53,6 +65,9 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		engine->renderPresent();
 		delete media;
 		first = false;
+
+		config->setRecord(cur_time, filename0.c_str());
+
 	}
 	config->setString(sys_encode, "sys_encode");
 	config->setInteger(volume, "volume");
@@ -167,7 +182,7 @@ int BigPotPlayer::eventLoop()
 			break;
 		case BP_DROPFILE:
 			loop = false;
-			filename = BigPotConv::conv(e.drop.file, BP_encode, sys_encode);
+			cur_filename = BigPotConv::conv(e.drop.file, BP_encode, sys_encode);
 			engine->free(e.drop.file);
 		default:
 			break;
@@ -205,6 +220,7 @@ int BigPotPlayer::eventLoop()
 		i++;
 		engine->delay(1);
 	}
+	cur_time = media->getTime();
 	return 0;
 }
 
