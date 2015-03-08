@@ -48,6 +48,7 @@ private:
 	BP_Texture* tex;
 	BP_AudioSpec want, spec;
 	BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->tex; };
+	bool isfullscreen;
 public:
 	int init();
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(win, &w, &h); }
@@ -83,6 +84,7 @@ public:
 		SDL_DestroyRenderer(ren);
 		SDL_DestroyWindow(win);
 	}
+	void toggleFullscreen();
 
 	//ษ๙า๔ฯเนุ
 private:
