@@ -67,10 +67,11 @@ int BigPotPlayer::eventLoop()
 
 	bool loop = true, pause = false;
 	int drawUI = 128;
-	int finished, i=0, x, y;
+	int finished, i = 0, x, y;
 	int t = 5000;
 	int v = 4;
-	bool havemedia = media->audioStream->exist() || media->videoStream->exist();
+	bool havevideo = media->videoStream->exist();
+	bool havemedia = media->audioStream->exist() || havevideo;
 	int totalTime = media->getTotalTime();
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
 
@@ -175,22 +176,31 @@ int BigPotPlayer::eventLoop()
 		//media->audioStream->setAnotherTime(media->getVideoTime());
 		//if (!media->showVideoFrame(i*100))
 		int audioTime = media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间增加2微秒
-		if (havemedia && !pause 
-			&& !media->videoStream->showTexture(audioTime))
+		if (havemedia && !pause)
 		{
-			UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
-			engine->renderPresent();
-
-			//以下均是为了显示信息，可以全部去掉
-			int videoTime = (media->videoStream->getTimedts());
-			int delay = -videoTime + audioTime;
-			maxDelay = max(maxDelay, abs(delay));
-			if (i % 1000 == 0)
+			int videostate = media->videoStream->showTexture(audioTime);
+			//控制帧数
+			if (videostate == 0)
 			{
-				maxDelay = 0;
+				UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
+				engine->renderPresent();
+				//以下均是为了显示信息，可以全部去掉
+				int videoTime = (media->videoStream->getTimedts());
+				int delay = -videoTime + audioTime;
+				maxDelay = max(maxDelay, abs(delay));
+				if (i % 1000 == 0)
+				{
+					maxDelay = 0;
+				}
+				printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
+					media->audioStream->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
 			}
-			printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
-				media->audioStream->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
+			else if ((videostate == -1 || videostate == 2) && i % 50 == 0)
+			{
+				engine->renderCopy();
+				UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
+				engine->renderPresent();
+			}
 		}
 		i++;
 		engine->delay(1);

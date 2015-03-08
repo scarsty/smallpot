@@ -12,23 +12,32 @@ BigPotVideoStream::~BigPotVideoStream()
 {
 }
 
-//-1显示失败
+//-1无视频
+//1有可显示的包，未到时间
+//2已经没有可显示的包
 int BigPotVideoStream::showTexture(int time)
 {
 	if (streamIndex < 0)
 		return -1;
 	auto f = getCurrentFrameData();
 	int time_c = f.time;
-	if (haveDecoded() && time >= time_c)
+	if (haveDecoded())
 	{
-		auto tex = (BP_Texture*)f.data;
-		engine->renderCopy(tex);
-		timeShown = time_c;
-		ticksShown = engine->getTicks();
-		dropDecoded();
-		return 0;
+		if (time >= time_c)
+		{
+			auto tex = (BP_Texture*)f.data;
+			engine->renderCopy(tex);
+			timeShown = time_c;
+			ticksShown = engine->getTicks();
+			dropDecoded();
+			return 0;
+		}
+		else
+		{
+			return 1;
+		}
 	}
-	return -1;	
+	return 2;	
 }
 
 void BigPotVideoStream::freeData(void* p)
