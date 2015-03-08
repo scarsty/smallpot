@@ -27,8 +27,8 @@ private:
 	int drawTex2();
 	int showTex2();
 	string getSysString(const string& str);
-	int getFileTime(const string& filename);
-	int setFileTime(int time, const string& filename);
+	int getRecordFileTime(const string& filename);
+	int setRecordFileTime(int time, const string& filename);
 public:
 	int beginWithFile(const string &filename);
 	
