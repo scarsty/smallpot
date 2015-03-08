@@ -21,11 +21,13 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	
 	config->init();
 	config->getString(sys_encode, "sys_encode");
-	volume = BP_AUDIO_MIX_MAXVOLUME / 2;
-	config->getInteger(volume, "volume");
+	cur_volume = BP_AUDIO_MIX_MAXVOLUME / 2;
+	config->getInteger(cur_volume, "volume");
 	UI->init();
 
-	this->cur_filename = filename;
+	//首次运行拖拽的文件也认为是同一个
+	drop_filename = filename;
+	auto play_filename = filename;
 	run = true;
 	bool first = true;
 
@@ -34,44 +36,44 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		media = nullptr;
 		media = new BigPotMedia;
 
-		media->openFile(this->cur_filename);
+		//如果是控制台程序，通过参数传入的是ansi
+		//如果是窗口程序，通过参数传入的是utf-8
+		//所有通过拖拽传入的都是utf-8
+		//播放器应以窗口程序为主
+		play_filename = drop_filename;  //这两个都是utf8
+		
+		engine->setWindowTitle(play_filename);
+		
+		//打开文件, 需要进行转换
+		auto open_filename = BigPotConv::conv(play_filename, BP_encode, sys_encode); //这个需要ansi
+		media->openFile(open_filename);
+		
 
-		engine->getWindowSize(w, h);
+		//窗口尺寸，时间
 		media->videoStream->getSize(w, h);
-		media->audioStream->setVolume(volume);
-
 		engine->setWindowSize(w, h);
-		engine->createMainTexture(w, h);
+		media->audioStream->setVolume(cur_volume);
+		//首次打开文件窗口居中		
 		if (first) engine->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-		auto s = BigPotConv::conv(this->cur_filename, sys_encode, BP_encode);
-		
-		cur_time = 0;
-		string filename0 = cur_filename;
-		if (this->cur_filename != "")
-		{
-			config->getRecord(cur_time, filename0.c_str());
-			if (cur_time >= media->getTotalTime())
-				cur_time = 0;
-			media->seekTime(cur_time, -1);
-		}
-		
-		engine->setWindowTitle(s);
 
+		//读取记录中的文件时间并跳转
+		cur_time = getFileTime(play_filename);
+		media->seekTime(cur_time);
+
+		//主循环
+		engine->createMainTexture(w, h);
 		this->eventLoop();
-
-		volume = media->audioStream->getVolume();
 		engine->destroyMainTexture();
-		engine->renderClear();
-		engine->renderPresent();
 
+		//如果是媒体文件就记录时间
 		if (media->isMedia())
-			config->setRecord(cur_time, filename0.c_str());
+			setFileTime(cur_time, play_filename);
 
 		delete media;
 		first = false;
 	}
 	config->setString(sys_encode, "sys_encode");
-	config->setInteger(volume, "volume");
+	config->setInteger(cur_volume, "volume");
 	config->write();
 	engine->destroy();
 	return 0;
@@ -82,7 +84,7 @@ int BigPotPlayer::eventLoop()
 	BP_Event e; 
 
 	bool loop = true, pause = false;
-	int drawUI = 128;
+	int ui_alpha = 128;
 	int finished, i = 0, x, y;
 	int t = 5000;
 	int v = 4;
@@ -96,10 +98,10 @@ int BigPotPlayer::eventLoop()
 	{
 		media->decodeFrame();
 		engine->getMouseState(x, y);
-		if (drawUI > 0) 
-			drawUI--;
+		if (ui_alpha > 0) 
+			ui_alpha--;
 		if (h - y < 50 || (w - x) < 200 && y < 150)
-			drawUI = 128;
+			ui_alpha = 128;
 		switch (e.type)
 		{
 		case BP_MOUSEMOTION:
@@ -119,7 +121,7 @@ int BigPotPlayer::eventLoop()
 					media->audioStream->setPause(pause);
 				}
 			}
-			drawUI = 128;
+			ui_alpha = 128;
 			break;
 		case BP_MOUSEWHEEL:
 		{
@@ -131,7 +133,7 @@ int BigPotPlayer::eventLoop()
 			{
 				media->audioStream->changeVolume(-v);
 			}
-			drawUI = 128;
+			ui_alpha = 128;
 			break;
 		}
 		case BP_KEYDOWN:
@@ -151,7 +153,7 @@ int BigPotPlayer::eventLoop()
 				media->audioStream->changeVolume(-v);
 				break;
 			}
-			drawUI = 128;
+			ui_alpha = 128;
 			break;
 		}
 		case BP_KEYUP:
@@ -162,8 +164,15 @@ int BigPotPlayer::eventLoop()
 				pause = !pause;
 				media->audioStream->setPause(pause);
 				break;
+			case BPK_RETURN:
+				engine->toggleFullscreen();
+				break;
+			case BPK_ESCAPE:
+				loop = false;
+				run = false;
+				break;
 			}
-			drawUI = 128;
+			ui_alpha = 128;
 			break;
 		}
 		case BP_QUIT:
@@ -178,12 +187,12 @@ int BigPotPlayer::eventLoop()
 			}
 			else if (e.window.event == BP_WINDOWEVENT_LEAVE)
 			{
-				drawUI = 0;
+				ui_alpha = 0;
 			}
 			break;
 		case BP_DROPFILE:
 			loop = false;
-			cur_filename = BigPotConv::conv(e.drop.file, BP_encode, sys_encode);
+			drop_filename = e.drop.file;
 			engine->free(e.drop.file);
 		default:
 			break;
@@ -198,7 +207,7 @@ int BigPotPlayer::eventLoop()
 			//控制帧数
 			if (videostate == 0)
 			{
-				UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
+				UI->drawUI(ui_alpha, audioTime, totalTime, media->audioStream->changeVolume(0));
 				engine->renderPresent();
 				//以下均是为了显示信息，可以去掉
 #ifdef _DEBUG
@@ -216,7 +225,7 @@ int BigPotPlayer::eventLoop()
 			else if ((videostate == -1 || videostate == 2) && i % 50 == 0)
 			{
 				engine->renderCopy();
-				UI->drawUI(drawUI, audioTime, totalTime, media->audioStream->changeVolume(0));
+				UI->drawUI(ui_alpha, audioTime, totalTime, media->audioStream->changeVolume(0));
 				engine->renderPresent();
 			}
 		}
@@ -224,6 +233,10 @@ int BigPotPlayer::eventLoop()
 		engine->delay(1);
 	}
 	cur_time = media->getTime();
+	cur_volume = media->audioStream->getVolume();
+	engine->renderClear();
+	engine->renderPresent();
+	
 	return 0;
 }
 
@@ -246,4 +259,26 @@ int BigPotPlayer::showTex2()
 {
 	//SDL_RenderCopy(ren, tex2, nullptr, nullptr);
 	return 0;
+}
+
+std::string BigPotPlayer::getSysString(const string& str)
+{
+	return "";
+}
+
+int BigPotPlayer::getFileTime(const string& filename)
+{
+	if (filename == "")
+		return 0;
+	int time;
+	config->getRecord(time, filename.c_str());
+	return time;
+}
+
+int BigPotPlayer::setFileTime(int time, const string& filename)
+{
+	if (filename == "")
+		return 0;
+	config->setRecord(time, filename.c_str());
+	return time;
 }
