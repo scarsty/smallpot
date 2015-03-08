@@ -69,7 +69,7 @@ public:
 		SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 	}
 
-	void renderCopy(BP_Texture* t) { SDL_RenderCopy(ren, testTexture(t), nullptr, nullptr); }
+	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(ren, testTexture(t), nullptr, nullptr); }
 	void renderPresent() { SDL_RenderPresent(ren); renderClear(); };
 	void renderClear() { SDL_RenderClear(ren); }
 	void setTextureAlphaMod(BP_Texture* t, uint8_t alpha) { SDL_SetTextureAlphaMod(t, alpha); };
