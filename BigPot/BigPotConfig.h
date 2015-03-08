@@ -13,41 +13,38 @@ private:
 	{
 		return v;
 	}
+
 public:
 	BigPotConfig();
 	virtual ~BigPotConfig();
 
 	void init();
 	void write();
-	void getInteger(int &v, const char * name)
+	//以下函数注意默认值
+	int getInteger(const char * name)
 	{
-		if (_value[name].isInt())
-			v = _value[name].asInt();
+		return _value[name].isInt() ? _value[name].asInt() : 0;
 	}
-	void getString(string &v, const char * name)
+	string getString(const char * name)
 	{
-		if (_value[name].isString())
-			v = _value[name].asString();
+		return _value[name].isString() ? _value[name].asString() : "";
 	}
-	void getDouble(double &v, const char * name)
+	double getDouble(const char * name)
 	{
-		if (_value[name].isDouble())
-			v = _value[name].asDouble();
+		return _value[name].isDouble() ? _value[name].asDouble() : 0.0;
 	}
-	void getBool(bool &v, const char * name)
+	bool getBool(bool &v, const char * name)
 	{
-		if (_value[name].isBool())
-			v = _value[name].asBool();
+		return _value[name].isBool() ? _value[name].asBool() : false;
 	}
 	void setInteger(int v, const char * name) { _value[name] = v; }
 	void setString(const string v, const char * name) { _value[name] = v; }
 	void setDouble(double v, const char * name) { _value[name] = v; }
 	void setBool(bool v, const char * name) { _value[name] = v; }
 
-	void getRecord(int &v, const char * name)
+	int getRecord(const char * name)
 	{
-		if (_record[name].isInt())
-			v = _record[name].asInt();
+		return _record[name].isInt() ? _record[name].asInt() : 0;
 	}
 	void setRecord(int v, const char * name) { _record[name] = v; }
 	void clearRecord() { _record.clear(); }

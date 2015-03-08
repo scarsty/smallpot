@@ -22,9 +22,9 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	if (engine_->init()) return -1;
 	
 	_config->init();
-	_config->getString(_sys_encode, "sys_encode");
+	_sys_encode = _config->getString("sys_encode");
 	_cur_volume = BP_AUDIO_MIX_MAXVOLUME / 2;
-	_config->getInteger(_cur_volume, "volume");
+	_cur_volume = _config->getInteger("volume");
 	_UI->init();
 
 	//首次运行拖拽的文件也认为是同一个
@@ -59,8 +59,9 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		if (first) engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
 
 		//读取记录中的文件时间并跳转
-		_cur_time = getFileTime(play_filename);
-		_media->seekTime(_cur_time);
+		_cur_time = 0;
+		_cur_time = getRecordFileTime(play_filename);
+		if (_cur_time > 0) _media->seekTime(_cur_time , -1);
 
 		//主循环
 		engine_->createMainTexture(_w, _h);
@@ -69,7 +70,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 
 		//如果是媒体文件就记录时间
 		if (_media->isMedia())
-			setFileTime(_cur_time, play_filename);
+			setRecordFileTime(_cur_time, play_filename);
 
 		delete _media;
 		first = false;
@@ -273,16 +274,14 @@ std::string BigPotPlayer::getSysString(const string& str)
 	return "";
 }
 
-int BigPotPlayer::getFileTime(const string& filename)
+int BigPotPlayer::getRecordFileTime(const string& filename)
 {
 	if (filename == "")
 		return 0;
-	int time;
-	_config->getRecord(time, filename.c_str());
-	return time;
+	return _config->getRecord(filename.c_str());
 }
 
-int BigPotPlayer::setFileTime(int time, const string& filename)
+int BigPotPlayer::setRecordFileTime(int time, const string& filename)
 {
 	if (filename == "")
 		return 0;
