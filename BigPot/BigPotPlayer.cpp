@@ -187,6 +187,7 @@ int BigPotPlayer::eventLoop()
 			{
 				_w = e.window.data1;
 				_h = e.window.data2;
+				engine_->setPresentPosition();
 			}
 			else if (e.window.event == BP_WINDOWEVENT_LEAVE)
 			{
@@ -204,7 +205,7 @@ int BigPotPlayer::eventLoop()
 		//media->audioStream->setAnotherTime(media->getVideoTime());
 		//if (!media->showVideoFrame(i*100))
 		int audioTime = _media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间
-		if (havemedia && !pause)
+		if (!pause)
 		{
 			int videostate = _media->getVideoStream()->showTexture(audioTime);
 			//控制帧数

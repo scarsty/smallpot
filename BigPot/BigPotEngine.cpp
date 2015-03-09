@@ -149,12 +149,57 @@ int BigPotEngine::init()
 
 void BigPotEngine::toggleFullscreen()
 {
-	_isfullscreen = !_isfullscreen;
-	if (_isfullscreen)
+	_full_screen = !_full_screen;
+	if (_full_screen)
 		SDL_SetWindowFullscreen(_win, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	else
 		SDL_SetWindowFullscreen(_win, 0);
 	SDL_RenderClear(_ren);	
+}
+
+bool BigPotEngine::setKeepRatio(bool b)
+{
+	return _keep_ratio = b;
+}
+
+void BigPotEngine::setPresentPosition()
+{
+	if (!_tex)
+		return;
+	int w_dst = 0, h_dst = 0;
+	int w_src = 0, h_src = 0;
+	getWindowSize(w_dst, h_dst);
+	SDL_QueryTexture(_tex, nullptr, nullptr, &w_src, &h_src);
+	if (_keep_ratio)
+	{
+		if (w_src == 0 || h_src == 0) return;
+		double w_ratio = 1.0*w_dst / w_src;
+		double h_ratio = 1.0*h_dst / h_src;
+		double ratio = min(w_ratio, h_ratio);
+		if (w_ratio > h_ratio)
+		{
+			//宽度大，左右留空
+			_rect.x = (w_dst - w_src * ratio) / 2;
+			_rect.y = 0;
+			_rect.w = w_src * ratio;
+			_rect.h = h_dst;
+		}
+		else
+		{
+			//高度大，上下留空
+			_rect.x = 0;
+			_rect.y = (h_dst - h_src * ratio) / 2;
+			_rect.w = w_dst;
+			_rect.h = h_src * ratio;
+		}
+	}
+	else
+	{
+		_rect.x = 0;
+		_rect.y = 0;
+		_rect.w = w_dst;
+		_rect.h = h_dst;
+	}
 }
 
 
