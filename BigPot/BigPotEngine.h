@@ -21,6 +21,7 @@ typedef function<void(uint8_t*, int)> AudioCallback;
 typedef SDL_Renderer BP_Renderer;
 typedef SDL_Window BP_Window;
 typedef SDL_Texture BP_Texture;
+typedef SDL_Rect BP_Rect;
 
 typedef enum { BP_ALIGN_LEFT, BP_ALIGN_MIDDLE, BP_ALIGN_RIGHT } BP_Align;
 
@@ -43,22 +44,33 @@ public:
 	static BigPotEngine* getInstance(){ return &_control; };
 	//图形相关
 private:
-	BP_Window* _win;
-	BP_Renderer* _ren;
-	BP_Texture* _tex, *_logo;
+	BP_Window* _win = nullptr;
+	BP_Renderer* _ren = nullptr;
+	BP_Texture* _tex = nullptr, *_logo = nullptr;
 	BP_AudioSpec _want, _spec;
+	BP_Rect _rect;
 	BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->_tex; };
-	bool _isfullscreen;
+	bool _full_screen = false;
+	bool _keep_ratio = true;
 public:
 	int init();
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
-	void setWindowSize(int w, int h) { SDL_SetWindowSize(_win, w, h); }
+	void setWindowSize(int w, int h) 
+	{ 
+		SDL_SetWindowSize(_win, w, h); 
+		setPresentPosition();
+	}
 	void setWindowPosition(int x, int y)
 	{
 		SDL_SetWindowPosition(_win, x, y);
 	}
 	void setWindowTitle(const string &str){ SDL_SetWindowTitle(_win, str.c_str()); }
-	void createMainTexture(int w, int h) { _tex = createYUVTexture(w, h); }
+	void createMainTexture(int w, int h) 
+	{
+		_tex = createYUVTexture(w, h); 
+		setPresentPosition();
+	}
+	void setPresentPosition();  //设置贴图的位置
 	void destroyMainTexture() { destroyTexture(_tex); }
 	BP_Texture* createYUVTexture(int w, int h) 
 	{
@@ -70,7 +82,7 @@ public:
 		SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 	}
 
-	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(_ren, testTexture(t), nullptr, nullptr); }
+	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(_ren, testTexture(t), nullptr, &_rect); }
 	void showLogo() { SDL_RenderCopy(_ren, _logo, nullptr, nullptr); }
 	void renderPresent() { SDL_RenderPresent(_ren); renderClear(); };
 	void renderClear() { SDL_RenderClear(_ren); }
@@ -90,6 +102,7 @@ public:
 	{
 		return IMG_LoadTexture(_ren, filename.c_str());
 	}
+	bool setKeepRatio(bool b);
 
 	//声音相关
 private:
