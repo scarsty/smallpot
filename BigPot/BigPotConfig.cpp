@@ -13,8 +13,13 @@ BigPotConfig::~BigPotConfig()
 void BigPotConfig::init()
 {
 	//value.
+
+	char buf[1024];
+	getcwd(buf, 1024);
+	_pathname = buf;
+
 	Json::Reader reader;
-	_content = readStringFromFile("config.json");
+	_content = readStringFromFile(_pathname + "\\config.json");
 	reader.parse(_content, _value);
 
 	if (_value["record"].isObject())
@@ -29,7 +34,7 @@ void BigPotConfig::write()
 	_content = writer.write(_value);
 
 	ofstream ofs;
-	ofs.open("config.json");
+	ofs.open(_pathname + "\\config.json");
 	ofs << _content;
 }
 
