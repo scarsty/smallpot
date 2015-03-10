@@ -1,6 +1,5 @@
 #include "BigPotPlayer.h"
 
-
 BigPotPlayer::BigPotPlayer()
 {
 	_UI = new BigPotUI;

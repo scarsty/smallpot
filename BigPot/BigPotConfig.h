@@ -3,12 +3,14 @@
 #include "BigPotBase.h"
 #include "json/json.h"
 #include <stdint.h>
+#include <direct.h>
 
 class BigPotConfig : public BigPotBase
 {
 private:
 	Json::Value _value, _record;
 	string _content;
+	string _pathname;
 	Json::Value& getValue(Json::Value& v)
 	{
 		return v;
