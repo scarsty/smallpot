@@ -2,9 +2,15 @@
 
 extern "C"
 {
-#include "sdl/SDL.h"
-#include "sdl/SDL_image.h"
-#include "sdl/sdl_ttf.h"
+#ifdef _MSC_VER
+#include "sdl203/SDL.h"
+#include "sdl203/SDL_image.h"
+#include "sdl203/sdl_ttf.h"
+#else
+#include "sdl204/SDL.h"
+#include "sdl204/SDL_image.h"
+#include "sdl204/sdl_ttf.h"
+#endif
 }
 
 #include <algorithm>
@@ -26,6 +32,11 @@ typedef SDL_Rect BP_Rect;
 typedef enum { BP_ALIGN_LEFT, BP_ALIGN_MIDDLE, BP_ALIGN_RIGHT } BP_Align;
 
 #define BP_WINDOWPOS_CENTERED SDL_WINDOWPOS_CENTERED
+
+#define RMASK (0xff0000)
+#define GMASK (0xff00)
+#define BMASK (0xff)
+#define AMASK (0xff000000)
 
 //声音类型在其他文件中未使用
 typedef SDL_AudioSpec BP_AudioSpec;
@@ -52,6 +63,8 @@ private:
 	BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->_tex; };
 	bool _full_screen = false;
 	bool _keep_ratio = true;
+
+	int _start_w = 1000, _start_h = 600; //320, 150
 public:
 	int init();
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
@@ -65,21 +78,35 @@ public:
 		SDL_SetWindowPosition(_win, x, y);
 	}
 	void setWindowTitle(const string &str){ SDL_SetWindowTitle(_win, str.c_str()); }
-	void createMainTexture(int w, int h) 
+	BP_Renderer* getRenderer(){ return _ren; }
+		
+	void createMainTexture(int w, int h)
 	{
 		_tex = createYUVTexture(w, h); 
 		setPresentPosition();
 	}
+
 	void setPresentPosition();  //设置贴图的位置
 	void destroyMainTexture() { destroyTexture(_tex); }
-	BP_Texture* createYUVTexture(int w, int h) 
+	
+	void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
+	
+	BP_Texture* createYUVTexture(int w, int h)
 	{
 		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
 	};
-	void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
 	void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
 	{
 		SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
+	}
+
+	BP_Texture* createARGBTexture(int w, int h)
+	{
+		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+	};
+	void updateARGBTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
+	{
+		//SDL_UpdateTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 	}
 
 	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(_ren, testTexture(t), nullptr, &_rect); }
@@ -210,3 +237,15 @@ typedef enum
 	BP_BUTTON_MIDDLE= SDL_BUTTON_MIDDLE,
 	BP_BUTTON_RIGHT =SDL_BUTTON_RIGHT
 } BP_Button;
+
+
+class mutex
+{
+private:
+	SDL_mutex* _mutex;
+public:
+	mutex(){ _mutex = SDL_CreateMutex(); }
+	~mutex(){ SDL_DestroyMutex(_mutex); }
+	int lock(){ return SDL_LockMutex(_mutex); }
+	int unlock(){ return SDL_UnlockMutex(_mutex); }
+};
