@@ -33,7 +33,7 @@ public:
 	void init();
 
 	bool exist() { return _haveSubtitle; };
-	void openSubtitle(const string& filename);
+	bool openSubtitle(const string& filename);
 	void closeSubtitle();
 	void show(int time);
 	void destroy();

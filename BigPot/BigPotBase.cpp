@@ -46,7 +46,7 @@ string BigPotBase::getFileExt(const string& filename)
 	return "";
 }
 
-string BigPotBase::getFileWithoutExt(const string& filename)
+string BigPotBase::getFileMainname(const string& filename)
 {
 	int pos_p = filename.find_last_of(_path_);
 	int pos_d = filename.find_last_of('.');
@@ -60,7 +60,7 @@ std::string BigPotBase::changeFileExt(const string& filename, const string& ext)
 	auto e = ext;
 	if (e != "" && e[0] != '.')
 		e = "." + e;
-	return getFileWithoutExt(filename) + e;
+	return getFileMainname(filename) + e;
 }
 
 std::string BigPotBase::getFilePath(const string& filename)
@@ -69,4 +69,24 @@ std::string BigPotBase::getFilePath(const string& filename)
 	if (pos_p != string::npos)
 		return filename.substr(0, pos_p);
 	return "";
+}
+
+//查找相似文件名的文件，只找两个
+std::string BigPotBase::fingFileWithMainName(const string& filename)
+{
+	_finddata_t file;
+	long fileHandle;
+	string path = getFilePath(filename);
+	if (path != "") path = path + _path_;
+	string findname = getFileMainname(filename) + ".*";
+	string ret = "";
+	fileHandle = _findfirst(findname.c_str(), &file);
+	ret = path + file.name;
+	if (ret == filename)
+	{
+		_findnext(fileHandle, &file);
+		ret = path + file.name;
+	}
+	_findclose(fileHandle);
+	return ret;
 }
