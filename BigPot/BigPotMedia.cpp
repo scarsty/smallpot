@@ -17,7 +17,7 @@ BigPotMedia::~BigPotMedia()
 
 int BigPotMedia::openFile(const string &filename)
 {
-	if (!fileexist(filename))
+	if (!fileExist(filename))
 		return -1;
 	_videoStream->openFile(filename, BPMEDIA_TYPE_VIDEO);
 	_audioStream->openFile(filename, BPMEDIA_TYPE_AUDIO);

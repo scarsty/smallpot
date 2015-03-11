@@ -1,10 +1,11 @@
 #include "BigPotPlayer.h"
-#include "BigPotSubtitle.h"
+
 
 BigPotPlayer::BigPotPlayer()
 {
 	_UI = new BigPotUI;
 	_config = new BigPotConfig;
+	_subtitle = new BigPotSubtitle;
 	_w = 320;
 	_h = 150;
 }
@@ -13,6 +14,7 @@ BigPotPlayer::~BigPotPlayer()
 {
 	delete _UI;
 	delete _config;
+	delete _subtitle;
 	//delete media;
 }
 
@@ -21,9 +23,8 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	if (engine_->init()) return -1;
 	
 	_config->init();
-	_sys_encode = _config->getString("sys_encode");
-	_cur_volume = BP_AUDIO_MIX_MAXVOLUME / 2;
-	_cur_volume = _config->getInteger("volume");
+	_sys_encode = _config->getString("sys_encode", "cp936");
+	_cur_volume = _config->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
 	_UI->init();
 
 	//首次运行拖拽的文件也认为是同一个
@@ -32,8 +33,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	_run = true;
 	bool first = true;
 
-	BigPotSubtitle s;
-	s.init();
+	_subtitle->init();
 
 	while (_run)
 	{
@@ -51,12 +51,15 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		//打开文件, 需要进行转换
 		auto open_filename = BigPotConv::conv(play_filename, _BP_encode, _sys_encode); //这个需要ansi
 		_media->openFile(open_filename);
-		
+		_subtitle->tryOpenSubtitle(open_filename);
 
 		//窗口尺寸，时间
 		_media->getVideoStream()->getSize(_w, _h);
 		engine_->setWindowSize(_w, _h);
 		_media->getAudioStream()->setVolume(_cur_volume);
+		if (_subtitle->exist())
+			_subtitle->setFrameSize(_w, _h);
+
 		//首次打开文件窗口居中		
 		if (first) engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
 
@@ -80,7 +83,10 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	_config->setString(_sys_encode, "sys_encode");
 	_config->setInteger(_cur_volume, "volume");
 	_config->write();
+	_subtitle->destroy();
+
 	engine_->destroy();
+
 	return 0;
 }
 
@@ -190,6 +196,9 @@ int BigPotPlayer::eventLoop()
 				_w = e.window.data1;
 				_h = e.window.data2;
 				engine_->setPresentPosition();
+				int w, h;
+				engine_->getPresentSize(w, h);
+				_subtitle->setFrameSize(w, h);
 			}
 			else if (e.window.event == BP_WINDOWEVENT_LEAVE)
 			{
@@ -214,6 +223,8 @@ int BigPotPlayer::eventLoop()
 			if (videostate == 0)
 			{
 				_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudioStream()->changeVolume(0));
+				if (_subtitle->exist())
+					_subtitle->show(audioTime);
 				engine_->renderPresent();
 				//以下均是为了显示信息，可以去掉
 #ifdef _DEBUG

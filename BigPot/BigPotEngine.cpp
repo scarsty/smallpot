@@ -13,8 +13,13 @@ BigPotEngine::~BigPotEngine()
 	//destroy();
 }
 
-void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h)
+void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inPresent)
 {
+	if (inPresent == 1)
+	{
+		x += _rect.x;
+		y += _rect.y;
+	}
 	SDL_Rect r = { x, y, w, h };
 	SDL_RenderCopy(_ren, t, nullptr, &r);
 }
@@ -203,4 +208,21 @@ void BigPotEngine::setPresentPosition()
 	}
 }
 
-
+BP_Texture* BigPotEngine::transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride)
+{
+	auto s = SDL_CreateRGBSurface(0, w, h, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
+	SDL_FillRect(s, nullptr, color);
+	auto p = (uint8_t*)s->pixels;
+	for (int x = 0; x < w; x++)
+	{
+		for (int y = 0; y < h; y++)
+		{
+			p[4 * (y*w + x)] = src[y*stride + x];
+		}
+	}
+	auto t = SDL_CreateTextureFromSurface(_ren, s);
+	SDL_FreeSurface(s);
+	SDL_SetTextureBlendMode(t, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(t, 192);
+	return t;
+}

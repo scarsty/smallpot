@@ -3,6 +3,7 @@
 
 BigPotSubtitle::BigPotSubtitle()
 {
+
 }
 
 
@@ -12,43 +13,91 @@ BigPotSubtitle::~BigPotSubtitle()
 
 void BigPotSubtitle::init()
 {
-	_lib=ass_library_init();
-
-
+	_lib = ass_library_init();
 	_ren = ass_renderer_init(_lib);
+	ass_set_fonts(_ren, "c:\\windows\\fonts\\msyh.ttf", "Sans", 0, "", 0);
+}
 
-	ass_set_frame_size(_ren, 1000, 600);
+void BigPotSubtitle::openSubtitle(const string& filename)
+{
+	//函数的参数是char*,为免意外复制一份
+	auto s = filename;
+	_track = ass_read_file(_lib, (char*)s.c_str(), NULL);
+}
 
-	ass_set_fonts(_ren, "c:\\windows\\fonts\\msyh.ttf", "Sans",0,"",0);
-
-
-	//ass_fonts_update(_ren);
-	_track = ass_read_file(_lib, "1.ass", NULL);
+void BigPotSubtitle::show(int time)
+{
 	int a;
-	//_img = ass_render_frame(_ren, _track, 40000, &a);
-	_img = ass_render_frame(_ren, _track, 40000, &a);
-	
-	cout << _img->color << endl;
-	cout << engine_->getTicks();
-	uint32_t *buffer = (uint32_t *)malloc(_img->stride*_img->h * 4);
-	for (int x = 0; x < _img->stride; x++)
-		for (int y = 0; y < _img->h; y++)
+	_img = ass_render_frame(_ren, _track, time, &a);
+	//cout << engine_->getTicks() << endl;
+	auto img = _img;
+	if (a)
+	{
+		destroyAllTex();
+		while (img)
 		{
-			buffer[y*_img->stride + x] = _img->bitmap[y*_img->stride + x] * 0x01010101;
+			auto t = engine_->transBitmapToTexture(img->bitmap, img->color, img->w, img->h, img->stride);
+			engine_->renderCopy(t, img->dst_x, img->dst_y, img->w, img->h, 1);
+			_tex_v.push_back(t);
+			img = img->next;
 		}
-	cout << engine_->getTicks();
-	auto s = SDL_CreateRGBSurfaceFrom(buffer, _img->stride, _img->h, 32, _img->stride * 4, RMASK, GMASK, BMASK, AMASK);
+	}
+	else
+	{
+		int i = 0;
+		while (img && i < _tex_v.size())
+		{
+			engine_->renderCopy(_tex_v[i++], img->dst_x, img->dst_y, img->w, img->h, 1);
+			img = img->next;
+		}
+	}
+	//cout << engine_->getTicks() << endl;
+}
 
-	//auto t = SDL_CreateTexture(engine_->getRenderer(), SDL_PIXELFORMAT_BGRA8888, SDL_TEXTUREACCESS_STREAMING, _img->w,		_img->h);
-	auto t = SDL_CreateTextureFromSurface(engine_->getRenderer(), s);
-	
-	
-	//a = SDL_UpdateTexture(t, NULL, _img->bitmap, _img->stride);
-	//cout << SDL_GetError();
-	engine_->renderCopy(t, 0,0, _img->w, _img->h);
-	engine_->renderPresent();
+void BigPotSubtitle::destroy()
+{
 
-	BP_Event e;
-	for (int i = 0;i<10000;i++, engine_->pollEvent(e))
-	engine_->delay(1);
+}
+
+void BigPotSubtitle::setFrameSize(int w, int h)
+{
+	if (_track)
+		ass_set_frame_size(_ren, w, h);
+}
+
+bool BigPotSubtitle::tryOpenSubtitle(const string& filename)
+{
+	string str;
+	bool b = true;
+	do
+	{
+		str = changeFileExt(filename, "srt");
+		if (fileExist(str)) break;
+		str = changeFileExt(filename, "ssa");
+		if (fileExist(str)) break;
+		str = changeFileExt(filename, "ass");
+		if (fileExist(str)) break;
+		b = false;
+	} while (false);
+
+	_haveSubtitle = b;
+	if (b)
+	{
+		openSubtitle(str);
+		printf("found subtitle file %s\n", str.c_str());
+	}
+	else
+	{
+		printf("no subtitle file\n");
+	}
+	return b;
+}
+
+void BigPotSubtitle::destroyAllTex()
+{
+	for (auto t : _tex_v)
+	{
+		engine_->destroyTexture(t);
+	}
+	_tex_v.clear();
 }
