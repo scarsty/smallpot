@@ -58,8 +58,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		engine_->setWindowSize(_w, _h);
 		_media->getAudioStream()->setVolume(_cur_volume);
 		//试图载入字幕
-		if (_subtitle->exist())
-			_subtitle->setFrameSize(_w, _h);
+		_subtitle->setFrameSize(_w, _h);
 
 		//首次打开文件窗口居中		
 		if (first) engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
@@ -105,7 +104,9 @@ int BigPotPlayer::eventLoop()
 	bool havevideo = _media->getVideoStream()->exist();
 	bool havemedia = _media->getAudioStream()->exist() || havevideo;
 	int totalTime = _media->getTotalTime();
+	string open_filename;
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
+
 
 	int maxDelay = 0;
 	while (loop && engine_->pollEvent(e) >= 0)
@@ -196,6 +197,7 @@ int BigPotPlayer::eventLoop()
 		case BP_WINDOWEVENT:
 			if (e.window.event == BP_WINDOWEVENT_RESIZED)
 			{
+				//需要计算显示和字幕的位置
 				_w = e.window.data1;
 				_h = e.window.data2;
 				engine_->setPresentPosition();
@@ -209,9 +211,16 @@ int BigPotPlayer::eventLoop()
 			}
 			break;
 		case BP_DROPFILE:
-			loop = false;
-			_drop_filename = e.drop.file;
+			//有文件拖入先检查是不是字幕，不是字幕则当作媒体文件，打开失败活该
+			open_filename = BigPotConv::conv(e.drop.file, _BP_encode, _sys_encode);
+			_subtitle->closeSubtitle();
+			if (!_subtitle->openSubtitle(open_filename))
+			{
+				_drop_filename = e.drop.file;
+				loop = false;
+			}	
 			engine_->free(e.drop.file);
+			break;
 		default:
 			break;
 		}
@@ -223,12 +232,11 @@ int BigPotPlayer::eventLoop()
 		{
 			int videostate = _media->getVideoStream()->showTexture(audioTime);
 			//控制帧数
+			bool show = false;
+			//有视频显示成功，或者有静态视频，或者只有音频，均刷新
 			if (videostate == 0)
 			{
-				_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudioStream()->changeVolume(0));
-				if (_subtitle->exist())
-					_subtitle->show(audioTime);
-				engine_->renderPresent();
+				show = true;
 				//以下均是为了显示信息，可以去掉
 #ifdef _DEBUG
 				int videoTime = (_media->getVideoStream()->getTimedts());
@@ -244,10 +252,16 @@ int BigPotPlayer::eventLoop()
 			}
 			else if ((videostate == -1 || videostate == 2) && i % 50 == 0)
 			{
+				show = true;
 				if (havevideo)
 					engine_->renderCopy();
 				else
 					engine_->showLogo();
+			}
+			if (show)
+			{
+				if (_subtitle->exist())
+					_subtitle->show(audioTime);
 				_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudioStream()->changeVolume(0));
 				engine_->renderPresent();
 			}

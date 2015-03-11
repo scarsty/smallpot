@@ -23,7 +23,9 @@ bool BigPotSubtitle::openSubtitle(const string& filename)
 	//函数的参数是char*,为免意外复制一份
 	auto s = filename;
 	_track = ass_read_file(_lib, (char*)s.c_str(), NULL);
-	return _track;
+	_haveSubtitle = (_track != nullptr);
+	if (_haveSubtitle) _subfilename = filename;
+	return 	_haveSubtitle;
 }
 
 void BigPotSubtitle::show(int time)
@@ -63,8 +65,8 @@ void BigPotSubtitle::destroy()
 
 void BigPotSubtitle::setFrameSize(int w, int h)
 {
-	if (_track)
-		ass_set_frame_size(_ren, w, h);
+	//if (_track)
+	ass_set_frame_size(_ren, w, h);
 }
 
 bool BigPotSubtitle::tryOpenSubtitle(const string& filename)
@@ -90,8 +92,6 @@ bool BigPotSubtitle::tryOpenSubtitle(const string& filename)
 		printf("try load subtitle file %s, state %d\n", str.c_str(), b);
 		
 	}
-
-	_haveSubtitle = b;
 	return b;
 }
 

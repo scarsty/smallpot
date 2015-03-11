@@ -46,6 +46,10 @@ public:
 
 	int getRecord(const char * name)
 	{
+		if (!_record.isMember(name))
+		{
+			return 0;
+		}
 		return _record[name].isInt() ? _record[name].asInt() : 0;
 	}
 	void setRecord(int v, const char * name) { _record[name] = v; }

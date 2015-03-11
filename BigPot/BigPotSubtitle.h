@@ -22,6 +22,7 @@ private:
 	ASS_Track* _track;
 	ASS_Image* _img;
 
+	string _subfilename;
 	vector<BP_Texture*> _tex_v;
 	int _tex_num = 0;
 
@@ -34,6 +35,7 @@ public:
 
 	bool exist() { return _haveSubtitle; };
 	bool openSubtitle(const string& filename);
+	bool reOpenSubtitle() { return openSubtitle(_subfilename); };
 	void closeSubtitle();
 	void show(int time);
 	void destroy();
