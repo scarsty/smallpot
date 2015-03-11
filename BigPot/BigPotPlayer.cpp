@@ -57,6 +57,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		_media->getVideoStream()->getSize(_w, _h);
 		engine_->setWindowSize(_w, _h);
 		_media->getAudioStream()->setVolume(_cur_volume);
+		//试图载入字幕
 		if (_subtitle->exist())
 			_subtitle->setFrameSize(_w, _h);
 
@@ -76,6 +77,8 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		//如果是媒体文件就记录时间
 		if (_media->isMedia())
 			setRecordFileTime(_cur_time, play_filename);
+		//关闭字幕
+		_subtitle->closeSubtitle();
 
 		delete _media;
 		first = false;

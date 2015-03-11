@@ -18,11 +18,12 @@ void BigPotSubtitle::init()
 	ass_set_fonts(_ren, "c:\\windows\\fonts\\msyh.ttf", "Sans", 0, "", 0);
 }
 
-void BigPotSubtitle::openSubtitle(const string& filename)
+bool BigPotSubtitle::openSubtitle(const string& filename)
 {
 	//函数的参数是char*,为免意外复制一份
 	auto s = filename;
 	_track = ass_read_file(_lib, (char*)s.c_str(), NULL);
+	return _track;
 }
 
 void BigPotSubtitle::show(int time)
@@ -56,7 +57,8 @@ void BigPotSubtitle::show(int time)
 
 void BigPotSubtitle::destroy()
 {
-
+	ass_renderer_done(_ren);
+	ass_library_done(_lib);
 }
 
 void BigPotSubtitle::setFrameSize(int w, int h)
@@ -77,19 +79,19 @@ bool BigPotSubtitle::tryOpenSubtitle(const string& filename)
 		if (fileExist(str)) break;
 		str = changeFileExt(filename, "ass");
 		if (fileExist(str)) break;
+		str = fingFileWithMainName(filename);
+		if (str != "") break;
 		b = false;
 	} while (false);
 
+	if (str != "")
+	{
+		b = openSubtitle(str);
+		printf("try load subtitle file %s, state %d\n", str.c_str(), b);
+		
+	}
+
 	_haveSubtitle = b;
-	if (b)
-	{
-		openSubtitle(str);
-		printf("found subtitle file %s\n", str.c_str());
-	}
-	else
-	{
-		printf("no subtitle file\n");
-	}
 	return b;
 }
 
@@ -100,4 +102,10 @@ void BigPotSubtitle::destroyAllTex()
 		engine_->destroyTexture(t);
 	}
 	_tex_v.clear();
+}
+
+void BigPotSubtitle::closeSubtitle()
+{
+	if (_track)
+		ass_free_track(_track);
 }
