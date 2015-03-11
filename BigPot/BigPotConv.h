@@ -5,6 +5,7 @@ extern "C"
 #include "libiconv/iconv.h"
 }
 
+#include <cstring>
 #include <string>
 #include <algorithm>
 

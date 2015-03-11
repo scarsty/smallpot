@@ -28,4 +28,5 @@ std::string BigPotConv::conv(const string& src, const char* from, const char* to
 		out[0] = '\0';
 	iconv_close(cd);
 	return out;
+	return src;
 }
