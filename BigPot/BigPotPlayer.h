@@ -5,6 +5,7 @@
 #include "BigPotUI.h"
 #include "BigPotConv.h"
 #include "BigPotConfig.h"
+#include "BigPotSubtitle.h"
 
 class BigPotPlayer : public BigPotBase
 {
@@ -14,9 +15,12 @@ public:
 private:
 	string _drop_filename = "";
 	int _cur_time = 0;
+
 	BigPotMedia* _media = nullptr;
 	BigPotUI* _UI = nullptr;
 	BigPotConfig *_config = nullptr;
+	BigPotSubtitle *_subtitle;
+
 	int _w, _h;
 	bool _run = true;
 

@@ -57,14 +57,14 @@ public:
 private:
 	BP_Window* _win = nullptr;
 	BP_Renderer* _ren = nullptr;
-	BP_Texture* _tex = nullptr, *_logo = nullptr;
+	BP_Texture* _tex = nullptr, *_tex2 = nullptr, *_logo = nullptr;
 	BP_AudioSpec _want, _spec;
 	BP_Rect _rect;
 	BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->_tex; };
 	bool _full_screen = false;
 	bool _keep_ratio = true;
 
-	int _start_w = 1000, _start_h = 600; //320, 150
+	int _start_w = 320, _start_h = 150; //320, 150
 public:
 	int init();
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
@@ -83,10 +83,12 @@ public:
 	void createMainTexture(int w, int h)
 	{
 		_tex = createYUVTexture(w, h); 
+		//_tex2 = createRGBATexture(w, h);
 		setPresentPosition();
 	}
 
 	void setPresentPosition();  //设置贴图的位置
+	void getPresentSize(int& w, int& h) { w = _rect.w; h = _rect.h; }
 	void destroyMainTexture() { destroyTexture(_tex); }
 	
 	void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
@@ -100,13 +102,13 @@ public:
 		SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 	}
 
-	BP_Texture* createARGBTexture(int w, int h)
+	BP_Texture* createRGBATexture(int w, int h)
 	{
-		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
 	};
-	void updateARGBTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
+	void updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch)
 	{
-		//SDL_UpdateTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
+		SDL_UpdateTexture(testTexture(t), nullptr, buffer, pitch);
 	}
 
 	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(_ren, testTexture(t), nullptr, &_rect); }
@@ -117,7 +119,7 @@ public:
 
 	void createWindow();
 	void createRenderer();
-	void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0);
+	void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0, int inPresent = 0);
 	void destroy()
 	{
 		SDL_DestroyTexture(_tex);
@@ -130,7 +132,7 @@ public:
 		return IMG_LoadTexture(_ren, filename.c_str());
 	}
 	bool setKeepRatio(bool b);
-
+	BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
 	//声音相关
 private:
 	SDL_AudioDeviceID _device;
@@ -249,3 +251,4 @@ public:
 	int lock(){ return SDL_LockMutex(_mutex); }
 	int unlock(){ return SDL_UnlockMutex(_mutex); }
 };
+
