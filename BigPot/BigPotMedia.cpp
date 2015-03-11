@@ -4,6 +4,7 @@ BigPotMedia::BigPotMedia()
 {
 	_videoStream = new BigPotVideoStream();
 	_audioStream = new BigPotAudioStream();
+	//_subtitle = new BigPotSubtitle();
 }
 
 
@@ -11,6 +12,7 @@ BigPotMedia::~BigPotMedia()
 {
 	delete _videoStream;
 	delete _audioStream;
+	//delete _subtitle;
 }
 
 int BigPotMedia::openFile(const string &filename)

@@ -46,7 +46,7 @@ int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, Au
 		_device = SDL_OpenAudioDevice(NULL, 0, &want, &_spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
 		want.channels--;
 	}
-	printf("device %d / %d\n", _spec.freq, _spec.channels);
+	printf("device %d/%d\n", _spec.freq, _spec.channels);
 
 	if (_device)
 	{
@@ -75,7 +75,7 @@ void BigPotEngine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 BP_Texture* BigPotEngine::createSquareTexture()
 {
 	int d = 10;
-	auto square_s = SDL_CreateRGBSurface(0, d, d, 32, 0xff0000, 0xff00, 0xff, 0xff000000);
+	auto square_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
 	SDL_FillRect(square_s, nullptr, 0xffffffff);
 	/*SDL_Rect r = { 0, 0, 1, 1 };
 	auto &x = r.x;
@@ -135,11 +135,12 @@ int BigPotEngine::init()
 	{
 		return -1;
 	}
-	_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 320, 150, SDL_WINDOW_RESIZABLE);
+	_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _start_w, _start_h, SDL_WINDOW_RESIZABLE);
 	_ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
-
+	
+	_rect = { 0, 0, _start_w, _start_h };
 	_logo = loadImage("logo.png");
 	showLogo();
 	renderPresent();

@@ -41,7 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(SolutionDir)\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\lib\x86;$(LibraryPath);$(SolutionDir)\lib\x86\$(Configuration)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
     <OutDir>$(SolutionDir)$(ProjectName)$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -64,11 +64,14 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;libiconv.dll.lib;json_vc71_libmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;ass.lib;libiconv.dll.lib;lib_json.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -83,7 +86,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
@@ -108,6 +111,7 @@
     <ClCompile Include="BigPotMediaStream.cpp" />
     <ClCompile Include="BigPotPlayer.cpp" />
     <ClCompile Include="BigPotMedia.cpp" />
+    <ClCompile Include="BigPotSubtitle.cpp" />
     <ClCompile Include="BigPotUI.cpp" />
     <ClCompile Include="BigPotVideoStream.cpp" />
     <ClCompile Include="BigPotEngine.cpp" />
@@ -121,6 +125,7 @@
     <ClInclude Include="BigPotPlayer.h" />
     <ClInclude Include="BigPotBase.h" />
     <ClInclude Include="BigPotResample.h" />
+    <ClInclude Include="BigPotSubtitle.h" />
     <ClInclude Include="BigPotUI.h" />
     <ClInclude Include="BigPotVideoStream.h" />
     <ClInclude Include="BigPotEngine.h" />

@@ -10,11 +10,12 @@ class BigPotConfig : public BigPotBase
 private:
 	Json::Value _value, _record;
 	string _content;
-	string _pathname;
+	string _filename;
+	/*
 	Json::Value& getValue(Json::Value& v)
 	{
 		return v;
-	}
+	}*/
 
 public:
 	BigPotConfig();

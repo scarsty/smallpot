@@ -4,6 +4,7 @@
 #include "BigPotMediaStream.h"
 #include "BigPotAudioStream.h"
 #include "BigPotVideoStream.h"
+//#include "BigPotSubtitle.h"
 
 
 class BigPotMedia : public BigPotBase

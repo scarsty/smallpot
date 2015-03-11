@@ -1,4 +1,5 @@
 #include "BigPotPlayer.h"
+#include "BigPotSubtitle.h"
 
 BigPotPlayer::BigPotPlayer()
 {
@@ -7,7 +8,6 @@ BigPotPlayer::BigPotPlayer()
 	_w = 320;
 	_h = 150;
 }
-
 
 BigPotPlayer::~BigPotPlayer()
 {
@@ -31,6 +31,9 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	auto play_filename = filename;
 	_run = true;
 	bool first = true;
+
+	BigPotSubtitle s;
+	s.init();
 
 	while (_run)
 	{
