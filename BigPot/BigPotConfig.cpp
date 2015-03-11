@@ -12,13 +12,8 @@ BigPotConfig::~BigPotConfig()
 
 void BigPotConfig::init()
 {
-	//value.
-
-	char buf[1024];
-	getcwd(buf, 1024);
-	_filename = buf;
-	_filename += "\\config.json";
-
+	_filename = filepath_ + "/config.json";
+	printf("try find config file: %s\n", _filename.c_str());
 	Json::Reader reader;
 	_content = readStringFromFile(_filename);
 	reader.parse(_content, _value);

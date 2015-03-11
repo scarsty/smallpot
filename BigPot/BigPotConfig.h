@@ -3,7 +3,6 @@
 #include "BigPotBase.h"
 #include "json/json.h"
 #include <stdint.h>
-#include <direct.h>
 
 class BigPotConfig : public BigPotBase
 {
@@ -24,17 +23,17 @@ public:
 	void init();
 	void write();
 	//以下函数注意默认值
-	int getInteger(const char * name)
+	int getInteger(const char * name, int def = 0)
 	{
-		return _value[name].isInt() ? _value[name].asInt() : 0;
+		return _value[name].isInt() ? _value[name].asInt() : def;
 	}
-	string getString(const char * name)
+	string getString(const char * name, string def = "")
 	{
-		return _value[name].isString() ? _value[name].asString() : "";
+		return _value[name].isString() ? _value[name].asString() : def;
 	}
-	double getDouble(const char * name)
+	double getDouble(const char * name, double def = 0.0)
 	{
-		return _value[name].isDouble() ? _value[name].asDouble() : 0.0;
+		return _value[name].isDouble() ? _value[name].asDouble() : def;
 	}
 	bool getBool(bool &v, const char * name)
 	{

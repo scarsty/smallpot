@@ -1,7 +1,8 @@
 #include "BigPotBase.h"
 
+string BigPotBase::filepath_;
 
-bool BigPotBase::fileexist(const string& filename)
+bool BigPotBase::fileExist(const string& filename)
 {
 	if (filename.length() <= 0)
 		return false;
@@ -35,4 +36,37 @@ string BigPotBase::readStringFromFile(const string& filename)
 	fclose(fp);
 	delete[] s;
 	return str;
+}
+
+string BigPotBase::getFileExt(const string& filename)
+{
+	int pos_p = filename.find_last_of(_path_);
+	int pos_d = filename.find_last_of('.');
+	return filename.substr(pos_d + 1);
+	return "";
+}
+
+string BigPotBase::getFileWithoutExt(const string& filename)
+{
+	int pos_p = filename.find_last_of(_path_);
+	int pos_d = filename.find_last_of('.');
+	if (pos_p < pos_d)
+		return filename.substr(0, pos_d);
+	return filename;
+}
+
+std::string BigPotBase::changeFileExt(const string& filename, const string& ext)
+{
+	auto e = ext;
+	if (e != "" && e[0] != '.')
+		e = "." + e;
+	return getFileWithoutExt(filename) + e;
+}
+
+std::string BigPotBase::getFilePath(const string& filename)
+{
+	int pos_p = filename.find_last_of(_path_);
+	if (pos_p != string::npos)
+		return filename.substr(0, pos_p);
+	return "";
 }
