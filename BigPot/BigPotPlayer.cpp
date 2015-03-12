@@ -225,6 +225,7 @@ int BigPotPlayer::eventLoop()
 			break;
 		}
 		e.type = BP_FIRSTEVENT;
+		//if (!loop) break;
 		//media->audioStream->setAnotherTime(media->getVideoTime());
 		//if (!media->showVideoFrame(i*100))
 		int audioTime = _media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间
