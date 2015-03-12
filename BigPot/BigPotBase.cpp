@@ -77,15 +77,18 @@ std::string BigPotBase::fingFileWithMainName(const string& filename)
 	_finddata_t file;
 	long fileHandle;
 	string path = getFilePath(filename);
+	string ext = getFileExt(filename);
 	if (path != "") path = path + _path_;
 	string findname = getFileMainname(filename) + ".*";
 	string ret = "";
 	fileHandle = _findfirst(findname.c_str(), &file);
 	ret = path + file.name;
-	if (ret == filename)
+	if (getFileExt(ret) == ext)
 	{
 		_findnext(fileHandle, &file);
 		ret = path + file.name;
+		if (getFileExt(ret) == ext)
+			ret = "";
 	}
 	_findclose(fileHandle);
 	return ret;
