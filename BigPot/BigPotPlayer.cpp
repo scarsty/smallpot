@@ -60,7 +60,8 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		//_subtitle->tryOpenSubtitle(open_filename);
 
 		//´°¿Ú³ß´ç£¬Ê±¼ä
-		_media->getVideoStream()->getSize(_w, _h);
+		_w = _media->getVideoStream()->getWidth();
+		_h = _media->getVideoStream()->getHeight();
 		engine_->setWindowSize(_w, _h);
 		_media->getAudioStream()->setVolume(_cur_volume);
 		//ÊÔÍ¼ÔØÈë×ÖÄ»
@@ -208,9 +209,7 @@ int BigPotPlayer::eventLoop()
 				_w = e.window.data1;
 				_h = e.window.data2;
 				engine_->setPresentPosition();
-				int w, h;
-				engine_->getPresentSize(w, h);
-				_subtitle->setFrameSize(w, h);
+				_subtitle->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 			}
 			else if (e.window.event == BP_WINDOWEVENT_LEAVE)
 			{
@@ -226,9 +225,7 @@ int BigPotPlayer::eventLoop()
 			{
 				_subtitle_factory->destroySubtitle(_subtitle);
 				_subtitle = _subtitle_factory->createSubtitle(open_filename);
-				int w, h;
-				engine_->getPresentSize(w, h);
-				_subtitle->setFrameSize(w, h);
+				_subtitle->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 			}
 			else
 			{
