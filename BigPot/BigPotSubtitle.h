@@ -25,40 +25,16 @@ protected:
 	BigPotPSubtitleType type_;
 	string subfilename_;
 	bool haveSubtitle_ = false;
-	vector<string> _ext;
 public:
 	bool exist() { return haveSubtitle_; };
 	bool reOpenSubtitle() { return openSubtitle(subfilename_); };
-	bool tryOpenSubtitle(const string& filename);
-	bool checkFileExt(const string& filename);
 
-	virtual void init();
-	virtual bool openSubtitle(const string& filename);
-	virtual void closeSubtitle();
-	virtual void show(int time);
-	virtual void destroy();
-	virtual void setFrameSize(int w, int h);
+	virtual void init(){};
+	virtual bool openSubtitle(const string& filename){ return false; };
+	virtual void closeSubtitle(){};
+	virtual void show(int time){};
+	virtual void destroy(){};
+	virtual void setFrameSize(int w, int h){};
 };
 
-#include "BigPotSubtitleAss.h"
-#include "BigPotSubtitleSrt.h"
 
-class BigPotSubtitleFactory : BigPotBase
-{
-public:
-	BigPotSubtitleFactory();
-	~BigPotSubtitleFactory();
-	
-	BigPotSubtitle* createSubtitle(const string& filename)
-	{
-		BigPotSubtitle* ret;
-		auto ext =toLowerCase(getFileExt(filename));
-		if (ext == "ass" || ext=="ssa")
-			ret = new BigPotSubtitleAss;
-		else if (ext == "srt" || ext == "txt")
-			ret = new BigPotSubtitleSrt;
-		ret->openSubtitle(filename);
-		return ret;
-	}
-
-};
