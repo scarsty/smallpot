@@ -9,40 +9,56 @@ extern "C"
 
 #include<vector>
 
+enum BigPotPSubtitleType
+{
+	BPSUB_TYPE_ASS,
+	BPSUB_TYPE_SRT
+};
+
 class BigPotSubtitle :
 	public BigPotBase
 {
 public:
 	BigPotSubtitle();
 	virtual ~BigPotSubtitle();
-
-private:
-	ASS_Library* _lib = nullptr;
-	ASS_Renderer* _ren = nullptr;
-	ASS_Track* _track = nullptr;
-	ASS_Image* _img = nullptr;
-
-	string _subfilename;
-	vector<BP_Texture*> _tex_v;
-	int _tex_num = 0;
-
-	bool _haveSubtitle = false;
-
+protected:
+	BigPotPSubtitleType type_;
+	string subfilename_;
+	bool haveSubtitle_ = false;
 	vector<string> _ext;
-
-	void destroyAllTex();
-
 public:
-	void init();
+	bool exist() { return haveSubtitle_; };
+	bool reOpenSubtitle() { return openSubtitle(subfilename_); };
+	bool tryOpenSubtitle(const string& filename);
+	bool checkFileExt(const string& filename);
 
-	virtual bool exist() { return _haveSubtitle; };
+	virtual void init();
 	virtual bool openSubtitle(const string& filename);
-	virtual bool reOpenSubtitle() { return openSubtitle(_subfilename); };
 	virtual void closeSubtitle();
 	virtual void show(int time);
 	virtual void destroy();
 	virtual void setFrameSize(int w, int h);
-	virtual bool tryOpenSubtitle(const string& filename);
-	virtual bool checkFileExt(const string& filename);
 };
 
+#include "BigPotSubtitleAss.h"
+#include "BigPotSubtitleSrt.h"
+
+class BigPotSubtitleFactory : BigPotBase
+{
+public:
+	BigPotSubtitleFactory();
+	~BigPotSubtitleFactory();
+	
+	BigPotSubtitle* createSubtitle(const string& filename)
+	{
+		BigPotSubtitle* ret;
+		auto ext =toLowerCase(getFileExt(filename));
+		if (ext == "ass" || ext=="ssa")
+			ret = new BigPotSubtitleAss;
+		else if (ext == "srt" || ext == "txt")
+			ret = new BigPotSubtitleSrt;
+		ret->openSubtitle(filename);
+		return ret;
+	}
+
+};
