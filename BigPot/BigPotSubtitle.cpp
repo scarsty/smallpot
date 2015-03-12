@@ -3,7 +3,10 @@
 
 BigPotSubtitle::BigPotSubtitle()
 {
-
+	_ext.push_back("ass");
+	_ext.push_back("ssa");
+	_ext.push_back("srt");
+	_ext.push_back("txt");
 }
 
 
@@ -72,19 +75,22 @@ void BigPotSubtitle::setFrameSize(int w, int h)
 bool BigPotSubtitle::tryOpenSubtitle(const string& filename)
 {
 	string str;
-	bool b = true;
-	do
-	{
-		str = changeFileExt(filename, "srt");
-		if (fileExist(str)) break;
-		str = changeFileExt(filename, "ssa");
-		if (fileExist(str)) break;
-		str = changeFileExt(filename, "ass");
-		if (fileExist(str)) break;
-		str = fingFileWithMainName(filename);
-		if (str != "") break;
-		b = false;
-	} while (false);
+	bool b = false;
+
+		for (auto &ext : _ext)
+		{
+			str = changeFileExt(filename, ext);
+			if (fileExist(str))
+			{
+				b = true;
+				break;
+			}
+		}
+		if (!b)
+		{
+			str = fingFileWithMainName(filename);
+			if (str != "" && checkFileExt(str)) b = true;
+		}
 
 	if (str != "")
 	{
@@ -108,4 +114,21 @@ void BigPotSubtitle::closeSubtitle()
 {
 	if (_track)
 		ass_free_track(_track);
+	_track = nullptr;
+}
+
+bool BigPotSubtitle::checkFileExt(const string& filename)
+{
+	auto ext = getFileExt(filename);
+	transform(ext.begin(), ext.end(), ext.begin(), tolower);
+	bool b = false;
+	for (auto &e : _ext)
+	{
+		if (e==ext)
+		{
+			b = true;
+			break;
+		}
+	}
+	return b;
 }
