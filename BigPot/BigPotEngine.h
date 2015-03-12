@@ -68,7 +68,20 @@ private:
 	int __width, __height;
 public:
 	int init();
-	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
+	__declspec(deprecated)	
+		void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
+	int getWindowsWidth()
+	{
+		int w;
+		SDL_GetWindowSize(_win, &w, nullptr);
+		return w;
+	}
+	int getWindowsHeight()
+	{
+		int h;
+		SDL_GetWindowSize(_win, nullptr, &h);
+		return h;
+	}
 	void setWindowSize(int w, int h) 
 	{ 
 		__width = w; __height = h;
@@ -90,7 +103,11 @@ public:
 	}
 
 	void setPresentPosition();  //设置贴图的位置
-	void getPresentSize(int& w, int& h) { w = _rect.w; h = _rect.h; }
+	__declspec(deprecated)
+		void getPresentSize(int& w, int& h) { w = _rect.w; h = _rect.h; }
+	int getPresentWidth() { return _rect.w; }
+	int getPresentHeight() { return _rect.h; }
+
 	void destroyMainTexture() { destroyTexture(_tex); }
 	
 	void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
@@ -168,10 +185,11 @@ private:
 	BP_Texture* _square;
 public:
 	BP_Texture* createSquareTexture();
+	BP_Texture* createTextTexture(const string &fontname, const string &text, int size);
 	void drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
 	void drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
 	//void split(std::string& s, std::string& delim, std::vector< std::string >* ret);
-	void split(const std::string& s, const std::string& delim, std::vector< std::string >* ret);
+	vector<string> splitString(const string& s, const string& delim);
 };
 
 //这里直接照搬SDL
