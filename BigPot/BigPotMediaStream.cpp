@@ -231,6 +231,8 @@ bool BigPotMediaStream::haveDecoded()
 
 int BigPotMediaStream::getTime()
 {
+	//if (type_== BPMEDIA_TYPE_AUDIO)
+	    //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
 	if (exist() && !_ended)
 		return time_shown_ - ticks_shown_ + engine_->getTicks();
 	else
