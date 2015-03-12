@@ -11,6 +11,7 @@ BigPotSubtitleSrt::~BigPotSubtitleSrt()
 
 bool BigPotSubtitleSrt::openSubtitle(const string& filename)
 {
+	haveSubtitle_ = true;
 	file = fopen(filename.c_str(), "r");
 	if (!file){
 		file = NULL;
@@ -88,34 +89,14 @@ int BigPotSubtitleSrt::readString(BigPotSubtitleAtom* pot)
 //	readIndex();
 }
 
-bool BigPotSubtitleSrt::exist()
-{
-	return true;
-	//throw std::logic_error("The method or operation is not implemented.");
-}
-
 void BigPotSubtitleSrt::closeSubtitle()
 {
 	//throw std::logic_error("The method or operation is not implemented.");
 }
 
-void BigPotSubtitleSrt::setFrameSize(int w, int h)
-{
-	//throw std::logic_error("The method or operation is not implemented.");
-}
 
-void BigPotSubtitleSrt::tryOpenSubtitle(string open_filename)
+/*void BigPotSubtitleSrt::tryOpenSubtitle(string open_filename)
 {
 	openSubtitle(open_filename);
 	//throw std::logic_error("The method or operation is not implemented.");
-}
-
-void BigPotSubtitleSrt::init()
-{
-	//throw std::logic_error("The method or operation is not implemented.");
-}
-
-void BigPotSubtitleSrt::destroy()
-{
-	//throw std::logic_error("The method or operation is not implemented.");
-}
+}*/
