@@ -7,7 +7,7 @@ extern "C"
 #include "ass/ass_types.h"
 }
 
-#include<vector>
+#include <vector>
 
 enum BigPotPSubtitleType
 {
