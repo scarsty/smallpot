@@ -107,8 +107,9 @@ int BigPotPlayer::eventLoop()
 	string open_filename;
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
 
+	int maxDelay = 0; //统计使用
+	int prev_show_time = 0;  //上一次显示的时间
 
-	int maxDelay = 0;
 	while (loop && engine_->pollEvent(e) >= 0)
 	{
 		_media->decodeFrame();
@@ -212,6 +213,7 @@ int BigPotPlayer::eventLoop()
 			break;
 		case BP_DROPFILE:
 			//有文件拖入先检查是不是字幕，不是字幕则当作媒体文件，打开失败活该
+			//若将媒体文件当成字幕打开会非常慢，故限制字幕文件的扩展名
 			open_filename = BigPotConv::conv(e.drop.file, _BP_encode, _sys_encode);
 			_subtitle->closeSubtitle();
 			if (!_subtitle->openSubtitle(open_filename))
@@ -242,16 +244,17 @@ int BigPotPlayer::eventLoop()
 #ifdef _DEBUG
 				int videoTime = (_media->getVideoStream()->getTimedts());
 				int delay = -videoTime + audioTime;
-				maxDelay = max(maxDelay, abs(delay));
-				if (i % 1000 == 0)
-				{
-					maxDelay = 0;
-				}
+				//maxDelay = max(maxDelay, abs(delay));
+				//if (i % 1000 == 0)
+				//{
+					//maxDelay = 0;
+				//}
 				printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
 					_media->getAudioStream()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
 #endif
 			}
-			else if ((videostate == -1 || videostate == 2) && i % 50 == 0)
+			else if ((videostate == -1 || videostate == 2)
+				&& engine_->getTicks() - prev_show_time > 40)
 			{
 				show = true;
 				if (havevideo)
@@ -265,11 +268,13 @@ int BigPotPlayer::eventLoop()
 					_subtitle->show(audioTime);
 				_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudioStream()->changeVolume(0));
 				engine_->renderPresent();
+				prev_show_time = engine_->getTicks();
 			}
+			//printf("%d\n", i);
 		}
 		i++;
 		engine_->delay(1);
-		if (audioTime > totalTime)
+		if (audioTime >= totalTime)
 			_media->seekTime(0);
 	}
 	_cur_time = _media->getTime();

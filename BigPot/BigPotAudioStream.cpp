@@ -84,6 +84,16 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 				ticks_shown_ = engine_->getTicks();
 				break;
 			}
+			else
+			{
+				//获取下一个
+				auto f1 = getCurrentFrameData();
+				if (f1.info > _data_read)
+				{
+					time_shown_ = f.time + (f1.time - f.time) * (_data_read - f.info) / (f1.info - f.info);
+					ticks_shown_ = engine_->getTicks();
+				}
+			}
 		}
 		else
 		{
