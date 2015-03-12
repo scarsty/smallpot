@@ -35,14 +35,14 @@ private:
 public:
 	void init();
 
-	bool exist() { return _haveSubtitle; };
-	bool openSubtitle(const string& filename);
-	bool reOpenSubtitle() { return openSubtitle(_subfilename); };
-	void closeSubtitle();
-	void show(int time);
-	void destroy();
-	void setFrameSize(int w, int h);
-	bool tryOpenSubtitle(const string& filename);
-	bool checkFileExt(const string& filename);
+	virtual bool exist() { return _haveSubtitle; };
+	virtual bool openSubtitle(const string& filename);
+	virtual bool reOpenSubtitle() { return openSubtitle(_subfilename); };
+	virtual void closeSubtitle();
+	virtual void show(int time);
+	virtual void destroy();
+	virtual void setFrameSize(int w, int h);
+	virtual bool tryOpenSubtitle(const string& filename);
+	virtual bool checkFileExt(const string& filename);
 };
 
