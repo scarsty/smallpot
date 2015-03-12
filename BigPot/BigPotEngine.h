@@ -15,7 +15,7 @@ extern "C"
 
 #include <algorithm>
 #include <functional>
-
+#include <vector>
 using namespace std;
 
 //这里是底层部分，将SDL的函数均封装了一次
@@ -65,11 +65,13 @@ private:
 	bool _keep_ratio = true;
 
 	int _start_w = 320, _start_h = 150; //320, 150
+	int __width, __height;
 public:
 	int init();
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
 	void setWindowSize(int w, int h) 
 	{ 
+		__width = w; __height = h;
 		SDL_SetWindowSize(_win, w, h); 
 		setPresentPosition();
 	}
@@ -167,6 +169,9 @@ private:
 public:
 	BP_Texture* createSquareTexture();
 	void drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
+	void drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
+	//void split(std::string& s, std::string& delim, std::vector< std::string >* ret);
+	void split(const std::string& s, const std::string& delim, std::vector< std::string >* ret);
 };
 
 //这里直接照搬SDL

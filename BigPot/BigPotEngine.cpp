@@ -100,7 +100,60 @@ BP_Texture* BigPotEngine::createSquareTexture()
 	SDL_FreeSurface(square_s);
 	return _square;
 }
+//注意：当字符串为空时，也会返回一个空字符串  
+void BigPotEngine::split(const std::string& s,const std::string& delim, std::vector< std::string >* ret)
+{
+	size_t last = 0;
+	size_t index = s.find_first_of(delim, last);
+	while (index != std::string::npos)
+	{
+		ret->push_back(s.substr(last, index - last));
+		last = index + 1;
+		index = s.find_first_of(delim, last);
+	}
+	if (index - last > 0)
+	{
+		ret->push_back(s.substr(last, index - last));
+	}
+}
+void BigPotEngine::drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align){
+	if (alpha == 0)
+		return;
+	auto font = TTF_OpenFont(fontname.c_str(), size);
+	if (!font) return;
+	SDL_Color c = { 255, 255, 255, 255 };
+	vector<string> ret;
+	split(text, "\n", &ret);
+	for (int i = 0; i < ret.size(); i++){
+		if (ret[i] == "")continue;
+		auto text_s = TTF_RenderUTF8_Blended(font, ret[i].c_str(), c);
+		auto text_t = SDL_CreateTextureFromSurface(_ren, text_s);
+		SDL_SetTextureAlphaMod(text_t, alpha);
 
+		SDL_Rect rect;
+		rect.h = text_s->h;
+		rect.w = text_s->w;
+		rect.y = y + i*(size+2);
+
+		switch (align)
+		{
+		case BP_ALIGN_LEFT:
+			rect.x = x;
+			break;
+		case BP_ALIGN_RIGHT:
+			rect.x = x - rect.w;
+			break;
+		case BP_ALIGN_MIDDLE:
+			rect.x = x - rect.w / 2;
+			break;
+		}
+
+		SDL_RenderCopy(_ren, text_t, nullptr, &rect);
+		SDL_DestroyTexture(text_t);
+		SDL_FreeSurface(text_s);
+	}
+	TTF_CloseFont(font);
+}
 void BigPotEngine::drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align)
 {
 	if (alpha == 0)
