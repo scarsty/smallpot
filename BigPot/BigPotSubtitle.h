@@ -17,16 +17,18 @@ public:
 	virtual ~BigPotSubtitle();
 
 private:
-	ASS_Library* _lib;
-	ASS_Renderer* _ren;
-	ASS_Track* _track;
-	ASS_Image* _img;
+	ASS_Library* _lib = nullptr;
+	ASS_Renderer* _ren = nullptr;
+	ASS_Track* _track = nullptr;
+	ASS_Image* _img = nullptr;
 
 	string _subfilename;
 	vector<BP_Texture*> _tex_v;
 	int _tex_num = 0;
 
 	bool _haveSubtitle = false;
+
+	vector<string> _ext;
 
 	void destroyAllTex();
 
@@ -41,5 +43,6 @@ public:
 	void destroy();
 	void setFrameSize(int w, int h);
 	bool tryOpenSubtitle(const string& filename);
+	bool checkFileExt(const string& filename);
 };
 
