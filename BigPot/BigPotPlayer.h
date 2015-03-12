@@ -5,7 +5,7 @@
 #include "BigPotUI.h"
 #include "BigPotConv.h"
 #include "BigPotConfig.h"
-#include "BigPotSubtitle.h"
+#include "BigPotSubtitleFactory.h"
 
 class BigPotPlayer : public BigPotBase
 {
@@ -19,7 +19,8 @@ private:
 	BigPotMedia* _media = nullptr;
 	BigPotUI* _UI = nullptr;
 	BigPotConfig *_config = nullptr;
-	BigPotSubtitle *_subtitle;
+	BigPotSubtitle *_subtitle = nullptr;
+	BigPotSubtitleFactory *_subtitle_factory = nullptr;
 
 	int _w, _h;
 	bool _run = true;
