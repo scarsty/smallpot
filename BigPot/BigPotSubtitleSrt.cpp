@@ -31,16 +31,18 @@ bool BigPotSubtitleSrt::openSubtitle(const string& filename)
 void BigPotSubtitleSrt::show(int time){
 	for (int i = 0; i < AtomList.size(); i++){
 		auto tmplist = AtomList[i];
-		if (tmplist.begintime >= time && tmplist.endtime <= time){
+		if (tmplist.begintime <= time && tmplist.endtime >= time){
 			//engine_->renderCopy()
-			engine_->drawText("c:/windows/fonts/cambriai.ttf", tmplist.str, 18, 18, 18, 100, 0); 
+			int w, h;
+			engine_->getWindowSize(w, h);
+			engine_->drawText("c:/windows/fonts/msyh.ttf", tmplist.str, 28, 18, h - 28*2, 100, 0); 
 			break;
 		}
 	}
 }
 int BigPotSubtitleSrt::readIndex()
 {
-	if (file)return 0;
+	if (!file)return 0;
 	if (feof(file))return 0;
 	BigPotSubtitleAtom* pot = new BigPotSubtitleAtom;
 	int tmpid = -1;
@@ -55,6 +57,7 @@ int BigPotSubtitleSrt::readIndex()
 
 int BigPotSubtitleSrt::readTime(BigPotSubtitleAtom* pot)
 {
+	if (!file)return 0;
 	if (feof(file))return 0;
 	int btimeh, btimem, btimes, btimems;
 	int etimeh, etimem, etimes, etimems;
@@ -73,6 +76,7 @@ int BigPotSubtitleSrt::readTime(BigPotSubtitleAtom* pot)
 
 int BigPotSubtitleSrt::readString(BigPotSubtitleAtom* pot)
 {
+	if (!file)return 0;
 	if (feof(file))return 0;
 	string tmpstr = "";
 	for (;;){
