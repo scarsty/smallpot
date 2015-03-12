@@ -42,6 +42,8 @@ void BigPotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
 	this->_alpha = alpha;
 	if (alpha == 0)
 		return;
+	//_win_w = engine_->getWindowsWidth();
+	//_win_h = engine_->getWindowsHeight();
 	engine_->getWindowSize(_win_w, _win_h);
 	this->_time = time;
 	this->_totoalTime = totoalTime;
