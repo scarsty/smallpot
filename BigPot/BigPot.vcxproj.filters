@@ -63,6 +63,9 @@
     <ClCompile Include="BigPotSubtitleAss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BigPotSubtitleFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotPlayer.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BigPotSubtitleAss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BigPotSubtitleFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

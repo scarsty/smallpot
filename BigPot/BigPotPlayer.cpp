@@ -5,7 +5,8 @@ BigPotPlayer::BigPotPlayer()
 {
 	_UI = new BigPotUI;
 	_config = new BigPotConfig;
-	_subtitle = new BigPotSubtitle;
+	//_subtitle = new BigPotSubtitle;
+	_subtitle_factory = new BigPotSubtitleFactory;
 	_w = 320;
 	_h = 150;
 }
@@ -14,7 +15,8 @@ BigPotPlayer::~BigPotPlayer()
 {
 	delete _UI;
 	delete _config;
-	delete _subtitle;
+	delete _subtitle_factory;
+	//delete _subtitle;
 	//delete media;
 }
 
@@ -33,7 +35,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	_run = true;
 	bool first = true;
 
-	_subtitle->init();
+	//_subtitle->init();
 
 	while (_run)
 	{
@@ -51,7 +53,11 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		//打开文件, 需要进行转换
 		auto open_filename = BigPotConv::conv(play_filename, _BP_encode, _sys_encode); //这个需要ansi
 		_media->openFile(open_filename);
-		_subtitle->tryOpenSubtitle(open_filename);
+
+		auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
+		_subtitle = _subtitle_factory->createSubtitle(open_subfilename);
+
+		//_subtitle->tryOpenSubtitle(open_filename);
 
 		//窗口尺寸，时间
 		_media->getVideoStream()->getSize(_w, _h);
@@ -77,7 +83,8 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		if (_media->isMedia())
 			setRecordFileTime(_cur_time, play_filename);
 		//关闭字幕
-		_subtitle->closeSubtitle();
+		_subtitle_factory->destroySubtitle(_subtitle);
+		//_subtitle->closeSubtitle();
 
 		delete _media;
 		first = false;
@@ -85,7 +92,6 @@ int BigPotPlayer::beginWithFile(const string &filename)
 	_config->setString(_sys_encode, "sys_encode");
 	_config->setInteger(_cur_volume, "volume");
 	_config->write();
-	_subtitle->destroy();
 
 	engine_->destroy();
 
@@ -215,12 +221,20 @@ int BigPotPlayer::eventLoop()
 			//有文件拖入先检查是不是字幕，不是字幕则当作媒体文件，打开失败活该
 			//若将媒体文件当成字幕打开会非常慢，故限制字幕文件的扩展名
 			open_filename = BigPotConv::conv(e.drop.file, _BP_encode, _sys_encode);
-			_subtitle->closeSubtitle();
-			if (!_subtitle->openSubtitle(open_filename))
+			//检查是不是字幕，如果是则打开
+			if (_subtitle_factory->isSubtitle(open_filename))
+			{
+				_subtitle_factory->destroySubtitle(_subtitle);
+				_subtitle = _subtitle_factory->createSubtitle(open_filename);
+				int w, h;
+				engine_->getPresentSize(w, h);
+				_subtitle->setFrameSize(w, h);
+			}
+			else
 			{
 				_drop_filename = e.drop.file;
 				loop = false;
-			}	
+			}
 			engine_->free(e.drop.file);
 			break;
 		default:
