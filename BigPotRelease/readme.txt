@@ -1,7 +1,7 @@
 BigPot大水壶播放器
 
 使用了以下开发库：
-FFmpeg, SDL2, iconv, jsoncpp
+FFmpeg, SDL2, iconv, jsoncpp, libass, fribidi, freetype, fontconfig
 
 FFmpeg编译参数：
 
