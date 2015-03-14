@@ -41,7 +41,7 @@ void BigPotSubtitleSrt::show(int time)
 			//engine_->renderCopy()
 			int w, h;
 			engine_->getWindowSize(w, h);
-			engine_->drawSubtitle("c:/windows/fonts/msyh.ttf", tmplist.str, 16, 18, h - 28 * 2, 100, 0);
+			engine_->drawSubtitle("c:/windows/fonts/msyh.ttf", tmplist.str, w * 16 / 720, w / 2, h * 9 / 10 - 5, 100, 1);
 			break;
 		}
 	}
