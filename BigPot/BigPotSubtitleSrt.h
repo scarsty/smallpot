@@ -16,11 +16,11 @@ class BigPotSubtitleSrt :
 	public BigPotSubtitle
 {
 private:
-	vector<BigPotSubtitleAtom> AtomList;
-	FILE* file;
+	vector<BigPotSubtitleAtom> _AtomList;
+	FILE* _file;
 	int readIndex();
-	int readTime(BigPotSubtitleAtom* pot);
-	int readString(BigPotSubtitleAtom* pot);
+	int readTime(BigPotSubtitleAtom& pot);
+	int readString(BigPotSubtitleAtom& pot);
 
 	int _fram_w, _frame_h;
 public:
