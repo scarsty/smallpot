@@ -12,26 +12,32 @@ BigPotSubtitleSrt::~BigPotSubtitleSrt()
 bool BigPotSubtitleSrt::openSubtitle(const string& filename)
 {
 	haveSubtitle_ = true;
-	file = fopen(filename.c_str(), "r");
-	if (!file){
-		file = NULL;
+	_file = fopen(filename.c_str(), "r");
+	if (!_file)
+	{
+		_file = NULL;
 		return false;
 	}
-	else{
+	else
+	{
 		//BigPotSubtitleAtom bigpottmp;
-		while (!feof(file)){
+		while (!feof(_file))
+		{
 			readIndex();
 		}
 		//fscanf("%d")
 		return true;
 	}
-	fclose(file);
+	fclose(_file);
 }
 
-void BigPotSubtitleSrt::show(int time){
-	for (int i = 0; i < AtomList.size(); i++){
-		auto tmplist = AtomList[i];
-		if (tmplist.begintime <= time && tmplist.endtime >= time){
+void BigPotSubtitleSrt::show(int time)
+{
+	for (int i = 0; i < _AtomList.size(); i++)
+	{
+		auto tmplist = _AtomList[i];
+		if (tmplist.begintime <= time && tmplist.endtime >= time)
+		{
 			//engine_->renderCopy()
 			int w, h;
 			engine_->getWindowSize(w, h);
@@ -40,57 +46,66 @@ void BigPotSubtitleSrt::show(int time){
 		}
 	}
 }
+
 int BigPotSubtitleSrt::readIndex()
 {
-	if (!file)return 0;
-	if (feof(file))return 0;
-	BigPotSubtitleAtom* pot = new BigPotSubtitleAtom;
+	if (!_file)
+		return 0;
+	if (feof(_file))
+		return 0;
 	int tmpid = -1;
-	fscanf(file, "%d\n", &tmpid);
-	if (tmpid != -1){
+	fscanf(_file, "%d\n", &tmpid);
+	if (tmpid != -1)
+	{
+		BigPotSubtitleAtom pot;
 		return readTime(pot);
 	}
-	else{
+	else
+	{
 		return readIndex();
 	}
 }
 
-int BigPotSubtitleSrt::readTime(BigPotSubtitleAtom* pot)
+int BigPotSubtitleSrt::readTime(BigPotSubtitleAtom& pot)
 {
-	if (!file)return 0;
-	if (feof(file))return 0;
+	if (!_file)return 0;
+	if (feof(_file))return 0;
 	int btimeh, btimem, btimes, btimems;
 	int etimeh, etimem, etimes, etimems;
-	if (fscanf(file, "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n",
+	if (fscanf(_file, "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n",
 		&btimeh, &btimem, &btimes, &btimems,
-		&etimeh, &etimem, &etimes, &etimems) == 8){
+		&etimeh, &etimem, &etimes, &etimems) == 8)
+	{
 		int totalbegintime = btimems + 1000 * btimes + 1000 * 60 * btimem + 1000 * 3600 * btimeh;
 		int totalendtime = etimems + 1000 * etimes + 1000 * 60 * etimem + 1000 * 3600 * etimeh;
-		pot->endtime = totalendtime;
-		pot->begintime = totalbegintime;
+		pot.begintime = totalbegintime;
+		pot.endtime = totalendtime;
 		return readString(pot);
 	}
 	else
 		return -2;
 }
 
-int BigPotSubtitleSrt::readString(BigPotSubtitleAtom* pot)
+int BigPotSubtitleSrt::readString(BigPotSubtitleAtom& pot)
 {
-	if (!file)return 0;
-	if (feof(file))return 0;
+	if (!_file)
+		return 0;
+	if (feof(_file))
+		return 0;
 	string tmpstr = "";
-	for (;;){
+	while (!feof(_file))
+	{
 		char tmp[4096] = { 0 };
-		//if ()
-		if(strcmp(fgets(tmp,4096,file),"\n") != 0)
-		//if (fscanf(file,"%s\n", tmp))
+		fgets(tmp, 4096, _file);
+		if (strcmp(tmp, "\n") != 0)
 			tmpstr += tmp;
 		else
 			break;
 	}
-	pot->str = tmpstr;
-	AtomList.push_back(*pot);
-//	readIndex();
+
+	pot.str = tmpstr;
+	_AtomList.push_back(pot);
+	return 0;
 }
 
 void BigPotSubtitleSrt::closeSubtitle()
