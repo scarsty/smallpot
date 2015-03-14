@@ -40,10 +40,10 @@ void BigPotConfig::write()
 	_value["record"] = _record;
 	_content = writer.write(_value);
 
-	//ofstream ofs;
-	//ofs.open(_filename);
-	//ofs << _content;
+	ofstream ofs;
+	ofs.open(_filename);
+	ofs << _content;
 
-	auto x=_doc.SaveFile(_filename.c_str());
+	//auto x=_doc.SaveFile(_filename.c_str());
 }
 

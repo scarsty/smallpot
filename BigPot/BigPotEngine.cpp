@@ -126,18 +126,27 @@ void BigPotEngine::drawSubtitle(const string &fontname, const string &text, int 
 		return;
 	auto font = TTF_OpenFont(fontname.c_str(), size);
 	if (!font) return;
-	SDL_Color c = { 255, 255, 255, 255 };
-
+	SDL_Color color = { 255, 255, 255, 255 };
+	SDL_Color colorb = { 0, 0, 0, 255 };
 	auto ret = splitString(text, "\n");
 	for (int i = 0; i < ret.size(); i++){
-		if (ret[i] == "")continue;
-		auto text_s = TTF_RenderUTF8_Blended(font, ret[i].c_str(), c);
-		auto text_t = SDL_CreateTextureFromSurface(_ren, text_s);
+		if (ret[i] == "")
+			continue;
+		TTF_SetFontOutline(font, 2);
+		auto text_sb = TTF_RenderUTF8_Blended(font, ret[i].c_str(), colorb);
+		TTF_SetFontOutline(font, 0);
+		auto text_s = TTF_RenderUTF8_Blended(font, ret[i].c_str(), color);
 		//SDL_SetTextureAlphaMod(text_t, alpha);
+		SDL_Rect rectb = { 2, 2, 0, 0 };
+		SDL_BlitSurface(text_s, NULL, text_sb, &rectb);
+
+		auto text_t = SDL_CreateTextureFromSurface(_ren, text_sb);
+
+		SDL_FreeSurface(text_s);
+		SDL_FreeSurface(text_sb);
 
 		SDL_Rect rect;
-		rect.h = text_s->h;
-		rect.w = text_s->w;
+		SDL_QueryTexture(text_t, nullptr, nullptr, &rect.w, &rect.h);
 		rect.y = y + i*(size + 2);
 
 		switch (align)
@@ -155,7 +164,6 @@ void BigPotEngine::drawSubtitle(const string &fontname, const string &text, int 
 
 		SDL_RenderCopy(_ren, text_t, nullptr, &rect);
 		SDL_DestroyTexture(text_t);
-		SDL_FreeSurface(text_s);
 	}
 	TTF_CloseFont(font);
 }
