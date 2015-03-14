@@ -133,7 +133,7 @@ void BigPotEngine::drawSubtitle(const string &fontname, const string &text, int 
 		if (ret[i] == "")continue;
 		auto text_s = TTF_RenderUTF8_Blended(font, ret[i].c_str(), c);
 		auto text_t = SDL_CreateTextureFromSurface(_ren, text_s);
-		SDL_SetTextureAlphaMod(text_t, alpha);
+		//SDL_SetTextureAlphaMod(text_t, alpha);
 
 		SDL_Rect rect;
 		rect.h = text_s->h;
