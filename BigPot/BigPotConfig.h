@@ -2,7 +2,10 @@
 
 #include "BigPotBase.h"
 #include "json/json.h"
+#include "tinyxml2/tinyxml2.h"
 #include <stdint.h>
+
+using namespace tinyxml2;
 
 class BigPotConfig : public BigPotBase
 {
@@ -10,11 +13,9 @@ private:
 	Json::Value _value, _record;
 	string _content;
 	string _filename;
-	/*
-	Json::Value& getValue(Json::Value& v)
-	{
-		return v;
-	}*/
+	XMLDocument _doc;
+
+
 
 public:
 	BigPotConfig();
