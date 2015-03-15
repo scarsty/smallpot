@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="tinyxml2">
+      <UniqueIdentifier>{de0d4753-806b-480c-b769-2e22c4263679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hash">
+      <UniqueIdentifier>{3812f944-8811-4cd1-ba86-7b5a234a7005}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -66,20 +72,11 @@
     <ClCompile Include="BigPotSubtitleFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tinystr.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="tinyxml2\tinyxml2.cpp">
+      <Filter>tinyxml2</Filter>
     </ClCompile>
-    <ClCompile Include="tinyxml.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyxmlerror.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tinyxmlparser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ZBase64.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="hash\sha3.cpp">
+      <Filter>hash</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,14 +128,11 @@
     <ClInclude Include="BigPotSubtitleFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tinystr.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="tinyxml2\tinyxml2.h">
+      <Filter>tinyxml2</Filter>
     </ClInclude>
-    <ClInclude Include="tinyxml.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ZBase64.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="hash\sha3.h">
+      <Filter>hash</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
