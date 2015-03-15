@@ -65,9 +65,9 @@ public:
 	{
 		return _value[name].isDouble() ? _value[name].asDouble() : def;
 	}
-	bool getBool(bool &v, const char * name)
+	bool getBool(const char * name, bool def = false)
 	{
-		return _value[name].isBool() ? _value[name].asBool() : false;
+		return _value[name].isBool() ? _value[name].asBool() : def;
 	}
 	void setInteger(int v, const char * name) { _value[name] = v; }
 	void setString(const string v, const char * name) { _value[name] = v; }
