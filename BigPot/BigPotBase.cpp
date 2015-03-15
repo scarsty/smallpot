@@ -100,3 +100,13 @@ string BigPotBase::toLowerCase(const string& str)
 	transform(str1.begin(), str1.end(), str1.begin(), tolower); 
 	return str1;
 }
+
+std::string BigPotBase::formatString(const char *format, ...)
+{
+	char s[4096];
+	va_list arg_ptr;
+	va_start(arg_ptr, format);
+	vsnprintf(s, sizeof(s), format, arg_ptr);
+	va_end(arg_ptr);
+	return s;
+}

@@ -41,5 +41,6 @@ public:
 	void setFilePath(char *s) { filepath_ = getFilePath(s); }
 	string fingFileWithMainName(const string& filename);
 	string toLowerCase(const string& str);
+	string formatString(const char *format, ...);
 };
 
