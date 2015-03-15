@@ -63,6 +63,9 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		_w = _media->getVideoStream()->getWidth();
 		_h = _media->getVideoStream()->getHeight();
 		engine_->setWindowSize(_w, _h);
+		//重新获取尺寸，有可能与之前不同
+		_w = engine_->getWindowsWidth();
+		_h = engine_->getWindowsHeight();
 		_media->getAudioStream()->setVolume(_cur_volume);
 		//试图载入字幕
 		_subtitle->setFrameSize(_w, _h);
@@ -134,7 +137,7 @@ int BigPotPlayer::eventLoop()
 			{
 				if (_h - e.button.y < 50)
 				{
-					double pos = 1.0 * e.button.x / _w;
+					double pos = 1.0 * e.button.x / engine_->getPresentWidth();
 					_media->seekPos(pos);
 				}
 
