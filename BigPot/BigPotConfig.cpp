@@ -34,6 +34,8 @@ void BigPotConfig::init()
 	//初始化结构
 	if (_doc.Error())
 	{
+		//_doc.DeleteChildren();
+		_doc.LinkEndChild(_doc.NewDeclaration());
 		_root = _doc.NewElement("root");
 	}
 	else
@@ -50,8 +52,16 @@ void BigPotConfig::init()
 void BigPotConfig::write()
 {
 #ifdef USINGJSON
+	Json::StyledWriter writer;
+
+	_value["record"] = _record;
+	_content = writer.write(_value);
+
+	ofstream ofs;
+	ofs.open(_filename);
+	ofs << _content;
 #else
-	_doc.LinkEndChild(_doc.NewDeclaration());
+	//_doc.LinkEndChild(_doc.NewDeclaration());
 	_doc.LinkEndChild(_root);
 	_doc.SaveFile(_filename.c_str());
 #endif

@@ -1,6 +1,6 @@
 #pragma once
 
-#define USINGJSON
+//#define USINGJSON
 
 #include "BigPotBase.h"
 
@@ -136,14 +136,12 @@ public:
 	//¼ÇÂ¼
 	int getRecord(const char * name)
 	{
-		SHA3 sha3;
-		return atoi(getElement(_record, sha3(name).c_str())->GetText());
+		return atoi(getElement(_record, ("_" + _sha3(getFilenameWithoutPath(name))).c_str())->GetText());
 	}
 
 	void setRecord(int v, const char * name) 
 	{
-		SHA3 sha3;
-		getElement(_record, sha3(name).c_str())
+		getElement(_record, ("_" + _sha3(getFilenameWithoutPath(name))).c_str())
 			->SetText(formatString("%d", v).c_str());
 	}
 	void clearRecord() 
