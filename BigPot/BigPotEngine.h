@@ -65,7 +65,7 @@ private:
 	bool _keep_ratio = true;
 
 	int _start_w = 320, _start_h = 150; //320, 150
-	int __width, __height;
+	int _win_w, _win_h;
 public:
 	int init();
 	__declspec(deprecated)	
@@ -84,7 +84,8 @@ public:
 	}
 	void setWindowSize(int w, int h) 
 	{ 
-		__width = w; __height = h;
+		if (w == 0 || h == 0) return;
+		_win_w = w; _win_h = h;
 		SDL_SetWindowSize(_win, w, h); 
 		setPresentPosition();
 	}
