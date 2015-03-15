@@ -1,5 +1,6 @@
 #pragma once
 
+//还是用json算了
 //#define USINGJSON
 
 #include "BigPotBase.h"
