@@ -42,7 +42,8 @@ string BigPotBase::getFileExt(const string& filename)
 {
 	int pos_p = filename.find_last_of(_path_);
 	int pos_d = filename.find_last_of('.');
-	return filename.substr(pos_d + 1);
+	if (pos_p < pos_d)
+		return filename.substr(pos_d + 1);
 	return "";
 }
 
@@ -109,4 +110,12 @@ std::string BigPotBase::formatString(const char *format, ...)
 	vsnprintf(s, sizeof(s), format, arg_ptr);
 	va_end(arg_ptr);
 	return s;
+}
+
+std::string BigPotBase::getFilenameWithoutPath(const string& filename)
+{
+	int pos_p = filename.find_last_of(_path_);
+	if (pos_p != string::npos)
+		return filename.substr(pos_p + 1);
+	return filename;
 }
