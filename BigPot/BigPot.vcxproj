@@ -120,7 +120,11 @@
     <ClCompile Include="BigPotUI.cpp" />
     <ClCompile Include="BigPotVideoStream.cpp" />
     <ClCompile Include="BigPotEngine.cpp" />
-    <ClCompile Include="tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="tinystr.cpp" />
+    <ClCompile Include="tinyxml.cpp" />
+    <ClCompile Include="tinyxmlerror.cpp" />
+    <ClCompile Include="tinyxmlparser.cpp" />
+    <ClCompile Include="ZBase64.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotAudioStream.h" />
@@ -139,7 +143,9 @@
     <ClInclude Include="BigPotVideoStream.h" />
     <ClInclude Include="BigPotEngine.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="tinyxml2\tinyxml2.h" />
+    <ClInclude Include="tinystr.h" />
+    <ClInclude Include="tinyxml.h" />
+    <ClInclude Include="ZBase64.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BigPot.rc" />
