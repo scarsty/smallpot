@@ -139,7 +139,6 @@
     <ClInclude Include="BigPotVideoStream.h" />
     <ClInclude Include="BigPotEngine.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>

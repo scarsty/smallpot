@@ -122,9 +122,6 @@
     <ClInclude Include="BigPotSubtitleFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="tinyxml2\tinyxml2.h">
       <Filter>tinyxml2</Filter>
     </ClInclude>
