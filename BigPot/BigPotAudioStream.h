@@ -28,5 +28,5 @@ public:
 	int setVolume(int v);
 	int changeVolume(int v);
 	int getVolume() { return _volume; };
-	bool setPause(bool pause);
+	virtual void setPause(bool pause);
 };

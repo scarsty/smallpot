@@ -88,6 +88,8 @@ int BigPotMediaStream::decodeFramePre()
 		{
 			time_pts_ = packet_.pts * time_per_packet_;
 			time_dts_ = packet_.dts * time_per_packet_;
+			key_frame_ = frame_->key_frame;
+			//if (stream_index_==0)printf("%d", key_frame_);
 		}
 		av_free_packet(&packet_);
 	}
@@ -275,6 +277,12 @@ void BigPotMediaStream::dropAllDecoded()
 {
 	clearMap();
 	setDecoded(false);
+}
+
+void BigPotMediaStream::setPause(bool pause)
+{
+	pause_ = pause;
+	pause_time_ = getTime();
 }
 
 

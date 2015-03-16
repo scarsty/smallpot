@@ -169,11 +169,10 @@ void BigPotAudioStream::resetDecodeState()
 	//memset(data, 0, screamSize);
 }
 
-bool BigPotAudioStream::setPause(bool pause)
+void BigPotAudioStream::setPause(bool pause)
 {
 	engine_->pauseAudio(pause);
 	pause_ = pause;
 	pause_time_ = getTime();
-	return pause;
 }
 
