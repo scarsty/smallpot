@@ -4,9 +4,10 @@
 BigPotPlayer::BigPotPlayer()
 {
 	_UI = new BigPotUI;
-	_config = new BigPotConfig;
+	//_config = new BigPotConfig;
 	//_subtitle = new BigPotSubtitle;
 	_subtitle_factory = new BigPotSubtitleFactory;
+	//config_->init();
 	_w = 320;
 	_h = 150;
 }
@@ -14,7 +15,7 @@ BigPotPlayer::BigPotPlayer()
 BigPotPlayer::~BigPotPlayer()
 {
 	delete _UI;
-	delete _config;
+	//delete _config;
 	delete _subtitle_factory;
 	//delete _subtitle;
 	//delete media;
@@ -24,9 +25,9 @@ int BigPotPlayer::beginWithFile(const string &filename)
 {
 	if (engine_->init()) return -1;
 	
-	_config->init();
-	_sys_encode = _config->getString("sys_encode", "cp936");
-	_cur_volume = _config->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
+	config_->init(_filepath);
+	_sys_encode = config_->getString("sys_encode", "cp936");
+	_cur_volume = config_->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
 	_UI->init();
 
 	//首次运行拖拽的文件也认为是同一个
@@ -76,7 +77,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 
 		//读取记录中的文件时间并跳转
 		_cur_time = 0;
-		_cur_time = getRecordFileTime(play_filename);
+		_cur_time = config_->getRecord(play_filename.c_str());
 		if (_cur_time > 0) _media->seekTime(_cur_time , -1);
 
 		//主循环
@@ -86,7 +87,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 
 		//如果是媒体文件就记录时间
 		if (_media->isMedia())
-			setRecordFileTime(_cur_time, play_filename);
+			config_->setRecord(_cur_time, play_filename.c_str());
 		//关闭字幕
 		_subtitle_factory->destroySubtitle(_subtitle);
 		//_subtitle->closeSubtitle();
@@ -94,9 +95,9 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		delete _media;
 		first = false;
 	}
-	_config->setString(_sys_encode, "sys_encode");
-	_config->setInteger(_cur_volume, "volume");
-	_config->write();
+	config_->setString(_sys_encode, "sys_encode");
+	config_->setInteger(_cur_volume, "volume");
+	config_->write();
 
 	engine_->destroy();
 
@@ -300,43 +301,5 @@ int BigPotPlayer::eventLoop()
 	return 0;
 }
 
-int BigPotPlayer::drawTex2()
-{
-	/*SDL_SetRenderTarget(ren, tex2);
 
-	SDL_Texture * img = IMG_LoadTexture(ren, "logo.png");	
 
-	SDL_Rect r;
-	SDL_RenderCopy(ren, img, nullptr, nullptr);
-	SDL_DestroyTexture(img);
-
-	SDL_SetRenderTarget(ren, nullptr);
-	*/
-	return 0;
-}
-
-int BigPotPlayer::showTex2()
-{
-	//SDL_RenderCopy(ren, tex2, nullptr, nullptr);
-	return 0;
-}
-
-std::string BigPotPlayer::getSysString(const string& str)
-{
-	return "";
-}
-
-int BigPotPlayer::getRecordFileTime(const string& filename)
-{
-	if (filename == "")
-		return 0;
-	return _config->getRecord(filename.c_str());
-}
-
-int BigPotPlayer::setRecordFileTime(int time, const string& filename)
-{
-	if (filename == "")
-		return 0;
-	_config->setRecord(time, filename.c_str());
-	return time;
-}

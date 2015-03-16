@@ -78,6 +78,9 @@
     <ClCompile Include="hash\sha3.cpp">
       <Filter>hash</Filter>
     </ClCompile>
+    <ClCompile Include="BigPotString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotPlayer.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="hash\sha3.h">
       <Filter>hash</Filter>
+    </ClInclude>
+    <ClInclude Include="BigPotString.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

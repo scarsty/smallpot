@@ -3,7 +3,9 @@
 //还是用json算了
 //#define USINGJSON
 
-#include "BigPotBase.h"
+#include "BigPotString.h"
+
+using namespace BigPotString;
 
 #ifdef USINGJSON
 #include "json/json.h"
@@ -15,12 +17,16 @@ using namespace tinyxml2;
 
 #include "hash/sha3.h"
 
-class BigPotConfig : public BigPotBase
+class BigPotConfig
 {
 private:
+	static BigPotConfig _config;
+	BigPotConfig* _this;
 	string _content;
 	string _filename;
 	SHA3 _sha3;
+	BigPotConfig();
+	virtual ~BigPotConfig();
 #ifdef USINGJSON
 	Json::Value _value, _record;
 #else
@@ -46,11 +52,9 @@ private:
 
 
 public:
-	BigPotConfig();
-	virtual ~BigPotConfig();
-
-	void init();
+	void init(const string& filepath);
 	void write();
+	static BigPotConfig* getInstance(){ return &_config; };
 	//以下函数注意默认值
 #ifdef USINGJSON
 	int getInteger(const char * name, int def = 0)
@@ -137,11 +141,13 @@ public:
 	//记录
 	int getRecord(const char * name)
 	{
+		if (strlen(name) == 0) return 0;
 		return atoi(getElement(_record, ("_" + _sha3(getFilenameWithoutPath(name))).c_str())->GetText());
 	}
 
 	void setRecord(int v, const char * name) 
 	{
+		if (strlen(name) == 0) return;
 		getElement(_record, ("_" + _sha3(getFilenameWithoutPath(name))).c_str())
 			->SetText(formatString("%d", v).c_str());
 	}

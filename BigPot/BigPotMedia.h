@@ -4,6 +4,9 @@
 #include "BigPotMediaStream.h"
 #include "BigPotAudioStream.h"
 #include "BigPotVideoStream.h"
+#include "BigPotString.h"
+
+using namespace BigPotString;
 //#include "BigPotSubtitle.h"
 
 
