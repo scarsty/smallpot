@@ -11,8 +11,9 @@ extern "C"
 #include "BigPotEngine.h"
 #include <algorithm>
 #include <map>
-//#include <mutex> 
-
+#ifndef __MINGW32__
+#include <mutex> 
+#endif
 enum BigPotMediaType
 {
 	BPMEDIA_TYPE_VIDEO = AVMEDIA_TYPE_VIDEO,

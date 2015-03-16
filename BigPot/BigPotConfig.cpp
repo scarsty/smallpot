@@ -1,21 +1,24 @@
 #include "BigPotConfig.h"
 
+BigPotConfig BigPotConfig::_config;
 
 BigPotConfig::BigPotConfig()
 {
-	//doc = new XMLDocument;
+	_this = &_config;
+	//init();
 }
 
 
 BigPotConfig::~BigPotConfig()
 {
 	//delete doc;
+	//write();
 }
 
-void BigPotConfig::init()
+void BigPotConfig::init(const string& filepath)
 {
 #ifdef USINGJSON
-	_filename = filepath_ + "/config.json";
+	_filename = _filepath + "/config.json";
 	printf("try find config file: %s\n", _filename.c_str());
 	
 	Json::Reader reader;
@@ -25,7 +28,7 @@ void BigPotConfig::init()
 	if (_value["record"].isObject())
 		_record = _value["record"];
 #else
-	_filename = filepath_ + "/config.xml";
+	_filename = filepath + "/config.xml";
 	printf("try find config file: %s\n", _filename.c_str());
 	_doc.LoadFile(_filename.c_str());
 #ifdef _DEBUG

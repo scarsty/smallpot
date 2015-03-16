@@ -6,45 +6,27 @@
 #pragma once
 
 #include "BigPotEngine.h"
-#include <iostream>
-#include <fstream>
-#ifdef __APPLE__
-#include <sys/uio.h>
-#else
-#include <io.h>
-#endif
+#include "BigPotString.h"
+#include "BigPotConfig.h"
+
 
 using namespace std;
 
-//公共类
-//主要是字串和文件处理，随时可能使用
+
 //可能不安全
 
 class BigPotBase
 {
 protected:
-	static string filepath_;
 	BigPotEngine* engine_;
-private:
-#ifdef WIN32
-	char _path_ = '\\';
-#else
-	char _path_ = '/';
-#endif
+	BigPotConfig* config_;
 public:
-	BigPotBase() { engine_ = BigPotEngine::getInstance(); };
+	BigPotBase();
 	~BigPotBase() {};
-	void safedelete(void* p){ if(p) delete p; p = nullptr; };
-	bool fileExist(const string& filename);
-	string readStringFromFile(const string& filename);
-	string getFileExt(const string& filename);
-	string getFileMainname(const string& fileName);
-	string getFilenameWithoutPath(const string& fileName);
-	string changeFileExt(const string& filename, const string& ext);
-	string getFilePath(const string& filename);
-	void setFilePath(char *s) { filepath_ = getFilePath(s); }
-	string fingFileWithMainName(const string& filename);
-	string toLowerCase(const string& str);
-	string formatString(const char *format, ...);
+
+	//void setFilePath(char *s) { BigPotString::setFilePath(s); }
+	//static bool fileExist(const string& filename);
+	//void safedelete(void* p){ if (p) delete p; p = nullptr; };
+
 };
 

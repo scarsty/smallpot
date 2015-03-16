@@ -22,6 +22,7 @@ public:
 	void drawBall();
 	void drawText(const string &text);
 	void drawUI(uint8_t alpha, int time, int totoalTime, int volume);
+	void destory();
 	string convertTimeToString(int time);
 };
 

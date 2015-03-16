@@ -1,10 +1,10 @@
 #include "BigPotEngine.h"
 
-BigPotEngine BigPotEngine::_control;
+BigPotEngine BigPotEngine::_engine;
 
 BigPotEngine::BigPotEngine()
 {
-	_this = &_control;
+	_this = &_engine;
 }
 
 
@@ -71,9 +71,9 @@ int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, Au
 void BigPotEngine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 {
 	SDL_memset(stream, 0, len);
-	if (_control._callback)
+	if (_engine._callback)
 	{
-		_control._callback(stream, len);
+		_engine._callback(stream, len);
 	}
 }
 

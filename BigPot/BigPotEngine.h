@@ -51,10 +51,10 @@ private:
 	BigPotEngine();
 	virtual ~BigPotEngine();
 private:
-	static BigPotEngine _control;
+	static BigPotEngine _engine;
 	BigPotEngine* _this;
 public:
-	static BigPotEngine* getInstance(){ return &_control; };
+	static BigPotEngine* getInstance(){ return &_engine; };
 	//图形相关
 private:
 	BP_Window* _win = nullptr;
@@ -266,6 +266,7 @@ typedef enum
 	BP_BUTTON_RIGHT =SDL_BUTTON_RIGHT
 } BP_Button;
 
+//mingw无std::mutex
 #ifdef __MINGW32__
 class mutex
 {
