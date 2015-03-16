@@ -1,6 +1,5 @@
 #include "BigPotSubtitleFactory.h"
 
-
 BigPotSubtitleFactory::BigPotSubtitleFactory()
 {
 	_ext.push_back("ass");

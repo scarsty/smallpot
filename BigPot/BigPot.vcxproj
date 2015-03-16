@@ -113,6 +113,7 @@
     <ClCompile Include="BigPotMediaStream.cpp" />
     <ClCompile Include="BigPotPlayer.cpp" />
     <ClCompile Include="BigPotMedia.cpp" />
+    <ClCompile Include="BigPotString.cpp" />
     <ClCompile Include="BigPotSubtitle.cpp" />
     <ClCompile Include="BigPotSubtitleAss.cpp" />
     <ClCompile Include="BigPotSubtitleFactory.cpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="BigPotPlayer.h" />
     <ClInclude Include="BigPotBase.h" />
     <ClInclude Include="BigPotResample.h" />
+    <ClInclude Include="BigPotString.h" />
     <ClInclude Include="BigPotSubtitle.h" />
     <ClInclude Include="BigPotSubtitleAss.h" />
     <ClInclude Include="BigPotSubtitleFactory.h" />

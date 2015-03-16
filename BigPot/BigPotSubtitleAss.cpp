@@ -18,7 +18,7 @@ void BigPotSubtitleAss::init()
 {
 	_lib = ass_library_init();
 	_ren = ass_renderer_init(_lib);
-	ass_set_fonts(_ren, "/library/fonts/Kaiti.ttc", "Sans", 0, "", 0);
+	ass_set_fonts(_ren, fontname_.c_str(), "Sans", 0, "", 0);
 }
 
 bool BigPotSubtitleAss::openSubtitle(const string& filename)

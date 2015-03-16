@@ -23,7 +23,7 @@ public:
 	virtual ~BigPotSubtitle();
 protected:
 	BigPotPSubtitleType type_;
-	string subfilename_;
+	string subfilename_, fontname_;
 	bool haveSubtitle_ = false;
 public:
 	bool exist() { return haveSubtitle_; };
