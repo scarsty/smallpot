@@ -187,7 +187,7 @@ public:
 private:
 	BP_Texture* _square;
 public:
-	BP_Texture* createSquareTexture();
+	BP_Texture* createSquareTexture(int size);
 	BP_Texture* createTextTexture(const string &fontname, const string &text, int size);
 	void drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
 	void drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
