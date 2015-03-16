@@ -6,10 +6,13 @@
 #pragma once
 
 #include "BigPotEngine.h"
-#include <string>
 #include <iostream>
 #include <fstream>
+#ifdef __APPLE__
+#include <sys/uio.h>
+#else
 #include <io.h>
+#endif
 
 using namespace std;
 

@@ -23,7 +23,7 @@ std::string BigPotConv::conv(const string& src, const char* from, const char* to
 	memcpy(in, src.c_str(), inlen);
 	iconv_t cd;
 	cd = iconv_open(to, from);
-	if ((int)cd == 0 || (int)cd == -1) return "";
+	if (cd<=0) return "";
 	if (iconv(cd, &pin, &inlen, &pout, &outlen) == -1)
 		out[0] = '\0';
 	iconv_close(cd);
