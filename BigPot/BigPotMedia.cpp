@@ -37,24 +37,10 @@ int BigPotMedia::decodeFrame()
 {
 	_videoStream->decodeFrame();
 	_audioStream->decodeFrame();
-	//seek之后，音频可能落后，需要追赶音频
-	if (_seeking)
-	{
-		_seeking = false;
-		if (_videoStream->exist() && _audioStream->exist())
-		{
-			//如某一个延迟则跳过避免迟滞
-			_videoStream->skipFrame(_audioStream->getTimedts());
-			_audioStream->skipFrame(_videoStream->getTimedts());
-		}
-		else
-		{
-			//这里强制显示一帧视频回复视频的时间轴，无音频文件可能需要
-			if (_videoStream->exist())
-				_videoStream->showTexture(INT32_MAX);
-		}
-		//printf("\naudio %4.3f, video %4.3f\t\t", audioStream->timed / 1e3, videoStream->timed / 1e3);
-	}
+
+	//int m = _audioStream->getTimedts();
+	//int n = _videoStream->getTimedts();
+
 	return 0;
 }
 
@@ -68,9 +54,43 @@ int BigPotMedia::seekTime(int time, int direct /*= 1*/)
 {
 	time = min(time, _totalTime-100);
 	_videoStream->seek(time, direct);
-	_audioStream->resetDecodeState();
 	_audioStream->seek(time, direct);
-	_seeking = true;
+	//_seeking = true;
+
+	//seek之后，音频可能落后，需要追赶音频
+	if (time > 0)
+	{
+		_seeking = false;
+		//_videoStream->showTexture(INT32_MAX);
+		if (_videoStream->exist() && _audioStream->exist())
+		{
+			_videoStream->decodeFramePre();
+			_audioStream->decodeFramePre();
+			//如某一个延迟则跳过避免迟滞
+			int max_dts = max(_audioStream->getTimedts(), _videoStream->getTimedts());
+			int min_dts = min(_audioStream->getTimedts(), _videoStream->getTimedts());
+			if (max_dts - min_dts > 500)
+			{
+				_videoStream->skipFrame(max_dts);
+				_audioStream->skipFrame(max_dts);
+			}
+			//暂停时要再弃掉一帧数据，原因不明
+			if (_audioStream->getPauseState())
+				_videoStream->decodeFramePre();
+			//_audioStream->decodeFramePre();
+		}
+		else
+		{
+			//这里强制显示一帧视频回复视频的时间轴，无音频文件可能需要
+			if (_videoStream->exist())
+				_videoStream->showTexture(INT32_MAX);
+		}
+		//_videoStream->decodeFrame();
+		//_videoStream->showTexture(INT32_MAX);
+		//printf("\naudio %4.3f, video %4.3f\t\t", audioStream->timed / 1e3, videoStream->timed / 1e3);
+	}
+	_audioStream->resetDecodeState();
+
 	return 0;
 }
 
