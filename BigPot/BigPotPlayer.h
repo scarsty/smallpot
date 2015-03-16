@@ -34,6 +34,10 @@ private:
 	//string getSysString(const string& str);
 public:
 	int beginWithFile(const string &filename);
+	int init();
+	void destroy();
+	void openMedia(const string& filename);
+	void closeMedia(const string& filename);
 	
 };
 

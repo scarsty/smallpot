@@ -77,9 +77,9 @@ void BigPotEngine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 	}
 }
 
-BP_Texture* BigPotEngine::createSquareTexture()
+BP_Texture* BigPotEngine::createSquareTexture(int size)
 {
-	int d = 10;
+	int d = size;
 	auto square_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
 	SDL_FillRect(square_s, nullptr, 0xffffffff);
 	/*SDL_Rect r = { 0, 0, 1, 1 };

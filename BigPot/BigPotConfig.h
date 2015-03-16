@@ -33,20 +33,8 @@ private:
 	XMLDocument _doc;
 	XMLElement *_root, *_record;
 
-	XMLElement* getElement(XMLElement *parent, const char * name)
-	{
-		auto p = parent->FirstChildElement(name);
-		if (p)
-		{
-			return p;
-		}
-		else
-		{
-			p = parent->InsertFirstChild(_doc.NewElement(name))->ToElement();
-			p->SetText("");
-			return p;
-		}
-	}
+	XMLElement* getElement(XMLElement *parent, const char * name);
+	
 
 #endif
 
