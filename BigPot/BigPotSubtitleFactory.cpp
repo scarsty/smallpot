@@ -63,7 +63,8 @@ bool BigPotSubtitleFactory::tryOpenSubtitle(const string& filename)
 bool BigPotSubtitleFactory::isSubtitle(const string& filename)
 {
 	auto ext = getFileExt(filename);
-	transform(ext.begin(), ext.end(), ext.begin(), tolower);
+	ext = toLowerCase(ext);
+	//transform(ext.begin(), ext.end(), ext.begin(), tolower);
 	bool b = false;
 	for (auto &e : _ext)
 	{

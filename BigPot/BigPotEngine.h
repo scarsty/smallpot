@@ -16,6 +16,8 @@ extern "C"
 #include <algorithm>
 #include <functional>
 #include <vector>
+#include <string>
+
 using namespace std;
 
 //这里是底层部分，将SDL的函数均封装了一次
@@ -264,7 +266,7 @@ typedef enum
 	BP_BUTTON_RIGHT =SDL_BUTTON_RIGHT
 } BP_Button;
 
-
+#ifdef __MINGW32__
 class mutex
 {
 private:
@@ -275,4 +277,4 @@ public:
 	int lock(){ return SDL_LockMutex(_mutex); }
 	int unlock(){ return SDL_UnlockMutex(_mutex); }
 };
-
+#endif
