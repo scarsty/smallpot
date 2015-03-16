@@ -75,6 +75,9 @@ std::string BigPotBase::getFilePath(const string& filename)
 //查找相似文件名的文件，只找两个
 std::string BigPotBase::fingFileWithMainName(const string& filename)
 {
+#ifdef __APPLE__
+	return "";
+#else
 	_finddata_t file;
 	long fileHandle;
 	string path = getFilePath(filename);
@@ -93,12 +96,18 @@ std::string BigPotBase::fingFileWithMainName(const string& filename)
 	}
 	_findclose(fileHandle);
 	return ret;
+#endif
 }
 
 string BigPotBase::toLowerCase(const string& str)
 {
 	auto str1 = str;
-	transform(str1.begin(), str1.end(), str1.begin(), tolower); 
+	//transform(str1.begin(), str1.end(), str1.begin(), tolower);
+	for (auto &c : str1)
+	{
+		if (c>='A'&&c<='Z')
+			c=c+'a'-'A';
+	} 
 	return str1;
 }
 
