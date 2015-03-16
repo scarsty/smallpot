@@ -55,11 +55,11 @@ int BigPotPlayer::eventLoop()
 {
 	BP_Event e; 
 
-	bool loop = true, pause = false;
+	bool loop = true, pause = false, seeking = false;
 	int ui_alpha = 128;
 	int finished, i = 0, x, y;
-	int t = 5000;
-	int v = 4;
+	int seek_step = 5000;
+	int volume_step = 4;
 	bool havevideo = _media->getVideoStream()->exist();
 	bool havemedia = _media->getAudioStream()->exist() || havevideo;
 	int totalTime = _media->getTotalTime();
@@ -88,6 +88,7 @@ int BigPotPlayer::eventLoop()
 				{
 					double pos = 1.0 * e.button.x / _w;
 					_media->seekPos(pos);
+					seeking = true;
 				}
 
 				if (e.button.y < 50 && e.button.x > _w - 100)
@@ -102,11 +103,11 @@ int BigPotPlayer::eventLoop()
 		{
 			if (e.wheel.y > 0)
 			{
-				_media->getAudioStream()->changeVolume(v);
+				_media->getAudioStream()->changeVolume(volume_step);
 			}
 			else if (e.wheel.y < 0)
 			{
-				_media->getAudioStream()->changeVolume(-v);
+				_media->getAudioStream()->changeVolume(-volume_step);
 			}
 			ui_alpha = 128;
 			break;
@@ -116,16 +117,16 @@ int BigPotPlayer::eventLoop()
 			switch (e.key.keysym.sym)
 			{
 			case BPK_LEFT:
-				_media->seekTime(_media->getTime() - t, -1);
+				_media->seekTime(_media->getTime() - seek_step, -1);
 				break;
 			case BPK_RIGHT:
-				_media->seekTime(_media->getTime() + t);
+				_media->seekTime(_media->getTime() + seek_step);
 				break;
 			case BPK_UP:
-				_media->getAudioStream()->changeVolume(v);
+				_media->getAudioStream()->changeVolume(volume_step);
 				break;
 			case BPK_DOWN:
-				_media->getAudioStream()->changeVolume(-v);
+				_media->getAudioStream()->changeVolume(-volume_step);
 				break;
 			}
 			ui_alpha = 128;
