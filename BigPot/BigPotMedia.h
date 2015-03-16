@@ -41,5 +41,6 @@ public:
 	{
 		return _audioStream->exist() || _videoStream->exist();
 	}
+	void setPause(bool pause);
 };
 
