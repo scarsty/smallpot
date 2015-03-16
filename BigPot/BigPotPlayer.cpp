@@ -23,12 +23,8 @@ BigPotPlayer::~BigPotPlayer()
 
 int BigPotPlayer::beginWithFile(const string &filename)
 {
-	if (engine_->init()) return -1;
-	
-	config_->init(_filepath);
-	_sys_encode = config_->getString("sys_encode", "cp936");
-	_cur_volume = config_->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
-	_UI->init();
+	if (init() != 0) return -1;
+
 
 	//首次运行拖拽的文件也认为是同一个
 	_drop_filename = filename;
@@ -40,67 +36,16 @@ int BigPotPlayer::beginWithFile(const string &filename)
 
 	while (_run)
 	{
-		_media = nullptr;
-		_media = new BigPotMedia;
-
-		//如果是控制台程序，通过参数传入的是ansi
-		//如果是窗口程序，通过参数传入的是utf-8
-		//所有通过拖拽传入的都是utf-8
-		//播放器应以窗口程序为主
-		play_filename = _drop_filename;  //这两个都是utf8
-		
-		engine_->setWindowTitle(play_filename);
-		
-		//打开文件, 需要进行转换
-		auto open_filename = BigPotConv::conv(play_filename, _BP_encode, _sys_encode); //这个需要ansi
-		_media->openFile(open_filename);
-
-		auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
-		_subtitle = _subtitle_factory->createSubtitle(open_subfilename);
-
-		//_subtitle->tryOpenSubtitle(open_filename);
-
-		//窗口尺寸，时间
-		_w = _media->getVideoStream()->getWidth();
-		_h = _media->getVideoStream()->getHeight();
-		engine_->setWindowSize(_w, _h);
-		//重新获取尺寸，有可能与之前不同
-		_w = engine_->getWindowsWidth();
-		_h = engine_->getWindowsHeight();
-
-		_media->getAudioStream()->setVolume(_cur_volume);
-		//试图载入字幕
-		_subtitle->setFrameSize(_w, _h);
-
-		//首次打开文件窗口居中		
+		openMedia(play_filename);
+		//首次打开文件窗口居中
 		if (first) engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
 
-		//读取记录中的文件时间并跳转
-		_cur_time = 0;
-		_cur_time = config_->getRecord(play_filename.c_str());
-		if (_cur_time > 0) _media->seekTime(_cur_time , -1);
-
-		//主循环
-		engine_->createMainTexture(_w, _h);
 		this->eventLoop();
-		engine_->destroyMainTexture();
 
-		//如果是媒体文件就记录时间
-		if (_media->isMedia())
-			config_->setRecord(_cur_time, play_filename.c_str());
-		//关闭字幕
-		_subtitle_factory->destroySubtitle(_subtitle);
-		//_subtitle->closeSubtitle();
-
-		delete _media;
+		closeMedia(play_filename);
 		first = false;
 	}
-	config_->setString(_sys_encode, "sys_encode");
-	config_->setInteger(_cur_volume, "volume");
-	config_->write();
-
-	engine_->destroy();
-
+	destroy();
 	return 0;
 }
 
@@ -293,12 +238,89 @@ int BigPotPlayer::eventLoop()
 		if (audioTime >= totalTime)
 			_media->seekTime(0);
 	}
-	_cur_time = _media->getTime();
-	_cur_volume = _media->getAudioStream()->getVolume();
 	engine_->renderClear();
 	engine_->renderPresent();
 	
 	return 0;
+}
+
+int BigPotPlayer::init()
+{
+	if (engine_->init()) return -1;
+
+	config_->init(_filepath);
+	_sys_encode = config_->getString("sys_encode", "cp936");
+	_cur_volume = config_->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
+	_UI->init();
+	return 0;
+}
+
+void BigPotPlayer::destroy()
+{
+	config_->setString(_sys_encode, "sys_encode");
+	config_->setInteger(_cur_volume, "volume");
+	config_->write();
+	_UI->destory();
+	engine_->destroy();
+}
+
+void BigPotPlayer::openMedia(const string& filename)
+{
+	_media = nullptr;
+	_media = new BigPotMedia;
+
+	//如果是控制台程序，通过参数传入的是ansi
+	//如果是窗口程序，通过参数传入的是utf-8
+	//所有通过拖拽传入的都是utf-8
+	//播放器应以窗口程序为主
+
+
+	engine_->setWindowTitle(filename);
+
+	//打开文件, 需要进行转换
+	auto open_filename = BigPotConv::conv(filename, _BP_encode, _sys_encode); //这个需要ansi
+	_media->openFile(open_filename);
+
+	auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
+	_subtitle = _subtitle_factory->createSubtitle(open_subfilename);
+
+	//_subtitle->tryOpenSubtitle(open_filename);
+
+	//窗口尺寸，时间
+	_w = _media->getVideoStream()->getWidth();
+	_h = _media->getVideoStream()->getHeight();
+	engine_->setWindowSize(_w, _h);
+	//重新获取尺寸，有可能与之前不同
+	_w = engine_->getWindowsWidth();
+	_h = engine_->getWindowsHeight();
+
+	_media->getAudioStream()->setVolume(_cur_volume);
+	//试图载入字幕
+	_subtitle->setFrameSize(_w, _h);
+
+	//读取记录中的文件时间并跳转
+	_cur_time = 0;
+	_cur_time = config_->getRecord(filename.c_str());
+	if (_cur_time > 0) _media->seekTime(_cur_time, -1);
+
+	engine_->createMainTexture(_w, _h);
+}
+
+void BigPotPlayer::closeMedia(const string& filename)
+{
+	_cur_time = _media->getTime();
+	_cur_volume = _media->getAudioStream()->getVolume();
+
+	engine_->destroyMainTexture();
+
+	//如果是媒体文件就记录时间
+	if (_media->isMedia())
+		config_->setRecord(_cur_time, filename.c_str());
+	//关闭字幕
+	_subtitle_factory->destroySubtitle(_subtitle);
+	//_subtitle->closeSubtitle();
+
+	delete _media;
 }
 
 

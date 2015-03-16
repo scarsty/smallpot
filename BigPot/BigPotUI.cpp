@@ -62,5 +62,10 @@ std::string BigPotUI::convertTimeToString(int time)
 
 void BigPotUI::init()
 {
-	_square = engine_->createSquareTexture();
+	_square = engine_->createSquareTexture(30);
+}
+
+void BigPotUI::destory()
+{
+	engine_->destroyTexture(_square);
 }

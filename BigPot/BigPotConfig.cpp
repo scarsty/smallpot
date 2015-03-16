@@ -70,3 +70,18 @@ void BigPotConfig::write()
 #endif
 }
 
+XMLElement* BigPotConfig::getElement(XMLElement *parent, const char * name)
+{
+	auto p = parent->FirstChildElement(name);
+	if (p)
+	{
+		return p;
+	}
+	else
+	{
+		p = parent->InsertFirstChild(_doc.NewElement(name))->ToElement();
+		p->SetText("");
+		return p;
+	}
+}
+
