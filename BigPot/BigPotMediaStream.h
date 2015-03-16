@@ -53,6 +53,9 @@ protected:
 	int start_time_ = 0;
 	int total_time_ = 0;
 
+	bool pause_ = false;
+	int pause_time_ = 0;
+
 	void* data_ = nullptr;	//无缓冲时的用户数据, 可能为纹理或音频缓冲区
 	uint32_t data_length_ = 0;
 private:
@@ -61,7 +64,6 @@ private:
 	bool _decoded = false, _skip = false, _ended = false;
 
 private:
-	int decodeFramePre();
 	virtual FrameData convert(void * p = nullptr) 
 	{
 		return{0, 0, nullptr};
@@ -77,10 +79,12 @@ protected:
 	void setDecoded(bool b);
 	bool haveDecoded();
 	void dropDecoded();
+	void dropAllDecoded();
 	bool useMap();
 	FrameData getCurrentFrameData();
 public:
 	int openFile(const string & filename, BigPotMediaType type);
+	int decodeFramePre();
 	int decodeFrame();
 	int getTotalTime();
 
@@ -113,6 +117,7 @@ public:
 	}
 	bool exist(){ return stream_index_ >= 0; }
 	void resetTimeAxis();
+	bool getPauseState() { return pause_; }
 };
 
 

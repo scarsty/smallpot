@@ -71,9 +71,10 @@ int BigPotPlayer::eventLoop()
 
 	while (loop && engine_->pollEvent(e) >= 0)
 	{
-		_media->decodeFrame();
+		seeking = false;
+
 		engine_->getMouseState(x, y);
-		if (ui_alpha > 0) 
+		if (ui_alpha > 0)
 			ui_alpha--;
 		if (_h - y < 50 || (_w - x) < 200 && y < 150)
 			ui_alpha = 128;
@@ -118,9 +119,11 @@ int BigPotPlayer::eventLoop()
 			{
 			case BPK_LEFT:
 				_media->seekTime(_media->getTime() - seek_step, -1);
+				seeking = true;
 				break;
 			case BPK_RIGHT:
 				_media->seekTime(_media->getTime() + seek_step);
+				seeking = true;
 				break;
 			case BPK_UP:
 				_media->getAudioStream()->changeVolume(volume_step);
@@ -192,49 +195,60 @@ int BigPotPlayer::eventLoop()
 		}
 		e.type = BP_FIRSTEVENT;
 		//if (!loop) break;
-		//media->audioStream->setAnotherTime(media->getVideoTime());
-		//if (!media->showVideoFrame(i*100))
+
+		//在每个循环均尝试预解压
+		_media->decodeFrame();
+
+		//尝试以音频为基准显示视频
 		int audioTime = _media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间
-		if (!pause)
+		int time_s = audioTime;
+		if (pause)
 		{
-			int videostate = _media->getVideoStream()->showTexture(audioTime);
-			//控制帧数
-			bool show = false;
-			//有视频显示成功，或者有静态视频，或者只有音频，均刷新
-			if (videostate == 0)
+			time_s = 0; //pause时不刷新
+			if (seeking)
 			{
-				show = true;
-				//以下均是为了显示信息，可以去掉
+				_media->getVideoStream()->dropTexture();
+				_media->decodeFrame();
+				time_s = INT32_MAX; //pause加seeking则强制刷新
+			}
+		}
+		int videostate = _media->getVideoStream()
+			->showTexture(time_s); 
+
+		//依据解视频的结果判断是否显示
+		bool show = false;
+		//有视频显示成功，或者有静态视频，或者只有音频，均刷新
+		if (videostate == 0)
+		{
+			show = true;
+			//以下均是为了显示信息，可以去掉
 #ifdef _DEBUG
-				int videoTime = (_media->getVideoStream()->getTimedts());
-				int delay = -videoTime + audioTime;
-				//maxDelay = max(maxDelay, abs(delay));
-				//if (i % 1000 == 0)
-				//{
-					//maxDelay = 0;
-				//}
-				printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
-					_media->getAudioStream()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
+			int videoTime = (_media->getVideoStream()->getTimedts());
+			int delay = -videoTime + audioTime;
+			//maxDelay = max(maxDelay, abs(delay));
+			//if (i % 1000 == 0)
+			//{
+			//maxDelay = 0;
+			//}
+			printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
+				_media->getAudioStream()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
 #endif
-			}
-			else if ((videostate == -1 || videostate == 2)
-				&& engine_->getTicks() - prev_show_time > 40)
-			{
-				show = true;
-				if (havevideo)
-					engine_->renderCopy();
-				else
-					engine_->showLogo();
-			}
-			if (show)
-			{
-				if (_subtitle->exist())
-					_subtitle->show(audioTime);
-				_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudioStream()->changeVolume(0));
-				engine_->renderPresent();
-				prev_show_time = engine_->getTicks();
-			}
-			//printf("%d\n", i);
+		}
+		else if (engine_->getTicks() - prev_show_time > 40)
+		{
+			show = true;
+			if (havevideo)
+				engine_->renderCopy();
+			else
+				engine_->showLogo();
+		}
+		if (show)
+		{
+			if (_subtitle->exist())
+				_subtitle->show(audioTime);
+			_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudioStream()->changeVolume(0));
+			engine_->renderPresent();
+			prev_show_time = engine_->getTicks();
 		}
 		i++;
 		engine_->delay(1);

@@ -101,12 +101,17 @@ int BigPotMediaStream::decodeFrame()
 		auto f = convert();
 		if (useMap())
 		{
+			//如果只有一帧，则静止时间需更新
+			if (_map.size() == 0)
+			{
+				pause_time_ = time_shown_ = time_dts_;
+			}
 			if (_map.count(f.time) == 0 && f.data)
 				_map[f.time] = f;
 		}
 		else
 		{
-
+			pause_time_ = time_shown_ = time_dts_;
 		}
 		setDecoded(true);
 		return 0;
@@ -124,14 +129,13 @@ int BigPotMediaStream::seek(int time, int direct)
 {
 	if (exist())
 	{
-		clearMap();
 		int c = 5;
 		int64_t i = time / 1e3 * AV_TIME_BASE;
 		int flag = AVSEEK_FLAG_FRAME;
 		if (direct < 0)
 			flag = flag | AVSEEK_FLAG_BACKWARD;
 		av_seek_frame(formatCtx_, -1, i, flag);
-		setDecoded(false);
+		dropAllDecoded();
 	}
 	return 0;
 }
@@ -231,6 +235,8 @@ bool BigPotMediaStream::haveDecoded()
 
 int BigPotMediaStream::getTime()
 {
+	if (pause_)
+		return pause_time_;
 	//if (type_== BPMEDIA_TYPE_AUDIO)
 	    //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
 	if (exist() && !_ended)
@@ -263,6 +269,12 @@ void BigPotMediaStream::getSize(int &w, int&h)
 		w = codecCtx_->width;
 		h = codecCtx_->height;
 	}
+}
+
+void BigPotMediaStream::dropAllDecoded()
+{
+	clearMap();
+	setDecoded(false);
 }
 
 

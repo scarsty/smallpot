@@ -172,6 +172,8 @@ void BigPotAudioStream::resetDecodeState()
 bool BigPotAudioStream::setPause(bool pause)
 {
 	engine_->pauseAudio(pause);
+	pause_ = pause;
+	pause_time_ = getTime();
 	return pause;
 }
 

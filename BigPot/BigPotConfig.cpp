@@ -32,7 +32,7 @@ void BigPotConfig::init(const string& filepath)
 	printf("try find config file: %s\n", _filename.c_str());
 	_doc.LoadFile(_filename.c_str());
 #ifdef _DEBUG
-	_doc.Print();
+	//_doc.Print();
 #endif
 	//初始化结构
 	if (_doc.Error())
