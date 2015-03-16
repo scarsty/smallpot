@@ -43,6 +43,8 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		this->eventLoop();
 
 		closeMedia(play_filename);
+		play_filename = _drop_filename;
+
 		first = false;
 	}
 	destroy();
@@ -264,6 +266,8 @@ void BigPotPlayer::destroy()
 	engine_->destroy();
 }
 
+
+//参数为utf8编码
 void BigPotPlayer::openMedia(const string& filename)
 {
 	_media = nullptr;
@@ -274,17 +278,11 @@ void BigPotPlayer::openMedia(const string& filename)
 	//所有通过拖拽传入的都是utf-8
 	//播放器应以窗口程序为主
 
-
 	engine_->setWindowTitle(filename);
 
 	//打开文件, 需要进行转换
 	auto open_filename = BigPotConv::conv(filename, _BP_encode, _sys_encode); //这个需要ansi
 	_media->openFile(open_filename);
-
-	auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
-	_subtitle = _subtitle_factory->createSubtitle(open_subfilename);
-
-	//_subtitle->tryOpenSubtitle(open_filename);
 
 	//窗口尺寸，时间
 	_w = _media->getVideoStream()->getWidth();
@@ -293,32 +291,40 @@ void BigPotPlayer::openMedia(const string& filename)
 	//重新获取尺寸，有可能与之前不同
 	_w = engine_->getWindowsWidth();
 	_h = engine_->getWindowsHeight();
-
+	engine_->createMainTexture(_w, _h);
+	
+	//音量
 	_media->getAudioStream()->setVolume(_cur_volume);
+	
 	//试图载入字幕
+	auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
+	_subtitle = _subtitle_factory->createSubtitle(open_subfilename);
 	_subtitle->setFrameSize(_w, _h);
 
 	//读取记录中的文件时间并跳转
-	_cur_time = 0;
-	_cur_time = config_->getRecord(filename.c_str());
-	if (_cur_time > 0) _media->seekTime(_cur_time, -1);
-
-	engine_->createMainTexture(_w, _h);
+	if (_media->isMedia())
+	{
+		_cur_time = 0;
+		_cur_time = config_->getRecord(filename.c_str());
+		if (_cur_time > 0) _media->seekTime(_cur_time, -1);
+	}
 }
 
 void BigPotPlayer::closeMedia(const string& filename)
 {
+	engine_->destroyMainTexture();
+
+	//记录播放时间
 	_cur_time = _media->getTime();
 	_cur_volume = _media->getAudioStream()->getVolume();
 
-	engine_->destroyMainTexture();
-
-	//如果是媒体文件就记录时间
-	if (_media->isMedia())
-		config_->setRecord(_cur_time, filename.c_str());
 	//关闭字幕
 	_subtitle_factory->destroySubtitle(_subtitle);
 	//_subtitle->closeSubtitle();
+	
+	//如果是媒体文件就记录时间
+	if (_media->isMedia())
+		config_->setRecord(_cur_time, filename.c_str());
 
 	delete _media;
 }
