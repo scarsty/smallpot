@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 extern "C"
 {
@@ -20,8 +20,8 @@ extern "C"
 
 using namespace std;
 
-//ÕâÀïÊÇµ×²ã²¿·Ö£¬½«SDLµÄº¯Êı¾ù·â×°ÁËÒ»´Î
-//ÈçĞè¸ü»»µ×²ã£¬ÔòÒªÖØĞÂÊµÏÖÏÂÃæµÄÈ«²¿¹¦ÄÜ£¬²¢ÖØĞÂ¶¨ÒåÈ«²¿³£ÊıºÍÀàĞÍ
+//è¿™é‡Œæ˜¯åº•å±‚éƒ¨åˆ†ï¼Œå°†SDLçš„å‡½æ•°å‡å°è£…äº†ä¸€æ¬¡
+//å¦‚éœ€æ›´æ¢åº•å±‚ï¼Œåˆ™è¦é‡æ–°å®ç°ä¸‹é¢çš„å…¨éƒ¨åŠŸèƒ½ï¼Œå¹¶é‡æ–°å®šä¹‰å…¨éƒ¨å¸¸æ•°å’Œç±»å‹
 #define BP_AUDIO_DEVICE_FORMAT AUDIO_S16
 #define BP_AUDIO_MIX_MAXVOLUME SDL_MIX_MAXVOLUME
 
@@ -40,9 +40,9 @@ typedef enum { BP_ALIGN_LEFT, BP_ALIGN_MIDDLE, BP_ALIGN_RIGHT } BP_Align;
 #define BMASK (0xff)
 #define AMASK (0xff000000)
 
-//ÉùÒôÀàĞÍÔÚÆäËûÎÄ¼şÖĞÎ´Ê¹ÓÃ
+//å£°éŸ³ç±»å‹åœ¨å…¶ä»–æ–‡ä»¶ä¸­æœªä½¿ç”¨
 typedef SDL_AudioSpec BP_AudioSpec;
-//ÕâÀïÖ±½ÓÊ¹ÓÃSDLµÄÊÂ¼ş½á¹¹£¬Èç¹û¸ü»»µ×²ãĞèÖØĞÂÊµÏÖÒ»Ì×ÏàÍ¬µÄ
+//è¿™é‡Œç›´æ¥ä½¿ç”¨SDLçš„äº‹ä»¶ç»“æ„ï¼Œå¦‚æœæ›´æ¢åº•å±‚éœ€é‡æ–°å®ç°ä¸€å¥—ç›¸åŒçš„
 typedef SDL_Event BP_Event;
 
 class BigPotEngine
@@ -55,7 +55,7 @@ private:
 	BigPotEngine* _this;
 public:
 	static BigPotEngine* getInstance(){ return &_engine; };
-	//Í¼ĞÎÏà¹Ø
+	//å›¾å½¢ç›¸å…³
 private:
 	BP_Window* _win = nullptr;
 	BP_Renderer* _ren = nullptr;
@@ -105,7 +105,7 @@ public:
 		setPresentPosition();
 	}
 
-	void setPresentPosition();  //ÉèÖÃÌùÍ¼µÄÎ»ÖÃ
+	void setPresentPosition();  //è®¾ç½®è´´å›¾çš„ä½ç½®
 	__declspec(deprecated)
 		void getPresentSize(int& w, int& h) { w = _rect.w; h = _rect.h; }
 	int getPresentWidth() { return _rect.w; }
@@ -155,7 +155,7 @@ public:
 	}
 	bool setKeepRatio(bool b);
 	BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
-	//ÉùÒôÏà¹Ø
+	//å£°éŸ³ç›¸å…³
 private:
 	SDL_AudioDeviceID _device;
 	AudioCallback _callback = nullptr;
@@ -171,7 +171,7 @@ public:
 	int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
 	static void mixAudioCallback(void* userdata, Uint8* stream, int len);
 	void setAudioCallback(AudioCallback cb = nullptr){ _callback = cb; };
-	//ÊÂ¼şÏà¹Ø
+	//äº‹ä»¶ç›¸å…³
 private:
 	SDL_Event _e;
 	int _time;
@@ -183,7 +183,7 @@ public:
 	void getMouseState(int &x, int& y){ SDL_GetMouseState(&x, &y); };
 	int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); };
 	void free(void* mem){ SDL_free(mem); }
-	//UIÏà¹Ø
+	//UIç›¸å…³
 private:
 	BP_Texture* _square;
 public:
@@ -195,32 +195,32 @@ public:
 	vector<string> splitString(const string& s, const string& delim);
 };
 
-//ÕâÀïÖ±½ÓÕÕ°áSDL
-//¸ü»»µ×²ãĞè×Ô¼º¶¨ÒåÒ»Ì×
-//ºÃÏñÊÇÏ¹ÕÛÌÚ
+//è¿™é‡Œç›´æ¥ç…§æ¬SDL
+//æ›´æ¢åº•å±‚éœ€è‡ªå·±å®šä¹‰ä¸€å¥—
+//å¥½åƒæ˜¯çæŠ˜è…¾
 typedef enum
 {
 	BP_FIRSTEVENT = SDL_FIRSTEVENT,
-	//°´¹Ø±Õ°´Å¥
+	//æŒ‰å…³é—­æŒ‰é’®
 	BP_QUIT = SDL_QUIT,
 	//window
 	BP_WINDOWEVENT = SDL_WINDOWEVENT,
 	BP_SYSWMEVENT = SDL_SYSWMEVENT,
-	//¼üÅÌ
+	//é”®ç›˜
 	BP_KEYDOWN = SDL_KEYDOWN,
 	BP_KEYUP = SDL_KEYUP,
 	BP_TEXTEDITING = SDL_TEXTEDITING,
 	BP_TEXTINPUT = SDL_TEXTINPUT,
-	//Êó±ê
+	//é¼ æ ‡
 	BP_MOUSEMOTION = SDL_MOUSEMOTION,
 	BP_MOUSEBUTTONDOWN = SDL_MOUSEBUTTONDOWN,
 	BP_MOUSEBUTTONUP = SDL_MOUSEBUTTONUP,
 	BP_MOUSEWHEEL = SDL_MOUSEWHEEL,
-	//¼ôÌù°å
+	//å‰ªè´´æ¿
 	BP_CLIPBOARDUPDATE = SDL_CLIPBOARDUPDATE,
-	//ÍÏ·ÅÎÄ¼ş
+	//æ‹–æ”¾æ–‡ä»¶
 	BP_DROPFILE = SDL_DROPFILE,
-	//äÖÈ¾¸Ä±ä
+	//æ¸²æŸ“æ”¹å˜
 	BP_RENDER_TARGETS_RESET = SDL_RENDER_TARGETS_RESET,
 
 	BP_LASTEVENT = SDL_LASTEVENT
@@ -266,7 +266,7 @@ typedef enum
 	BP_BUTTON_RIGHT =SDL_BUTTON_RIGHT
 } BP_Button;
 
-//mingwÎŞstd::mutex
+//mingwæ— std::mutex
 #ifdef __MINGW32__
 class mutex
 {

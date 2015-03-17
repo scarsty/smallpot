@@ -3,7 +3,7 @@
 
 BigPotSubtitle::BigPotSubtitle()
 {
-#ifdef _WIN32 || _WIN64
+#ifdef _MSC_VER
 	fontname_ = "c:/windows/fonts/msyh.ttf";
 #endif
 #ifdef __APPLE__

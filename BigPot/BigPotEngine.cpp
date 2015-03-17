@@ -1,4 +1,4 @@
-#include "BigPotEngine.h"
+ï»¿#include "BigPotEngine.h"
 
 BigPotEngine BigPotEngine::_engine;
 
@@ -101,7 +101,7 @@ BP_Texture* BigPotEngine::createSquareTexture(int size)
 	return _square;
 }
 
-//×¢Òâ£ºµ±×Ö·û´®Îª¿ÕÊ±£¬Ò²»á·µ»ØÒ»¸ö¿Õ×Ö·û´®  
+//æ³¨æ„ï¼šå½“å­—ç¬¦ä¸²ä¸ºç©ºæ—¶ï¼Œä¹Ÿä¼šè¿”å›ä¸€ä¸ªç©ºå­—ç¬¦ä¸²  
 vector<string> BigPotEngine::splitString(const string& s, const string& delim)
 {
 	vector<string> ret;
@@ -256,7 +256,7 @@ void BigPotEngine::setPresentPosition()
 		double ratio = min(w_ratio, h_ratio);
 		if (w_ratio > h_ratio)
 		{
-			//¿í¶È´ó£¬×óÓÒÁô¿Õ
+			//å®½åº¦å¤§ï¼Œå·¦å³ç•™ç©º
 			_rect.x = (w_dst - w_src * ratio) / 2;
 			_rect.y = 0;
 			_rect.w = w_src * ratio;
@@ -264,7 +264,7 @@ void BigPotEngine::setPresentPosition()
 		}
 		else
 		{
-			//¸ß¶È´ó£¬ÉÏÏÂÁô¿Õ
+			//é«˜åº¦å¤§ï¼Œä¸Šä¸‹ç•™ç©º
 			_rect.x = 0;
 			_rect.y = (h_dst - h_src * ratio) / 2;
 			_rect.w = w_dst;
