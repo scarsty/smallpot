@@ -66,7 +66,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;ass.lib;libiconv.lib;lib_json.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;ass.lib;libiconv.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>

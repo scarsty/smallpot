@@ -58,6 +58,7 @@ int BigPotMediaStream::openFile(const string & filename, BigPotMediaType type)
 int BigPotMediaStream::decodeFramePre()
 {
 	//3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
+	if (!exist()) return -2;
 	int ret = 0;
 	while (ret==0)
 	{
