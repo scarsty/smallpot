@@ -4,7 +4,7 @@
 编译：
 Windows：
 VS2013：已经包含了Windows版本所需的工程文件，以及导入库和dll。其中大部分是作者自行编译。
-mingw：主要是依赖库比较麻烦，动态库和导入库也可以使用。可以修改makefile，在链接的地方有一个注释掉的行，是针对mingw的。另外因为mingw本身的问题，可能需要增加 -D__NOINLINE__（估计是写错了）。
+mingw：主要是依赖库比较麻烦，动态库和导入库也可以使用。可以修改makefile，在链接的地方有一个注释掉的行，是针对mingw的。另外因为mingw本身的问题，可能需要在编译器参数上增加-D__NO_INLINE__。
 
 macosx：
 makefile文件是为mac版编写，需先安装SDL以及相关扩展的framework，freetype、libass、FFmpeg、iconv等。jsoncpp是可选的。
