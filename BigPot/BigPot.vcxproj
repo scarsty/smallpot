@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BA5597D9-DBCC-45C4-AA58-8D691764A191}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>BigPot</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(SolutionDir)\lib\x86;$(LibraryPath);;$(SolutionDir)\lib\x86\$(Configuration)</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)\output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\output\obj\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(SolutionDir)\lib\x86;$(LibraryPath);;$(SolutionDir)\lib\x86\$(Configuration)</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
+    <OutDir>$(SolutionDir)\output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\output\obj\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include\ffmpeg;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;ass.lib;libiconv.lib;lib_json.lib</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include\ffmpeg;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;avutil.lib;avformat.lib;avcodec.lib;swresample.lib;SDL2_image.lib;SDL2_ttf.lib;ass.lib;libiconv.lib;lib_json.lib</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
+      <DelayLoadDLLs>
+      </DelayLoadDLLs>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BigPotAudioStream.cpp" />
+    <ClCompile Include="BigPotBase.cpp" />
+    <ClCompile Include="BigPotConfig.cpp" />
+    <ClCompile Include="BigPotConv.cpp" />
+    <ClCompile Include="BigPotResample.cpp" />
+    <ClCompile Include="BigPot.cpp" />
+    <ClCompile Include="BigPotMediaStream.cpp" />
+    <ClCompile Include="BigPotPlayer.cpp" />
+    <ClCompile Include="BigPotMedia.cpp" />
+    <ClCompile Include="BigPotString.cpp" />
+    <ClCompile Include="BigPotSubtitle.cpp" />
+    <ClCompile Include="BigPotSubtitleAss.cpp" />
+    <ClCompile Include="BigPotSubtitleFactory.cpp" />
+    <ClCompile Include="BigPotSubtitleSrt.cpp" />
+    <ClCompile Include="BigPotUI.cpp" />
+    <ClCompile Include="BigPotVideoStream.cpp" />
+    <ClCompile Include="BigPotEngine.cpp" />
+    <ClCompile Include="hash\sha3.cpp" />
+    <ClCompile Include="tinyxml2\tinyxml2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BigPotAudioStream.h" />
+    <ClInclude Include="BigPotConfig.h" />
+    <ClInclude Include="BigPotConv.h" />
+    <ClInclude Include="BigPotMedia.h" />
+    <ClInclude Include="BigPotMediaStream.h" />
+    <ClInclude Include="BigPotPlayer.h" />
+    <ClInclude Include="BigPotBase.h" />
+    <ClInclude Include="BigPotResample.h" />
+    <ClInclude Include="BigPotString.h" />
+    <ClInclude Include="BigPotSubtitle.h" />
+    <ClInclude Include="BigPotSubtitleAss.h" />
+    <ClInclude Include="BigPotSubtitleFactory.h" />
+    <ClInclude Include="BigPotSubtitleSrt.h" />
+    <ClInclude Include="BigPotUI.h" />
+    <ClInclude Include="BigPotVideoStream.h" />
+    <ClInclude Include="BigPotEngine.h" />
+    <ClInclude Include="hash\sha3.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="tinyxml2\tinyxml2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BigPot.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
