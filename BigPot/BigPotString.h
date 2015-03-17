@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -13,9 +13,9 @@
 
 using namespace std;
 
-//Ö÷ÒªÊÇ×Ö´®ºÍÎÄ¼şÃû´¦Àí£¬ËæÊ±¿ÉÄÜÊ¹ÓÃ
+//ä¸»è¦æ˜¯å­—ä¸²å’Œæ–‡ä»¶åå¤„ç†ï¼Œéšæ—¶å¯èƒ½ä½¿ç”¨
 
-#ifdef _WIN32 || _WIN64
+#ifdef _MSC_VER
 #define _path_  ('\\')
 #else
 #define _path_  ('/')
