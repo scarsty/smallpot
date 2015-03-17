@@ -60,9 +60,15 @@ int BigPotMedia::seekTime(int time, int direct /*= 1*/)
 	if (time > 0)
 	{
 		//_videoStream->showTexture(INT32_MAX);
-		if (_videoStream->exist())
-		{
-			//查到关键帧，至少去掉2帧（该值比较奇怪）
+		//预解一阵恢复时间轴，相当于弃掉一帧，基本不会有性能影响
+		//通常这一帧也是先前的内容
+		//该方法在rm文件会产生马赛克问题，应是解码器关系
+		_videoStream->decodeFramePre();
+		_audioStream->decodeFramePre();
+		//暂停时要弃掉数据到下一个关键帧, 否则画面不会立刻变化
+		if (_videoStream->exist() && _videoStream->isPause())
+		{			
+			//查到关键帧，至少去掉2帧（该值比较奇怪），至多10帧
 			int i = 0;
 			bool found = false;
 			for (i = 0; i < 10; i++)
@@ -72,21 +78,21 @@ int BigPotMedia::seekTime(int time, int direct /*= 1*/)
 				{
 					found = true;
 				}
-				if (i>1 && found)
-					break;
+				if (i>0 && found)
+					break;				
 			}
-			printf("\ndrop %d frames to find keyframe\n", i + 1);
+			printf("drop %d frames to find keyframe\n", i + 1);
 		}
+		//音视频互相同步
 		if (_videoStream->exist() && _audioStream->exist())
 		{
 			//一定时间以上才跳帧
-			_audioStream->decodeFramePre();
 			//查看延迟情况
 			int v_dts = _videoStream->getTimedts();
 			int a_dts = _audioStream->getTimedts();
 			int max_dts = max(v_dts,a_dts);
 			int min_dts = min(v_dts, a_dts);
-			printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
+			//printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
 			//一定时间以上才跳帧
 			if (max_dts - min_dts > 200)
 			{
