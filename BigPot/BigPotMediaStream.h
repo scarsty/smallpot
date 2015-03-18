@@ -61,7 +61,7 @@ protected:
 private:
 
 	map<int, FrameData> _map;
-	bool _decoded = false, _skip = false, _ended = false;
+	bool _decoded = false, _skip = false, _ended = false, _seeking = false;
 
 private:
 	virtual FrameData convert(void * p = nullptr) 
@@ -109,7 +109,7 @@ public:
 	int getHeight() { return exist() ? codecCtx_->height : 0; }
 	int getTimedts()
 	{
-		return time_dts_;
+		return time_dts_>0?time_dts_:time_pts_;
 	}
 	int getTimeShown()
 	{
@@ -120,6 +120,9 @@ public:
 	bool isPause() { return pause_; }
 	bool isKeyFrame() { return key_frame_; }
 	virtual void setPause(bool pause);
+
+	int frame_number_;
+
 };
 
 

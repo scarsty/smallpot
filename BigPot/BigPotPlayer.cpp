@@ -150,6 +150,9 @@ int BigPotPlayer::eventLoop()
 				loop = false;
 				_run = false;
 				break;
+			case BPK_DELETE:
+				config_->clearRecord();
+				break;
 			}
 			ui_alpha = 128;
 			break;
@@ -195,10 +198,11 @@ int BigPotPlayer::eventLoop()
 		}
 		e.type = BP_FIRSTEVENT;
 		//if (!loop) break;
-
+		//if (seeking)
+			//cout << "de "<<engine_->getTicks() << " ";
 		//在每个循环均尝试预解压
 		_media->decodeFrame();
-
+		//if (seeking)cout << engine_->getTicks() << " " << endl;
 		//尝试以音频为基准显示视频
 		int audioTime = _media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间
 		int time_s = audioTime;
@@ -244,8 +248,8 @@ int BigPotPlayer::eventLoop()
 		}
 		i++;
 		engine_->delay(1);
-		if (audioTime >= totalTime)
-			_media->seekTime(0);
+		//if (audioTime >= totalTime)
+			//_media->seekTime(0);
 	}
 	engine_->renderClear();
 	engine_->renderPresent();
