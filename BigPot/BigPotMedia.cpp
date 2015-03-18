@@ -34,19 +34,38 @@ int BigPotMedia::openFile(const string &filename)
 
 
 int BigPotMedia::decodeFrame()
-{
-	int se = engine_->getTicks();
-	int s = _videoStream->decodeFrame();
+{	
+	//int se= engine_->getTicks();
+	_videoStream->decodeFrame();
 	_audioStream->decodeFrame();
 
 	//int m = _audioStream->getTimedts();
 	//int n = _videoStream->getTimedts();
 	if (_seeking)
 	{
-		//_seeking = false;
-		int sed = engine_->getTicks() - se;
-		if (sed>0 && s==0)
-		cout << "dep" << sed<< " " << endl;
+		_seeking = false;
+		//seek之后，音频可能落后，需要追赶音频
+		if (time > 0)
+		{
+			if (_videoStream->exist() && _audioStream->exist())
+			{
+				//一定时间以上才跳帧
+				//查看延迟情况
+				int v_dts = _videoStream->getTimedts();
+				int a_dts = _audioStream->getTimedts();
+				int max_dts = max(v_dts, a_dts);
+				int min_dts = min(v_dts, a_dts);
+				printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
+				//一定时间以上才跳帧
+				if (max_dts - min_dts > 200)
+				{
+					int sv = _videoStream->skipFrame(max_dts);
+					int sa = _audioStream->skipFrame(max_dts);
+					printf("drop %d audio frames, %d video frames\n", sa, sv);
+				}
+			}
+		}
+		//cout << "se"<<engine_->getTicks()-se << " "<<endl;		
 	}
 	
 	return 0;
@@ -60,63 +79,14 @@ int BigPotMedia::getAudioTime()
 
 int BigPotMedia::seekTime(int time, int direct /*= 1*/)
 {
-	int se= engine_->getTicks() ;
 	time = min(time, _totalTime-100);
 	_videoStream->seek(time, direct);
 	_audioStream->seek(time, direct);
 
 	_seeking = true;
-	//seek之后，音频可能落后，需要追赶音频
-	if (time > 0)
-	{
-		//_videoStream->showTexture(INT32_MAX);
-		//预解一阵恢复时间轴，相当于弃掉一帧，基本不会有性能影响
-		//通常这一帧也是先前的内容
-		//该方法在rm文件会产生马赛克问题，应是解码器关系
-		//int k = _videoStream->decodeFrame();
-		//_audioStream->decodeFrame();
-		//cout << "hi "<<_videoStream->getTimedts()<<" "<<_videoStream->isKeyFrame() << " " << k<<endl;
-		//cout << "hi " << _audioStream->getTimedts() << " " << _audioStream->isKeyFrame() << " " << endl;
-		//暂停时要弃掉数据到下一个关键帧, 否则画面不会立刻变化
-		/*if (_videoStream->exist() && _videoStream->isPause())
-		{			
-			//查到关键帧，至少去掉2帧（该值比较奇怪），至多10帧
-			int i = 0;
-			bool found = false;
-			for (i = 0; i < 100; i++)
-			{
-				_videoStream->decodeFramePre();
-				if (!found && _videoStream->isKeyFrame())
-				{
-					found = true;
-				}
-				cout << "hi-" << _videoStream->getTimedts() << " " << _videoStream->isKeyFrame() << " " << _videoStream->nb_frame<<endl;
-				if (i>0 && found)
-					break;				
-			}
-			printf("drop %d frames to find keyframe\n", i + 1);
-		}*/
-		//音视频互相同步
-		/*if (_videoStream->exist() && _audioStream->exist())
-		{
-			//一定时间以上才跳帧
-			//查看延迟情况
-			int v_dts = _videoStream->getTimedts();
-			int a_dts = _audioStream->getTimedts();
-			int max_dts = max(v_dts,a_dts);
-			int min_dts = min(v_dts, a_dts);
-			printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
-			//一定时间以上才跳帧
-			if (max_dts - min_dts > 200)
-			{
-				int sv = _videoStream->skipFrame(max_dts);
-				int sa = _audioStream->skipFrame(max_dts);
-				printf("drop %d audio frames, %d video frames\n", sa,sv);
-			}
-		}*/
-	}
+	
 	_audioStream->resetDecodeState();
-	cout << "se"<<engine_->getTicks()-se << " "<<endl;
+	
 	return 0;
 }
 
