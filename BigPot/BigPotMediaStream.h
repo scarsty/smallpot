@@ -83,7 +83,7 @@ protected:
 	FrameData getCurrentFrameData();
 public:
 	int openFile(const string & filename, BigPotMediaType type);
-	int decodeFramePre();
+	int decodeFramePre(bool decode = true);
 	int decodeFrame();
 	void dropDecoded();
 	int getTotalTime();
