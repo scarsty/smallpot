@@ -55,7 +55,7 @@ int BigPotMediaStream::openFile(const string & filename, BigPotMediaType type)
 }
 
 //解压帧，同时会更新当前的时间戳
-int BigPotMediaStream::decodeFramePre()
+int BigPotMediaStream::decodeFramePre(bool decode /*= true*/)
 {
 	//3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
 	if (!exist()) return -2;
@@ -68,14 +68,21 @@ int BigPotMediaStream::decodeFramePre()
 		{
 			if (packet_.stream_index == stream_index_)
 			{
-				switch (type_)
+				if (decode)
 				{
-				case BPMEDIA_TYPE_VIDEO:
-					avcodec_decode_video2(codecCtx_, frame_, &ret, &packet_);
-					break;
-				case BPMEDIA_TYPE_AUDIO:
-					avcodec_decode_audio4(codecCtx_, frame_, &ret, &packet_);
-					break;
+					switch (type_)
+					{
+					case BPMEDIA_TYPE_VIDEO:
+						avcodec_decode_video2(codecCtx_, frame_, &ret, &packet_);
+						break;
+					case BPMEDIA_TYPE_AUDIO:
+						avcodec_decode_audio4(codecCtx_, frame_, &ret, &packet_);
+						break;
+					}
+				}
+				else
+				{
+					ret = 2;
 				}
 			}
 			_ended = false;
@@ -138,26 +145,12 @@ int BigPotMediaStream::seek(int time, int direct)
 		int c = 5;
 		int64_t i = time / 1e3 * AV_TIME_BASE;
 
-		//i = av_rescale_q(time / 1e3, stream_->time_base);
-
 		int flag = 0;
-		//if (type_ == BPMEDIA_TYPE_AUDIO)
-			//flag = AVSEEK_FLAG_ANY;
 		if (direct < 0)
 			flag = flag | AVSEEK_FLAG_BACKWARD;
-		/*int s = stream_index_;
-		if (type_ == BPMEDIA_TYPE_AUDIO)
-		{
-			s = -1;
-			i = time / 1e3*AV_TIME_BASE;
-		}*/
 		av_seek_frame(formatCtx_, -1, i, flag);
-		//cout << engine_->getTicks()<<" ";
-		//if (type_ == BPMEDIA_TYPE_VIDEO) 
+		if (pause_)
 			avcodec_flush_buffers(codecCtx_);
-		//cout << engine_->getTicks() << "/ "<<endl;
-		_seeking = true;
-		//avformat_seek_file(formatCtx_, s, i-2,i,i+2, flag);
 		dropAllDecoded();
 	}
 	return 0;
@@ -279,7 +272,7 @@ int BigPotMediaStream::skipFrame(int time)
 	while (time_dts_ < time)
 	{
 		n++;
-		if (decodeFramePre() < 0)
+		if (decodeFramePre(type_ == BPMEDIA_TYPE_VIDEO) < 0)
 			break;
 	}
 	return n;
