@@ -34,7 +34,12 @@ void BigPotUI::drawBall()
 
 void BigPotUI::drawText(const string &text)
 {
-	engine_->drawText("c:/windows/fonts/cambriai.ttf", text, 20, _win_w - 10, 10, _alpha, BP_ALIGN_RIGHT);
+#ifdef _MSC_VER
+    const char* s = "c:/windows/fonts/msyh.ttf";
+#else
+    const char* s = "/System/Library/Fonts/Palatino.ttc";
+#endif
+    engine_->drawText(s, text, 20, _win_w - 10, 10, _alpha, BP_ALIGN_RIGHT);
 }
 
 void BigPotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)

@@ -7,7 +7,7 @@ BigPotSubtitle::BigPotSubtitle()
 	fontname_ = "c:/windows/fonts/msyh.ttf";
 #endif
 #ifdef __APPLE__
-	fontname_ = "/library/fonts/Heiti.ttc";
+	fontname_ = "/System/Library/Fonts/STHeiti Medium.ttc";
 #endif
 
 }
