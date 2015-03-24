@@ -20,7 +20,7 @@ all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET)
 -include .dc
 $(TARGET): $(CPPOBJECTS) $(COBJECTS)
 	#$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lavutil -lavformat -lavcodec -lswresample -ljsoncpp -lass -liconv
-	$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -framework SDL2 -framework SDL2_ttf -framework SDL2_image -lavutil -lavformat -lavcodec -lswresample -ljsoncpp -lass -L/usr/local/lib -liconv
+	$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -L/usr/local/lib -lSDL2 -lSDL2_ttf -lSDL2_image -liconv -lavutil -lavformat -lavcodec -lswresample -lass
 
 clean:
 	rm $(CPPOBJECTS) $(COBJECTS) .dcpp .dc
