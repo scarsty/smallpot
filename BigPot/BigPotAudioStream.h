@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "BigPotMediaStream.h"
 #include "BigPotResample.h"
@@ -14,7 +14,7 @@ private:
 	int _scream_length = 0;
 	//uint32_t _readed = 0;
 	uint8_t* _resample_buffer = nullptr;
-    int64_t _data_read = 0, _data_write = 0;  //¶ÁÈ¡ºÍĞ´Èë×Ö½ÚÊı£¬Êµ¼ÊÎ»ÖÃÓÉ¸ÃÖµÓë³ß´çµÄÓàÊı¼ÆËã
+    int64_t _data_read = 0, _data_write = 0;  //è¯»å–å’Œå†™å…¥å­—èŠ‚æ•°ï¼Œå®é™…ä½ç½®ç”±è¯¥å€¼ä¸å°ºå¯¸çš„ä½™æ•°è®¡ç®—
 	int _freq, _channels;
 
 	void mixAudioData(uint8_t* stream, int len);
