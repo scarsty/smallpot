@@ -1,6 +1,6 @@
 CXX=g++
 CC=gcc
-CPPFLAGS=-I. -I../include -I../include/ffmpeg -O2 -std=c++0x 
+CPPFLAGS=-I. -I../include -I../include/ffmpeg -O2 -std=c++0x
 CPPSOURCES=$(wildcard *.cpp) tinyxml2/tinyxml2.cpp hash/sha3.cpp
 #CPPSOURCES=main.cpp mythRedis.cpp mythRedisKey.cpp mythBaseServer.cpp mythLua.cpp mythReader.cpp mythVirtualServer.cpp mythWriter.cpp PEOPLE.cpp
 CPPOBJECTS=$(CPPSOURCES:.cpp=.o)
