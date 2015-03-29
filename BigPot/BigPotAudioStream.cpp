@@ -1,12 +1,12 @@
-#include "BigPotAudioStream.h"
+ï»¿#include "BigPotAudioStream.h"
 
 BigPotAudioStream::BigPotAudioStream()
 {
 	_volume = engine_->getMaxVolume() / 2;
-	//Ô¤½â°üÊıÁ¿
-	//³ı·ÇÖªµÀÒôÆµ°ü¶¨³¤£¬·ñÔò²»Ó¦ÉèÎª0£¬Ò»°ãÇé¿öÏÂ¶¼²»½¨ÒéÎª0
+	//é¢„è§£åŒ…æ•°é‡
+	//é™¤éçŸ¥é“éŸ³é¢‘åŒ…å®šé•¿ï¼Œå¦åˆ™ä¸åº”è®¾ä¸º0ï¼Œä¸€èˆ¬æƒ…å†µä¸‹éƒ½ä¸å»ºè®®ä¸º0
 	maxSize_ = 100;
-	//»º³åÇø´óĞ¡4M±£´æ
+	//ç¼“å†²åŒºå¤§å°4Mä¿å­˜
 	if (useMap()) 
 		data_ = av_mallocz(_scream_size);
 	_resample_buffer =  (decltype(_resample_buffer))av_mallocz(_convert_size);
@@ -54,7 +54,7 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 	auto data1 = (uint8_t*)data_;
 	int pos = _data_read % _scream_size;
 	int rest = _scream_size - pos;
-	//Ò»´Î»òÕßÁ½´Î£¬±£Ö¤»º³åÇø´óĞ¡×ã¹»
+	//ä¸€æ¬¡æˆ–è€…ä¸¤æ¬¡ï¼Œä¿è¯ç¼“å†²åŒºå¤§å°è¶³å¤Ÿ
 	if (len <= rest)
 	{
 		engine_->mixAudio(stream, data1 + pos, len, _volume);
@@ -86,7 +86,7 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 			}
 			else
 			{
-				//»ñÈ¡ÏÂÒ»¸ö
+				//è·å–ä¸‹ä¸€ä¸ª
 				auto f1 = getCurrentFrameData();
 				if (f1.info > _data_read)
 				{
@@ -99,9 +99,9 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 		{
 			break;
 		}
-		
 	}
 	_data_read += len;
+    //cout<<time_shown_<<endl;
 	//SDL_UnlockMutex(t->mutex_cpp);
 }
 
@@ -111,11 +111,11 @@ BigPotMediaStream::FrameData BigPotAudioStream::convert(void* p /*= nullptr*/)
 		BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
 	if (useMap())
 	{
-		//¼ÆËãĞ´ÈëÎ»ÖÃ
+		//è®¡ç®—å†™å…¥ä½ç½®
 		//printf("%I64d,%I64d, %d\n", dataWrite, dataRead, _map.size());
 		int pos = _data_write % _scream_size;
 		int rest = _scream_size - pos;
-		//¹»³¤Ò»´ÎĞ´Èë£¬²»¹»³¤Á½´ÎĞ´Èë£¬²»¿¼ÂÇ¸ü³¤Çé¿ö£¬Èç¸ü³¤ÊÇ»º³åÇø²»¹»£¬Ğ§¹ûÒ²²»»áÕı³£
+		//å¤Ÿé•¿ä¸€æ¬¡å†™å…¥ï¼Œä¸å¤Ÿé•¿ä¸¤æ¬¡å†™å…¥ï¼Œä¸è€ƒè™‘æ›´é•¿æƒ…å†µï¼Œå¦‚æ›´é•¿æ˜¯ç¼“å†²åŒºä¸å¤Ÿï¼Œæ•ˆæœä¹Ÿä¸ä¼šæ­£å¸¸
 		if (data_length_ <= rest)
 		{
 			memcpy((uint8_t*)data_ + pos, _resample_buffer, data_length_);
@@ -127,7 +127,7 @@ BigPotMediaStream::FrameData BigPotAudioStream::convert(void* p /*= nullptr*/)
 		}
 		FrameData f = { time_dts_, _data_write, data_ };
 		_data_write += data_length_;
-		//·µ»ØµÄÊÇÖ¸ÕëÎ»ÖÃ
+		//è¿”å›çš„æ˜¯æŒ‡é’ˆä½ç½®
 		return f;
 	}
 	else
