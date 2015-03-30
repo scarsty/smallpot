@@ -90,6 +90,9 @@ public:
 		_win_w = w; _win_h = h;
 		SDL_SetWindowSize(_win, w, h); 
 		setPresentPosition();
+        SDL_ShowWindow(_win);
+        SDL_RaiseWindow(_win);
+        //renderPresent();
 	}
 	void setWindowPosition(int x, int y)
 	{
@@ -193,6 +196,7 @@ public:
 	void drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
 	//void split(std::string& s, std::string& delim, std::vector< std::string >* ret);
 	vector<string> splitString(const string& s, const string& delim);
+    int showMessage(const string &content);
 };
 
 //这里直接照搬SDL
