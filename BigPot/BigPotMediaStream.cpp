@@ -1,4 +1,4 @@
-#include "BigPotMediaStream.h"
+ï»¿#include "BigPotMediaStream.h"
 #include "BigPotResample.h"
 
 BigPotMediaStream::BigPotMediaStream()
@@ -21,7 +21,7 @@ BigPotMediaStream::~BigPotMediaStream()
 	//DestroyMutex(mutex_cpp);
 }
 
-//·µ»ØÎª·Ç¸º²ÅÕı³£
+//è¿”å›ä¸ºéè´Ÿæ‰æ­£å¸¸
 int BigPotMediaStream::openFile(const string & filename, BigPotMediaType type)
 {
 	stream_index_ = -1;
@@ -54,10 +54,10 @@ int BigPotMediaStream::openFile(const string & filename, BigPotMediaType type)
 	return stream_index_;
 }
 
-//½âÑ¹Ö¡£¬Í¬Ê±»á¸üĞÂµ±Ç°µÄÊ±¼ä´Á
+//è§£å‹å¸§ï¼ŒåŒæ—¶ä¼šæ›´æ–°å½“å‰çš„æ—¶é—´æˆ³
 int BigPotMediaStream::decodeFramePre(bool decode /*= true*/)
 {
-	//3¸ö×´Ì¬£¬ÎªÕı±íÊ¾½âµ½Ö¡£¬Îª0±íÊ¾»¹ÓĞ¿ÉÄÜ½âµ½Ö¡£¬Îª¸º±íÊ¾ÒÑ¾­ÎŞÖ¡
+	//3ä¸ªçŠ¶æ€ï¼Œä¸ºæ­£è¡¨ç¤ºè§£åˆ°å¸§ï¼Œä¸º0è¡¨ç¤ºè¿˜æœ‰å¯èƒ½è§£åˆ°å¸§ï¼Œä¸ºè´Ÿè¡¨ç¤ºå·²ç»æ— å¸§
 	if (!exist()) return -2;
 	int ret = 0;
 	//cout << "depre "<<engine_->getTicks() << " ";
@@ -114,7 +114,7 @@ int BigPotMediaStream::decodeFrame()
 		auto f = convert();
 		if (useMap())
 		{
-			//Èç¹ûÖ»ÓĞÒ»Ö¡£¬Ôò¾²Ö¹Ê±¼äĞè¸üĞÂ
+			//å¦‚æœåªæœ‰ä¸€å¸§ï¼Œåˆ™é™æ­¢æ—¶é—´éœ€æ›´æ–°
 			if (_map.size() == 0)
 			{
 				pause_time_ = time_shown_ = time_dts_;
@@ -255,10 +255,10 @@ int BigPotMediaStream::getTime()
 		return pause_time_;
 	//if (type_== BPMEDIA_TYPE_AUDIO)
 	    //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
-	if (exist() && !_ended)
-		return time_shown_ - ticks_shown_ + engine_->getTicks();
-	else
-		return total_time_;
+    //if (exist() && !_ended)
+    if (exist())
+		return min(int(time_shown_ - ticks_shown_ + engine_->getTicks()), total_time_);
+    return 0;
 }
 
 int BigPotMediaStream::setAnotherTime(int time)

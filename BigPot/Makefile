@@ -1,6 +1,6 @@
 CXX=g++
 CC=gcc
-CPPFLAGS=-I. -I../include -I../include/ffmpeg -O2 -std=c++0x 
+CPPFLAGS=-I. -I../include -I../include/ffmpeg -O2 -std=c++0x
 CPPSOURCES=$(wildcard *.cpp) tinyxml2/tinyxml2.cpp hash/sha3.cpp
 #CPPSOURCES=main.cpp mythRedis.cpp mythRedisKey.cpp mythBaseServer.cpp mythLua.cpp mythReader.cpp mythVirtualServer.cpp mythWriter.cpp PEOPLE.cpp
 CPPOBJECTS=$(CPPSOURCES:.cpp=.o)
@@ -20,7 +20,7 @@ all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET)
 -include .dc
 $(TARGET): $(CPPOBJECTS) $(COBJECTS)
 	#$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lavutil -lavformat -lavcodec -lswresample -ljsoncpp -lass -liconv
-	$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -framework SDL2 -framework SDL2_ttf -framework SDL2_image -lavutil -lavformat -lavcodec -lswresample -ljsoncpp -lass -L/usr/local/lib -liconv
+	$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -L/usr/local/lib -lSDL2 -lSDL2_ttf -lSDL2_image -liconv -lavutil -lavformat -lavcodec -lswresample -lass
 
 clean:
 	rm $(CPPOBJECTS) $(COBJECTS) .dcpp .dc
