@@ -1,4 +1,4 @@
-#include "BigPotPlayer.h"
+ï»¿#include "BigPotPlayer.h"
 
 
 BigPotPlayer::BigPotPlayer()
@@ -23,29 +23,34 @@ BigPotPlayer::~BigPotPlayer()
 
 int BigPotPlayer::beginWithFile(const string &filename)
 {
-	if (init() != 0) return -1;
+    int count = 0;
+    if (init() != 0) return -1;
 
-
-	//Ê×´ÎÔËÐÐÍÏ×§µÄÎÄ¼þÒ²ÈÏÎªÊÇÍ¬Ò»¸ö
+	//é¦–æ¬¡è¿è¡Œæ‹–æ‹½çš„æ–‡ä»¶ä¹Ÿè®¤ä¸ºæ˜¯åŒä¸€ä¸ª
 	_drop_filename = filename;
 	auto play_filename = filename;
 	_run = true;
-	bool first = true;
-
+    
 	//_subtitle->init();
-
+    
 	while (_run)
 	{
+        if (count <= 1)
+        {
+            //_drop_filename = "";
+            //play_filename = "";
+        }
+        
 		openMedia(play_filename);
-		//Ê×´Î´ò¿ªÎÄ¼þ´°¿Ú¾ÓÖÐ
-		if (first) engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+		//é¦–æ¬¡æ‰“å¼€æ–‡ä»¶çª—å£å±…ä¸­
+		if (count==0) engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
 
 		this->eventLoop();
 
 		closeMedia(play_filename);
 		play_filename = _drop_filename;
 
-		first = false;
+		count++;
 	}
 	destroy();
 	return 0;
@@ -66,8 +71,8 @@ int BigPotPlayer::eventLoop()
 	string open_filename;
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
 
-	int maxDelay = 0; //Í³¼ÆÊ¹ÓÃ
-	int prev_show_time = 0;  //ÉÏÒ»´ÎÏÔÊ¾µÄÊ±¼ä
+	int maxDelay = 0; //ç»Ÿè®¡ä½¿ç”¨
+	int prev_show_time = 0;  //ä¸Šä¸€æ¬¡æ˜¾ç¤ºçš„æ—¶é—´
 
 	while (loop && engine_->pollEvent(e) >= 0)
 	{
@@ -164,7 +169,7 @@ int BigPotPlayer::eventLoop()
 		case BP_WINDOWEVENT:
 			if (e.window.event == BP_WINDOWEVENT_RESIZED)
 			{
-				//ÐèÒª¼ÆËãÏÔÊ¾ºÍ×ÖÄ»µÄÎ»ÖÃ
+				//éœ€è¦è®¡ç®—æ˜¾ç¤ºå’Œå­—å¹•çš„ä½ç½®
 				_w = e.window.data1;
 				_h = e.window.data2;
 				engine_->setPresentPosition();
@@ -176,10 +181,10 @@ int BigPotPlayer::eventLoop()
 			}
 			break;
 		case BP_DROPFILE:
-			//ÓÐÎÄ¼þÍÏÈëÏÈ¼ì²éÊÇ²»ÊÇ×ÖÄ»£¬²»ÊÇ×ÖÄ»Ôòµ±×÷Ã½ÌåÎÄ¼þ£¬´ò¿ªÊ§°Ü»î¸Ã
-			//Èô½«Ã½ÌåÎÄ¼þµ±³É×ÖÄ»´ò¿ª»á·Ç³£Âý£¬¹ÊÏÞÖÆ×ÖÄ»ÎÄ¼þµÄÀ©Õ¹Ãû
+			//æœ‰æ–‡ä»¶æ‹–å…¥å…ˆæ£€æŸ¥æ˜¯ä¸æ˜¯å­—å¹•ï¼Œä¸æ˜¯å­—å¹•åˆ™å½“ä½œåª’ä½“æ–‡ä»¶ï¼Œæ‰“å¼€å¤±è´¥æ´»è¯¥
+			//è‹¥å°†åª’ä½“æ–‡ä»¶å½“æˆå­—å¹•æ‰“å¼€ä¼šéžå¸¸æ…¢ï¼Œæ•…é™åˆ¶å­—å¹•æ–‡ä»¶çš„æ‰©å±•å
 			open_filename = BigPotConv::conv(e.drop.file, _BP_encode, _sys_encode);
-			//¼ì²éÊÇ²»ÊÇ×ÖÄ»£¬Èç¹ûÊÇÔò´ò¿ª
+			//æ£€æŸ¥æ˜¯ä¸æ˜¯å­—å¹•ï¼Œå¦‚æžœæ˜¯åˆ™æ‰“å¼€
 			if (_subtitle_factory->isSubtitle(open_filename))
 			{
 				_subtitle_factory->destroySubtitle(_subtitle);
@@ -200,26 +205,26 @@ int BigPotPlayer::eventLoop()
 		//if (!loop) break;
 		//if (seeking)
 			//cout << "de "<<engine_->getTicks() << " ";
-		//ÔÚÃ¿¸öÑ­»·¾ù³¢ÊÔÔ¤½âÑ¹
+		//åœ¨æ¯ä¸ªå¾ªçŽ¯å‡å°è¯•é¢„è§£åŽ‹
 		_media->decodeFrame();
 		//if (seeking)cout << engine_->getTicks() << " " << endl;
-		//³¢ÊÔÒÔÒôÆµÎª»ù×¼ÏÔÊ¾ÊÓÆµ
-		int audioTime = _media->getTime();  //×¢ÒâÓÅÏÈÎªÒôÆµÊ±¼ä£¬ÈôÒôÆµ²»´æÔÚÊ¹ÓÃÊÓÆµÊ±¼ä
+		//å°è¯•ä»¥éŸ³é¢‘ä¸ºåŸºå‡†æ˜¾ç¤ºè§†é¢‘
+		int audioTime = _media->getTime();  //æ³¨æ„ä¼˜å…ˆä¸ºéŸ³é¢‘æ—¶é—´ï¼Œè‹¥éŸ³é¢‘ä¸å­˜åœ¨ä½¿ç”¨è§†é¢‘æ—¶é—´
 		int time_s = audioTime;
 		if (pause)
 		{
-			time_s = 0; //pauseÊ±²»Ë¢ÐÂÊÓÆµÊ±¼äÖá£¬¶øÒÀÀµºóÃæÏÔÊ¾¾²Ö¹Í¼ÏñµÄÓï¾ä
+			time_s = 0; //pauseæ—¶ä¸åˆ·æ–°è§†é¢‘æ—¶é—´è½´ï¼Œè€Œä¾èµ–åŽé¢æ˜¾ç¤ºé™æ­¢å›¾åƒçš„è¯­å¥
 		}
 		int videostate = _media->getVideoStream()
-			->showTexture(time_s); 
+			->showTexture(time_s);
 
-		//ÒÀ¾Ý½âÊÓÆµµÄ½á¹ûÅÐ¶ÏÊÇ·ñÏÔÊ¾
+		//ä¾æ®è§£è§†é¢‘çš„ç»“æžœåˆ¤æ–­æ˜¯å¦æ˜¾ç¤º
 		bool show = false;
-		//ÓÐÊÓÆµÏÔÊ¾³É¹¦£¬»òÕßÓÐ¾²Ì¬ÊÓÆµ£¬»òÕßÖ»ÓÐÒôÆµ£¬¾ùË¢ÐÂ
+		//æœ‰è§†é¢‘æ˜¾ç¤ºæˆåŠŸï¼Œæˆ–è€…æœ‰é™æ€è§†é¢‘ï¼Œæˆ–è€…åªæœ‰éŸ³é¢‘ï¼Œå‡åˆ·æ–°
 		if (videostate == 0)
 		{
 			show = true;
-			//ÒÔÏÂ¾ùÊÇÎªÁËÏÔÊ¾ÐÅÏ¢£¬¿ÉÒÔÈ¥µô
+			//ä»¥ä¸‹å‡æ˜¯ä¸ºäº†æ˜¾ç¤ºä¿¡æ¯ï¼Œå¯ä»¥åŽ»æŽ‰
 #ifdef _DEBUG
 			int videoTime = (_media->getVideoStream()->getTimedts());
 			int delay = -videoTime + audioTime;
@@ -227,10 +232,10 @@ int BigPotPlayer::eventLoop()
 				_media->getAudioStream()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
 #endif
 		}
-		//¾²Ö¹Ê±£¬ÎÞÊÓÆµÊ±£¬ÊÓÆµÒÑ·ÅÍêÊ±40ºÁÃëÏÔÊ¾Ò»´Î
-		//ÓÐÊÓÆµÎ´ÔÝÍ£ÇÒÎ´µ½Ê±¼ä²»»á½øÈë´ËÅÐ¶Ï
+		//é™æ­¢æ—¶ï¼Œæ— è§†é¢‘æ—¶ï¼Œè§†é¢‘å·²æ”¾å®Œæ—¶40æ¯«ç§’æ˜¾ç¤ºä¸€æ¬¡
+		//æœ‰è§†é¢‘æœªæš‚åœä¸”æœªåˆ°æ—¶é—´ä¸ä¼šè¿›å…¥æ­¤åˆ¤æ–­
 		else if ((pause || videostate == -1 || videostate ==2)
-			&& engine_->getTicks() - prev_show_time > 40)
+			&& engine_->getTicks() - prev_show_time > 100)
 		{
 			show = true;
 			if (havevideo)
@@ -253,7 +258,9 @@ int BigPotPlayer::eventLoop()
 	}
 	engine_->renderClear();
 	engine_->renderPresent();
-	
+    
+    auto s = formatString("%d", i);
+    //engine_->showMessage(s);
 	return 0;
 }
 
@@ -278,41 +285,41 @@ void BigPotPlayer::destroy()
 }
 
 
-//²ÎÊýÎªutf8±àÂë
+//å‚æ•°ä¸ºutf8ç¼–ç 
 void BigPotPlayer::openMedia(const string& filename)
 {
 	_media = nullptr;
 	_media = new BigPotMedia;
 
-	//Èç¹ûÊÇ¿ØÖÆÌ¨³ÌÐò£¬Í¨¹ý²ÎÊý´«ÈëµÄÊÇansi
-	//Èç¹ûÊÇ´°¿Ú³ÌÐò£¬Í¨¹ý²ÎÊý´«ÈëµÄÊÇutf-8
-	//ËùÓÐÍ¨¹ýÍÏ×§´«ÈëµÄ¶¼ÊÇutf-8
-	//²¥·ÅÆ÷Ó¦ÒÔ´°¿Ú³ÌÐòÎªÖ÷
+	//å¦‚æžœæ˜¯æŽ§åˆ¶å°ç¨‹åºï¼Œé€šè¿‡å‚æ•°ä¼ å…¥çš„æ˜¯ansi
+	//å¦‚æžœæ˜¯çª—å£ç¨‹åºï¼Œé€šè¿‡å‚æ•°ä¼ å…¥çš„æ˜¯utf-8
+	//æ‰€æœ‰é€šè¿‡æ‹–æ‹½ä¼ å…¥çš„éƒ½æ˜¯utf-8
+	//æ’­æ”¾å™¨åº”ä»¥çª—å£ç¨‹åºä¸ºä¸»
 
 	engine_->setWindowTitle(filename);
 
-	//´ò¿ªÎÄ¼þ, ÐèÒª½øÐÐ×ª»»
-	auto open_filename = BigPotConv::conv(filename, _BP_encode, _sys_encode); //Õâ¸öÐèÒªansi
+	//æ‰“å¼€æ–‡ä»¶, éœ€è¦è¿›è¡Œè½¬æ¢
+	auto open_filename = BigPotConv::conv(filename, _BP_encode, _sys_encode); //è¿™ä¸ªéœ€è¦ansi
 	_media->openFile(open_filename);
 
-	//´°¿Ú³ß´ç£¬Ê±¼ä
+	//çª—å£å°ºå¯¸ï¼Œæ—¶é—´
 	_w = _media->getVideoStream()->getWidth();
 	_h = _media->getVideoStream()->getHeight();
 	engine_->setWindowSize(_w, _h);
 	engine_->createMainTexture(_w, _h);
-	//ÖØÐÂ»ñÈ¡³ß´ç£¬ÓÐ¿ÉÄÜÓëÖ®Ç°²»Í¬
+	//é‡æ–°èŽ·å–å°ºå¯¸ï¼Œæœ‰å¯èƒ½ä¸Žä¹‹å‰ä¸åŒ
 	_w = engine_->getWindowsWidth();
 	_h = engine_->getWindowsHeight();	
 	
-	//ÒôÁ¿
+	//éŸ³é‡
 	_media->getAudioStream()->setVolume(_cur_volume);
 	
-	//ÊÔÍ¼ÔØÈë×ÖÄ»
+	//è¯•å›¾è½½å…¥å­—å¹•
 	auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
 	_subtitle = _subtitle_factory->createSubtitle(open_subfilename);
 	_subtitle->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 
-	//¶ÁÈ¡¼ÇÂ¼ÖÐµÄÎÄ¼þÊ±¼ä²¢Ìø×ª
+	//è¯»å–è®°å½•ä¸­çš„æ–‡ä»¶æ—¶é—´å¹¶è·³è½¬
 	if (_media->isMedia())
 	{
 		_cur_time = 0;
@@ -325,15 +332,15 @@ void BigPotPlayer::closeMedia(const string& filename)
 {
 	engine_->destroyMainTexture();
 
-	//¼ÇÂ¼²¥·ÅÊ±¼ä
+	//è®°å½•æ’­æ”¾æ—¶é—´
 	_cur_time = _media->getTime();
 	_cur_volume = _media->getAudioStream()->getVolume();
 
-	//¹Ø±Õ×ÖÄ»
+	//å…³é—­å­—å¹•
 	_subtitle_factory->destroySubtitle(_subtitle);
 	//_subtitle->closeSubtitle();
 	
-	//Èç¹ûÊÇÃ½ÌåÎÄ¼þ¾Í¼ÇÂ¼Ê±¼ä
+	//å¦‚æžœæ˜¯åª’ä½“æ–‡ä»¶å°±è®°å½•æ—¶é—´
 	if (_media->isMedia())
 		config_->setRecord(_cur_time, filename.c_str());
 
