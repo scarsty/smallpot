@@ -107,7 +107,9 @@ int BigPotMediaStream::decodeFramePre(bool decode /*= true*/)
 	return ret;
 }
 
-int BigPotMediaStream::decodeFrame()
+
+//参数为是否重置暂停时间和显示时间，一般seek后应立刻重置
+int BigPotMediaStream::decodeFrame(bool reset)
 {
 	if (exist() && needDecode() && decodeFramePre() > 0)
 	{
@@ -117,14 +119,16 @@ int BigPotMediaStream::decodeFrame()
 			//如果只有一帧，则静止时间需更新
 			if (_map.size() == 0)
 			{
-				pause_time_ = time_shown_ = time_dts_;
+				if (reset)
+				    pause_time_ = time_shown_ = time_dts_;
 			}
 			if (_map.count(f.time) == 0 && f.data)
 				_map[f.time] = f;
 		}
 		else
 		{
-			pause_time_ = time_shown_ = time_dts_;
+			if (reset)
+			    pause_time_ = time_shown_ = time_dts_;
 		}
 		setDecoded(true);
 		return 0;
@@ -152,6 +156,7 @@ int BigPotMediaStream::seek(int time, int direct)
 		if (pause_)
 			avcodec_flush_buffers(codecCtx_);
 		dropAllDecoded();
+		//decodeFrame(true);
 	}
 	return 0;
 }
