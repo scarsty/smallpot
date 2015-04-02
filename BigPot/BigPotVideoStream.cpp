@@ -19,10 +19,10 @@ int BigPotVideoStream::showTexture(int time)
 {
 	if (stream_index_ < 0)
 		return -1;
-	auto f = getCurrentFrameData();
-	int time_c = f.time;
 	if (haveDecoded())
 	{
+		auto f = getCurrentFrameData();
+		int time_c = f.time;
 		if (time >= time_c)
 		{
 			auto tex = (BP_Texture*)f.data;
