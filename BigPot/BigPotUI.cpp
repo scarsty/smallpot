@@ -35,7 +35,9 @@ void BigPotUI::drawBall()
 void BigPotUI::drawText(const string &text)
 {
 #ifdef _MSC_VER
-    const char* s = "c:/windows/fonts/msyh.ttf";
+    const char* s = "c:/windows/fonts/msyh.ttc";
+	if (!fileExist(s))
+		s = "c:/windows/fonts/msyh.ttf";
 #else
     const char* s = "/System/Library/Fonts/Palatino.ttc";
 #endif
