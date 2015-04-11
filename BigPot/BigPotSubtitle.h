@@ -9,6 +9,9 @@ extern "C"
 
 #include <vector>
 
+#include "BigPotString.h"
+using namespace BigPotString;
+
 enum BigPotPSubtitleType
 {
 	BPSUB_TYPE_ASS,
