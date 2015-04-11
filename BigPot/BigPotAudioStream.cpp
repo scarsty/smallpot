@@ -28,7 +28,9 @@ void BigPotAudioStream::openAudioDevice()
 	if (stream_index_ < 0)
 		return;
 	_freq = codecCtx_->sample_rate;
-	_channels = codecCtx_->channels;
+	_channels = config_->getInteger("channels", -1);
+    if (_channels<0)
+        _channels = codecCtx_->channels;
 	engine_->openAudio(_freq, _channels, codecCtx_->frame_size,
 		2048, bind(&BigPotAudioStream::mixAudioData, this, placeholders::_1, placeholders::_2));
 }
