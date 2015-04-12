@@ -116,7 +116,7 @@ public:
 		return time_shown_;
 	}
 	bool exist(){ return stream_index_ >= 0; }
-	void resetTimeAxis();
+	void resetTimeAxis(int time);
 	bool isPause() { return pause_; }
 	bool isKeyFrame() { return key_frame_; }
 	virtual void setPause(bool pause);
