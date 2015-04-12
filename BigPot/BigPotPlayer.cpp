@@ -203,13 +203,14 @@ int BigPotPlayer::eventLoop()
 		}
 		e.type = BP_FIRSTEVENT;
 		//if (!loop) break;
-		//if (seeking)
-			//cout << "de "<<engine_->getTicks() << " ";
 		//在每个循环均尝试预解压
 		_media->decodeFrame();
-		//if (seeking)cout << engine_->getTicks() << " " << endl;
 		//尝试以音频为基准显示视频
 		int audioTime = _media->getTime();  //注意优先为音频时间，若音频不存在使用视频时间
+		/*if (seeking)
+		{
+			cout << audioTime << " " <<_media->getAudioStream()->getTimedts() << endl<<endl;;
+		}*/
 		int time_s = audioTime;
 		if (pause)
 		{
