@@ -62,6 +62,9 @@ int BigPotMedia::decodeFrame()
 					int sv = _videoStream->skipFrame(max_dts);
 					int sa = _audioStream->skipFrame(max_dts);
 					printf("drop %d audio frames, %d video frames\n", sa, sv);
+					/*v_dts = _videoStream->getTimedts();
+					a_dts = _audioStream->getTimedts();
+					printf("seeking end diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);*/
 				}
 			}
 		}
