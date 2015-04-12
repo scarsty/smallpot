@@ -120,7 +120,7 @@ int BigPotMediaStream::decodeFrame(bool reset)
 			if (_map.size() == 0)
 			{
 				if (reset)
-					resetTimeAxis();
+					resetTimeAxis(time_dts_);
 			}
 			if (_map.count(f.time) == 0 && f.data)
 				_map[f.time] = f;
@@ -128,7 +128,7 @@ int BigPotMediaStream::decodeFrame(bool reset)
 		else
 		{
 			if (reset)
-				resetTimeAxis();
+				resetTimeAxis(time_dts_);
 		}
 		setDecoded(true);
 		return 0;
@@ -276,13 +276,14 @@ int BigPotMediaStream::skipFrame(int time)
 	int n = 0;
 	while (time_dts_ < time)
 	{
-		n++;
+		n++;		
 		//视频需解码，因为关键帧不解后续一系列都有问题，音频可以只读不解
 		if (decodeFramePre(type_ == BPMEDIA_TYPE_VIDEO) < 0)
 			break;
 	}
-	//跳帧后需更新计时状态
-	resetTimeAxis();
+	//跳帧后需丢弃原来的解码，重置时间轴
+	dropAllDecoded();
+	resetTimeAxis(time_dts_);
 	return n;
 }
 
@@ -307,9 +308,9 @@ void BigPotMediaStream::setPause(bool pause)
 	pause_time_ = getTime();
 }
 
-void BigPotMediaStream::resetTimeAxis()
+void BigPotMediaStream::resetTimeAxis(int time)
 {
-	pause_time_ = time_shown_ = time_dts_;
+	pause_time_ = time_shown_ = time;
 	ticks_shown_ = engine_->getTicks();
 }
 

@@ -202,6 +202,7 @@ int BigPotPlayer::eventLoop()
 			break;
 		}
 		e.type = BP_FIRSTEVENT;
+
 		//if (!loop) break;
 		//在每个循环均尝试预解压
 		_media->decodeFrame();
@@ -218,7 +219,7 @@ int BigPotPlayer::eventLoop()
 		}
 		int videostate = _media->getVideoStream()
 			->showTexture(time_s);
-
+		//printf("\nvideostate%d", videostate);
 		//依据解视频的结果判断是否显示
 		bool show = false;
 		//有视频显示成功，或者有静态视频，或者只有音频，均刷新
