@@ -67,11 +67,13 @@ private:
 	bool _keep_ratio = true;
 
 	int _start_w = 320, _start_h = 150; //320, 150
-	int _win_w, _win_h;
+	int _win_w, _win_h, _max_w, _max_h;
 public:
 	int init();
 	__declspec(deprecated)	
 		void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
+    __declspec(deprecated)
+        void getWindowMaxSize(int &w, int &h) { SDL_GetWindowMaximumSize(_win, &w, &h); }
 	int getWindowsWidth()
 	{
 		int w;
@@ -84,14 +86,18 @@ public:
 		SDL_GetWindowSize(_win, nullptr, &h);
 		return h;
 	}
-	void setWindowSize(int w, int h) 
+    int getMaxWindowWidth() {return _max_w;}
+    int getMaxWindowHeight() {return _max_h;}
+	void setWindowSize(int &w, int &h)
 	{ 
 		if (w == 0 || h == 0) return;
-		_win_w = w; _win_h = h;
+		_win_w = min(_max_w, w);
+        _win_h = min(_max_h, h);
 		SDL_SetWindowSize(_win, w, h); 
 		setPresentPosition();
         SDL_ShowWindow(_win);
         SDL_RaiseWindow(_win);
+        SDL_GetWindowSize(_win, &w, &h);
         //renderPresent();
 	}
 	void setWindowPosition(int x, int y)

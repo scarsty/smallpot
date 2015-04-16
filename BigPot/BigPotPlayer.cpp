@@ -35,22 +35,30 @@ int BigPotPlayer::beginWithFile(const string &filename)
     
 	while (_run)
 	{
-        if (count <= 1)
+        /*if (count <= 1)
         {
             //_drop_filename = "";
             //play_filename = "";
-        }
+        }*/
         
 		openMedia(play_filename);
 		//首次打开文件窗口居中
-		if (count==0) engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-
+		if (count==0)
+        {
+            /*auto w = engine_->getMaxWindowWidth();
+            auto h = engine_->getMaxWindowHeight();
+            auto x = max(0, (w-_w)/2);
+            auto y = max(0, (h-_h)/2);
+            printf("%d,%d\n",x,y);
+            engine_->setWindowPosition(x, y);*/
+            engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+        }
 		this->eventLoop();
 
 		closeMedia(play_filename);
+        if (play_filename != "") count++;
 		play_filename = _drop_filename;
 
-		count++;
 	}
 	destroy();
 	return 0;
@@ -311,7 +319,11 @@ void BigPotPlayer::openMedia(const string& filename)
 	engine_->createMainTexture(_w, _h);
 	//重新获取尺寸，有可能与之前不同
 	_w = engine_->getWindowsWidth();
-	_h = engine_->getWindowsHeight();	
+	_h = engine_->getWindowsHeight();
+/*#ifdef __APPLE__
+    _w = int(1.0 * _h * _media->getVideoStream()->getWidth() / _media->getVideoStream()->getHeight());
+    engine_->setWindowSize(_w, _h);
+#endif*/
 	
 	//音量
 	_media->getAudioStream()->setVolume(_cur_volume);
