@@ -88,7 +88,7 @@ public:
 	}
     int getMaxWindowWidth() {return _max_w;}
     int getMaxWindowHeight() {return _max_h;}
-	void setWindowSize(int &w, int &h)
+	void setWindowSize(int w, int h)
 	{ 
 		if (w == 0 || h == 0) return;
 		_win_w = min(_max_w, w);
@@ -97,7 +97,7 @@ public:
 		setPresentPosition();
         SDL_ShowWindow(_win);
         SDL_RaiseWindow(_win);
-        SDL_GetWindowSize(_win, &w, &h);
+        SDL_GetWindowSize(_win, &_win_w, &_win_h);
         //renderPresent();
 	}
 	void setWindowPosition(int x, int y)
