@@ -214,9 +214,14 @@ int BigPotEngine::init()
 	}
 	_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                             _start_w, _start_h, SDL_WINDOW_RESIZABLE);
+    //SDL_HideWindow(_win);
+    //SDL_MaximizeWindow(_win);
+    //SDL_GetWindowMaximumSize(_win, &_max_w, &_max_h);
+    //SDL_SetWindowSize(_win, _start_w, _start_h);
     SDL_ShowWindow(_win);
     SDL_RaiseWindow(_win);
 	_ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
+    
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
 	
@@ -225,6 +230,14 @@ int BigPotEngine::init()
 	showLogo();
 	renderPresent();
 	TTF_Init();
+    
+    SDL_Rect r;
+    SDL_GetDisplayBounds(0, &r);
+    _max_w = r.w;
+    _max_h = r.h;
+    
+    printf("maximium width and height are: %d, %d\n", _max_w, _max_h);
+    
 	return 0;
 }
 
