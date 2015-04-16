@@ -320,10 +320,6 @@ void BigPotPlayer::openMedia(const string& filename)
 	//重新获取尺寸，有可能与之前不同
 	_w = engine_->getWindowsWidth();
 	_h = engine_->getWindowsHeight();
-/*#ifdef __APPLE__
-    _w = int(1.0 * _h * _media->getVideoStream()->getWidth() / _media->getVideoStream()->getHeight());
-    engine_->setWindowSize(_w, _h);
-#endif*/
 	
 	//音量
 	_media->getAudioStream()->setVolume(_cur_volume);
