@@ -36,15 +36,6 @@
     <ClCompile Include="BigPotResample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotMediaStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BigPotAudioStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BigPotVideoStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BigPotBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,6 +72,15 @@
     <ClCompile Include="BigPotString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BigPotStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BigPotStreamVideo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BigPotStreamAudio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotPlayer.h">
@@ -93,15 +93,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BigPotMediaStream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BigPotAudioStream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BigPotVideoStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BigPotBase.h">
@@ -138,6 +129,15 @@
       <Filter>hash</Filter>
     </ClInclude>
     <ClInclude Include="BigPotString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BigPotStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BigPotStreamVideo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BigPotStreamAudio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

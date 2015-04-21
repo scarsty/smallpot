@@ -1,6 +1,6 @@
-﻿#include "BigPotAudioStream.h"
+﻿#include "BigPotStreamAudio.h"
 
-BigPotAudioStream::BigPotAudioStream()
+BigPotStreamAudio::BigPotStreamAudio()
 {
 	_volume = engine_->getMaxVolume() / 2;
 	//预解包数量
@@ -13,7 +13,7 @@ BigPotAudioStream::BigPotAudioStream()
 }
 
 
-BigPotAudioStream::~BigPotAudioStream()
+BigPotStreamAudio::~BigPotStreamAudio()
 {
 	if (useMap())
 		av_free(data_);
@@ -23,7 +23,7 @@ BigPotAudioStream::~BigPotAudioStream()
 	closeAudioDevice();
 }
 
-void BigPotAudioStream::openAudioDevice()
+void BigPotStreamAudio::openAudioDevice()
 {
 	if (stream_index_ < 0)
 		return;
@@ -32,16 +32,16 @@ void BigPotAudioStream::openAudioDevice()
     if (_channels<0)
         _channels = codecCtx_->channels;
 	engine_->openAudio(_freq, _channels, codecCtx_->frame_size,
-		2048, bind(&BigPotAudioStream::mixAudioData, this, placeholders::_1, placeholders::_2));
+		2048, bind(&BigPotStreamAudio::mixAudioData, this, placeholders::_1, placeholders::_2));
 }
 
-int BigPotAudioStream::closeAudioDevice()
+int BigPotStreamAudio::closeAudioDevice()
 {
 	engine_->closeAudio();
 	return 0;
 }
 
-void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
+void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 {
 	if (!useMap())
 	{
@@ -107,7 +107,7 @@ void BigPotAudioStream::mixAudioData(Uint8* stream, int len)
 	//SDL_UnlockMutex(t->mutex_cpp);
 }
 
-BigPotMediaStream::FrameData BigPotAudioStream::convert(void* p /*= nullptr*/)
+BigPotStream::FrameData BigPotStreamAudio::convert(void* p /*= nullptr*/)
 {
 	data_length_ = BigPotResample::convert(codecCtx_, frame_, 
 		BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
@@ -139,12 +139,12 @@ BigPotMediaStream::FrameData BigPotAudioStream::convert(void* p /*= nullptr*/)
 	}
 }
 
-void BigPotAudioStream::freeData(void* p)
+void BigPotStreamAudio::freeData(void* p)
 {
 	//av_free(p);
 }
 
-int BigPotAudioStream::setVolume(int v)
+int BigPotStreamAudio::setVolume(int v)
 {
 	v = max(v, 0);
 	v = min(v, engine_->getMaxVolume());
@@ -152,26 +152,26 @@ int BigPotAudioStream::setVolume(int v)
 	return _volume = v;
 }
 
-int BigPotAudioStream::changeVolume(int v)
+int BigPotStreamAudio::changeVolume(int v)
 {
 	if (v == 0)
 		return _volume;
 	return setVolume(_volume + v);
 }
 
-bool BigPotAudioStream::needDecode2()
+bool BigPotStreamAudio::needDecode2()
 {
 	//return true;
 	return _data_write - _data_read < _scream_size / 2;
 }
 
-void BigPotAudioStream::resetDecodeState()
+void BigPotStreamAudio::resetDecodeState()
 {
 	_data_write = _data_read = 0;
 	//memset(data, 0, screamSize);
 }
 
-void BigPotAudioStream::setPause(bool pause)
+void BigPotStreamAudio::setPause(bool pause)
 {
 	engine_->pauseAudio(pause);
 	pause_ = pause;

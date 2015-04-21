@@ -20,7 +20,7 @@ enum BigPotMediaType
 	BPMEDIA_TYPE_AUDIO = AVMEDIA_TYPE_AUDIO,
 };
 
-class BigPotMediaStream : public BigPotBase
+class BigPotStream : public BigPotBase
 {
 public:
 	struct FrameData
@@ -30,8 +30,8 @@ public:
 		void* data;
 	};
 
-	BigPotMediaStream();
-	virtual ~BigPotMediaStream();
+	BigPotStream();
+	virtual ~BigPotStream();
 protected:
 	BigPotMediaType type_;
 	AVFormatContext* formatCtx_;

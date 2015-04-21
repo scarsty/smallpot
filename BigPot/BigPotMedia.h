@@ -1,9 +1,9 @@
 #pragma once
 
 #include "BigPotBase.h"
-#include "BigPotMediaStream.h"
-#include "BigPotAudioStream.h"
-#include "BigPotVideoStream.h"
+#include "BigPotStream.h"
+#include "BigPotStreamAudio.h"
+#include "BigPotStreamVideo.h"
 #include "BigPotString.h"
 
 using namespace BigPotString;
@@ -16,8 +16,8 @@ public:
 	BigPotMedia();
 	virtual ~BigPotMedia();
 private:
-	BigPotVideoStream *_videoStream;
-	BigPotAudioStream *_audioStream;
+	BigPotStreamVideo *_videoStream;
+	BigPotStreamAudio *_audioStream;
 private:
 	int _count = 0;
 	int _totalTime = 0;
@@ -25,8 +25,8 @@ private:
 	int _timebase = 0;
 	bool _seeking = false;
 public:
-	BigPotVideoStream *getVideoStream(){ return _videoStream; };
-	BigPotAudioStream *getAudioStream(){ return _audioStream; };
+	BigPotStreamVideo *getVideoStream(){ return _videoStream; };
+	BigPotStreamAudio *getAudioStream(){ return _audioStream; };
 	int decodeFrame();
 	int openFile(const string &filename);
 	int getAudioTime();

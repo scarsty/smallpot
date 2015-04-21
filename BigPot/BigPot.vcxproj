@@ -104,13 +104,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BigPotAudioStream.cpp" />
+    <ClCompile Include="BigPotStreamAudio.cpp" />
     <ClCompile Include="BigPotBase.cpp" />
     <ClCompile Include="BigPotConfig.cpp" />
     <ClCompile Include="BigPotConv.cpp" />
     <ClCompile Include="BigPotResample.cpp" />
     <ClCompile Include="BigPot.cpp" />
-    <ClCompile Include="BigPotMediaStream.cpp" />
+    <ClCompile Include="BigPotStream.cpp" />
     <ClCompile Include="BigPotPlayer.cpp" />
     <ClCompile Include="BigPotMedia.cpp" />
     <ClCompile Include="BigPotString.cpp" />
@@ -119,17 +119,17 @@
     <ClCompile Include="BigPotSubtitleFactory.cpp" />
     <ClCompile Include="BigPotSubtitleSrt.cpp" />
     <ClCompile Include="BigPotUI.cpp" />
-    <ClCompile Include="BigPotVideoStream.cpp" />
+    <ClCompile Include="BigPotStreamVideo.cpp" />
     <ClCompile Include="BigPotEngine.cpp" />
     <ClCompile Include="hash\sha3.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BigPotAudioStream.h" />
+    <ClInclude Include="BigPotStreamAudio.h" />
     <ClInclude Include="BigPotConfig.h" />
     <ClInclude Include="BigPotConv.h" />
     <ClInclude Include="BigPotMedia.h" />
-    <ClInclude Include="BigPotMediaStream.h" />
+    <ClInclude Include="BigPotStream.h" />
     <ClInclude Include="BigPotPlayer.h" />
     <ClInclude Include="BigPotBase.h" />
     <ClInclude Include="BigPotResample.h" />
@@ -139,7 +139,7 @@
     <ClInclude Include="BigPotSubtitleFactory.h" />
     <ClInclude Include="BigPotSubtitleSrt.h" />
     <ClInclude Include="BigPotUI.h" />
-    <ClInclude Include="BigPotVideoStream.h" />
+    <ClInclude Include="BigPotStreamVideo.h" />
     <ClInclude Include="BigPotEngine.h" />
     <ClInclude Include="hash\sha3.h" />
     <ClInclude Include="resource.h" />

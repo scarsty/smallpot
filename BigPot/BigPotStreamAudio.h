@@ -1,13 +1,13 @@
 ﻿#pragma once
 
-#include "BigPotMediaStream.h"
+#include "BigPotStream.h"
 #include "BigPotResample.h"
 
-class BigPotAudioStream : public BigPotMediaStream
+class BigPotStreamAudio : public BigPotStream
 {
 public:
-	BigPotAudioStream();
-	virtual ~BigPotAudioStream();
+	BigPotStreamAudio();
+	virtual ~BigPotStreamAudio();
 private:
 	const int _scream_size = 0x400000, _convert_size = 192000;
 	int _volume;

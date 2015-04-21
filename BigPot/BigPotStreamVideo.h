@@ -1,12 +1,12 @@
 #pragma once
 
-#include "BigPotMediaStream.h"
+#include "BigPotStream.h"
 
-class BigPotVideoStream : public BigPotMediaStream
+class BigPotStreamVideo : public BigPotStream
 {
 public:
-	BigPotVideoStream();
-	~BigPotVideoStream();
+	BigPotStreamVideo();
+	~BigPotStreamVideo();
 private:
 	void clear();
 	virtual void freeData(void* p);

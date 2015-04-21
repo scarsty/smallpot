@@ -1,21 +1,21 @@
-#include "BigPotVideoStream.h"
+#include "BigPotStreamVideo.h"
 
 
-BigPotVideoStream::BigPotVideoStream()
+BigPotStreamVideo::BigPotStreamVideo()
 {
 	//视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
 	maxSize_ = 0;
 }
 
 
-BigPotVideoStream::~BigPotVideoStream()
+BigPotStreamVideo::~BigPotStreamVideo()
 {
 }
 
 //-1无视频
 //1有可显示的包，未到时间
 //2已经没有可显示的包
-int BigPotVideoStream::showTexture(int time)
+int BigPotStreamVideo::showTexture(int time)
 {
 	if (stream_index_ < 0)
 		return -1;
@@ -40,12 +40,12 @@ int BigPotVideoStream::showTexture(int time)
 	return 2;	
 }
 
-void BigPotVideoStream::freeData(void* p)
+void BigPotStreamVideo::freeData(void* p)
 {
 	engine_->destroyTexture((BP_Texture*)p);
 }
 
-BigPotMediaStream::FrameData BigPotVideoStream::convert(void* p /*= nullptr*/)
+BigPotStream::FrameData BigPotStreamVideo::convert(void* p /*= nullptr*/)
 {
 	auto &f = frame_;
 	auto tex = (BP_Texture*)data_;
@@ -57,7 +57,7 @@ BigPotMediaStream::FrameData BigPotVideoStream::convert(void* p /*= nullptr*/)
 	return{ time_dts_, f->linesize[0], tex };
 }
 
-int BigPotVideoStream::dropTexture()
+int BigPotStreamVideo::dropTexture()
 {
 	return 0;
 }
