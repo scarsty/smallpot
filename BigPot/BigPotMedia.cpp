@@ -2,8 +2,8 @@
 
 BigPotMedia::BigPotMedia()
 {
-	_videoStream = new BigPotVideoStream();
-	_audioStream = new BigPotAudioStream();
+	_videoStream = new BigPotStreamVideo();
+	_audioStream = new BigPotStreamAudio();
 	//_subtitle = new BigPotSubtitle();
 }
 
