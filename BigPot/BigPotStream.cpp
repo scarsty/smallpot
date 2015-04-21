@@ -1,7 +1,7 @@
-﻿#include "BigPotMediaStream.h"
+﻿#include "BigPotStream.h"
 #include "BigPotResample.h"
 
-BigPotMediaStream::BigPotMediaStream()
+BigPotStream::BigPotStream()
 {
 	av_register_all();
 	formatCtx_ = avformat_alloc_context();
@@ -12,7 +12,7 @@ BigPotMediaStream::BigPotMediaStream()
 }
 
 
-BigPotMediaStream::~BigPotMediaStream()
+BigPotStream::~BigPotStream()
 {
 	av_frame_free(&frame_);
 	avformat_close_input(&formatCtx_);
@@ -22,7 +22,7 @@ BigPotMediaStream::~BigPotMediaStream()
 }
 
 //返回为非负才正常
-int BigPotMediaStream::openFile(const string & filename, BigPotMediaType type)
+int BigPotStream::openFile(const string & filename, BigPotMediaType type)
 {
 	stream_index_ = -1;
 	this->filename_ = filename;
@@ -55,7 +55,7 @@ int BigPotMediaStream::openFile(const string & filename, BigPotMediaType type)
 }
 
 //解压帧，同时会更新当前的时间戳
-int BigPotMediaStream::decodeFramePre(bool decode /*= true*/)
+int BigPotStream::decodeFramePre(bool decode /*= true*/)
 {
 	//3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
 	if (!exist()) return -2;
@@ -109,7 +109,7 @@ int BigPotMediaStream::decodeFramePre(bool decode /*= true*/)
 
 
 //参数为是否重置暂停时间和显示时间，一般seek后应立刻重置
-int BigPotMediaStream::decodeFrame(bool reset)
+int BigPotStream::decodeFrame(bool reset)
 {
 	if (exist() && needDecode() && decodeFramePre() > 0)
 	{
@@ -137,12 +137,12 @@ int BigPotMediaStream::decodeFrame(bool reset)
 }
 
 
-int BigPotMediaStream::getTotalTime()
+int BigPotStream::getTotalTime()
 {
 	return total_time_;
 }
 
-int BigPotMediaStream::seek(int time, int direct)
+int BigPotStream::seek(int time, int direct)
 {
 	if (exist())
 	{
@@ -161,7 +161,7 @@ int BigPotMediaStream::seek(int time, int direct)
 	return 0;
 }
 
-int BigPotMediaStream::dropFrameData(int key)
+int BigPotStream::dropFrameData(int key)
 {
 	mutex_.lock();
 	if (_map.size() > 0)
@@ -177,7 +177,7 @@ int BigPotMediaStream::dropFrameData(int key)
 	return 0;
 }
 
-void BigPotMediaStream::clearMap()
+void BigPotStream::clearMap()
 {
 	//SDL_LockMutex(mutex_cpp);
 	//printf("clear buffer begin with %d\n", _map.size());
@@ -193,12 +193,12 @@ void BigPotMediaStream::clearMap()
 	//SDL_UnlockMutex(mutex_cpp);
 }
 
-void BigPotMediaStream::setMap(int key, FrameData f)
+void BigPotStream::setMap(int key, FrameData f)
 {
 	_map[key] = f;
 }
 
-bool BigPotMediaStream::needDecode()
+bool BigPotStream::needDecode()
 {
 	if (!needDecode2())
 		return false;
@@ -208,12 +208,12 @@ bool BigPotMediaStream::needDecode()
 		return !_decoded;
 }
 
-void BigPotMediaStream::setDecoded(bool b)
+void BigPotStream::setDecoded(bool b)
 {
 	_decoded = b;
 }
 
-void BigPotMediaStream::dropDecoded()
+void BigPotStream::dropDecoded()
 {
 	if (useMap())
 		dropFrameData();
@@ -221,12 +221,12 @@ void BigPotMediaStream::dropDecoded()
 		_decoded = false;
 }
 
-bool BigPotMediaStream::useMap()
+bool BigPotStream::useMap()
 {
 	return maxSize_ > 0;
 }
 
-BigPotMediaStream::FrameData BigPotMediaStream::getCurrentFrameData()
+BigPotStream::FrameData BigPotStream::getCurrentFrameData()
 {
 	if (useMap())
 	{
@@ -241,7 +241,7 @@ BigPotMediaStream::FrameData BigPotMediaStream::getCurrentFrameData()
 	}
 }
 
-bool BigPotMediaStream::haveDecoded()
+bool BigPotStream::haveDecoded()
 {
 	if (useMap())
 	{
@@ -254,7 +254,7 @@ bool BigPotMediaStream::haveDecoded()
 }
 
 
-int BigPotMediaStream::getTime()
+int BigPotStream::getTime()
 {
 	if (pause_)
 		return pause_time_;
@@ -266,12 +266,12 @@ int BigPotMediaStream::getTime()
     return 0;
 }
 
-int BigPotMediaStream::setAnotherTime(int time)
+int BigPotStream::setAnotherTime(int time)
 {
 	return time_other_ = time;
 }
 
-int BigPotMediaStream::skipFrame(int time)
+int BigPotStream::skipFrame(int time)
 {
 	int n = 0;
 	while (time_dts_ < time)
@@ -287,7 +287,7 @@ int BigPotMediaStream::skipFrame(int time)
 	return n;
 }
 
-void BigPotMediaStream::getSize(int &w, int&h)
+void BigPotStream::getSize(int &w, int&h)
 {
 	if (exist())
 	{
@@ -296,19 +296,19 @@ void BigPotMediaStream::getSize(int &w, int&h)
 	}
 }
 
-void BigPotMediaStream::dropAllDecoded()
+void BigPotStream::dropAllDecoded()
 {
 	clearMap();
 	setDecoded(false);
 }
 
-void BigPotMediaStream::setPause(bool pause)
+void BigPotStream::setPause(bool pause)
 {
 	pause_ = pause;
 	pause_time_ = getTime();
 }
 
-void BigPotMediaStream::resetTimeAxis(int time)
+void BigPotStream::resetTimeAxis(int time)
 {
 	pause_time_ = time_shown_ = time;
 	ticks_shown_ = engine_->getTicks();
