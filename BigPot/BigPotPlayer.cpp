@@ -73,8 +73,8 @@ int BigPotPlayer::eventLoop()
 	int finished, i = 0, x, y;
 	int seek_step = 5000;
 	int volume_step = 4;
-	bool havevideo = _media->getVideoStream()->exist();
-	bool havemedia = _media->getAudioStream()->exist() || havevideo;
+	bool havevideo = _media->getVideo()->exist();
+	bool havemedia = _media->getAudio()->exist() || havevideo;
 	int totalTime = _media->getTotalTime();
 	string open_filename;
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
@@ -117,11 +117,11 @@ int BigPotPlayer::eventLoop()
 		{
 			if (e.wheel.y > 0)
 			{
-				_media->getAudioStream()->changeVolume(volume_step);
+				_media->getAudio()->changeVolume(volume_step);
 			}
 			else if (e.wheel.y < 0)
 			{
-				_media->getAudioStream()->changeVolume(-volume_step);
+				_media->getAudio()->changeVolume(-volume_step);
 			}
 			ui_alpha = 128;
 			break;
@@ -139,10 +139,10 @@ int BigPotPlayer::eventLoop()
 				seeking = true;
 				break;
 			case BPK_UP:
-				_media->getAudioStream()->changeVolume(volume_step);
+				_media->getAudio()->changeVolume(volume_step);
 				break;
 			case BPK_DOWN:
-				_media->getAudioStream()->changeVolume(-volume_step);
+				_media->getAudio()->changeVolume(-volume_step);
 				break;
 			}
 			ui_alpha = 128;
@@ -225,7 +225,7 @@ int BigPotPlayer::eventLoop()
 		{
 			time_s = 0; //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
 		}
-		int videostate = _media->getVideoStream()
+		int videostate = _media->getVideo()
 			->showTexture(time_s);
 		//printf("\nvideostate%d", videostate);
 		//依据解视频的结果判断是否显示
@@ -236,10 +236,10 @@ int BigPotPlayer::eventLoop()
 			show = true;
 			//以下均是为了显示信息，可以去掉
 #ifdef _DEBUG
-			int videoTime = (_media->getVideoStream()->getTimedts());
+			int videoTime = (_media->getVideo()->getTimedts());
 			int delay = -videoTime + audioTime;
 			printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
-				_media->getAudioStream()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
+				_media->getAudio()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
 #endif
 		}
 		//静止时，无视频时，视频已放完时40毫秒显示一次
@@ -257,7 +257,7 @@ int BigPotPlayer::eventLoop()
 		{
 			if (_subtitle->exist())
 				_subtitle->show(audioTime);
-			_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudioStream()->changeVolume(0));
+			_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudio()->changeVolume(0));
 			engine_->renderPresent();
 			prev_show_time = engine_->getTicks();
 		}
@@ -313,8 +313,8 @@ void BigPotPlayer::openMedia(const string& filename)
 	_media->openFile(open_filename);
 
 	//窗口尺寸，时间
-	_w = _media->getVideoStream()->getWidth();
-	_h = _media->getVideoStream()->getHeight();
+	_w = _media->getVideo()->getWidth();
+	_h = _media->getVideo()->getHeight();
 	engine_->setWindowSize(_w, _h);
 	engine_->createMainTexture(_w, _h);
 	//重新获取尺寸，有可能与之前不同
@@ -322,7 +322,7 @@ void BigPotPlayer::openMedia(const string& filename)
 	_h = engine_->getWindowsHeight();
 	
 	//音量
-	_media->getAudioStream()->setVolume(_cur_volume);
+	_media->getAudio()->setVolume(_cur_volume);
 	
 	//试图载入字幕
 	auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
@@ -344,7 +344,7 @@ void BigPotPlayer::closeMedia(const string& filename)
 
 	//记录播放时间
 	_cur_time = _media->getTime();
-	_cur_volume = _media->getAudioStream()->getVolume();
+	_cur_volume = _media->getAudio()->getVolume();
 
 	//关闭字幕
 	_subtitle_factory->destroySubtitle(_subtitle);
