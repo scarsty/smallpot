@@ -2,16 +2,16 @@
 
 BigPotMedia::BigPotMedia()
 {
-	_videoStream = new BigPotStreamVideo();
-	_audioStream = new BigPotStreamAudio();
+	_streamVideo = new BigPotStreamVideo();
+	_streamAudio = new BigPotStreamAudio();
 	//_subtitle = new BigPotSubtitle();
 }
 
 
 BigPotMedia::~BigPotMedia()
 {
-	delete _videoStream;
-	delete _audioStream;
+	delete _streamVideo;
+	delete _streamAudio;
 	//delete _subtitle;
 }
 
@@ -19,16 +19,16 @@ int BigPotMedia::openFile(const string &filename)
 {
 	if (!fileExist(filename))
 		return -1;
-	_videoStream->openFile(filename, BPMEDIA_TYPE_VIDEO);
-	_audioStream->openFile(filename, BPMEDIA_TYPE_AUDIO);
+	_streamVideo->openFile(filename, BPMEDIA_TYPE_VIDEO);
+	_streamAudio->openFile(filename, BPMEDIA_TYPE_AUDIO);
 
-	if (_audioStream->exist())
+	if (_streamAudio->exist())
 	{
-		_totalTime = _audioStream->getTotalTime();
-		_audioStream->openAudioDevice();
+		_totalTime = _streamAudio->getTotalTime();
+		_streamAudio->openAudioDevice();
 	}
 	else
-		_totalTime = _videoStream->getTotalTime();
+		_totalTime = _streamVideo->getTotalTime();
 	return 0;
 }
 
@@ -36,8 +36,8 @@ int BigPotMedia::openFile(const string &filename)
 int BigPotMedia::decodeFrame()
 {	
 	//int se= engine_->getTicks();
-	_videoStream->decodeFrame(_seeking);
-	_audioStream->decodeFrame(_seeking);
+	_streamVideo->decodeFrame(_seeking);
+	_streamAudio->decodeFrame(_seeking);
 
 	//int m = _audioStream->getTimedts();
 	//int n = _videoStream->getTimedts();
@@ -47,20 +47,20 @@ int BigPotMedia::decodeFrame()
 		//seek之后，音频可能落后，需要追赶音频
 		if (time > 0)
 		{
-			if (_videoStream->exist() && _audioStream->exist())
+			if (_streamVideo->exist() && _streamAudio->exist())
 			{
 				//一定时间以上才跳帧
 				//查看延迟情况
-				int v_dts = _videoStream->getTimedts();
-				int a_dts = _audioStream->getTimedts();
+				int v_dts = _streamVideo->getTimedts();
+				int a_dts = _streamAudio->getTimedts();
 				int max_dts = max(v_dts, a_dts);
 				int min_dts = min(v_dts, a_dts);
 				printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
 				//一定时间以上才跳帧
 				if (max_dts - min_dts > 200)
 				{
-					int sv = _videoStream->skipFrame(max_dts);
-					int sa = _audioStream->skipFrame(max_dts);
+					int sv = _streamVideo->skipFrame(max_dts);
+					int sa = _streamAudio->skipFrame(max_dts);
 					printf("drop %d audio frames, %d video frames\n", sa, sv);
 					/*v_dts = _videoStream->getTimedts();
 					a_dts = _audioStream->getTimedts();
@@ -77,25 +77,25 @@ int BigPotMedia::decodeFrame()
 int BigPotMedia::getAudioTime()
 {
 	//printf("\t\t\t\t\t\t\r%d,%d,%d", audioStream->time, videoStream->time, audioStream->getAudioTime());
-	return _audioStream->getTime();
+	return _streamAudio->getTime();
 }
 
 int BigPotMedia::seekTime(int time, int direct /*= 1*/)
 {
 	time = min(time, _totalTime-100);
-	_videoStream->seek(time, direct);
-	_audioStream->seek(time, direct);
+	_streamVideo->seek(time, direct);
+	_streamAudio->seek(time, direct);
 
 	_seeking = true;
 	
-	_audioStream->resetDecodeState();
+	_streamAudio->resetDecodeState();
 	
 	return 0;
 }
 
 int BigPotMedia::showVideoFrame(int time)
 {
-	return _videoStream->showTexture(time);
+	return _streamVideo->showTexture(time);
 }
 
 int BigPotMedia::seekPos(double pos)
@@ -106,15 +106,15 @@ int BigPotMedia::seekPos(double pos)
 
 int BigPotMedia::getVideoTime()
 {
-	return _videoStream->getTime();
+	return _streamVideo->getTime();
 }
 
 int BigPotMedia::getTime()
 {
-	if (_audioStream->exist())
-		return _audioStream->getTime();
+	if (_streamAudio->exist())
+		return _streamAudio->getTime();
 	else
-		return _videoStream->getTime();
+		return _streamVideo->getTime();
 }
 
 void BigPotMedia::destroy()
@@ -124,7 +124,7 @@ void BigPotMedia::destroy()
 
 void BigPotMedia::setPause(bool pause)
 {
-	_audioStream->setPause(pause);
-	_videoStream->setPause(pause);
+	_streamAudio->setPause(pause);
+	_streamVideo->setPause(pause);
 }
 
