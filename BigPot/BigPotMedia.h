@@ -16,8 +16,8 @@ public:
 	BigPotMedia();
 	virtual ~BigPotMedia();
 private:
-	BigPotStreamVideo *_videoStream;
-	BigPotStreamAudio *_audioStream;
+	BigPotStreamVideo *_streamVideo;
+	BigPotStreamAudio *_streamAudio;
 private:
 	int _count = 0;
 	int _totalTime = 0;
@@ -25,8 +25,8 @@ private:
 	int _timebase = 0;
 	bool _seeking = false;
 public:
-	BigPotStreamVideo *getVideoStream(){ return _videoStream; };
-	BigPotStreamAudio *getAudioStream(){ return _audioStream; };
+	BigPotStreamVideo *getVideo(){ return _streamVideo; };
+	BigPotStreamAudio *getAudio(){ return _streamAudio; };
 	int decodeFrame();
 	int openFile(const string &filename);
 	int getAudioTime();
@@ -39,7 +39,7 @@ public:
 	void destroy();
 	bool isMedia()
 	{
-		return _audioStream->exist() || _videoStream->exist();
+		return _streamAudio->exist() || _streamVideo->exist();
 	}
 	void setPause(bool pause);
 };
