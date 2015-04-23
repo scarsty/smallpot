@@ -257,7 +257,7 @@ int BigPotPlayer::eventLoop()
 		{
 			if (_subtitle->exist())
 				_subtitle->show(audioTime);
-			_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudio()->changeVolume(0));
+			_UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudio()->getVolume());
 			engine_->renderPresent();
 			prev_show_time = engine_->getTicks();
 		}
