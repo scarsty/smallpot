@@ -53,7 +53,7 @@ namespace BigPotString
 		int pos_p = filename.find_last_of(_path_);
 		int pos_d = filename.find_last_of('.');
 		if (mode == FINDFIRST)
-			pos_d = filename.find_first_of('.');
+			pos_d = filename.find_first_of('.', pos_p + 1);
 		if (pos_p < pos_d)
 			return filename.substr(0, pos_d);
 		return filename;
