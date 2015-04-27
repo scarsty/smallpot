@@ -28,10 +28,16 @@ namespace BigPotString
 		virtual ~BigPotString();
 		static string _filepath;
 		public:*/
+	enum FindMode
+	{
+		FINDLAST = 0,
+		FINDFIRST = 1
+	};
+
 	bool fileExist(const string& filename);
 	string readStringFromFile(const string& filename);
 	string getFileExt(const string& filename);
-	string getFileMainname(const string& fileName, int mode = 0);
+	string getFileMainname(const string& fileName, FindMode mode = FINDLAST);
 	string getFilenameWithoutPath(const string& fileName);
 	string changeFileExt(const string& filename, const string& ext);
 	string getFilePath(const string& filename);
