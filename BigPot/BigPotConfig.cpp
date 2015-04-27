@@ -88,7 +88,7 @@ XMLElement* BigPotConfig::getElement(XMLElement *parent, const char * name)
 int BigPotConfig::getRecord(const char * name)
 {
 	if (strlen(name) == 0) return 0;
-	auto mainname = getFileMainname(getFilenameWithoutPath(name), 1);
+	auto mainname = getFileMainname(getFilenameWithoutPath(name), FINDFIRST);
 	const char * str = getElement(_record, ("_" + _sha3(mainname)).c_str())->GetText();
 	if (!str)
 		return 0;
@@ -98,7 +98,7 @@ int BigPotConfig::getRecord(const char * name)
 void BigPotConfig::setRecord(int v, const char * name)
 {
 	if (strlen(name) == 0) return;
-	auto mainname = getFileMainname(getFilenameWithoutPath(name), 1);
+	auto mainname = getFileMainname(getFilenameWithoutPath(name), FINDFIRST);
 	getElement(_record, ("_" + _sha3(mainname)).c_str())
 		->SetText(formatString("%d", v).c_str());
 }

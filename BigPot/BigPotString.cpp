@@ -48,14 +48,12 @@ namespace BigPotString
 	}
 
 	//一般是找最后一个点，为1是找第一个点
-	string getFileMainname(const string& filename, int mode)
+	string getFileMainname(const string& filename, FindMode mode)
 	{
 		int pos_p = filename.find_last_of(_path_);
-		int pos_d;
-		if (mode == 1)
+		int pos_d = filename.find_last_of('.');
+		if (mode == FINDFIRST)
 			pos_d = filename.find_first_of('.');
-		else
-			pos_d = filename.find_last_of('.');
 		if (pos_p < pos_d)
 			return filename.substr(0, pos_d);
 		return filename;
