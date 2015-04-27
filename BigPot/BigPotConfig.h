@@ -126,19 +126,12 @@ public:
 	{
 		setString(formatString("%d", v != 0), name);
 	}
-	//¼ÇÂ¼
-	int getRecord(const char * name)
-	{
-		if (strlen(name) == 0) return 0;
-		return atoi(getElement(_record, ("_" + _sha3(getFilenameWithoutPath(name))).c_str())->GetText());
-	}
 
-	void setRecord(int v, const char * name) 
-	{
-		if (strlen(name) == 0) return;
-		getElement(_record, ("_" + _sha3(getFilenameWithoutPath(name))).c_str())
-			->SetText(formatString("%d", v).c_str());
-	}
+	//¼ÇÂ¼
+	int getRecord(const char * name);
+
+	void setRecord(int v, const char * name);
+	
 	void clearRecord() 
 	{
 		if (_record)
