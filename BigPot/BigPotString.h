@@ -31,7 +31,7 @@ namespace BigPotString
 	bool fileExist(const string& filename);
 	string readStringFromFile(const string& filename);
 	string getFileExt(const string& filename);
-	string getFileMainname(const string& fileName);
+	string getFileMainname(const string& fileName, int mode = 0);
 	string getFilenameWithoutPath(const string& fileName);
 	string changeFileExt(const string& filename, const string& ext);
 	string getFilePath(const string& filename);

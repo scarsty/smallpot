@@ -57,7 +57,7 @@ int BigPotMedia::decodeFrame()
 				int min_dts = min(v_dts, a_dts);
 				printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
 				//一定时间以上才跳帧
-				if (max_dts - min_dts > 200)
+				if (max_dts - min_dts > 100)
 				{
 					int sv = _streamVideo->skipFrame(max_dts);
 					int sa = _streamAudio->skipFrame(max_dts);
