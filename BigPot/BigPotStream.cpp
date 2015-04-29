@@ -153,7 +153,7 @@ int BigPotStream::seek(int time, int direct)
 		if (direct < 0)
 			flag = flag | AVSEEK_FLAG_BACKWARD;
 		av_seek_frame(formatCtx_, -1, i, flag);
-		if (pause_)
+		if (type_ == BPMEDIA_TYPE_VIDEO)
 			avcodec_flush_buffers(codecCtx_);
 		dropAllDecoded();
 		//decodeFrame(true);
