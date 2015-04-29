@@ -188,7 +188,7 @@ public:
 	void delay(const int t) { SDL_Delay(t); }
 	uint32_t getTicks(){ return SDL_GetTicks(); }
 	uint32_t tic() { return _time = SDL_GetTicks(); }
-	void toc() 	{ printf("%d\n", SDL_GetTicks() - _time); }
+	void toc() 	{ if (SDL_GetTicks() != _time) printf("%d\n", SDL_GetTicks() - _time); }
 	void getMouseState(int &x, int& y){ SDL_GetMouseState(&x, &y); };
 	int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); };
 	void free(void* mem){ SDL_free(mem); }
