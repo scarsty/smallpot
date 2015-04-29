@@ -144,6 +144,7 @@ int BigPotStream::getTotalTime()
 
 int BigPotStream::seek(int time, int direct)
 {
+	
 	if (exist())
 	{
 		int c = 5;
@@ -152,12 +153,17 @@ int BigPotStream::seek(int time, int direct)
 		int flag = 0;
 		if (direct < 0)
 			flag = flag | AVSEEK_FLAG_BACKWARD;
-		av_seek_frame(formatCtx_, -1, i, flag);
-		if (type_ == BPMEDIA_TYPE_VIDEO)
+		//间隔比较大的情况重置播放器
+		if (type_ == BPMEDIA_TYPE_VIDEO 
+			&& (pause_ || engine_->getTicks() - _seek_record > 100))
+		{
 			avcodec_flush_buffers(codecCtx_);
+		}
+		av_seek_frame(formatCtx_, -1, i, flag);
 		dropAllDecoded();
 		//decodeFrame(true);
 	}
+	_seek_record = engine_->getTicks();
 	return 0;
 }
 
