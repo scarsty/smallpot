@@ -101,7 +101,7 @@ public:
 		ticks_shown_ = -1;
 	}
 
-	int seek(int time, int direct = 1);
+	int seek(int time, int direct = 1, bool reset = false);
 	void setFrameTime();
 	int getTime();
 	int setAnotherTime(int time);

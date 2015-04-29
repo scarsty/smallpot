@@ -101,7 +101,7 @@ int BigPotPlayer::eventLoop()
 				if (_h - e.button.y < 50)
 				{
 					double pos = 1.0 * e.button.x / _w;
-					_media->seekPos(pos);
+					_media->seekPos(pos, 1, true);
 					seeking = true;
 				}
 
@@ -135,7 +135,7 @@ int BigPotPlayer::eventLoop()
 				seeking = true;
 				break;
 			case BPK_RIGHT:
-				_media->seekTime(_media->getTime() + seek_step);
+				_media->seekTime(_media->getTime() + seek_step, 1);
 				seeking = true;
 				break;
 			case BPK_UP:

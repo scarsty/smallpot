@@ -79,11 +79,11 @@ int BigPotMedia::getAudioTime()
 	return _streamAudio->getTime();
 }
 
-int BigPotMedia::seekTime(int time, int direct /*= 1*/)
+int BigPotMedia::seekTime(int time, int direct /*= 1*/, bool reset /*= false*/)
 {
 	time = min(time, _totalTime-100);
-	_streamVideo->seek(time, direct);
-	_streamAudio->seek(time, direct);
+	_streamVideo->seek(time, direct, reset);
+	_streamAudio->seek(time, direct, reset);
 
 	_seeking = true;
 	
@@ -97,10 +97,10 @@ int BigPotMedia::showVideoFrame(int time)
 	return _streamVideo->showTexture(time);
 }
 
-int BigPotMedia::seekPos(double pos)
+int BigPotMedia::seekPos(double pos, int direct /*= 1*/, bool reset /*= false*/)
 {
 	//printf("\nseek %f pos, %f s\n", pos, pos * totalTime / 1e3);
-	return seekTime(pos * _totalTime);
+	return seekTime(pos * _totalTime, direct, reset);
 }
 
 int BigPotMedia::getVideoTime()
