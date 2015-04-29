@@ -34,11 +34,10 @@ int BigPotMedia::openFile(const string &filename)
 
 
 int BigPotMedia::decodeFrame()
-{	
+{
 	//int se= engine_->getTicks();
 	_streamVideo->decodeFrame(_seeking);
 	_streamAudio->decodeFrame(_seeking);
-
 	//int m = _audioStream->getTimedts();
 	//int n = _videoStream->getTimedts();
 	if (_seeking)

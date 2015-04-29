@@ -11,6 +11,7 @@ extern "C"
 #include "BigPotEngine.h"
 #include <algorithm>
 #include <map>
+#include <thread>
 #ifndef __MINGW32__
 #include <mutex> 
 #endif
@@ -58,10 +59,12 @@ protected:
 	bool key_frame_ = false;
 	void* data_ = nullptr;	//无缓冲时的用户数据, 可能为纹理或音频缓冲区
 	uint32_t data_length_ = 0;
+	//int frame_number_;
 private:
 
 	map<int, FrameData> _map;
-	bool _decoded = false, _skip = false, _ended = false, _seeking = false;
+	bool _decoded = false, _skip = false, _ended = false, _seeking = false;	
+	int _seek_record = 0;  //上次seek的记录
 
 private:
 	virtual FrameData convert(void * p = nullptr) 
@@ -120,9 +123,7 @@ public:
 	bool isPause() { return pause_; }
 	bool isKeyFrame() { return key_frame_; }
 	virtual void setPause(bool pause);
-
-	int frame_number_;
-
+	void resetDecoderState() { avcodec_flush_buffers(codecCtx_); }
 };
 
 
