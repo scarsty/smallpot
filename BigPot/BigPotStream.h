@@ -11,7 +11,7 @@ extern "C"
 #include "BigPotEngine.h"
 #include <algorithm>
 #include <map>
-#include <thread>
+
 #ifndef __MINGW32__
 #include <mutex> 
 #endif
