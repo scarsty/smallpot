@@ -31,8 +31,8 @@ public:
 	int openFile(const string &filename);
 	int getAudioTime();
 	int getVideoTime();
-	int seekTime(int time, int direct = 1);
-	int seekPos(double pos);
+	int seekTime(int time, int direct = 1, bool reset = false);
+	int seekPos(double pos, int direct = 1, bool reset = false);
 	int showVideoFrame(int time);
 	int getTotalTime() { return _totalTime; }
 	int getTime();
