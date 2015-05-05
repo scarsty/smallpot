@@ -334,7 +334,8 @@ void BigPotPlayer::openMedia(const string& filename)
 	{
 		_cur_time = 0;
 		_cur_time = config_->getRecord(filename.c_str());
-		if (_cur_time > 0) _media->seekTime(_cur_time, -1);
+		if (_cur_time > 0 && _cur_time < _media->getTotalTime())
+			_media->seekTime(_cur_time, -1);
 	}
 }
 
