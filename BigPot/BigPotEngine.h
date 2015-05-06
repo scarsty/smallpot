@@ -93,7 +93,7 @@ public:
 		if (w == 0 || h == 0) return;
 		_win_w = min(_max_w, w);
         _win_h = min(_max_h, h);
-		SDL_SetWindowSize(_win, w, h); 
+		SDL_SetWindowSize(_win, _win_w, _win_h); 
 		setPresentPosition();
         SDL_ShowWindow(_win);
         SDL_RaiseWindow(_win);
