@@ -26,6 +26,8 @@ int BigPotPlayer::beginWithFile(const string &filename)
     int count = 0;
     if (init() != 0) return -1;
 
+	int start_time = engine_->getTicks();
+
 	//首次运行拖拽的文件也认为是同一个
 	_drop_filename = filename;
 	auto play_filename = filename;
@@ -43,7 +45,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
         
 		openMedia(play_filename);
 		//首次打开文件窗口居中
-		if (count==0)
+		if (count == 0 && engine_->getTicks() - start_time < 100)
         {
             /*auto w = engine_->getMaxWindowWidth();
             auto h = engine_->getMaxWindowHeight();
