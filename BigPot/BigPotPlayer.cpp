@@ -45,7 +45,8 @@ int BigPotPlayer::beginWithFile(const string &filename)
         
 		openMedia(play_filename);
 		//首次打开文件窗口居中
-		if (count == 0 && engine_->getTicks() - start_time < 100)
+		printf("%d", engine_->getTicks() - start_time);
+		if (count == 0 && engine_->getTicks() - start_time < 1000)
         {
             /*auto w = engine_->getMaxWindowWidth();
             auto h = engine_->getMaxWindowHeight();
@@ -91,7 +92,8 @@ int BigPotPlayer::eventLoop()
 		engine_->getMouseState(x, y);
 		if (ui_alpha > 0)
 			ui_alpha--;
-		if (_h - y < 50 || (_w - x) < 200 && y < 150)
+		if (_h - y < 50 
+			|| ((_w - x) < 200 && y < 150))
 			ui_alpha = 128;
 		switch (e.type)
 		{
