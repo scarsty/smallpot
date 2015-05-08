@@ -43,7 +43,6 @@ protected:
 	int stream_index_ = -1;
 	double time_per_frame_ = 0, time_per_packet_ = 0;
 	int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
-
 	AVFrame *frame_;
 	string filename_;
 	mutex mutex_;
@@ -124,6 +123,7 @@ public:
 	bool isKeyFrame() { return key_frame_; }
 	virtual void setPause(bool pause);
 	void resetDecoderState() { avcodec_flush_buffers(codecCtx_); }
+	double getRotation();
 };
 
 

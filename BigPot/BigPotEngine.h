@@ -68,6 +68,7 @@ private:
 
 	int _start_w = 320, _start_h = 150; //320, 150
 	int _win_w, _win_h, _max_w, _max_h;
+	double _rotation = 0;
 public:
 	int init();
 	__declspec(deprecated)	
@@ -142,7 +143,8 @@ public:
 		SDL_UpdateTexture(testTexture(t), nullptr, buffer, pitch);
 	}
 
-	void renderCopy(BP_Texture* t = nullptr) { SDL_RenderCopy(_ren, testTexture(t), nullptr, &_rect); }
+	void renderCopy(BP_Texture* t = nullptr) 
+	{ SDL_RenderCopyEx(_ren, testTexture(t), nullptr, &_rect, _rotation, nullptr, SDL_FLIP_NONE); }
 	void showLogo() { SDL_RenderCopy(_ren, _logo, nullptr, nullptr); }
 	void renderPresent() { SDL_RenderPresent(_ren); renderClear(); };
 	void renderClear() { SDL_RenderClear(_ren); }
@@ -164,6 +166,7 @@ public:
 	}
 	bool setKeepRatio(bool b);
 	BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
+	double setRotation(double r) { return _rotation = r; }
 	//声音相关
 private:
 	SDL_AudioDeviceID _device;

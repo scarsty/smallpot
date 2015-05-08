@@ -319,4 +319,15 @@ void BigPotStream::resetTimeAxis(int time)
 	ticks_shown_ = engine_->getTicks();
 }
 
+double BigPotStream::getRotation()
+{
+	if (!exist()) return 0;
+	double r = 0;
+	auto dic = stream_->metadata;
+	auto entry = av_dict_get(dic, "rotate", nullptr, 0);
+	if (entry)
+		r = atof(entry->value);
+	return r;
+}
+
 
