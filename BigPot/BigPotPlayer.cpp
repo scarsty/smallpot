@@ -46,7 +46,7 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		openMedia(play_filename);
 		//首次打开文件窗口居中
 		printf("%d", engine_->getTicks() - start_time);
-		if (count == 0 && engine_->getTicks() - start_time < 1000)
+		if (count == 0 && engine_->getTicks() - start_time < 2000)
         {
             /*auto w = engine_->getMaxWindowWidth();
             auto h = engine_->getMaxWindowHeight();
