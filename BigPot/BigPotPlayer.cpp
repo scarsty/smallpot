@@ -47,22 +47,18 @@ int BigPotPlayer::beginWithFile(const string &filename)
 		//首次打开文件窗口居中
 
 		bool add_cond = true;
-#ifdef __WINDOWS__
-#else
-		printf("%d", engine_->getTicks() - start_time);
-		add_cond = engine_->getTicks() - start_time < 2000
-#endif
-
-			if (count == 0 && add_cond)
-			{
-				/*auto w = engine_->getMaxWindowWidth();
-				auto h = engine_->getMaxWindowHeight();
-				auto x = max(0, (w-_w)/2);
-				auto y = max(0, (h-_h)/2);
-				printf("%d,%d\n",x,y);
-				engine_->setWindowPosition(x, y);*/
-				engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-			}
+		//printf("%d", engine_->getTicks() - start_time);
+		add_cond = engine_->getTicks() - start_time < 2000;
+		if (count == 0 && add_cond)
+		{
+			/*auto w = engine_->getMaxWindowWidth();
+			auto h = engine_->getMaxWindowHeight();
+			auto x = max(0, (w-_w)/2);
+			auto y = max(0, (h-_h)/2);
+			printf("%d,%d\n",x,y);
+			engine_->setWindowPosition(x, y);*/
+			engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+		}
 		this->eventLoop();
 
 		closeMedia(play_filename);
