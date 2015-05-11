@@ -37,29 +37,36 @@ int BigPotPlayer::beginWithFile(const string &filename)
     
 	while (_run)
 	{
-        /*if (count <= 1)
-        {
-            //_drop_filename = "";
-            //play_filename = "";
-        }*/
-        
+		/*if (count <= 1)
+		{
+		//_drop_filename = "";
+		//play_filename = "";
+		}*/
+
 		openMedia(play_filename);
 		//首次打开文件窗口居中
+
+		bool add_cond = true;
+#ifdef __WINDOWS__
+#else
 		printf("%d", engine_->getTicks() - start_time);
-		if (count == 0 && engine_->getTicks() - start_time < 2000)
-        {
-            /*auto w = engine_->getMaxWindowWidth();
-            auto h = engine_->getMaxWindowHeight();
-            auto x = max(0, (w-_w)/2);
-            auto y = max(0, (h-_h)/2);
-            printf("%d,%d\n",x,y);
-            engine_->setWindowPosition(x, y);*/
-            engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-        }
+		add_cond = engine_->getTicks() - start_time < 2000
+#endif
+
+			if (count == 0 && add_cond)
+			{
+				/*auto w = engine_->getMaxWindowWidth();
+				auto h = engine_->getMaxWindowHeight();
+				auto x = max(0, (w-_w)/2);
+				auto y = max(0, (h-_h)/2);
+				printf("%d,%d\n",x,y);
+				engine_->setWindowPosition(x, y);*/
+				engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+			}
 		this->eventLoop();
 
 		closeMedia(play_filename);
-        if (play_filename != "") count++;
+		if (play_filename != "") count++;
 		play_filename = _drop_filename;
 
 	}
