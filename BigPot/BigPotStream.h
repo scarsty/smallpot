@@ -40,6 +40,7 @@ protected:
 	AVCodecContext *codecCtx_;
 	AVCodec *codec_;
 	AVPacket packet_;
+	bool needReadPacket_ = true;
 	int stream_index_ = -1;
 	double time_per_frame_ = 0, time_per_packet_ = 0;
 	int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
@@ -57,7 +58,7 @@ protected:
 	int pause_time_ = 0;
 	bool key_frame_ = false;
 	void* data_ = nullptr;	//无缓冲时的用户数据, 可能为纹理或音频缓冲区
-	uint32_t data_length_ = 0;
+	int data_length_ = 0;
 	//int frame_number_;
 private:
 
