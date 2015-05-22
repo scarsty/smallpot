@@ -60,28 +60,44 @@ int BigPotStream::decodeFramePre(bool decode /*= true*/)
 	//3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
 	if (!exist()) return -2;
 	int ret = 0;
+	int gotframe = 0;
+	int gotsize = 0;
+	bool haveFrame = !needReadPacket_;
 	//cout << "depre "<<engine_->getTicks() << " ";
+	//packet_
 	while (ret==0)
 	{
 		//auto packet = new AVPacket;
-		if (av_read_frame(formatCtx_, &packet_) >= 0)
+		if (needReadPacket_)  
+			haveFrame = av_read_frame(formatCtx_, &packet_) >= 0;
+		if (haveFrame)
 		{
 			if (packet_.stream_index == stream_index_)
 			{
 				if (decode)
 				{
-					switch (type_)
+					while (gotframe == 0)
 					{
-					case BPMEDIA_TYPE_VIDEO:
-						avcodec_decode_video2(codecCtx_, frame_, &ret, &packet_);
-						break;
-					case BPMEDIA_TYPE_AUDIO:
-						avcodec_decode_audio4(codecCtx_, frame_, &ret, &packet_);
-						break;
+						switch (type_)
+						{
+						case BPMEDIA_TYPE_VIDEO:
+							gotsize = avcodec_decode_video2(codecCtx_, frame_, &gotframe, &packet_);
+							break;
+						case BPMEDIA_TYPE_AUDIO:
+							gotsize = avcodec_decode_audio4(codecCtx_, frame_, &gotframe, &packet_);
+							break;
+						}
+						if (gotsize <= 0) break;
+						packet_.data += gotsize;
+						packet_.size -= gotsize;
+						needReadPacket_ = packet_.size <= 0;
+						if (needReadPacket_) break;
 					}
+					ret = gotframe;
 				}
 				else
 				{
+					needReadPacket_ = true;
 					ret = 2;
 				}
 			}
@@ -101,7 +117,8 @@ int BigPotStream::decodeFramePre(bool decode /*= true*/)
 			//frame_number_ = codecCtx_->frame_number;
 			//if (type_ == 0 && key_frame_)printf("\n%dis key\n", time_dts_);
 		}
-		av_free_packet(&packet_);
+		if (needReadPacket_)
+		    av_free_packet(&packet_);
 	}
 	//cout << engine_->getTicks() << '\n';
 	return ret;
@@ -158,8 +175,9 @@ int BigPotStream::seek(int time, int direct, bool reset)
 		{
 			avcodec_flush_buffers(codecCtx_);
 		}
-		av_seek_frame(formatCtx_, -1, i, flag);
 		dropAllDecoded();
+		av_seek_frame(formatCtx_, -1, i, flag);
+		
 		//decodeFrame(true);
 	}
 	_seek_record = engine_->getTicks();
@@ -305,6 +323,7 @@ void BigPotStream::dropAllDecoded()
 {
 	clearMap();
 	setDecoded(false);
+	needReadPacket_ = true;
 }
 
 void BigPotStream::setPause(bool pause)

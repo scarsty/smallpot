@@ -111,6 +111,8 @@ BigPotStream::FrameData BigPotStreamAudio::convert(void* p /*= nullptr*/)
 {
 	data_length_ = BigPotResample::convert(codecCtx_, frame_, 
 		BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
+	if (data_length_ <= 0)
+		return{ -1, data_length_, nullptr };
 	if (useMap())
 	{
 		//计算写入位置
