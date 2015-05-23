@@ -62,14 +62,18 @@ int BigPotStream::decodeFramePre(bool decode /*= true*/)
 	int ret = 0;
 	int gotframe = 0;
 	int gotsize = 0;
+	int totalGotsize = 0;
 	bool haveFrame = !needReadPacket_;
 	//cout << "depre "<<engine_->getTicks() << " ";
 	//packet_
 	while (ret==0)
 	{
 		//auto packet = new AVPacket;
-		if (needReadPacket_)  
+		if (needReadPacket_)
+		{
 			haveFrame = av_read_frame(formatCtx_, &packet_) >= 0;
+			decodeSizeInPacket_ = 0;
+		}
 		if (haveFrame)
 		{
 			if (packet_.stream_index == stream_index_)
@@ -89,9 +93,11 @@ int BigPotStream::decodeFramePre(bool decode /*= true*/)
 						}
 						if (gotsize <= 0) break;
 						packet_.data += gotsize;
+						totalGotsize += gotsize;
 						packet_.size -= gotsize;
 						needReadPacket_ = packet_.size <= 0;
-						if (needReadPacket_) break;
+						if (needReadPacket_) 
+							break;
 					}
 					ret = gotframe;
 				}
@@ -111,8 +117,11 @@ int BigPotStream::decodeFramePre(bool decode /*= true*/)
 		}
 		if (ret > 0)
 		{
+			//int totalPacketSize = decodeSizeInPacket_ + totalGotsize + packet_.size;
+			//double t = decodeSizeInPacket_*time_per_packet_ / totalPacketSize;
 			time_pts_ = packet_.pts * time_per_packet_;
 			time_dts_ = packet_.dts * time_per_packet_;
+			decodeSizeInPacket_ += totalGotsize;
 			//key_frame_ = frame_->key_frame;
 			//frame_number_ = codecCtx_->frame_number;
 			//if (type_ == 0 && key_frame_)printf("\n%dis key\n", time_dts_);

@@ -80,7 +80,7 @@ void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 		{
 			//printf("drop %I64d\n", t->dataRead - f.info);
 			dropDecoded();
-			if (_data_read == f.info)
+			if (_data_read == f.info && time_shown_ != f.time)
 			{
 				time_shown_ = f.time;
 				ticks_shown_ = engine_->getTicks();
@@ -90,7 +90,8 @@ void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 			{
 				//获取下一个
 				auto f1 = getCurrentFrameData();
-				if (f1.info > _data_read)
+				//后一个包如果时间是一样的不更新计时
+				if (f1.info > _data_read && f.time != f1.time)
 				{
 					time_shown_ = f.time + (f1.time - f.time) * (_data_read - f.info) / (f1.info - f.info);
 					ticks_shown_ = engine_->getTicks();
