@@ -22,7 +22,7 @@ int BigPotStreamVideo::showTexture(int time)
 		return -1;
 	if (haveDecoded())
 	{
-		auto f = getCurrentFrameData();
+		auto f = getCurrentContent();
 		int time_c = f.time;
 		if (time >= time_c)
 		{
@@ -46,7 +46,7 @@ void BigPotStreamVideo::freeContent(void* p)
 	engine_->destroyTexture((BP_Texture*)p);
 }
 
-BigPotStream::ContentData BigPotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
+BigPotStream::Content BigPotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
 {
 	auto &f = frame_;
 	auto tex = (BP_Texture*)data_;
