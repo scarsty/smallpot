@@ -10,7 +10,7 @@ public:
 private:
 	void clear();
 	virtual void freeContent(void* p);
-	virtual ContentData convertFrameToContent(void* p = nullptr);
+	virtual Content convertFrameToContent(void* p = nullptr);
 public:
 	int showTexture(int time);
 	int dropTexture();

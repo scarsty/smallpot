@@ -18,6 +18,11 @@ extern "C"
 #include <vector>
 #include <string>
 
+#ifdef _MSC_VER
+#include <windows.h>
+#pragma comment(lib, "user32.lib")
+#endif
+
 using namespace std;
 
 //这里是底层部分，将SDL的函数均封装了一次
@@ -67,7 +72,7 @@ private:
 	bool _keep_ratio = true;
 
 	int _start_w = 320, _start_h = 150; //320, 150
-	int _win_w, _win_h, _max_w, _max_h;
+	int _win_w, _win_h, _min_x, _min_y, _max_x, _max_y;
 	double _rotation = 0;
 public:
 	int init();
@@ -87,20 +92,9 @@ public:
 		SDL_GetWindowSize(_win, nullptr, &h);
 		return h;
 	}
-    int getMaxWindowWidth() {return _max_w;}
-    int getMaxWindowHeight() {return _max_h;}
-	void setWindowSize(int w, int h)
-	{ 
-		if (w == 0 || h == 0) return;
-		_win_w = min(_max_w, w);
-        _win_h = min(_max_h, h);
-		SDL_SetWindowSize(_win, _win_w, _win_h); 
-		setPresentPosition();
-        SDL_ShowWindow(_win);
-        SDL_RaiseWindow(_win);
-        SDL_GetWindowSize(_win, &_win_w, &_win_h);
-        //renderPresent();
-	}
+    int getMaxWindowWidth() {return _max_x - _min_x;}
+    int getMaxWindowHeight() {return _max_y - _min_y;}
+	void setWindowSize(int w, int h);
 	void setWindowPosition(int x, int y)
 	{
 		SDL_SetWindowPosition(_win, x, y);

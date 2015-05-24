@@ -73,8 +73,7 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
 	int gotsize = 0;
 	int totalGotsize = 0;
 	bool haveFrame = !needReadPacket_;
-	//cout << "depre "<<engine_->getTicks() << " ";
-	//packet_
+	//一帧多包，一包多帧都要考虑，甚是麻烦
 	while (ret==0)
 	{
 		//auto packet = new AVPacket;
@@ -89,6 +88,7 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
 			{
 				if (decode)
 				{
+					//循环处理多次才能解到一帧的情况
 					while (gotframe == 0)
 					{
 						gotsize = avcodec_decode_packet(codecCtx_, frame_, &gotframe, &packet_);
@@ -226,7 +226,7 @@ void BigPotStream::clearMap()
 	//SDL_UnlockMutex(mutex_cpp);
 }
 
-void BigPotStream::setMap(int key, ContentData f)
+void BigPotStream::setMap(int key, Content f)
 {
 	_map[key] = f;
 }
@@ -259,7 +259,7 @@ bool BigPotStream::useMap()
 	return maxSize_ > 0;
 }
 
-BigPotStream::ContentData BigPotStream::getCurrentFrameData()
+BigPotStream::Content BigPotStream::getCurrentContent()
 {
 	if (useMap())
 	{

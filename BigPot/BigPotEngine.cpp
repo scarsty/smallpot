@@ -226,13 +226,27 @@ int BigPotEngine::init()
 	showLogo();
 	renderPresent();
 	TTF_Init();
-    
+
+#ifdef _MSC_VER
+	RECT r;
+	SystemParametersInfo(SPI_GETWORKAREA, 0, (PVOID)&r, 0);
+	int w = GetSystemMetrics(SM_CXEDGE); 
+	int h = GetSystemMetrics(SM_CYEDGE);
+	_min_x = r.left + w;
+	_min_y = r.top + h + GetSystemMetrics(SM_CYCAPTION);
+	_max_x = r.right - w;
+	_max_y = r.bottom - h;
+#else   
     SDL_Rect r;
     SDL_GetDisplayBounds(0, &r);
-    _max_w = r.w;
-    _max_h = r.h;
+	_min_x = r.x;
+	_min_y = r.y;
+    _max_x = r.w + r.x;
+    _max_y = r.h + r.y;
+#endif
+
     
-    printf("maximium width and height are: %d, %d\n", _max_w, _max_h);
+    printf("maximium width and height are: %d, %d\n", _max_x, _max_y);
     
 	return 0;
 }
@@ -347,6 +361,26 @@ int BigPotEngine::showMessage(const string &content)
     int buttonid;
     SDL_ShowMessageBox(&messageboxdata, &buttonid);
     return buttonid;
+}
+
+void BigPotEngine::setWindowSize(int w, int h)
+{
+	if (w <= 0 || h <= 0) return;
+	_win_w = min(_max_x - _min_x, w);
+	_win_h = min(_max_y - _min_y, h);
+	SDL_SetWindowSize(_win, _win_w, _win_h);
+	setPresentPosition();
+	int x, y;
+
+	SDL_GetWindowPosition(_win, &x, &y);
+	if (x + _win_w > _max_x) x = max(_min_x, _max_x - _win_w);
+	if (y + _win_h > _max_y) y = max(_min_y, _max_y - _win_h);
+	SDL_SetWindowPosition(_win, x, y);
+
+	SDL_ShowWindow(_win);
+	SDL_RaiseWindow(_win);
+	SDL_GetWindowSize(_win, &_win_w, &_win_h);
+	//renderPresent();
 }
 
 
