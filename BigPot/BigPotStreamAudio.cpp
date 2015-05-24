@@ -71,7 +71,7 @@ void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 	//int i = t->_map.size();
 	while (haveDecoded())
 	{
-		auto f = getCurrentFrameData();
+		auto f = getCurrentContent();
 		if (!f.data || f.time < 0)
 		{
 			dropDecoded();
@@ -90,7 +90,7 @@ void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 			else
 			{
 				//获取下一个
-				auto f1 = getCurrentFrameData();
+				auto f1 = getCurrentContent();
 				//后一个包如果时间是一样的不更新计时
 				if (f1.info > _data_read && f.time != f1.time)
 				{
@@ -109,7 +109,7 @@ void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 	//SDL_UnlockMutex(t->mutex_cpp);
 }
 
-BigPotStream::ContentData BigPotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
+BigPotStream::Content BigPotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
 {
 	data_length_ = BigPotResample::convert(codecCtx_, frame_, 
 		BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
@@ -131,7 +131,7 @@ BigPotStream::ContentData BigPotStreamAudio::convertFrameToContent(void* p /*= n
 			memcpy((uint8_t*)data_ + pos, _resample_buffer, rest);
 			memcpy((uint8_t*)data_, _resample_buffer, data_length_ - rest);
 		}
-		ContentData f = { time_dts_, _data_write, data_ };
+		Content f = { time_dts_, _data_write, data_ };
 		_data_write += data_length_;
 		//返回的是指针位置
 		return f;

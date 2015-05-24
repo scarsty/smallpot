@@ -19,7 +19,7 @@ private:
 
 	void mixAudioData(uint8_t* stream, int len);
 	int closeAudioDevice();
-	virtual ContentData convertFrameToContent(void* p = nullptr);
+	virtual Content convertFrameToContent(void* p = nullptr);
 	virtual void freeContent(void* buffer);
 	virtual bool needDecode2();
 public:

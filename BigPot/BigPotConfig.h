@@ -30,10 +30,10 @@ private:
 #ifdef USINGJSON
 	Json::Value _value, _record;
 #else
-	XMLDocument _doc;
-	XMLElement *_root, *_record;
+	tinyxml2::XMLDocument _doc;
+	tinyxml2::XMLElement *_root, *_record;
 
-	XMLElement* getElement(XMLElement *parent, const char * name);
+	tinyxml2::XMLElement* getElement(XMLElement *parent, const char * name);
 	
 
 #endif

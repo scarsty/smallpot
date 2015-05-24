@@ -21,10 +21,17 @@ enum BigPotMediaType
 	BPMEDIA_TYPE_AUDIO = AVMEDIA_TYPE_AUDIO,
 };
 
+/*
+Context - 未解码数据
+Packet - 读取的一个未解的包
+Frame - 解得的一帧数据
+Content - 转换而得的可以直接显示或播放的数据，包含时间，信息（通常为总字节），和指向数据区的指针
+*/
+
 class BigPotStream : public BigPotBase
 {
 public:
-	struct ContentData
+	struct Content
 	{
 		int time;
 		int64_t info;
@@ -63,19 +70,19 @@ protected:
 	//int frame_number_;
 private:
 
-	map<int, ContentData> _map;
+	map<int, Content> _map;
 	bool _decoded = false, _skip = false, _ended = false, _seeking = false;	
 	int _seek_record = 0;  //上次seek的记录
 	int(*avcodec_decode_packet)(AVCodecContext*, AVFrame*, int*, const AVPacket*) = nullptr;
 
 private:
-	virtual ContentData convertFrameToContent(void * p = nullptr) 
+	virtual Content convertFrameToContent(void * p = nullptr) 
 	{
 		return{0, 0, nullptr};
 	}
 
 	int dropContent(int key = -1);
-	void setMap(int key, ContentData f);
+	void setMap(int key, Content f);
 	virtual void freeContent(void* p){};
 	void clearMap();	
 	bool needDecode();
@@ -86,7 +93,7 @@ protected:
 	bool haveDecoded();
 	void dropAllDecoded();
 	bool useMap();
-	ContentData getCurrentFrameData();
+	Content getCurrentContent();
 public:
 	int openFile(const string & filename);
 	int tryDecodeFrame(bool reset = false);
