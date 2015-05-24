@@ -373,6 +373,8 @@ void BigPotEngine::setWindowSize(int w, int h)
 	int x, y;
 
 	SDL_GetWindowPosition(_win, &x, &y);
+	x = max(_min_x, x);
+	y = max(_min_y, y);
 	if (x + _win_w > _max_x) x = max(_min_x, _max_x - _win_w);
 	if (y + _win_h > _max_y) y = max(_min_y, _max_y - _win_h);
 	SDL_SetWindowPosition(_win, x, y);
