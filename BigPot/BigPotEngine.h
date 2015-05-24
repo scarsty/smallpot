@@ -95,10 +95,7 @@ public:
     int getMaxWindowWidth() {return _max_x - _min_x;}
     int getMaxWindowHeight() {return _max_y - _min_y;}
 	void setWindowSize(int w, int h);
-	void setWindowPosition(int x, int y)
-	{
-		SDL_SetWindowPosition(_win, x, y);
-	}
+	void setWindowPosition(int x, int y);
 	void setWindowTitle(const string &str){ SDL_SetWindowTitle(_win, str.c_str()); }
 	BP_Renderer* getRenderer(){ return _ren; }
 		
@@ -161,6 +158,7 @@ public:
 	bool setKeepRatio(bool b);
 	BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
 	double setRotation(double r) { return _rotation = r; }
+	void resetWindowsPosition();
 	//声音相关
 private:
 	SDL_AudioDeviceID _device;
