@@ -5,6 +5,7 @@ BigPotStreamVideo::BigPotStreamVideo()
 {
 	//视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
 	maxSize_ = 0;
+	type_ = BPMEDIA_TYPE_VIDEO;
 }
 
 
@@ -40,12 +41,12 @@ int BigPotStreamVideo::showTexture(int time)
 	return 2;	
 }
 
-void BigPotStreamVideo::freeData(void* p)
+void BigPotStreamVideo::freeContent(void* p)
 {
 	engine_->destroyTexture((BP_Texture*)p);
 }
 
-BigPotStream::FrameData BigPotStreamVideo::convert(void* p /*= nullptr*/)
+BigPotStream::ContentData BigPotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
 {
 	auto &f = frame_;
 	auto tex = (BP_Texture*)data_;

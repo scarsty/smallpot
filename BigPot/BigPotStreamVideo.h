@@ -9,8 +9,8 @@ public:
 	~BigPotStreamVideo();
 private:
 	void clear();
-	virtual void freeData(void* p);
-	virtual FrameData convert(void* p = nullptr);
+	virtual void freeContent(void* p);
+	virtual ContentData convertFrameToContent(void* p = nullptr);
 public:
 	int showTexture(int time);
 	int dropTexture();
