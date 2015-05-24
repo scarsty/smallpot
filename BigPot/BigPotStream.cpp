@@ -22,17 +22,16 @@ BigPotStream::~BigPotStream()
 }
 
 //返回为非负才正常
-int BigPotStream::openFile(const string & filename, BigPotMediaType type)
+int BigPotStream::openFile(const string & filename)
 {
 	stream_index_ = -1;
 	this->filename_ = filename;
 	if (avformat_open_input(&formatCtx_, filename.c_str(), nullptr, nullptr) == 0)
 	{
 		avformat_find_stream_info(formatCtx_, nullptr);
-		this->type_ = type;
 		for (int i = 0; i < formatCtx_->nb_streams; ++i)
 		{
-			if (formatCtx_->streams[i]->codec->codec_type == type)
+			if (formatCtx_->streams[i]->codec->codec_type == type_)
 			{
 				//printf("finded media stream: %d\n", type);
 				stream_ = formatCtx_->streams[i];
@@ -51,11 +50,21 @@ int BigPotStream::openFile(const string & filename, BigPotMediaType type)
 			}
 		}
 	}
+	//可以写在子类中的
+	switch (type_)
+	{
+	case BPMEDIA_TYPE_VIDEO:
+		avcodec_decode_packet = &avcodec_decode_video2;
+		break;
+	case BPMEDIA_TYPE_AUDIO:
+		avcodec_decode_packet = &avcodec_decode_audio4;
+		break;
+	}
 	return stream_index_;
 }
 
 //解压帧，同时会更新当前的时间戳
-int BigPotStream::decodeFramePre(bool decode /*= true*/)
+int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
 {
 	//3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
 	if (!exist()) return -2;
@@ -82,21 +91,13 @@ int BigPotStream::decodeFramePre(bool decode /*= true*/)
 				{
 					while (gotframe == 0)
 					{
-						switch (type_)
-						{
-						case BPMEDIA_TYPE_VIDEO:
-							gotsize = avcodec_decode_video2(codecCtx_, frame_, &gotframe, &packet_);
-							break;
-						case BPMEDIA_TYPE_AUDIO:
-							gotsize = avcodec_decode_audio4(codecCtx_, frame_, &gotframe, &packet_);
-							break;
-						}
+						gotsize = avcodec_decode_packet(codecCtx_, frame_, &gotframe, &packet_);
 						if (gotsize <= 0) break;
 						packet_.data += gotsize;
 						totalGotsize += gotsize;
 						packet_.size -= gotsize;
 						needReadPacket_ = packet_.size <= 0;
-						if (needReadPacket_) 
+						if (needReadPacket_)
 							break;
 					}
 					ret = gotframe;
@@ -135,11 +136,11 @@ int BigPotStream::decodeFramePre(bool decode /*= true*/)
 
 
 //参数为是否重置暂停时间和显示时间，一般seek后应立刻重置
-int BigPotStream::decodeFrame(bool reset)
+int BigPotStream::tryDecodeFrame(bool reset)
 {
-	if (exist() && needDecode() && decodeFramePre() > 0)
+	if (exist() && needDecode() && decodeNextPacketToFrame() > 0)
 	{
-		auto f = convert();
+		auto f = convertFrameToContent();
 		if (useMap())
 		{
 			//如果只有一帧，则静止时间需更新
@@ -193,7 +194,7 @@ int BigPotStream::seek(int time, int direct, bool reset)
 	return 0;
 }
 
-int BigPotStream::dropFrameData(int key)
+int BigPotStream::dropContent(int key)
 {
 	mutex_.lock();
 	if (_map.size() > 0)
@@ -201,7 +202,7 @@ int BigPotStream::dropFrameData(int key)
 		auto p = _map.begin()->second.data;
 		if (p)
 		{
-			freeData(p);
+			freeContent(p);
 		}
 		_map.erase(_map.begin());
 	}
@@ -217,7 +218,7 @@ void BigPotStream::clearMap()
 	mutex_.lock();
 	for (auto &i : _map)
 	{
-		freeData(i.second.data);
+		freeContent(i.second.data);
 	}
 	_map.clear();
 	mutex_.unlock();
@@ -225,7 +226,7 @@ void BigPotStream::clearMap()
 	//SDL_UnlockMutex(mutex_cpp);
 }
 
-void BigPotStream::setMap(int key, FrameData f)
+void BigPotStream::setMap(int key, ContentData f)
 {
 	_map[key] = f;
 }
@@ -248,7 +249,7 @@ void BigPotStream::setDecoded(bool b)
 void BigPotStream::dropDecoded()
 {
 	if (useMap())
-		dropFrameData();
+		dropContent();
 	else
 		_decoded = false;
 }
@@ -258,7 +259,7 @@ bool BigPotStream::useMap()
 	return maxSize_ > 0;
 }
 
-BigPotStream::FrameData BigPotStream::getCurrentFrameData()
+BigPotStream::ContentData BigPotStream::getCurrentFrameData()
 {
 	if (useMap())
 	{
@@ -310,7 +311,7 @@ int BigPotStream::skipFrame(int time)
 	{
 		n++;		
 		//视频需解码，因为关键帧不解后续一系列都有问题，音频可以只读不解
-		if (decodeFramePre(type_ == BPMEDIA_TYPE_VIDEO) < 0)
+		if (decodeNextPacketToFrame(type_ == BPMEDIA_TYPE_VIDEO) < 0)
 			break;
 	}
 	//跳帧后需丢弃原来的解码，重置时间轴

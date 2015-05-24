@@ -24,7 +24,7 @@ enum BigPotMediaType
 class BigPotStream : public BigPotBase
 {
 public:
-	struct FrameData
+	struct ContentData
 	{
 		int time;
 		int64_t info;
@@ -63,32 +63,33 @@ protected:
 	//int frame_number_;
 private:
 
-	map<int, FrameData> _map;
+	map<int, ContentData> _map;
 	bool _decoded = false, _skip = false, _ended = false, _seeking = false;	
 	int _seek_record = 0;  //上次seek的记录
+	int(*avcodec_decode_packet)(AVCodecContext*, AVFrame*, int*, const AVPacket*) = nullptr;
 
 private:
-	virtual FrameData convert(void * p = nullptr) 
+	virtual ContentData convertFrameToContent(void * p = nullptr) 
 	{
 		return{0, 0, nullptr};
 	}
 
-	int dropFrameData(int key = -1);
-	void setMap(int key, FrameData f);
-	virtual void freeData(void* p){};
+	int dropContent(int key = -1);
+	void setMap(int key, ContentData f);
+	virtual void freeContent(void* p){};
 	void clearMap();	
 	bool needDecode();
 	virtual bool needDecode2() { return true; };
+	int decodeNextPacketToFrame(bool decode = true);
 protected:
 	void setDecoded(bool b);
 	bool haveDecoded();
 	void dropAllDecoded();
 	bool useMap();
-	FrameData getCurrentFrameData();
+	ContentData getCurrentFrameData();
 public:
-	int openFile(const string & filename, BigPotMediaType type);
-	int decodeFramePre(bool decode = true);
-	int decodeFrame(bool reset = false);
+	int openFile(const string & filename);
+	int tryDecodeFrame(bool reset = false);
 	void dropDecoded();
 	int getTotalTime();
 

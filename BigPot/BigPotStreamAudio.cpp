@@ -10,6 +10,7 @@ BigPotStreamAudio::BigPotStreamAudio()
 	if (useMap()) 
 		data_ = av_mallocz(_scream_size);
 	_resample_buffer =  (decltype(_resample_buffer))av_mallocz(_convert_size);
+	type_ = BPMEDIA_TYPE_AUDIO;
 }
 
 
@@ -108,7 +109,7 @@ void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 	//SDL_UnlockMutex(t->mutex_cpp);
 }
 
-BigPotStream::FrameData BigPotStreamAudio::convert(void* p /*= nullptr*/)
+BigPotStream::ContentData BigPotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
 {
 	data_length_ = BigPotResample::convert(codecCtx_, frame_, 
 		BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
@@ -130,7 +131,7 @@ BigPotStream::FrameData BigPotStreamAudio::convert(void* p /*= nullptr*/)
 			memcpy((uint8_t*)data_ + pos, _resample_buffer, rest);
 			memcpy((uint8_t*)data_, _resample_buffer, data_length_ - rest);
 		}
-		FrameData f = { time_dts_, _data_write, data_ };
+		ContentData f = { time_dts_, _data_write, data_ };
 		_data_write += data_length_;
 		//返回的是指针位置
 		return f;
@@ -142,7 +143,7 @@ BigPotStream::FrameData BigPotStreamAudio::convert(void* p /*= nullptr*/)
 	}
 }
 
-void BigPotStreamAudio::freeData(void* p)
+void BigPotStreamAudio::freeContent(void* p)
 {
 	//av_free(p);
 }
@@ -180,4 +181,5 @@ void BigPotStreamAudio::setPause(bool pause)
 	pause_ = pause;
 	pause_time_ = getTime();
 }
+
 

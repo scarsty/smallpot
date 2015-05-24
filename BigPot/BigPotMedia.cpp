@@ -19,8 +19,8 @@ int BigPotMedia::openFile(const string &filename)
 {
 	if (!fileExist(filename))
 		return -1;
-	_streamVideo->openFile(filename, BPMEDIA_TYPE_VIDEO);
-	_streamAudio->openFile(filename, BPMEDIA_TYPE_AUDIO);
+	_streamVideo->openFile(filename);
+	_streamAudio->openFile(filename);
 
 	if (_streamAudio->exist())
 	{
@@ -36,8 +36,8 @@ int BigPotMedia::openFile(const string &filename)
 int BigPotMedia::decodeFrame()
 {
 	//int se= engine_->getTicks();
-	_streamVideo->decodeFrame(_seeking);
-	_streamAudio->decodeFrame(_seeking);
+	_streamVideo->tryDecodeFrame(_seeking);
+	_streamAudio->tryDecodeFrame(_seeking);
 	//int m = _audioStream->getTimedts();
 	//int n = _videoStream->getTimedts();
 	if (_seeking)
