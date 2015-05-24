@@ -59,6 +59,10 @@ int BigPotPlayer::beginWithFile(const string &filename)
 			engine_->setWindowPosition(x, y);*/
 			engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
 		}
+		else
+		{
+			engine_->resetWindowsPosition();
+		}
 		this->eventLoop();
 
 		closeMedia(play_filename);

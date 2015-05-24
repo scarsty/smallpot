@@ -370,19 +370,34 @@ void BigPotEngine::setWindowSize(int w, int h)
 	_win_h = min(_max_y - _min_y, h);
 	SDL_SetWindowSize(_win, _win_w, _win_h);
 	setPresentPosition();
-	int x, y;
-
-	SDL_GetWindowPosition(_win, &x, &y);
-	x = max(_min_x, x);
-	y = max(_min_y, y);
-	if (x + _win_w > _max_x) x = max(_min_x, _max_x - _win_w);
-	if (y + _win_h > _max_y) y = max(_min_y, _max_y - _win_h);
-	SDL_SetWindowPosition(_win, x, y);
 
 	SDL_ShowWindow(_win);
 	SDL_RaiseWindow(_win);
 	SDL_GetWindowSize(_win, &_win_w, &_win_h);
+	//resetWindowsPosition();
 	//renderPresent();
+}
+
+void BigPotEngine::resetWindowsPosition()
+{
+	int x, y, w, h, x0, y0;
+	SDL_GetWindowSize(_win, &w, &h);
+	SDL_GetWindowPosition(_win, &x0, &y0);
+	x = max(_min_x, x0);
+	y = max(_min_y, y0);
+	if (x + w > _max_x) x = min(x, _max_x - w);
+	if (y + h > _max_y) y = min(y, _max_y - h);
+	if (x != x0 || y != y0)
+		SDL_SetWindowPosition(_win, x, y);
+}
+
+void BigPotEngine::setWindowPosition(int x, int y)
+{
+	int w, h;
+	SDL_GetWindowSize(_win, &w, &h);
+	if (x = BP_WINDOWPOS_CENTERED) x = _min_x + (_max_x -_min_x- w) / 2;
+	if (y = BP_WINDOWPOS_CENTERED) y = _min_y + (_max_y -_min_y- h) / 2;
+	SDL_SetWindowPosition(_win, x, y);
 }
 
 
