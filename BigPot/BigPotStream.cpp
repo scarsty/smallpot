@@ -143,6 +143,7 @@ int BigPotStream::tryDecodeFrame(bool reset)
 		auto f = convertFrameToContent();
 		if (useMap())
 		{
+			//printf("%d\n", _map.size());
 			//如果只有一帧，则静止时间需更新
 			if (_map.size() == 0)
 			{
