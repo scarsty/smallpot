@@ -18,6 +18,7 @@ public:
 private:
 	BigPotStreamVideo *_streamVideo;
 	BigPotStreamAudio *_streamAudio;
+	int _extAudioFrame = 1; //额外解压一帧音频，有时视频尺寸很大，可能导致音频解码过慢
 private:
 	int _count = 0;
 	int _totalTime = 0;

@@ -158,6 +158,7 @@ int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
 	{
 		swr_free(&swr_ctx);
 	}
+	//printf("%d\n", resampled_data_size);
 	return resampled_data_size;
 
 }

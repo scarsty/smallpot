@@ -37,7 +37,9 @@ int BigPotMedia::decodeFrame()
 {
 	//int se= engine_->getTicks();
 	_streamVideo->tryDecodeFrame(_seeking);
-	_streamAudio->tryDecodeFrame(_seeking);
+	//_streamAudio->tryDecodeFrame(_seeking);
+	for (int i = 0; i <= _extAudioFrame; i++)
+		_streamAudio->tryDecodeFrame(_seeking);
 	//int m = _audioStream->getTimedts();
 	//int n = _videoStream->getTimedts();
 	if (_seeking)
