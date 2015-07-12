@@ -39,7 +39,7 @@ int BigPotStream::openFile(const string & filename)
 				//timebase = av_q2d(formatCtx->streams[i]->time_base);
 				if (stream_->r_frame_rate.den)
 					time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
-				time_per_packet_ = 1e3*av_q2d(stream_->time_base);
+				time_base_packet_ = 1e3*av_q2d(stream_->time_base);
 				total_time_ = formatCtx_->duration *1e3 / AV_TIME_BASE;
 				start_time_ = formatCtx_->start_time *1e3 / AV_TIME_BASE;
 				//totalTime = (int)stream->nb_frames * timePerFrame;
@@ -120,8 +120,8 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
 		{
 			//int totalPacketSize = decodeSizeInPacket_ + totalGotsize + packet_.size;
 			//double t = decodeSizeInPacket_*time_per_packet_ / totalPacketSize;
-			time_pts_ = packet_.pts * time_per_packet_;
-			time_dts_ = packet_.dts * time_per_packet_;
+			time_pts_ = packet_.pts * time_base_packet_;
+			time_dts_ = packet_.dts * time_base_packet_;
 			decodeSizeInPacket_ += totalGotsize;
 			//key_frame_ = frame_->key_frame;
 			//frame_number_ = codecCtx_->frame_number;
