@@ -50,7 +50,7 @@ protected:
 	bool needReadPacket_ = true;
 	int stream_index_ = -1;
 	int decodeSizeInPacket_ = 0;
-	double time_per_frame_ = 0, time_per_packet_ = 0;
+	double time_per_frame_ = 0, time_base_packet_ = 0;
 	int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
 	AVFrame *frame_;
 	string filename_;
