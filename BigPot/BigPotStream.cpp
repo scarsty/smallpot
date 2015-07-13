@@ -296,7 +296,7 @@ int BigPotStream::getTime()
 	    //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
     //if (exist() && !_ended)
     if (exist())
-		return min(int(time_shown_ - ticks_shown_ + engine_->getTicks()), total_time_);
+		return pause_time_ = min(int(time_shown_ - ticks_shown_ + engine_->getTicks()), total_time_);
     return 0;
 }
 
