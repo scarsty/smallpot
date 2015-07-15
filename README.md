@@ -47,5 +47,7 @@ A：因为用了很多其他库，大部分是开源的，所以估计会吧。�
 因为是单线程架构，所以在一些文件跳转时会出现马赛克。一般来说这个可以通过清除解码器状态来解决，但是单线程架构下这个操作会导致后面一帧的解码卡顿，故没有这么做。或者谁有更好的办法可以指教一下。
 srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出负值。等ka大神有空解决。
 
-可在此处下载windows和mac版：
-[http://git.oschina.net/scc__/bigpot/attach_files]
+windows版：
+[http://www.dawuxia.net/bigpot/bigpot-win32.zip]
+
+Mac版待添加
