@@ -50,4 +50,5 @@ srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出�
 windows版：
 [http://www.dawuxia.net/bigpot/bigpot-win32.zip]
 
-Mac版待添加
+Mac版：
+[http://www.dawuxia.net/bigpot/bigpot.app.zip]
