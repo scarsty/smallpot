@@ -177,6 +177,10 @@ int BigPotPlayer::eventLoop()
 			case BPK_DELETE:
 				config_->clearRecord();
 				break;
+			case BPK_BACKSPACE:
+				_media->seekTime(0);
+				seeking = true;
+				break;
 			}
 			ui_alpha = 128;
 			break;
