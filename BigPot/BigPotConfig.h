@@ -130,6 +130,8 @@ public:
 	//¼ÇÂ¼
 	int getRecord(const char * name);
 
+	void removeRecord(const char * name);
+
 	void setRecord(int v, const char * name);
 	
 	void clearRecord() 

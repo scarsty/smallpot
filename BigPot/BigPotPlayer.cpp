@@ -375,6 +375,10 @@ void BigPotPlayer::closeMedia(const string& filename)
 	{
 		config_->setRecord(_cur_time, filename.c_str());
 	}
+	else
+	{
+		config_->removeRecord(filename.c_str());
+	}
 
 	delete _media;
 }
