@@ -95,6 +95,13 @@ int BigPotConfig::getRecord(const char * name)
 	return atoi(str);
 }
 
+void BigPotConfig::removeRecord(const char * name)
+{
+	if (strlen(name) == 0) return;
+	auto mainname = getFilenameWithoutPath(name);
+	_record->DeleteChild(getElement(_record, ("_" + _sha3(mainname)).c_str()));
+}
+
 void BigPotConfig::setRecord(int v, const char * name)
 {
 	if (strlen(name) == 0) return;
