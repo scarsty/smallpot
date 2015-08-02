@@ -369,8 +369,12 @@ void BigPotPlayer::closeMedia(const string& filename)
 	//_subtitle->closeSubtitle();
 	
 	//如果是媒体文件就记录时间
-	if (_media->isMedia())
+	if (_media->isMedia()
+		&& _cur_time < _media->getTotalTime()
+		&& _cur_time > 0)
+	{
 		config_->setRecord(_cur_time, filename.c_str());
+	}
 
 	delete _media;
 }
