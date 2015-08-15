@@ -134,6 +134,9 @@ public:
 	virtual void setPause(bool pause);
 	void resetDecoderState() { avcodec_flush_buffers(codecCtx_); }
 	double getRotation();
+	void getRatio(int &x, int &y);
+	int getRatioX() { return exist() ? stream_->sample_aspect_ratio.num : 1; }
+	int getRatioY() { return exist() ? stream_->sample_aspect_ratio.den : 1; }
 };
 
 

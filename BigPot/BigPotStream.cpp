@@ -360,4 +360,10 @@ double BigPotStream::getRotation()
 	return r;
 }
 
+void BigPotStream::getRatio(int &x, int &y)
+{
+	if (!exist()) return;
+	x = stream_->sample_aspect_ratio.num;
+	y = stream_->sample_aspect_ratio.den;
+}
 
