@@ -27,7 +27,7 @@ Mac版：
 [http://www.dawuxia.net/bigpot/bigpot.app.zip]
 
 
-
+##常见问题
 
 ####Q：大水壶使用什么开发？
 A：程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。目前还未使用到GPL的部分。配置文件使用的是tinyxml2和jsoncpp（二选一），hash是sha3。
