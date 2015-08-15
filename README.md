@@ -11,10 +11,23 @@
 ### macosx
 makefile文件是为mac版编写，需先安装SDL2以及相关扩展的framework，并安装freetype、libass、FFmpeg、iconv等，通常homebrew可以做。jsoncpp是可选的。
 
+##遗留问题
+因为是单线程架构，所以在一些文件跳转时会出现马赛克。一般来说这个可以通过清除解码器状态来解决，但是单线程架构下这个操作会导致后面一帧的解码卡顿，故没有这么做。或者谁有更好的办法可以指教一下。
+srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出负值。等ka大神有空解决。
+
+##功能键
+方向左右是跳过几秒，上下是音量，空格是暂停，回车是全屏，退格是返回文件开始，del删除播放记录（打开曾经播放过的文件会自动跳转到上次退出的位置）。
+鼠标点右上是暂停。
+
+##预编译版下载
+windows版：
+[http://www.dawuxia.net/bigpot/bigpot-win32.zip]
+
+Mac版：
+[http://www.dawuxia.net/bigpot/bigpot.app.zip]
 
 
 
-大水壶播放器是一个绿色轻量级播放器，使用FFmpeg和SDL2为主要的开发库。
 
 ####Q：大水壶使用什么开发？
 A：程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。目前还未使用到GPL的部分。配置文件使用的是tinyxml2和jsoncpp（二选一），hash是sha3。
@@ -43,17 +56,4 @@ A：开发的时候使用的是vs2013，但是mingw也可以编译，跨平台�
 ####Q：会不会开源？
 A：因为用了很多其他库，大部分是开源的，所以估计会吧。如果开源，使用的库里面有GPL就用GPL。
 
-####遗留问题
-因为是单线程架构，所以在一些文件跳转时会出现马赛克。一般来说这个可以通过清除解码器状态来解决，但是单线程架构下这个操作会导致后面一帧的解码卡顿，故没有这么做。或者谁有更好的办法可以指教一下。
-srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出负值。等ka大神有空解决。
 
-####功能键
-方向左右是跳过几秒，上下是音量，空格是暂停，回车是全屏，退格是返回文件开始，del删除播放记录（打开曾经播放过的文件会自动跳转到上次退出的位置）。
-鼠标点右上是暂停。
-
-####预编译版下载
-windows版：
-[http://www.dawuxia.net/bigpot/bigpot-win32.zip]
-
-Mac版：
-[http://www.dawuxia.net/bigpot/bigpot.app.zip]
