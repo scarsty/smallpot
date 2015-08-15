@@ -274,6 +274,8 @@ void BigPotEngine::setPresentPosition()
 	int w_src = 0, h_src = 0;
 	getWindowSize(w_dst, h_dst);
 	SDL_QueryTexture(_tex, nullptr, nullptr, &w_src, &h_src);
+	w_src *= _ratio_x;
+	h_src *= _ratio_y;
 	if (_keep_ratio)
 	{
 		if (w_src == 0 || h_src == 0) return;
