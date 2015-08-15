@@ -74,6 +74,7 @@ private:
 	int _start_w = 320, _start_h = 150; //320, 150
 	int _win_w, _win_h, _min_x, _min_y, _max_x, _max_y;
 	double _rotation = 0;
+	int _ratio_x = 1, _ratio_y = 1;
 public:
 	int init();
 	__declspec(deprecated)	
@@ -159,6 +160,7 @@ public:
 	BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
 	double setRotation(double r) { return _rotation = r; }
 	void resetWindowsPosition();
+	void setRatio(int x, int y) { _ratio_x = x; _ratio_y = y; }
 	//声音相关
 private:
 	SDL_AudioDeviceID _device;
