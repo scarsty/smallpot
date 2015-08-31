@@ -397,8 +397,8 @@ void BigPotEngine::setWindowPosition(int x, int y)
 {
 	int w, h;
 	SDL_GetWindowSize(_win, &w, &h);
-	if (x = BP_WINDOWPOS_CENTERED) x = _min_x + (_max_x -_min_x- w) / 2;
-	if (y = BP_WINDOWPOS_CENTERED) y = _min_y + (_max_y -_min_y- h) / 2;
+	if (x == BP_WINDOWPOS_CENTERED) x = _min_x + (_max_x -_min_x- w) / 2;
+	if (y == BP_WINDOWPOS_CENTERED) y = _min_y + (_max_y -_min_y- h) / 2;
 	SDL_SetWindowPosition(_win, x, y);
 }
 
