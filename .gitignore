@@ -356,3 +356,4 @@ lib/SDL2_ttf.framework/Versions/A/Frameworks/FreeType.framework/Versions/Current
 lib/SDL2_ttf.framework/Versions/A/Frameworks/FreeType.framework/Versions/Current/Resources/English.lproj/InfoPlist.strings
 lib/SDL2_ttf.framework/Versions/A/Headers/SDL_ttf.h
 lib/SDL2_ttf.framework/Versions/A/Resources/Info.plist
+*.mkv
