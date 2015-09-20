@@ -4,7 +4,7 @@ BigPotMedia::BigPotMedia()
 {
 	_streamVideo = new BigPotStreamVideo();
 	_streamAudio = new BigPotStreamAudio();
-	//_subtitle = new BigPotSubtitle();
+	//_streamSubtitle = new BigPotStreamSubtitle();
 }
 
 
@@ -12,7 +12,7 @@ BigPotMedia::~BigPotMedia()
 {
 	delete _streamVideo;
 	delete _streamAudio;
-	//delete _subtitle;
+	//delete _streamSubtitle;
 }
 
 int BigPotMedia::openFile(const string &filename)
@@ -21,6 +21,7 @@ int BigPotMedia::openFile(const string &filename)
 		return -1;
 	_streamVideo->openFile(filename);
 	_streamAudio->openFile(filename);
+	//_streamSubtitle->openFile(filename);
 
 	if (_streamAudio->exist())
 	{
@@ -40,6 +41,7 @@ int BigPotMedia::decodeFrame()
 	//_streamAudio->tryDecodeFrame(_seeking);
 	for (int i = 0; i <= _extAudioFrame; i++)
 		_streamAudio->tryDecodeFrame(_seeking);
+	_streamSubtitle->tryDecodeFrame(_seeking);
 	//int m = _audioStream->getTimedts();
 	//int n = _videoStream->getTimedts();
 	if (_seeking)

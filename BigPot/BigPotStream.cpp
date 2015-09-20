@@ -6,6 +6,7 @@ BigPotStream::BigPotStream()
 	av_register_all();
 	formatCtx_ = avformat_alloc_context();
 	frame_ = av_frame_alloc();
+	//subtitle_ = av_
 	//mutex_cpp.;
 	time_shown_ = 0;
 	ticks_shown_ = engine_->getTicks();
@@ -59,6 +60,9 @@ int BigPotStream::openFile(const string & filename)
 	case BPMEDIA_TYPE_AUDIO:
 		avcodec_decode_packet = &avcodec_decode_audio4;
 		break;
+	case BPMEDIA_TYPE_SUBTITLE:
+		avcodec_decode_packet_subtitle = &avcodec_decode_subtitle2;
+		break;
 	}
 	return stream_index_;
 }
@@ -66,6 +70,7 @@ int BigPotStream::openFile(const string & filename)
 //解压帧，同时会更新当前的时间戳
 int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
 {
+	if (!avcodec_decode_packet) return -1;
 	//3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
 	if (!exist()) return -2;
 	int ret = 0;

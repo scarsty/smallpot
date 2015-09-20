@@ -4,6 +4,7 @@
 #include "BigPotStream.h"
 #include "BigPotStreamAudio.h"
 #include "BigPotStreamVideo.h"
+#include "BigPotStreamSubtitle.h"
 #include "BigPotString.h"
 
 using namespace BigPotString;
@@ -16,8 +17,9 @@ public:
 	BigPotMedia();
 	virtual ~BigPotMedia();
 private:
-	BigPotStreamVideo *_streamVideo;
-	BigPotStreamAudio *_streamAudio;
+	BigPotStreamVideo *_streamVideo = nullptr;
+	BigPotStreamAudio *_streamAudio = nullptr;
+	BigPotStreamSubtitle *_streamSubtitle = nullptr;
 	int _extAudioFrame = 1; //额外解压一帧音频，有时视频尺寸很大，可能导致音频解码过慢
 private:
 	int _count = 0;
