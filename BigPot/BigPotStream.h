@@ -19,6 +19,7 @@ enum BigPotMediaType
 {
 	BPMEDIA_TYPE_VIDEO = AVMEDIA_TYPE_VIDEO,
 	BPMEDIA_TYPE_AUDIO = AVMEDIA_TYPE_AUDIO,
+	BPMEDIA_TYPE_SUBTITLE = AVMEDIA_TYPE_SUBTITLE,
 };
 
 /*
@@ -53,6 +54,7 @@ protected:
 	double time_per_frame_ = 0, time_base_packet_ = 0;
 	int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
 	AVFrame *frame_;
+	AVSubtitle *subtitle_;
 	string filename_;
 	mutex mutex_;
 	
@@ -74,6 +76,7 @@ private:
 	bool _decoded = false, _skip = false, _ended = false, _seeking = false;	
 	int _seek_record = 0;  //上次seek的记录
 	int(*avcodec_decode_packet)(AVCodecContext*, AVFrame*, int*, const AVPacket*) = nullptr;
+	int(*avcodec_decode_packet_subtitle)(AVCodecContext*, AVSubtitle*, int*, AVPacket*) = nullptr;
 
 private:
 	virtual Content convertFrameToContent(void * p = nullptr) 
@@ -127,7 +130,7 @@ public:
 	{
 		return time_shown_;
 	}
-	bool exist(){ return stream_index_ >= 0; }
+	bool exist(){ return this !=nullptr && stream_index_ >= 0; }
 	void resetTimeAxis(int time);
 	bool isPause() { return pause_; }
 	bool isKeyFrame() { return key_frame_; }

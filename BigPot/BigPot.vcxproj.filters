@@ -81,6 +81,9 @@
     <ClCompile Include="BigPotStreamAudio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BigPotStreamSubtitle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotPlayer.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BigPotStreamAudio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BigPotStreamSubtitle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
