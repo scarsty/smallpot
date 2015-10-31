@@ -15,7 +15,7 @@ using namespace std;
 
 //主要是字串和文件名处理，随时可能使用
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #define _path_  ('\\')
 #else
 #define _path_  ('/')
