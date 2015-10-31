@@ -2,7 +2,7 @@
 
 extern "C"
 {
-#include "libiconv/iconv.h"
+#include "iconv.h"
 }
 
 #include <cstring>

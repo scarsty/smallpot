@@ -1,6 +1,6 @@
-CXX=g++
+CXX=g++ -static 
 CC=gcc
-CPPFLAGS=-I. -I../include -I../include/ffmpeg -O2 -std=c++0x
+CPPFLAGS=-I. -I../include -I/usr/local/include -I/usr/local/include/ffmpeg -O2 -std=c++0x
 CPPSOURCES=$(wildcard *.cpp) tinyxml2/tinyxml2.cpp hash/sha3.cpp
 #CPPSOURCES=main.cpp mythRedis.cpp mythRedisKey.cpp mythBaseServer.cpp mythLua.cpp mythReader.cpp mythVirtualServer.cpp mythWriter.cpp PEOPLE.cpp
 CPPOBJECTS=$(CPPSOURCES:.cpp=.o)
@@ -10,7 +10,7 @@ TARGET=bigpot
 
 .PHONY: all clean
 
-all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET)
+all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET) strip
 
 .dcpp: $(CPPSOURCES)
 	$(CXX) $(CPPFLAGS) -MM $(CPPSOURCES) >.dcpp
@@ -18,9 +18,12 @@ all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET)
 	$(CC) $(CFLAGS) -MM $(CSOURCES) >.dc
 -include .dcpp
 -include .dc
-$(TARGET): $(CPPOBJECTS) $(COBJECTS)
+$(TARGET): $(CPPOBJECTS) $(COBJECTS) bigpot.res
 	#$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lavutil -lavformat -lavcodec -lswresample -ljsoncpp -lass -liconv
-	$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -L/usr/local/lib -lSDL2 -lSDL2_ttf -lSDL2_image -liconv -lavutil -lavformat -lavcodec -lswresample -lass
+	$(CXX) $(CPPOBJECTS) $(COBJECTS) bigpot.res -o $@ -L/usr/local/lib -lmingw32 -lSDL2main -lSDL2_ttf -lSDL2_image -lSDL2 -liconv -lavformat -lavcodec -lswresample -lavutil -lass -lfribidi -lfreetype -lpng -lz -lwinmm -lole32 -lm -limm32 -loleaut32 -lshell32 -lversion -luuid -lws2_32 -mwindows
 
 clean:
 	rm $(CPPOBJECTS) $(COBJECTS) .dcpp .dc
+    
+strip: $(TARGET)
+	strip bigpot.exe > strip
