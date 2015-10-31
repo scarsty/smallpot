@@ -26,6 +26,8 @@ windows版：
 windows单独文件版（不含版本信息）：
 [http://www.dawuxia.net/bigpot/bigpot-singlefile.zip]
 
+配置文件位于“用户文件夹\AppData\Local\VirtualStore”
+
 Mac版：
 [http://www.dawuxia.net/bigpot/bigpot.app.zip]
 
