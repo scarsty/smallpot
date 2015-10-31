@@ -10,7 +10,7 @@ TARGET=bigpot
 
 .PHONY: all clean
 
-all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET) strip
+all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET) strip bigpot.res
 
 .dcpp: $(CPPSOURCES)
 	$(CXX) $(CPPFLAGS) -MM $(CPPSOURCES) >.dcpp
@@ -27,3 +27,6 @@ clean:
     
 strip: $(TARGET)
 	strip bigpot.exe > strip
+
+bigpot.res: BigPot1.rc
+	windres -i app_res.rc -o app_res.o
