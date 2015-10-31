@@ -10,7 +10,7 @@ TARGET=bigpot
 
 .PHONY: all clean
 
-all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET) strip bigpot.res
+all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET) bigpot.res
 
 .dcpp: $(CPPSOURCES)
 	$(CXX) $(CPPFLAGS) -MM $(CPPSOURCES) >.dcpp
@@ -21,12 +21,10 @@ all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET) strip bigpot.res
 $(TARGET): $(CPPOBJECTS) $(COBJECTS) bigpot.res
 	#$(CXX) $(CPPOBJECTS) $(COBJECTS) -o $@ -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lavutil -lavformat -lavcodec -lswresample -ljsoncpp -lass -liconv
 	$(CXX) $(CPPOBJECTS) $(COBJECTS) bigpot.res -o $@ -L/usr/local/lib -lmingw32 -lSDL2main -lSDL2_ttf -lSDL2_image -lSDL2 -liconv -lavformat -lavcodec -lswresample -lavutil -lass -lfribidi -lfreetype -lpng -lz -lwinmm -lole32 -lm -limm32 -loleaut32 -lshell32 -lversion -luuid -lws2_32 -mwindows
-
+	strip bigpot.exe
+    
 clean:
 	rm $(CPPOBJECTS) $(COBJECTS) .dcpp .dc
     
-strip: $(TARGET)
-	strip bigpot.exe > strip
-
 bigpot.res: BigPot1.rc
 	windres -i app_res.rc -o app_res.o
