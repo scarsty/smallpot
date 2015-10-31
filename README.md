@@ -22,6 +22,7 @@ srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出�
 ##预编译版下载
 windows版：
 [http://www.dawuxia.net/bigpot/bigpot-win32.zip]
+
 windows单独文件版（不含版本信息）：
 [http://www.dawuxia.net/bigpot/bigpot-singlefile.zip]
 
