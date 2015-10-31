@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 
 extern "C"
 {
-#include "ffmpeg/libavcodec/avcodec.h"
-#include "ffmpeg/libavutil/avutil.h"
-#include "ffmpeg/libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavutil/avutil.h"
+#include "libavformat/avformat.h"
 }
 
 #include "BigPotBase.h"
@@ -23,10 +23,10 @@ enum BigPotMediaType
 };
 
 /*
-Context - Î´½âÂëÊı¾İ
-Packet - ¶ÁÈ¡µÄÒ»¸öÎ´½âµÄ°ü
-Frame - ½âµÃµÄÒ»Ö¡Êı¾İ
-Content - ×ª»»¶øµÃµÄ¿ÉÒÔÖ±½ÓÏÔÊ¾»ò²¥·ÅµÄÊı¾İ£¬°üº¬Ê±¼ä£¬ĞÅÏ¢£¨Í¨³£Îª×Ü×Ö½Ú£©£¬ºÍÖ¸ÏòÊı¾İÇøµÄÖ¸Õë
+Context - æœªè§£ç æ•°æ®
+Packet - è¯»å–çš„ä¸€ä¸ªæœªè§£çš„åŒ…
+Frame - è§£å¾—çš„ä¸€å¸§æ•°æ®
+Content - è½¬æ¢è€Œå¾—çš„å¯ä»¥ç›´æ¥æ˜¾ç¤ºæˆ–æ’­æ”¾çš„æ•°æ®ï¼ŒåŒ…å«æ—¶é—´ï¼Œä¿¡æ¯ï¼ˆé€šå¸¸ä¸ºæ€»å­—èŠ‚ï¼‰ï¼Œå’ŒæŒ‡å‘æ•°æ®åŒºçš„æŒ‡é’ˆ
 */
 
 class BigPotStream : public BigPotBase
@@ -52,14 +52,14 @@ protected:
 	int stream_index_ = -1;
 	int decodeSizeInPacket_ = 0;
 	double time_per_frame_ = 0, time_base_packet_ = 0;
-	int maxSize_ = 0;  //Îª0Ê±½öÔ¤½âÒ»Ö¡, ÀíÂÛĞ§¹ûÓë=1ÏàÍ¬, µ«²»Ê¹ÓÃmapºÍ¸½¼Ó»º³åÇø
+	int maxSize_ = 0;  //ä¸º0æ—¶ä»…é¢„è§£ä¸€å¸§, ç†è®ºæ•ˆæœä¸=1ç›¸åŒ, ä½†ä¸ä½¿ç”¨mapå’Œé™„åŠ ç¼“å†²åŒº
 	AVFrame *frame_;
 	AVSubtitle *subtitle_;
 	string filename_;
 	mutex mutex_;
 	
 	int ticks_shown_ = -1;
-	int time_dts_ = 0, time_pts_ = 0, time_shown_ = 0;  //½âÑ¹Ê±¼ä£¬Ó¦Õ¹Ê¾Ê±¼ä£¬×î½üÒÑ¾­Õ¹Ê¾µÄÊ±¼ä
+	int time_dts_ = 0, time_pts_ = 0, time_shown_ = 0;  //è§£å‹æ—¶é—´ï¼Œåº”å±•ç¤ºæ—¶é—´ï¼Œæœ€è¿‘å·²ç»å±•ç¤ºçš„æ—¶é—´
 	int time_other_ = 0;
 	int start_time_ = 0;
 	int total_time_ = 0;
@@ -67,14 +67,14 @@ protected:
 	bool pause_ = false;
 	int pause_time_ = 0;
 	bool key_frame_ = false;
-	void* data_ = nullptr;	//ÎŞ»º³åÊ±µÄÓÃ»§Êı¾İ, ¿ÉÄÜÎªÎÆÀí»òÒôÆµ»º³åÇø
+	void* data_ = nullptr;	//æ— ç¼“å†²æ—¶çš„ç”¨æˆ·æ•°æ®, å¯èƒ½ä¸ºçº¹ç†æˆ–éŸ³é¢‘ç¼“å†²åŒº
 	int data_length_ = 0;
 	//int frame_number_;
 private:
 
 	map<int, Content> _map;
 	bool _decoded = false, _skip = false, _ended = false, _seeking = false;	
-	int _seek_record = 0;  //ÉÏ´ÎseekµÄ¼ÇÂ¼
+	int _seek_record = 0;  //ä¸Šæ¬¡seekçš„è®°å½•
 	int(*avcodec_decode_packet)(AVCodecContext*, AVFrame*, int*, const AVPacket*) = nullptr;
 	int(*avcodec_decode_packet_subtitle)(AVCodecContext*, AVSubtitle*, int*, AVPacket*) = nullptr;
 

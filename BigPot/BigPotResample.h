@@ -2,9 +2,9 @@
 
 extern "C"
 {
-#include "ffmpeg/libavcodec/avcodec.h"
-#include "ffmpeg/libswresample/swresample.h"
-#include "ffmpeg/libavutil/opt.h"
+#include "libavcodec/avcodec.h"
+#include "libswresample/swresample.h"
+#include "libavutil/opt.h"
 }
 
 #define BP_AUDIO_RESAMPLE_FORMAT AV_SAMPLE_FMT_S16
