@@ -2,15 +2,9 @@
 
 extern "C"
 {
-#ifdef _MSC_VER
-#include "sdl203/SDL.h"
-#include "sdl203/SDL_image.h"
-#include "sdl203/sdl_ttf.h"
-#else
-#include "sdl204/SDL.h"
-#include "sdl204/SDL_image.h"
-#include "sdl204/sdl_ttf.h"
-#endif
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+#include "SDL2/SDL_ttf.h"
 }
 
 #include <algorithm>

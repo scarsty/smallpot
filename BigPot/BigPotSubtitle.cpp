@@ -2,7 +2,7 @@
 
 BigPotSubtitle::BigPotSubtitle()
 {
-#ifdef _MSC_VER
+#ifdef _WIN32
 	auto name = "c:/windows/fonts/msyh.ttc";
 	if (fileExist(name))
 	{
