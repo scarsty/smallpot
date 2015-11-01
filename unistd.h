@@ -35,6 +35,14 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
+ 
+/* This file has been modified to make sure some libraries (such as FFmpeg) 
+ * can be complied by MinGW-gcc normally. Replace the file with the same name 
+ * in /include by this.
+ * SunTY
+ */
+ 
+ 
 #define _UNISTD_H  1
 #pragma GCC system_header
 
@@ -75,7 +83,7 @@
  * argument, this implementation always returns an indication as if
  * the sleeping period ran to completion.
  */
-_EXTERN_C _cdecl __MINGW_NOTHROW
+_EXTERN_C __MINGW_NOTHROW
 int __mingw_sleep( unsigned long, unsigned long );
 
 /* Structure timespec is mandated by POSIX, for specification of
@@ -101,7 +109,7 @@ _BEGIN_C_DECLS
  * ranging from ~7.5 ms mean, (on WinNT derivatives; ~27.5 ms on Win9x),
  * extending up to ~136 years, (effectively eternity).
  */
-_cdecl __MINGW_NOTHROW
+__MINGW_NOTHROW
 int nanosleep( const struct timespec *, struct timespec * );
 
 #ifndef __NO_INLINE__
@@ -122,7 +130,7 @@ int nanosleep( const struct timespec *period, struct timespec *residual )
  * to a maximum of 999,999 microseconds only).
  */
 typedef unsigned long useconds_t __MINGW_ATTRIB_DEPRECATED;
-int _cdecl __MINGW_NOTHROW usleep( useconds_t )__MINGW_ATTRIB_DEPRECATED;
+int __MINGW_NOTHROW usleep( useconds_t )__MINGW_ATTRIB_DEPRECATED;
 
 #ifndef __NO_INLINE__
 __CRT_INLINE __LIBIMPL__(( FUNCTION = usleep ))
@@ -135,7 +143,7 @@ int usleep( useconds_t period ){ return __mingw_sleep( 0, 1000 * period ); }
  * POSIX recommends limiting the maximum period to 65535 seconds, to
  * maintain portability to platforms with only 16-bit ints).
  */
-unsigned _cdecl __MINGW_NOTHROW sleep( unsigned );
+unsigned __MINGW_NOTHROW sleep( unsigned );
 
 #ifndef __NO_INLINE__
 __CRT_INLINE __LIBIMPL__(( FUNCTION = sleep ))
@@ -150,7 +158,7 @@ unsigned sleep( unsigned period ){ return __mingw_sleep( period, 0 ); }
  * never was any such POSIX function; the actual POSIX equivalent is
  * the ftruncate() function.
  */
-int _cdecl ftruncate( int, off_t );
+int ftruncate( int, off_t );
 
 #ifndef __NO_INLINE__
 __CRT_INLINE __JMPSTUB__(( FUNCTION = ftruncate, REMAPPED = _chsize ))
