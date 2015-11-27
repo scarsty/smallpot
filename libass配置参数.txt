@@ -1,0 +1,1 @@
+ ./configure FREETYPE_CFLAGS=-I/usr/local/include/freetype2 FREETYPE_LIBS=-lfreetype FRIBIDI_CFLAGS=-I/usr/local/include/fribidi FRIBIDI_LIBS=-lfribidi --disable-require-system-font-provider
