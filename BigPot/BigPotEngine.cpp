@@ -46,10 +46,12 @@ int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, Au
 	}
 
 	_device = 0;
-	while (_device == 0)
+	int i = 10;
+	while (_device == 0 && i > 0)
 	{
 		_device = SDL_OpenAudioDevice(NULL, 0, &want, &_spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
 		want.channels--;
+		i--;
 	}
 	printf("device %d/%d\n", _spec.freq, _spec.channels);
 
