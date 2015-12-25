@@ -53,7 +53,7 @@ private:
 	static BigPotEngine _engine;
 	BigPotEngine* _this;
 public:
-	static BigPotEngine* getInstance(){ return &_engine; };
+	static BigPotEngine* getInstance() { return &_engine; };
 	//图形相关
 private:
 	BP_Window* _win = nullptr;
@@ -71,10 +71,9 @@ private:
 	int _ratio_x = 1, _ratio_y = 1;
 public:
 	int init();
-	__declspec(deprecated)	
-		void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
-    __declspec(deprecated)
-        void getWindowMaxSize(int &w, int &h) { SDL_GetWindowMaximumSize(_win, &w, &h); }
+
+	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
+	void getWindowMaxSize(int &w, int &h) { SDL_GetWindowMaximumSize(_win, &w, &h); }
 	int getWindowsWidth()
 	{
 		int w;
@@ -87,30 +86,30 @@ public:
 		SDL_GetWindowSize(_win, nullptr, &h);
 		return h;
 	}
-    int getMaxWindowWidth() {return _max_x - _min_x;}
-    int getMaxWindowHeight() {return _max_y - _min_y;}
+	int getMaxWindowWidth() { return _max_x - _min_x; }
+	int getMaxWindowHeight() { return _max_y - _min_y; }
 	void setWindowSize(int w, int h);
 	void setWindowPosition(int x, int y);
-	void setWindowTitle(const string &str){ SDL_SetWindowTitle(_win, str.c_str()); }
-	BP_Renderer* getRenderer(){ return _ren; }
-		
+	void setWindowTitle(const string &str) { SDL_SetWindowTitle(_win, str.c_str()); }
+	BP_Renderer* getRenderer() { return _ren; }
+
 	void createMainTexture(int w, int h)
 	{
-		_tex = createYUVTexture(w, h); 
+		_tex = createYUVTexture(w, h);
 		//_tex2 = createRGBATexture(w, h);
 		setPresentPosition();
 	}
 
 	void setPresentPosition();  //设置贴图的位置
-	__declspec(deprecated)
-		void getPresentSize(int& w, int& h) { w = _rect.w; h = _rect.h; }
+
+	void getPresentSize(int& w, int& h) { w = _rect.w; h = _rect.h; }
 	int getPresentWidth() { return _rect.w; }
 	int getPresentHeight() { return _rect.h; }
 
 	void destroyMainTexture() { destroyTexture(_tex); }
-	
+
 	void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
-	
+
 	BP_Texture* createYUVTexture(int w, int h)
 	{
 		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
@@ -129,8 +128,10 @@ public:
 		SDL_UpdateTexture(testTexture(t), nullptr, buffer, pitch);
 	}
 
-	void renderCopy(BP_Texture* t = nullptr) 
-	{ SDL_RenderCopyEx(_ren, testTexture(t), nullptr, &_rect, _rotation, nullptr, SDL_FLIP_NONE); }
+	void renderCopy(BP_Texture* t = nullptr)
+	{
+		SDL_RenderCopyEx(_ren, testTexture(t), nullptr, &_rect, _rotation, nullptr, SDL_FLIP_NONE);
+	}
 	void showLogo() { SDL_RenderCopy(_ren, _logo, nullptr, nullptr); }
 	void renderPresent() { SDL_RenderPresent(_ren); renderClear(); };
 	void renderClear() { SDL_RenderClear(_ren); }
@@ -161,28 +162,28 @@ private:
 	AudioCallback _callback = nullptr;
 public:
 	void pauseAudio(int pause) { SDL_PauseAudioDevice(_device, pause); };
-	void closeAudio(){ SDL_CloseAudioDevice(_device); };
+	void closeAudio() { SDL_CloseAudioDevice(_device); };
 	int getMaxVolume() { return BP_AUDIO_MIX_MAXVOLUME; };
-	void mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume) 
+	void mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume)
 	{
 		SDL_MixAudioFormat(dst, src, BP_AUDIO_DEVICE_FORMAT, len, volume);
 	};
 
 	int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
 	static void mixAudioCallback(void* userdata, Uint8* stream, int len);
-	void setAudioCallback(AudioCallback cb = nullptr){ _callback = cb; };
+	void setAudioCallback(AudioCallback cb = nullptr) { _callback = cb; };
 	//事件相关
 private:
 	SDL_Event _e;
 	int _time;
 public:
 	void delay(const int t) { SDL_Delay(t); }
-	uint32_t getTicks(){ return SDL_GetTicks(); }
+	uint32_t getTicks() { return SDL_GetTicks(); }
 	uint32_t tic() { return _time = SDL_GetTicks(); }
-	void toc() 	{ if (SDL_GetTicks() != _time) printf("%d\n", SDL_GetTicks() - _time); }
-	void getMouseState(int &x, int& y){ SDL_GetMouseState(&x, &y); };
+	void toc() { if (SDL_GetTicks() != _time) printf("%d\n", SDL_GetTicks() - _time); }
+	void getMouseState(int &x, int& y) { SDL_GetMouseState(&x, &y); };
 	int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); };
-	void free(void* mem){ SDL_free(mem); }
+	void free(void* mem) { SDL_free(mem); }
 	//UI相关
 private:
 	BP_Texture* _square;
@@ -193,7 +194,7 @@ public:
 	void drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
 	//void split(std::string& s, std::string& delim, std::vector< std::string >* ret);
 	vector<string> splitString(const string& s, const string& delim);
-    int showMessage(const string &content);
+	int showMessage(const string &content);
 };
 
 //这里直接照搬SDL
