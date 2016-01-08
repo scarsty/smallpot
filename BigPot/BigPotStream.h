@@ -118,8 +118,8 @@ public:
 	int getTime();
 	int setAnotherTime(int time);
 	int skipFrame(int time);
-	__declspec(deprecated)
-		void getSize(int &w, int&h);
+
+	void getSize(int &w, int&h);
 	int getWidth() { return exist() ? codecCtx_->width : 0; }
 	int getHeight() { return exist() ? codecCtx_->height : 0; }
 	int getTimedts()
