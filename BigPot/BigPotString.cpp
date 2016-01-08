@@ -78,7 +78,7 @@ namespace BigPotString
 	//查找相似文件名的文件，只找两个
 	std::string fingFileWithMainName(const string& filename)
 	{
-#ifdef __APPLE__
+#ifndef _MSC_VER
 		return "";
 #else
 		_finddata_t file;

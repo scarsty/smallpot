@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <fstream>
-#ifdef __APPLE__
+#ifndef _MSC_VER
 #include <sys/uio.h>
 #else
 #include <io.h>
