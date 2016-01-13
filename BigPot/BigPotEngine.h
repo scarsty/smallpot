@@ -146,6 +146,7 @@ public:
 		SDL_DestroyRenderer(_ren);
 		SDL_DestroyWindow(_win);
 	}
+	bool getIsFullScreen() { return _full_screen; }
 	void toggleFullscreen();
 	BP_Texture* loadImage(const string& filename)
 	{
