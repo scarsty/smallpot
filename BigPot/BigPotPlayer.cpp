@@ -171,7 +171,7 @@ int BigPotPlayer::eventLoop()
 				engine_->toggleFullscreen();
 				break;
 			case BPK_ESCAPE:
-				if (engine_->getIsFullScreen())
+				if (engine_->isFullScreen())
 				{
 					engine_->toggleFullscreen();
 				}
