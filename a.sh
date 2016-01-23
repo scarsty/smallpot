@@ -1,6 +1,9 @@
 cd BigPot
 rm bigpot
-make Makefile.clang
+cp Makefile Makefile.bak
+cp Makefile.clang Makefile
+make
+mv Makefile.bak Makefile 
 ./repair_dylib.sh bigpot loader_path loader_path\\\/\\\.\\\.\\\/lib
 ./repair_dylib.sh bigpot rpath loader_path\\\/\\\.\\\.\\\/lib
 otool -L bigpot
