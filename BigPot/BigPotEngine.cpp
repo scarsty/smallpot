@@ -253,6 +253,13 @@ int BigPotEngine::init()
 	return 0;
 }
 
+bool BigPotEngine::isFullScreen()
+{
+	Uint32 state = SDL_GetWindowFlags(_win);
+	_full_screen = (state & SDL_WINDOW_FULLSCREEN) || (state & SDL_WINDOW_FULLSCREEN_DESKTOP);
+	return _full_screen;
+}
+
 void BigPotEngine::toggleFullscreen()
 {
 	_full_screen = !_full_screen;
