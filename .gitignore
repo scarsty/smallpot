@@ -358,3 +358,5 @@ lib/SDL2_ttf.framework/Versions/A/Headers/SDL_ttf.h
 lib/SDL2_ttf.framework/Versions/A/Resources/Info.plist
 *.mkv
 *.opendb
+*.sdf
+*/ffplay/Debug/*
