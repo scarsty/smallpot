@@ -19,7 +19,7 @@ BigPotStreamVideo::~BigPotStreamVideo()
 int BigPotStreamVideo::showTexture(int time)
 {
 	if (stream_index_ < 0)
-		return -1;
+		return NoVideo;
 	if (haveDecoded())
 	{
 		auto f = getCurrentContent();
@@ -31,14 +31,14 @@ int BigPotStreamVideo::showTexture(int time)
 			time_shown_ = time_c;
 			ticks_shown_ = engine_->getTicks();
 			dropDecoded();
-			return 0;
+			return VideoFrameShowed;
 		}
 		else
 		{
-			return 1;
+			return VideoFrameBeforeTime;
 		}
 	}
-	return 2;	
+	return NoVideoFrame;
 }
 
 void BigPotStreamVideo::freeContent(void* p)
