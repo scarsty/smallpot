@@ -175,7 +175,7 @@ int BigPotStream::getTotalTime()
 	return total_time_;
 }
 
-int BigPotStream::seek(int time, int direct, bool reset)
+int BigPotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
 {	
 	if (exist())
 	{

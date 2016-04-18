@@ -112,7 +112,7 @@ int BigPotPlayer::eventLoop()
 				if (_h - e.button.y < 50)
 				{
 					double pos = 1.0 * e.button.x / _w;
-					_media->seekPos(pos, 1, true);
+					_media->seekPos(pos, 1, 1);
 					seeking = true;
 				}
 
@@ -253,7 +253,7 @@ int BigPotPlayer::eventLoop()
 		//依据解视频的结果判断是否显示
 		bool show = false;
 		//有视频显示成功，或者有静态视频，或者只有音频，均刷新
-		if (videostate == 0)
+		if (videostate == BigPotStreamVideo::VideoFrameShowed)
 		{
 			show = true;
 			//以下均是为了显示信息，可以去掉
@@ -266,7 +266,7 @@ int BigPotPlayer::eventLoop()
 		}
 		//静止时，无视频时，视频已放完时40毫秒显示一次
 		//有视频未暂停且未到时间不会进入此判断
-		else if ((pause || videostate == -1 || videostate ==2)
+		else if ((pause || videostate == BigPotStreamVideo::NoVideo || videostate == BigPotStreamVideo::NoVideoFrame)
 			&& engine_->getTicks() - prev_show_time > 100)
 		{
 			show = true;
