@@ -11,6 +11,7 @@ class BigPotPlayer : public BigPotBase
 {
 public:
 	BigPotPlayer();
+	BigPotPlayer(void* handle);
 	BigPotPlayer(char* s) : BigPotPlayer() { _filepath = BigPotString::getFilePath(s); }
 	virtual ~BigPotPlayer();
 private:
