@@ -70,7 +70,7 @@ private:
 	double _rotation = 0;
 	int _ratio_x = 1, _ratio_y = 1;
 public:
-	int init();
+	int init(void* handle = 0);
 
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
 	void getWindowMaxSize(int &w, int &h) { SDL_GetWindowMaximumSize(_win, &w, &h); }

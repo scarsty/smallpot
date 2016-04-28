@@ -208,14 +208,18 @@ void BigPotEngine::drawText(const string &fontname, const string &text, int size
 	SDL_DestroyTexture(text_t);
 }
 
-int BigPotEngine::init()
+int BigPotEngine::init(void* handle)
 {
 	if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
 	{
 		return -1;
 	}
-	_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+	if (handle)
+		_win = SDL_CreateWindowFrom(handle);
+	else
+		_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                             _start_w, _start_h, SDL_WINDOW_RESIZABLE);
+	//SDL_CreateWindowFrom()
     SDL_ShowWindow(_win);
     SDL_RaiseWindow(_win);
 	_ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
