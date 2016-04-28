@@ -105,6 +105,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BigPotDll.cpp" />
     <ClCompile Include="BigPotStreamAudio.cpp" />
     <ClCompile Include="BigPotBase.cpp" />
     <ClCompile Include="BigPotConfig.cpp" />
@@ -127,6 +128,7 @@
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BigPotDll.h" />
     <ClInclude Include="BigPotStreamAudio.h" />
     <ClInclude Include="BigPotConfig.h" />
     <ClInclude Include="BigPotConv.h" />

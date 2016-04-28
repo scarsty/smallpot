@@ -216,6 +216,7 @@ int BigPotEngine::init()
 	}
 	_win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                             _start_w, _start_h, SDL_WINDOW_RESIZABLE);
+	//SDL_CreateWindowFrom()
     SDL_ShowWindow(_win);
     SDL_RaiseWindow(_win);
 	_ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
