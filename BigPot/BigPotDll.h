@@ -7,7 +7,7 @@
 #define HBAPI __declspec (dllexport)   
 #endif   
 
-HBAPI int MYTHAPI BigPotInit(void* handle);
-HBAPI int MYTHAPI BigPotInputVideo(char* filename);
-HBAPI int MYTHAPI BigPotSeek(int seek);
-HBAPI int MYTHAPI BigPotClose();
+HBAPI void* MYTHAPI BigPotInit(void* handle);
+HBAPI int MYTHAPI BigPotInputVideo(void* handle,char* filename);
+HBAPI int MYTHAPI BigPotSeek(void* handle, int seek);
+HBAPI int MYTHAPI BigPotClose(void* handle);
