@@ -10,6 +10,7 @@ BigPotPlayer::BigPotPlayer()
 	//config_->init();
 	_w = 320;
 	_h = 150;
+	_handle = nullptr;
 }
 
 BigPotPlayer::~BigPotPlayer()
@@ -298,7 +299,7 @@ int BigPotPlayer::eventLoop()
 
 int BigPotPlayer::init()
 {
-	if (engine_->init()) return -1;
+	if (engine_->init(_handle)) return -1;
 
 	config_->init(_filepath);
 	_sys_encode = config_->getString("sys_encode", "cp936");

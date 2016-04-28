@@ -84,6 +84,9 @@
     <ClCompile Include="BigPotStreamSubtitle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BigPotDll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotPlayer.h">
@@ -146,6 +149,9 @@
     <ClInclude Include="BigPotStreamSubtitle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BigPotDll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BigPot.rc">
@@ -156,5 +162,10 @@
     <Image Include="bigpot.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bigpot.def">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
