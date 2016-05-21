@@ -360,3 +360,4 @@ lib/SDL2_ttf.framework/Versions/A/Resources/Info.plist
 *.opendb
 *.sdf
 */ffplay/Debug/*
+BigPot.VC.db
