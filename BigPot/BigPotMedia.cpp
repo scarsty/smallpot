@@ -131,3 +131,5 @@ void BigPotMedia::setPause(bool pause)
 	_streamVideo->setPause(pause);
 }
 
+
+
