@@ -58,7 +58,7 @@ protected:
 	string filename_;
 	mutex mutex_;
 	
-	int ticks_shown_ = -1;
+	int ticks_shown_ = -1;  //最近展示的ticks
 	int time_dts_ = 0, time_pts_ = 0, time_shown_ = 0;  //解压时间，应展示时间，最近已经展示的时间
 	int time_other_ = 0;
 	int start_time_ = 0;
@@ -130,7 +130,7 @@ public:
 	{
 		return time_shown_;
 	}
-	bool exist(){ return this !=nullptr && stream_index_ >= 0; }
+	bool exist() { return this != nullptr && stream_index_ >= 0; }
 	void resetTimeAxis(int time);
 	bool isPause() { return pause_; }
 	bool isKeyFrame() { return key_frame_; }

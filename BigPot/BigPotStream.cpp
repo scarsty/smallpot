@@ -200,6 +200,11 @@ int BigPotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
 	return 0;
 }
 
+void BigPotStream::setFrameTime()
+{
+
+}
+
 int BigPotStream::dropContent(int key)
 {
 	mutex_.lock();
@@ -301,7 +306,7 @@ int BigPotStream::getTime()
 	    //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
     //if (exist() && !_ended)
     if (exist())
-		return pause_time_ = min(int(time_shown_ - ticks_shown_ + engine_->getTicks()), total_time_);
+		return pause_time_ = min(int(time_shown_  + engine_->getTicks() - ticks_shown_), total_time_);
     return 0;
 }
 
@@ -346,6 +351,7 @@ void BigPotStream::setPause(bool pause)
 {
 	pause_ = pause;
 	pause_time_ = getTime();
+	ticks_shown_ = engine_->getTicks();
 }
 
 void BigPotStream::resetTimeAxis(int time)

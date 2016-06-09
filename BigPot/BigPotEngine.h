@@ -137,8 +137,8 @@ public:
 	void renderClear() { SDL_RenderClear(_ren); }
 	void setTextureAlphaMod(BP_Texture* t, uint8_t alpha) { SDL_SetTextureAlphaMod(t, alpha); };
 
-	void createWindow();
-	void createRenderer();
+	void createWindow() {}
+	void createRenderer() {}
 	void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0, int inPresent = 0);
 	void destroy()
 	{
