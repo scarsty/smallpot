@@ -78,5 +78,7 @@ void BigPotUI::init()
 
 void BigPotUI::destory()
 {
+	if (config_->getString("ui_font") == "")
+		config_->setString(_fontname, "ui_font");
 	engine_->destroyTexture(_square);
 }

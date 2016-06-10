@@ -17,6 +17,7 @@ BigPotSubtitle::BigPotSubtitle()
 
 BigPotSubtitle::~BigPotSubtitle()
 {
+	if (config_->getString("sub_font") == "")
+		config_->setString(fontname_, "sub_font");
 }
-
 
