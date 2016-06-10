@@ -34,16 +34,7 @@ void BigPotUI::drawBall()
 
 void BigPotUI::drawText(const string &text)
 {
-#ifdef _WIN32
-    const char* s = "c:/windows/fonts/cambria.ttc";
-	if (!fileExist(s))
-		s = "c:/windows/fonts/cambria.ttf";
-#else
-    const char* s = "/System/Library/Fonts/Palatino.ttc";
-#endif
-	if (!fileExist(s))
-		s = config_->getString("sub_font").c_str();
-    engine_->drawText(s, text, 20, _win_w - 10, 10, _alpha, BP_ALIGN_RIGHT);
+    engine_->drawText(_fontname.c_str(), text, 20, _win_w - 10, 10, _alpha, BP_ALIGN_RIGHT);
 }
 
 void BigPotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
@@ -72,6 +63,17 @@ std::string BigPotUI::convertTimeToString(int time)
 void BigPotUI::init()
 {
 	_square = engine_->createSquareTexture(30);
+	_fontname = config_->getString("ui_font");	
+	if (!fileExist(_fontname))
+	{
+#ifdef _WIN32
+		_fontname = "c:/windows/fonts/cambria.ttc";
+		if (!fileExist(_fontname))
+			_fontname = "c:/windows/fonts/cambria.ttf";
+#else
+		_fontname = "/System/Library/Fonts/Palatino.ttc";
+#endif
+	}
 }
 
 void BigPotUI::destory()
