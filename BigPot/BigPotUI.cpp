@@ -41,6 +41,8 @@ void BigPotUI::drawText(const string &text)
 #else
     const char* s = "/System/Library/Fonts/Palatino.ttc";
 #endif
+	if (!fileExist(s))
+		s = config_->getString("sub_font").c_str();
     engine_->drawText(s, text, 20, _win_w - 10, 10, _alpha, BP_ALIGN_RIGHT);
 }
 
