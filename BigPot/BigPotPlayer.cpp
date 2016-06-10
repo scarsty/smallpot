@@ -300,7 +300,6 @@ int BigPotPlayer::eventLoop()
 int BigPotPlayer::init()
 {
 	if (engine_->init(_handle)) return -1;
-
 	config_->init(_filepath);
 	_sys_encode = config_->getString("sys_encode", "cp936");
 	_cur_volume = config_->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);

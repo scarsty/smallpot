@@ -15,6 +15,7 @@ private:
 
 	int x = 0, y = 0, w = 0, h = 0;
 	uint8_t _alpha;
+	string _fontname;
 public:
 	void init();
 	void setTime(int t) { _time = t; };
