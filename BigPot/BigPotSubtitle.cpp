@@ -3,20 +3,19 @@
 BigPotSubtitle::BigPotSubtitle()
 {
 #ifdef _WIN32
-	auto name = "c:/windows/fonts/msyh.ttc";
-	if (fileExist(name))
-	{
-		fontname_ = name;
-	}
-	else
-	{
-		fontname_ = changeFileExt(name, "ttf");
-	}
+	fontname_ = "c:/windows/fonts/msyh.ttc";
 #endif
 #ifdef __APPLE__
 	fontname_ = "/System/Library/Fonts/STHeiti Medium.ttc";
 #endif
-
+	if (config_->getString("sub_font") != "")
+	{
+		auto name = config_->getString("sub_font");
+		if (fileExist(name))
+		{
+			fontname_ = name;
+		}
+	}
 }
 
 
