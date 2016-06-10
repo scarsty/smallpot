@@ -301,7 +301,11 @@ int BigPotPlayer::init()
 {
 	if (engine_->init(_handle)) return -1;
 	config_->init(_filepath);
+#ifdef _MSC_VER
 	_sys_encode = config_->getString("sys_encode", "cp936");
+#else
+	_sys_encode = config_->getString("sys_encode", "utf-8");
+#endif
 	_cur_volume = config_->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
 	_UI->init();
 	return 0;
@@ -311,9 +315,9 @@ void BigPotPlayer::destroy()
 {
 	config_->setString(_sys_encode, "sys_encode");
 	config_->setInteger(_cur_volume, "volume");
-	config_->write();
 	_UI->destory();
 	engine_->destroy();
+	config_->write();
 }
 
 
