@@ -3,13 +3,16 @@
 
 ## 编译
 ###Windows
-####VS2013
+####VS2015
 已经包含了Windows版本所需的工程文件，以及导入库和dll。其中大部分是作者自行编译。
 ####mingw
-主要是依赖库比较麻烦，动态库和导入库也可以使用。可以修改makefile，在链接的地方有一个注释掉的行，是针对mingw的。另外因为mingw本身的问题，可能需要在编译器参数上增加-D__NO_INLINE__。
+因为各个库的依赖很复杂，不建议使用。
 
-### macosx
-makefile文件是为mac版编写，需先安装SDL2以及相关扩展的framework，并安装freetype、libass、FFmpeg、iconv等，通常homebrew可以做。jsoncpp是可选的。
+###macosx
+需先安装SDL2以及相关扩展的framework，并安装libass、FFmpeg、iconv等，通常homebrew可以做。jsoncpp是可选的。
+
+###linux
+方法类似。
 
 ##遗留问题
 因为是单线程架构，所以在一些文件跳转时会出现马赛克。一般来说这个可以通过清除解码器状态来解决，但是单线程架构下这个操作会导致后面一帧的解码卡顿，故没有这么做。或者谁有更好的办法可以指教一下。
@@ -23,11 +26,6 @@ srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出�
 windows版：
 [http://www.dawuxia.net/bigpot/bigpot-win32.zip]
 
-windows单独文件版（不含版本信息）：
-[http://www.dawuxia.net/bigpot/bigpot-singlefile.zip]
-
-配置文件位于“用户文件夹\AppData\Local\VirtualStore”
-
 Mac版：
 [http://www.dawuxia.net/bigpot/bigpot.app.zip]
 
@@ -35,7 +33,7 @@ Mac版：
 ##常见问题
 
 ####Q：大水壶使用什么开发？
-A：程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。目前还未使用到GPL的部分。配置文件使用的是tinyxml2和jsoncpp（二选一），hash是sha3。
+A：程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。配置文件使用的是tinyxml2和jsoncpp（二选一），hash是sha3。
 
 ####Q：播放器采用了什么架构？
 A：该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解。因此在跳转的时候可能会稍慢于其他的主流播放器，但是相差并不明显。
@@ -56,9 +54,7 @@ A：因为没有制作配置的图形界面，所以仅能将文件拖到图标�
 A：鼠标滚轮或者上下方向，没有制作拖动音量条。
 
 ####Q：能否跨平台？
-A：开发的时候使用的是vs2013，但是mingw也可以编译，跨平台应该不成问题。
+A：可以。
 
 ####Q：会不会开源？
-A：因为用了很多其他库，大部分是开源的，所以估计会吧。如果开源，使用的库里面有GPL就用GPL。
-
-
+A：以lgpl协议开源。
