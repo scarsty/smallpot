@@ -9,7 +9,6 @@
 #include "BigPotString.h"
 #include "BigPotConfig.h"
 
-
 using namespace std;
 
 

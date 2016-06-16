@@ -1,6 +1,7 @@
 #pragma once
 #include "BigPotSubtitle.h"
 
+
 class BigPotSubtitleAss :
 	public BigPotSubtitle
 {

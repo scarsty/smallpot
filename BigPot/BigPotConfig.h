@@ -6,12 +6,14 @@
 #include "BigPotString.h"
 
 using namespace BigPotString;
+#ifdef USINGJSON
 #if (defined _WIN32) || (defined WIN32)
 #	ifdef _DEBUG
 #		pragma comment(lib,"lib_json_debug.lib")
 #	else
-		#pragma comment(lib,"lib_json_release.lib")
+#		pragma comment(lib,"lib_json_release.lib")
 #	endif
+#endif
 #endif
 
 #ifdef USINGJSON
