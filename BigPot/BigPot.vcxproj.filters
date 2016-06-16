@@ -19,6 +19,9 @@
     <Filter Include="hash">
       <UniqueIdentifier>{3812f944-8811-4cd1-ba86-7b5a234a7005}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{fe34ce63-78eb-44f5-9467-8e9257074944}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -57,9 +60,6 @@
     <ClCompile Include="BigPotSubtitleSrt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotSubtitleAss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BigPotSubtitleFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,6 +85,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BigPotDll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BigPotSubtitleAss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,9 +125,6 @@
     <ClInclude Include="BigPotSubtitleSrt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotSubtitleAss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BigPotSubtitleFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -152,6 +152,9 @@
     <ClInclude Include="BigPotDll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BigPotSubtitleAss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BigPot.rc">
@@ -167,5 +170,37 @@
     <None Include="bigpot.def">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\lib\x86\ass.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\libiconv.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\SDL2.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\SDL2_image.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\SDL2_ttf.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\SDL2main.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\swresample.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\avcodec.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\avformat.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="..\lib\x86\avutil.lib">
+      <Filter>lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>
