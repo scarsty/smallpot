@@ -361,3 +361,4 @@ lib/SDL2_ttf.framework/Versions/A/Resources/Info.plist
 *.sdf
 */ffplay/Debug/*
 BigPot.VC.db
+*.wmv
