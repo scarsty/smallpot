@@ -88,18 +88,7 @@ public:
 	void clearRecord() { _record.clear(); }
 #else
 	//xml只有字串，故首先完成字串功能
-	string getString(const char * name, string def = "")
-	{
-		auto p = _root->FirstChildElement(name);
-		if (p && p->FirstChild())
-		{
-			return p->GetText();
-		}
-		else
-		{
-			return def;
-		}
-	}
+	string getString(const char * name, string def = "");
 
 	int getInteger(const char * name, int def = 0)
 	{
@@ -143,13 +132,7 @@ public:
 
 	void setRecord(int v, const char * name);
 	
-	void clearRecord() 
-	{
-		if (_record)
-		{
-			_record->DeleteChildren();
-		}
-	}
+	void clearRecord();
 	//string replace(string str, const char *string_to_replace, const char *new_string);
 #endif
 };

@@ -74,18 +74,8 @@ public:
 
 	void getWindowSize(int &w, int &h) { SDL_GetWindowSize(_win, &w, &h); }
 	void getWindowMaxSize(int &w, int &h) { SDL_GetWindowMaximumSize(_win, &w, &h); }
-	int getWindowsWidth()
-	{
-		int w;
-		SDL_GetWindowSize(_win, &w, nullptr);
-		return w;
-	}
-	int getWindowsHeight()
-	{
-		int h;
-		SDL_GetWindowSize(_win, nullptr, &h);
-		return h;
-	}
+	int getWindowsWidth();
+	int getWindowsHeight();
 	int getMaxWindowWidth() { return _max_x - _min_x; }
 	int getMaxWindowHeight() { return _max_y - _min_y; }
 	void setWindowSize(int w, int h);
@@ -93,12 +83,7 @@ public:
 	void setWindowTitle(const string &str) { SDL_SetWindowTitle(_win, str.c_str()); }
 	BP_Renderer* getRenderer() { return _ren; }
 
-	void createMainTexture(int w, int h)
-	{
-		_tex = createYUVTexture(w, h);
-		//_tex2 = createRGBATexture(w, h);
-		setPresentPosition();
-	}
+	void createMainTexture(int w, int h);
 
 	void setPresentPosition();  //设置贴图的位置
 
@@ -110,28 +95,13 @@ public:
 
 	void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
 
-	BP_Texture* createYUVTexture(int w, int h)
-	{
-		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
-	};
-	void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
-	{
-		SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
-	}
+	BP_Texture* createYUVTexture(int w, int h);;
+	void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
 
-	BP_Texture* createRGBATexture(int w, int h)
-	{
-		return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
-	};
-	void updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch)
-	{
-		SDL_UpdateTexture(testTexture(t), nullptr, buffer, pitch);
-	}
+	BP_Texture* createRGBATexture(int w, int h);;
+	void updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch);
 
-	void renderCopy(BP_Texture* t = nullptr)
-	{
-		SDL_RenderCopyEx(_ren, testTexture(t), nullptr, &_rect, _rotation, nullptr, SDL_FLIP_NONE);
-	}
+	void renderCopy(BP_Texture* t = nullptr);
 	void showLogo() { SDL_RenderCopy(_ren, _logo, nullptr, nullptr); }
 	void renderPresent() { SDL_RenderPresent(_ren); renderClear(); };
 	void renderClear() { SDL_RenderClear(_ren); }
@@ -140,18 +110,10 @@ public:
 	void createWindow() {}
 	void createRenderer() {}
 	void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0, int inPresent = 0);
-	void destroy()
-	{
-		SDL_DestroyTexture(_tex);
-		SDL_DestroyRenderer(_ren);
-		SDL_DestroyWindow(_win);
-	}
+	void destroy();
 	bool isFullScreen();
 	void toggleFullscreen();
-	BP_Texture* loadImage(const string& filename)
-	{
-		return IMG_LoadTexture(_ren, filename.c_str());
-	}
+	BP_Texture* loadImage(const string& filename);
 	bool setKeepRatio(bool b);
 	BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
 	double setRotation(double r) { return _rotation = r; }
@@ -165,10 +127,7 @@ public:
 	void pauseAudio(int pause) { SDL_PauseAudioDevice(_device, pause); };
 	void closeAudio() { SDL_CloseAudioDevice(_device); };
 	int getMaxVolume() { return BP_AUDIO_MIX_MAXVOLUME; };
-	void mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume)
-	{
-		SDL_MixAudioFormat(dst, src, BP_AUDIO_DEVICE_FORMAT, len, volume);
-	};
+	void mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume);;
 
 	int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
 	static void mixAudioCallback(void* userdata, Uint8* stream, int len);

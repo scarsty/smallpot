@@ -110,3 +110,24 @@ void BigPotConfig::setRecord(int v, const char * name)
 		->SetText(formatString("%d", v).c_str());
 }
 
+void BigPotConfig::clearRecord()
+{
+	if (_record)
+	{
+		_record->DeleteChildren();
+	}
+}
+
+std::string BigPotConfig::getString(const char * name, string def /*= ""*/)
+{
+	auto p = _root->FirstChildElement(name);
+	if (p && p->FirstChild())
+	{
+		return p->GetText();
+	}
+	else
+	{
+		return def;
+	}
+}
+
