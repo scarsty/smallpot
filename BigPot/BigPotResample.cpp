@@ -10,7 +10,7 @@ BigPotResample::~BigPotResample()
 {
 }
 
-int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame, 
+int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
 	int out_sample_format, int out_sample_rate, int out_channels, uint8_t* out_buf)
 {
 	SwrContext * swr_ctx = NULL;
@@ -82,7 +82,7 @@ int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
 	av_opt_set_int(swr_ctx, "out_sample_rate", out_sample_rate, 0);
 	av_opt_set_sample_fmt(swr_ctx, "out_sample_fmt", (AVSampleFormat)out_sample_format, 0);
 
-	if ((ret = swr_init(swr_ctx)) < 0) 
+	if ((ret = swr_init(swr_ctx)) < 0)
 	{
 		printf("Failed to initialize the resampling context\n");
 		return -1;

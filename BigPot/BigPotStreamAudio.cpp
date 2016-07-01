@@ -7,9 +7,9 @@ BigPotStreamAudio::BigPotStreamAudio()
 	//除非知道音频包定长，否则不应设为0，一般情况下都不建议为0
 	maxSize_ = 100;
 	//缓冲区大小4M保存
-	if (useMap()) 
+	if (useMap())
 		data_ = av_mallocz(_scream_size);
-	_resample_buffer =  (decltype(_resample_buffer))av_mallocz(_convert_size);
+	_resample_buffer = (decltype(_resample_buffer))av_mallocz(_convert_size);
 	type_ = BPMEDIA_TYPE_AUDIO;
 }
 
@@ -30,8 +30,8 @@ void BigPotStreamAudio::openAudioDevice()
 		return;
 	_freq = codecCtx_->sample_rate;
 	_channels = config_->getInteger("channels", -1);
-    if (_channels<0)
-        _channels = codecCtx_->channels;
+	if (_channels < 0)
+		_channels = codecCtx_->channels;
 	engine_->openAudio(_freq, _channels, codecCtx_->frame_size,
 		2048, bind(&BigPotStreamAudio::mixAudioData, this, placeholders::_1, placeholders::_2));
 }
@@ -105,13 +105,13 @@ void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
 		}
 	}
 	_data_read += len;
-    //cout<<time_shown_<<endl;
+	//cout<<time_shown_<<endl;
 	//SDL_UnlockMutex(t->mutex_cpp);
 }
 
 BigPotStream::Content BigPotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
 {
-	data_length_ = BigPotResample::convert(codecCtx_, frame_, 
+	data_length_ = BigPotResample::convert(codecCtx_, frame_,
 		BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
 	if (data_length_ <= 0)
 		return{ -1, data_length_, nullptr };
