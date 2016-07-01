@@ -13,6 +13,26 @@ BigPotEngine::~BigPotEngine()
 	//destroy();
 }
 
+BP_Texture* BigPotEngine::createYUVTexture(int w, int h)
+{
+	return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
+}
+
+void BigPotEngine::updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
+{
+	SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
+}
+
+BP_Texture* BigPotEngine::createRGBATexture(int w, int h)
+{
+	return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+}
+
+void BigPotEngine::updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch)
+{
+	SDL_UpdateTexture(testTexture(t), nullptr, buffer, pitch);
+}
+
 void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inPresent)
 {
 	if (inPresent == 1)
@@ -22,6 +42,23 @@ void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inP
 	}
 	SDL_Rect r = { x, y, w, h };
 	SDL_RenderCopy(_ren, t, nullptr, &r);
+}
+
+void BigPotEngine::renderCopy(BP_Texture* t /*= nullptr*/)
+{
+	SDL_RenderCopyEx(_ren, testTexture(t), nullptr, &_rect, _rotation, nullptr, SDL_FLIP_NONE);
+}
+
+void BigPotEngine::destroy()
+{
+	SDL_DestroyTexture(_tex);
+	SDL_DestroyRenderer(_ren);
+	SDL_DestroyWindow(_win);
+}
+
+void BigPotEngine::mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume)
+{
+	SDL_MixAudioFormat(dst, src, BP_AUDIO_DEVICE_FORMAT, len, volume);
 }
 
 int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
@@ -257,6 +294,20 @@ int BigPotEngine::init(void* handle)
 	return 0;
 }
 
+int BigPotEngine::getWindowsWidth()
+{
+	int w;
+	SDL_GetWindowSize(_win, &w, nullptr);
+	return w;
+}
+
+int BigPotEngine::getWindowsHeight()
+{
+	int h;
+	SDL_GetWindowSize(_win, nullptr, &h);
+	return h;
+}
+
 bool BigPotEngine::isFullScreen()
 {
 	Uint32 state = SDL_GetWindowFlags(_win);
@@ -274,9 +325,21 @@ void BigPotEngine::toggleFullscreen()
 	SDL_RenderClear(_ren);	
 }
 
+BP_Texture* BigPotEngine::loadImage(const string& filename)
+{
+	return IMG_LoadTexture(_ren, filename.c_str());
+}
+
 bool BigPotEngine::setKeepRatio(bool b)
 {
 	return _keep_ratio = b;
+}
+
+void BigPotEngine::createMainTexture(int w, int h)
+{
+	_tex = createYUVTexture(w, h);
+	//_tex2 = createRGBATexture(w, h);
+	setPresentPosition();
 }
 
 void BigPotEngine::setPresentPosition()
