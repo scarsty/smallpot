@@ -1,4 +1,6 @@
 # bigpot
+<img src="https://raw.githubusercontent.com/scarsty/bigpot/master/logo.png" width = "20%" />
+
 一个轻量级播放器
 
 ## 编译
@@ -36,7 +38,9 @@ Mac版：
 A：程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。配置文件使用的是tinyxml2和jsoncpp（二选一），hash是sha3。
 
 ####Q：播放器采用了什么架构？
-A：该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解。因此在跳转的时候可能会稍慢于其他的主流播放器，但是相差并不明显。
+A：该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解，原理如下图。在跳转的时候可能会稍慢于其他的主流播放器，但是相差并不明显。
+
+<img src="https://raw.githubusercontent.com/scarsty/bigpot/master/ac.png" width = "50%" />
 
 ####Q：为什么叫大水壶？
 A：大水壶播放器的前身是金庸水浒传的片头动画播放子程。在整个游戏过程中该子程仅被调用了一次，但是为了做好这个部分，开发组使用了FFmpeg进行解码，BASS进行播放，SDL2进行输出，并成功将其移植到了其他平台。因此，金庸水浒传的片头实际支持相当多的格式。而大水壶播放器在设计阶段，也是使用类似的架构，但是在开发阶段发现音频难以控制，因此改为了使用SDL2播放。
@@ -58,3 +62,8 @@ A：可以。
 
 ####Q：会不会开源？
 A：以lgpl协议开源。
+
+##播放效果
+<img src="https://raw.githubusercontent.com/scarsty/bigpot/master/1.png" width = "80%" />
+
+<img src="https://raw.githubusercontent.com/scarsty/bigpot/master/2.png" width = "80%" />
