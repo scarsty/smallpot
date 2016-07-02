@@ -44,7 +44,7 @@ namespace BigPotString
 	std::string toLowerCase(const std::string& str);
 	std::string formatString(const char *format, ...);
 
-	void setFilePath(char *s);
-	std::string getFilePath();
+	//void setFilePath(char *s);
+	//std::string getFilePath();
 
 }
