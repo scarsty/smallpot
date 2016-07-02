@@ -30,3 +30,8 @@ std::string BigPotConv::conv(const string& src, const char* from, const char* to
 	return out;
 	return src;
 }
+
+std::string BigPotConv::conv(const string& src, const string& from, const string& to)
+{
+	return conv(src, from.c_str(), to.c_str());
+}

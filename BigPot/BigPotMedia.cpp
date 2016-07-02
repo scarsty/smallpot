@@ -125,6 +125,11 @@ void BigPotMedia::destroy()
 
 }
 
+bool BigPotMedia::isMedia()
+{
+	return _streamAudio->exist() || _streamVideo->exist();
+}
+
 void BigPotMedia::setPause(bool pause)
 {
 	_streamAudio->setPause(pause);

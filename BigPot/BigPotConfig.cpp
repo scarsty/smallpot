@@ -131,3 +131,38 @@ std::string BigPotConfig::getString(const char * name, string def /*= ""*/)
 	}
 }
 
+int BigPotConfig::getInteger(const char * name, int def /*= 0*/)
+{
+	return atoi(getString(name, formatString("%d", def)).c_str());
+}
+
+double BigPotConfig::getDouble(const char * name, double def /*= 0.0*/)
+{
+	return atof(getString(name, formatString("%f", def)).c_str());
+}
+
+bool BigPotConfig::getBool(bool &v, const char * name)
+{
+	return atoi(getString(name, "0").c_str()) != 0;
+}
+
+void BigPotConfig::setString(const string v, const char * name)
+{
+	getElement(_root, name)->SetText(v.c_str());
+}
+
+void BigPotConfig::setInteger(int v, const char * name)
+{
+	setString(formatString("%d", v), name);
+}
+
+void BigPotConfig::setDouble(double v, const char * name)
+{
+	setString(formatString("%f", v), name);
+}
+
+void BigPotConfig::setBool(bool v, const char * name)
+{
+	setString(formatString("%d", v != 0), name);
+}
+

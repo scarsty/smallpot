@@ -15,7 +15,7 @@ public:
 		NoVideoFrame = 2,
 	} VideoFrameState;
 private:
-	void clear();
+	//void clear();
 	virtual void freeContent(void* p);
 	virtual Content convertFrameToContent(void* p = nullptr);
 public:

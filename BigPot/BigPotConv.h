@@ -26,10 +26,7 @@ public:
 	string toLowerCase(const string s);
 
 	static string conv(const string& src, const char* from, const char* to);
-	static string conv(const string& src, const string& from, const string& to)
-	{
-		return conv(src, from.c_str(), to.c_str());
-	}
+	static string conv(const string& src, const string& from, const string& to);
 	static string cp936toutf8(const string& src) { return conv(src, "cp936", "utf-8"); }
 	static string cp950toutf8(const string& src) { return conv(src, "cp950", "utf-8"); }
 };

@@ -40,10 +40,7 @@ public:
 	int getTotalTime() { return _totalTime; }
 	int getTime();
 	void destroy();
-	bool isMedia()
-	{
-		return _streamAudio->exist() || _streamVideo->exist();
-	}
+	bool isMedia();
 	void setPause(bool pause);
 };
 

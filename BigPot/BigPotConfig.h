@@ -89,51 +89,20 @@ public:
 #else
 	//xml只有字串，故首先完成字串功能
 	string getString(const char * name, string def = "");
+	int getInteger(const char * name, int def = 0);
+	double getDouble(const char * name, double def = 0.0);
+	bool getBool(bool &v, const char * name);
 
-	int getInteger(const char * name, int def = 0)
-	{
-		return atoi(getString(name, formatString("%d", def)).c_str());
-	}
-
-	double getDouble(const char * name, double def = 0.0)
-	{
-		return atof(getString(name, formatString("%f", def)).c_str());
-	}
-
-	/*bool getBool(bool &v, const char * name)
-	{
-		return atoi(getString(name, "0").c_str()) != 0;
-	}*/
-
-	void setString(const string v, const char * name) 
-	{
-		getElement(_root, name)->SetText(v.c_str());
-	}
-
-	void setInteger(int v, const char * name) 
-	{
-		setString(formatString("%d", v), name);
-	}
-
-	void setDouble(double v, const char * name) 
-	{
-		setString(formatString("%f", v), name);
-	}
-
-	void setBool(bool v, const char * name)
-	{
-		setString(formatString("%d", v != 0), name);
-	}
+	void setString(const string v, const char * name);
+	void setInteger(int v, const char * name);
+	void setDouble(double v, const char * name);
+	void setBool(bool v, const char * name);
 
 	//记录
 	int getRecord(const char * name);
-
 	void removeRecord(const char * name);
-
-	void setRecord(int v, const char * name);
-	
-	void clearRecord();
-	//string replace(string str, const char *string_to_replace, const char *new_string);
+	void setRecord(int v, const char * name);	
+	void clearRecord();	//string replace(string str, const char *string_to_replace, const char *new_string);
 #endif
 };
 
