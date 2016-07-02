@@ -9,7 +9,7 @@ BigPotSubtitleSrt::~BigPotSubtitleSrt()
 {
 }
 
-bool BigPotSubtitleSrt::openSubtitle(const string& filename)
+bool BigPotSubtitleSrt::openSubtitle(const std::string& filename)
 {
 	haveSubtitle_ = true;
 	_file = fopen(filename.c_str(), "r");
@@ -92,7 +92,7 @@ int BigPotSubtitleSrt::readString(BigPotSubtitleAtom& pot)
 		return 0;
 	if (feof(_file))
 		return 0;
-	string tmpstr = "";
+	std::string tmpstr = "";
 	while (!feof(_file))
 	{
 		char tmp[4096] = { 0 };

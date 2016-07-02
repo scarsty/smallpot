@@ -13,15 +13,15 @@ public:
 	BigPotSubtitleFactory();
 	virtual ~BigPotSubtitleFactory();
 private:
-	vector<string> _ext;
+	std::vector<std::string> _ext;
 
 public:
-	BigPotSubtitle* createSubtitle(const string& filename);
+	BigPotSubtitle* createSubtitle(const std::string& filename);
 	void destroySubtitle(BigPotSubtitle*& sub) { delete sub; sub = nullptr; }
-	string lookForSubtitle(const string& filename);
+	std::string lookForSubtitle(const std::string& filename);
 
-	bool tryOpenSubtitle(const string& filename);
-	bool isSubtitle(const string& filename);
+	bool tryOpenSubtitle(const std::string& filename);
+	bool isSubtitle(const std::string& filename);
 
 };
 

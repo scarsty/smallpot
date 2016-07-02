@@ -2,14 +2,14 @@
 
 namespace BigPotString
 {
-	bool fileExist(const string& filename)
+	bool fileExist(const std::string& filename)
 	{
 		if (filename.length() <= 0)
 			return false;
 
-		fstream file;
+		std::fstream file;
 		bool ret = false;
-		file.open(filename.c_str(), ios::in);
+		file.open(filename.c_str(), std::ios::in);
 		if (file)
 		{
 			ret = true;
@@ -18,7 +18,7 @@ namespace BigPotString
 		return ret;
 	}
 
-	string readStringFromFile(const string& filename)
+	std::string readStringFromFile(const std::string& filename)
 	{
 		FILE *fp = fopen(filename.c_str(), "rb");
 		if (fp == nullptr)
@@ -32,13 +32,13 @@ namespace BigPotString
 		char* s = new char[length + 1];
 		for (int i = 0; i <= length; s[i++] = '\0');
 		fread(s, length, 1, fp);
-		string str(s);
+		std::string str(s);
 		fclose(fp);
 		delete[] s;
 		return str;
 	}
 
-	string getFileExt(const string& filename)
+	std::string getFileExt(const std::string& filename)
 	{
 		int pos_p = filename.find_last_of(_path_);
 		int pos_d = filename.find_last_of('.');
@@ -48,7 +48,7 @@ namespace BigPotString
 	}
 
 	//一般是找最后一个点，为1是找第一个点
-	string getFileMainname(const string& filename, FindMode mode)
+	std::string getFileMainname(const std::string& filename, FindMode mode)
 	{
 		int pos_p = filename.find_last_of(_path_);
 		int pos_d = filename.find_last_of('.');
@@ -59,7 +59,7 @@ namespace BigPotString
 		return filename;
 	}
 
-	std::string changeFileExt(const string& filename, const string& ext)
+	std::string changeFileExt(const std::string& filename, const std::string& ext)
 	{
 		auto e = ext;
 		if (e != "" && e[0] != '.')
@@ -67,27 +67,27 @@ namespace BigPotString
 		return getFileMainname(filename) + e;
 	}
 
-	std::string getFilePath(const string& filename)
+	std::string getFilePath(const std::string& filename)
 	{
 		int pos_p = filename.find_last_of(_path_);
-		if (pos_p != string::npos)
+		if (pos_p != std::string::npos)
 			return filename.substr(0, pos_p);
 		return "";
 	}
 
 	//查找相似文件名的文件，只找两个
-	std::string fingFileWithMainName(const string& filename)
+	std::string fingFileWithMainName(const std::string& filename)
 	{
 #ifndef _MSC_VER
 		return "";
 #else
 		_finddata_t file;
 		long fileHandle;
-		string path = getFilePath(filename);
-		string ext = getFileExt(filename);
+		std::string path = getFilePath(filename);
+		std::string ext = getFileExt(filename);
 		if (path != "") path = path + _path_;
-		string findname = getFileMainname(filename) + ".*";
-		string ret = "";
+		std::string findname = getFileMainname(filename) + ".*";
+		std::string ret = "";
 		fileHandle = _findfirst(findname.c_str(), &file);
 		ret = path + file.name;
 		if (getFileExt(ret) == ext)
@@ -102,7 +102,7 @@ namespace BigPotString
 #endif
 	}
 
-	string toLowerCase(const string& str)
+	std::string toLowerCase(const std::string& str)
 	{
 		auto str1 = str;
 		//transform(str1.begin(), str1.end(), str1.begin(), tolower);
@@ -124,10 +124,10 @@ namespace BigPotString
 		return s;
 	}
 
-	std::string getFilenameWithoutPath(const string& filename)
+	std::string getFilenameWithoutPath(const std::string& filename)
 	{
 		int pos_p = filename.find_last_of(_path_);
-		if (pos_p != string::npos)
+		if (pos_p != std::string::npos)
 			return filename.substr(pos_p + 1);
 		return filename;
 	}

@@ -10,7 +10,7 @@ extern "C"
 #include <vector>
 
 #include "BigPotString.h"
-using namespace BigPotString;
+
 
 enum BigPotPSubtitleType
 {
@@ -26,14 +26,14 @@ public:
 	virtual ~BigPotSubtitle();
 protected:
 	BigPotPSubtitleType type_;
-	string subfilename_, fontname_;
+	std::string subfilename_, fontname_;
 	bool haveSubtitle_ = false;
 public:
 	bool exist() { return haveSubtitle_; };
 	bool reOpenSubtitle() { return openSubtitle(subfilename_); };
 
 	virtual void init(){};
-	virtual bool openSubtitle(const string& filename){ return false; };
+	virtual bool openSubtitle(const std::string& filename){ return false; };
 	virtual void closeSubtitle(){};
 	virtual void show(int time){};
 	virtual void destroy(){};

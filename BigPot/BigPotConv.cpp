@@ -10,10 +10,10 @@ BigPotConv::~BigPotConv()
 {
 }
 
-std::string BigPotConv::conv(const string& src, const char* from, const char* to)
+std::string BigPotConv::conv(const std::string& src, const char* from, const char* to)
 {
 	//const char *from_charset, const char *to_charset, const char *inbuf, size_t inlen, char *outbuf;
-	size_t inlen = min((int)src.length(), CONV_BUFFER_SIZE);
+	size_t inlen = std::min((int)src.length(), CONV_BUFFER_SIZE);
 	size_t outlen = CONV_BUFFER_SIZE;
 
 	char in[CONV_BUFFER_SIZE] = { '\0' };
@@ -31,7 +31,7 @@ std::string BigPotConv::conv(const string& src, const char* from, const char* to
 	return src;
 }
 
-std::string BigPotConv::conv(const string& src, const string& from, const string& to)
+std::string BigPotConv::conv(const std::string& src, const std::string& from, const std::string& to)
 {
 	return conv(src, from.c_str(), to.c_str());
 }

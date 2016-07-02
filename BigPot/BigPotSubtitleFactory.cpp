@@ -1,5 +1,6 @@
 #include "BigPotSubtitleFactory.h"
 
+
 BigPotSubtitleFactory::BigPotSubtitleFactory()
 {
 	_ext.push_back("ass");
@@ -8,12 +9,11 @@ BigPotSubtitleFactory::BigPotSubtitleFactory()
 	_ext.push_back("txt");
 }
 
-
 BigPotSubtitleFactory::~BigPotSubtitleFactory()
 {
 }
 
-BigPotSubtitle* BigPotSubtitleFactory::createSubtitle(const string& filename)
+BigPotSubtitle* BigPotSubtitleFactory::createSubtitle(const std::string& filename)
 {
 	BigPotSubtitle* ret = nullptr;
 	auto ext = toLowerCase(getFileExt(filename));
@@ -33,9 +33,9 @@ BigPotSubtitle* BigPotSubtitleFactory::createSubtitle(const string& filename)
 	return ret;
 }
 
-std::string BigPotSubtitleFactory::lookForSubtitle(const string& filename)
+std::string BigPotSubtitleFactory::lookForSubtitle(const std::string& filename)
 {
-	string str = "";
+	std::string str = "";
 	bool b = false;
 	//检查默认类型
 	for (auto &ext : _ext)
@@ -53,13 +53,13 @@ std::string BigPotSubtitleFactory::lookForSubtitle(const string& filename)
 }
 
 
-bool BigPotSubtitleFactory::tryOpenSubtitle(const string& filename)
+bool BigPotSubtitleFactory::tryOpenSubtitle(const std::string& filename)
 {
 	bool b = false;
 	return b;
 }
 
-bool BigPotSubtitleFactory::isSubtitle(const string& filename)
+bool BigPotSubtitleFactory::isSubtitle(const std::string& filename)
 {
 	auto ext = getFileExt(filename);
 	ext = toLowerCase(ext);

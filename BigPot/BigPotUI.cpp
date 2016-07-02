@@ -32,7 +32,7 @@ void BigPotUI::drawBall()
 	engine_->renderCopy(_square, x - d / 2 + 1, y - _volume / 2 + BP_AUDIO_MIX_MAXVOLUME / 2, d, d);
 }
 
-void BigPotUI::drawText(const string &text)
+void BigPotUI::drawText(const std::string &text)
 {
     engine_->drawText(_fontname.c_str(), text, 20, _win_w - 10, 10, _alpha, BP_ALIGN_RIGHT);
 }
@@ -64,11 +64,11 @@ void BigPotUI::init()
 {
 	_square = engine_->createSquareTexture(30);
 	_fontname = config_->getString("ui_font");	
-	if (!fileExist(_fontname))
+	if (!BigPotString::fileExist(_fontname))
 	{
 #ifdef _WIN32
 		_fontname = "c:/windows/fonts/cambria.ttc";
-		if (!fileExist(_fontname))
+		if (!BigPotString::fileExist(_fontname))
 			_fontname = "c:/windows/fonts/cambria.ttf";
 #else
 		_fontname = "/System/Library/Fonts/Palatino.ttc";

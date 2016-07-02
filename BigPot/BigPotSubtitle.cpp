@@ -3,7 +3,7 @@
 BigPotSubtitle::BigPotSubtitle()
 {
 	fontname_ = config_->getString("sub_font");
-	if (!fileExist(fontname_))
+	if (!BigPotString::fileExist(fontname_))
 	{
 #ifdef _WIN32
 		fontname_ = "c:/windows/fonts/msyh.ttc";

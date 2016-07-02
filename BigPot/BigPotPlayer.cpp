@@ -22,7 +22,7 @@ BigPotPlayer::~BigPotPlayer()
 	//delete media;
 }
 
-int BigPotPlayer::beginWithFile(const string &filename)
+int BigPotPlayer::beginWithFile(const std::string &filename)
 {
     int count = 0;
     if (init() != 0) return -1;
@@ -87,7 +87,7 @@ int BigPotPlayer::eventLoop()
 	bool havevideo = _media->getVideo()->exist();
 	bool havemedia = _media->getAudio()->exist() || havevideo;
 	int totalTime = _media->getTotalTime();
-	string open_filename;
+	std::string open_filename;
 	printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
 
 	int maxDelay = 0; //统计使用
@@ -322,7 +322,7 @@ void BigPotPlayer::destroy()
 
 
 //参数为utf8编码
-void BigPotPlayer::openMedia(const string& filename)
+void BigPotPlayer::openMedia(const std::string& filename)
 {
 	_media = nullptr;
 	_media = new BigPotMedia;
@@ -370,7 +370,7 @@ void BigPotPlayer::openMedia(const string& filename)
 	}
 }
 
-void BigPotPlayer::closeMedia(const string& filename)
+void BigPotPlayer::closeMedia(const std::string& filename)
 {
 	engine_->destroyMainTexture();
 

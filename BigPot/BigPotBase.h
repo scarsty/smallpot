@@ -9,8 +9,6 @@
 #include "BigPotString.h"
 #include "BigPotConfig.h"
 
-using namespace std;
-
 
 //可能不安全
 
