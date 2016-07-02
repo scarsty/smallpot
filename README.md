@@ -9,10 +9,10 @@
 因为各个库的依赖很复杂，不建议使用。
 
 ###macosx
-需先安装SDL2以及相关扩展的framework，并安装libass、FFmpeg、iconv等，通常homebrew可以做。jsoncpp是可选的。
+需先安装SDL2以及相关扩展的framework，并安装libass、FFmpeg、iconv等，通常homebrew可以做。jsoncpp是可选的。脚本a.sh可以自动做编译和处理库依赖。
 
 ###linux
-方法类似。
+跟上面方法类似，但是一般不需要解决依赖库了。
 
 ##遗留问题
 因为是单线程架构，所以在一些文件跳转时会出现马赛克。一般来说这个可以通过清除解码器状态来解决，但是单线程架构下这个操作会导致后面一帧的解码卡顿，故没有这么做。或者谁有更好的办法可以指教一下。
@@ -24,10 +24,10 @@ srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出�
 
 ##预编译版下载
 windows版：
-[http://www.dawuxia.net/bigpot/bigpot-win32.zip]
+<http://www.dawuxia.net/bigpot/bigpot-win32.zip>
 
 Mac版：
-[http://www.dawuxia.net/bigpot/bigpot.app.zip]
+<http://www.dawuxia.net/bigpot/bigpot.app.zip>
 
 
 ##常见问题
