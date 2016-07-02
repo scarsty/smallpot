@@ -150,8 +150,8 @@ void BigPotStreamAudio::freeContent(void* p)
 
 int BigPotStreamAudio::setVolume(int v)
 {
-	v = max(v, 0);
-	v = min(v, engine_->getMaxVolume());
+	v = std::max(v, 0);
+	v = std::min(v, engine_->getMaxVolume());
 	//printf("\rvolume is %d\t\t\t\t\t", v);
 	return _volume = v;
 }
