@@ -1,12 +1,16 @@
 ﻿#include "BigPotEngine.h"
 
+#ifdef _MSC_VER
+#include <windows.h>
+#pragma comment(lib, "user32.lib")
+#endif
+
 BigPotEngine BigPotEngine::_engine;
 
 BigPotEngine::BigPotEngine()
 {
 	_this = &_engine;
 }
-
 
 BigPotEngine::~BigPotEngine()
 {

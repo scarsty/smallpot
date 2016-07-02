@@ -56,8 +56,8 @@ int BigPotMedia::decodeFrame()
 				//查看延迟情况
 				int v_dts = _streamVideo->getTimedts();
 				int a_dts = _streamAudio->getTimedts();
-				int max_dts = max(v_dts, a_dts);
-				int min_dts = min(v_dts, a_dts);
+				int max_dts = std::max(v_dts, a_dts);
+				int min_dts = std::min(v_dts, a_dts);
 				printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
 				//一定时间以上才跳帧
 				if (max_dts - min_dts > 100)
@@ -85,7 +85,7 @@ int BigPotMedia::getAudioTime()
 
 int BigPotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 {
-	time = min(time, _totalTime - 100);
+	time = std::min(time, _totalTime - 100);
 	_streamVideo->seek(time, direct, reset);
 	_streamAudio->seek(time, direct, reset);
 
