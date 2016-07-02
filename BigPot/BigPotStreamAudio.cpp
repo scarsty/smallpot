@@ -33,7 +33,7 @@ void BigPotStreamAudio::openAudioDevice()
 	if (_channels < 0)
 		_channels = codecCtx_->channels;
 	engine_->openAudio(_freq, _channels, codecCtx_->frame_size,
-		2048, bind(&BigPotStreamAudio::mixAudioData, this, placeholders::_1, placeholders::_2));
+		2048, std::bind(&BigPotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 int BigPotStreamAudio::closeAudioDevice()

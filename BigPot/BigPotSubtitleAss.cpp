@@ -21,12 +21,12 @@ void BigPotSubtitleAss::init()
 	ass_set_fonts(_ren, fontname_.c_str(), "Sans", 0, "", 0);
 }
 
-bool BigPotSubtitleAss::openSubtitle(const string& filename)
+bool BigPotSubtitleAss::openSubtitle(const std::string& filename)
 {
 	//函数的参数是char*,为免意外复制一份
 	auto s = filename;
 	//if (checkFileExt(filename))
-		_track = ass_read_file(_lib, (char*)s.c_str(), NULL);
+	_track = ass_read_file(_lib, (char*)s.c_str(), NULL);
 	haveSubtitle_ = (_track != nullptr);
 	if (haveSubtitle_) subfilename_ = filename;
 	return 	haveSubtitle_;

@@ -23,7 +23,7 @@ BigPotStream::~BigPotStream()
 }
 
 //返回为非负才正常
-int BigPotStream::openFile(const string & filename)
+int BigPotStream::openFile(const std::string & filename)
 {
 	stream_index_ = -1;
 	this->filename_ = filename;

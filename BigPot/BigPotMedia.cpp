@@ -15,9 +15,9 @@ BigPotMedia::~BigPotMedia()
 	//delete _streamSubtitle;
 }
 
-int BigPotMedia::openFile(const string &filename)
+int BigPotMedia::openFile(const std::string &filename)
 {
-	if (!fileExist(filename))
+	if (!BigPotString::fileExist(filename))
 		return -1;
 	_streamVideo->openFile(filename);
 	_streamAudio->openFile(filename);
@@ -73,7 +73,7 @@ int BigPotMedia::decodeFrame()
 		}
 		//cout << "se"<<engine_->getTicks()-se << " "<<endl;		
 	}
-	
+
 	return 0;
 }
 
@@ -90,9 +90,9 @@ int BigPotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 	_streamAudio->seek(time, direct, reset);
 
 	_seeking = true;
-	
+
 	_streamAudio->resetDecodeState();
-	
+
 	return 0;
 }
 

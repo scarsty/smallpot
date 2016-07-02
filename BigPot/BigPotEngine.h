@@ -17,14 +17,12 @@ extern "C"
 #pragma comment(lib, "user32.lib")
 #endif
 
-using namespace std;
-
 //这里是底层部分，将SDL的函数均封装了一次
 //如需更换底层，则要重新实现下面的全部功能，并重新定义全部常数和类型
 #define BP_AUDIO_DEVICE_FORMAT AUDIO_S16
 #define BP_AUDIO_MIX_MAXVOLUME SDL_MIX_MAXVOLUME
 
-typedef function<void(uint8_t*, int)> AudioCallback;
+typedef std::function<void(uint8_t*, int)> AudioCallback;
 typedef SDL_Renderer BP_Renderer;
 typedef SDL_Window BP_Window;
 typedef SDL_Texture BP_Texture;
@@ -80,7 +78,7 @@ public:
 	int getMaxWindowHeight() { return _max_y - _min_y; }
 	void setWindowSize(int w, int h);
 	void setWindowPosition(int x, int y);
-	void setWindowTitle(const string &str) { SDL_SetWindowTitle(_win, str.c_str()); }
+	void setWindowTitle(const std::string &str) { SDL_SetWindowTitle(_win, str.c_str()); }
 	BP_Renderer* getRenderer() { return _ren; }
 
 	void createMainTexture(int w, int h);
@@ -113,7 +111,7 @@ public:
 	void destroy();
 	bool isFullScreen();
 	void toggleFullscreen();
-	BP_Texture* loadImage(const string& filename);
+	BP_Texture* loadImage(const std::string& filename);
 	bool setKeepRatio(bool b);
 	BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
 	double setRotation(double r) { return _rotation = r; }
@@ -149,12 +147,12 @@ private:
 	BP_Texture* _square;
 public:
 	BP_Texture* createSquareTexture(int size);
-	BP_Texture* createTextTexture(const string &fontname, const string &text, int size);
-	void drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
-	void drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align);
+	BP_Texture* createTextTexture(const std::string &fontname, const std::string &text, int size);
+	void drawText(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align);
+	void drawSubtitle(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align);
 	//void split(std::string& s, std::string& delim, std::vector< std::string >* ret);
-	vector<string> splitString(const string& s, const string& delim);
-	int showMessage(const string &content);
+	std::vector<std::string> splitString(const std::string& s, const std::string& delim);
+	int showMessage(const std::string &content);
 };
 
 //这里直接照搬SDL

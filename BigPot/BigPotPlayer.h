@@ -15,7 +15,7 @@ public:
 	BigPotPlayer(char* s) : BigPotPlayer() { _filepath = BigPotString::getFilePath(s); }
 	virtual ~BigPotPlayer();
 private:
-	string _drop_filename = "", _filepath;
+	std::string _drop_filename = "", _filepath;
 	int _cur_time = 0;
 
 	BigPotMedia* _media = nullptr;
@@ -26,7 +26,7 @@ private:
 	int _w, _h;
 	bool _run = true;
 
-	string _sys_encode = "cp936", _BP_encode = "utf-8";
+	std::string _sys_encode = "cp936", _BP_encode = "utf-8";
 	int _cur_volume;
 	int eventLoop();
 	void* _handle;
@@ -34,11 +34,11 @@ private:
 	//int showTex2();
 	//string getSysString(const string& str);
 public:
-	int beginWithFile(const string &filename);
+	int beginWithFile(const std::string &filename);
 	int init();
 	void destroy();
-	void openMedia(const string& filename);
-	void closeMedia(const string& filename);
+	void openMedia(const std::string& filename);
+	void closeMedia(const std::string& filename);
 	
 };
 

@@ -7,7 +7,6 @@
 #include "BigPotStreamSubtitle.h"
 #include "BigPotString.h"
 
-using namespace BigPotString;
 //#include "BigPotSubtitle.h"
 
 
@@ -31,7 +30,7 @@ public:
 	BigPotStreamVideo *getVideo(){ return _streamVideo; };
 	BigPotStreamAudio *getAudio(){ return _streamAudio; };
 	int decodeFrame();
-	int openFile(const string &filename);
+	int openFile(const std::string &filename);
 	int getAudioTime();
 	int getVideoTime();
 	int seekTime(int time, int direct = 1, int reset = 0);

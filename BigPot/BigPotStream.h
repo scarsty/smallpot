@@ -15,6 +15,7 @@ extern "C"
 #ifndef __MINGW32__
 #include <mutex> 
 #endif
+
 enum BigPotMediaType
 {
 	BPMEDIA_TYPE_VIDEO = AVMEDIA_TYPE_VIDEO,
@@ -55,8 +56,8 @@ protected:
 	int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
 	AVFrame *frame_;
 	AVSubtitle *subtitle_;
-	string filename_;
-	mutex mutex_;
+	std::string filename_;
+	std::mutex mutex_;
 	
 	int ticks_shown_ = -1;  //最近展示的ticks
 	int time_dts_ = 0, time_pts_ = 0, time_shown_ = 0;  //解压时间，应展示时间，最近已经展示的时间
@@ -72,7 +73,7 @@ protected:
 	//int frame_number_;
 private:
 
-	map<int, Content> _map;
+	std::map<int, Content> _map;
 	bool _decoded = false, _skip = false, _ended = false, _seeking = false;	
 	int _seek_record = 0;  //上次seek的记录
 	int(*avcodec_decode_packet)(AVCodecContext*, AVFrame*, int*, const AVPacket*) = nullptr;
@@ -98,7 +99,7 @@ protected:
 	bool useMap();
 	Content getCurrentContent();
 public:
-	int openFile(const string & filename);
+	int openFile(const std::string & filename);
 	int tryDecodeFrame(bool reset = false);
 	void dropDecoded();
 	int getTotalTime();

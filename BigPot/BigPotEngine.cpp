@@ -141,9 +141,9 @@ BP_Texture* BigPotEngine::createSquareTexture(int size)
 }
 
 //注意：当字符串为空时，也会返回一个空字符串  
-vector<string> BigPotEngine::splitString(const string& s, const string& delim)
+std::vector<std::string> BigPotEngine::splitString(const std::string& s, const std::string& delim)
 {
-	vector<string> ret;
+	std::vector<std::string> ret;
 	size_t last = 0;
 	size_t index = s.find_first_of(delim, last);
 	while (index != std::string::npos)
@@ -159,7 +159,7 @@ vector<string> BigPotEngine::splitString(const string& s, const string& delim)
 	return ret;
 }
 
-void BigPotEngine::drawSubtitle(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align)
+void BigPotEngine::drawSubtitle(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align)
 {
 	if (alpha == 0)
 		return;
@@ -207,7 +207,7 @@ void BigPotEngine::drawSubtitle(const string &fontname, const string &text, int 
 	TTF_CloseFont(font);
 }
 
-BP_Texture* BigPotEngine::createTextTexture(const string &fontname, const string &text, int size)
+BP_Texture* BigPotEngine::createTextTexture(const std::string &fontname, const std::string &text, int size)
 {
 	auto font = TTF_OpenFont(fontname.c_str(), size);
 	if (!font) return nullptr;
@@ -219,7 +219,7 @@ BP_Texture* BigPotEngine::createTextTexture(const string &fontname, const string
 	return text_t;
 }
 
-void BigPotEngine::drawText(const string &fontname, const string &text, int size, int x, int y, uint8_t alpha, int align)
+void BigPotEngine::drawText(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align)
 {
 	if (alpha == 0)
 		return;
@@ -325,7 +325,7 @@ void BigPotEngine::toggleFullscreen()
 	SDL_RenderClear(_ren);	
 }
 
-BP_Texture* BigPotEngine::loadImage(const string& filename)
+BP_Texture* BigPotEngine::loadImage(const std::string& filename)
 {
 	return IMG_LoadTexture(_ren, filename.c_str());
 }
@@ -403,7 +403,7 @@ BP_Texture* BigPotEngine::transBitmapToTexture(const uint8_t* src, uint32_t colo
 	return t;
 }
 
-int BigPotEngine::showMessage(const string &content)
+int BigPotEngine::showMessage(const std::string &content)
 {
     const SDL_MessageBoxButtonData buttons[] =
     {

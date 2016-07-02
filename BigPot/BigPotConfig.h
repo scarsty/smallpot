@@ -5,7 +5,6 @@
 
 #include "BigPotString.h"
 
-using namespace BigPotString;
 #ifdef USINGJSON
 #if (defined _WIN32) || (defined WIN32)
 #	ifdef _DEBUG
@@ -21,7 +20,6 @@ using namespace BigPotString;
 #else
 #include "tinyxml2/tinyxml2.h"
 #include <stdint.h>
-using namespace tinyxml2;
 #endif
 
 #include "hash/sha3.h"
@@ -31,8 +29,8 @@ class BigPotConfig
 private:
 	static BigPotConfig _config;
 	BigPotConfig* _this;
-	string _content;
-	string _filename;
+	std::string _content;
+	std::string _filename;
 	SHA3 _sha3;
 	BigPotConfig();
 	virtual ~BigPotConfig();
@@ -42,14 +40,14 @@ private:
 	tinyxml2::XMLDocument _doc;
 	tinyxml2::XMLElement *_root, *_record;
 
-	tinyxml2::XMLElement* getElement(XMLElement *parent, const char * name);
+	tinyxml2::XMLElement* getElement(tinyxml2::XMLElement *parent, const char * name);
 	
 
 #endif
 
 
 public:
-	void init(const string& filepath);
+	void init(const std::string& filepath);
 	void write();
 	static BigPotConfig* getInstance(){ return &_config; };
 	//以下函数注意默认值
@@ -58,7 +56,7 @@ public:
 	{
 		return _value[name].isInt() ? _value[name].asInt() : def;
 	}
-	string getString(const char * name, string def = "")
+	string getString(const char * name, std::string def = "")
 	{
 		return _value[name].isString() ? _value[name].asString() : def;
 	}
@@ -71,7 +69,7 @@ public:
 		return _value[name].isBool() ? _value[name].asBool() : def;
 	}
 	void setInteger(int v, const char * name) { _value[name] = v; }
-	void setString(const string v, const char * name) { _value[name] = v; }
+	void setString(const std::string v, const char * name) { _value[name] = v; }
 	void setDouble(double v, const char * name) { _value[name] = v; }
 	void setBool(bool v, const char * name) { _value[name] = v; }
 
@@ -88,12 +86,12 @@ public:
 	void clearRecord() { _record.clear(); }
 #else
 	//xml只有字串，故首先完成字串功能
-	string getString(const char * name, string def = "");
+	std::string getString(const char * name, std::string def = "");
 	int getInteger(const char * name, int def = 0);
 	double getDouble(const char * name, double def = 0.0);
 	bool getBool(bool &v, const char * name);
 
-	void setString(const string v, const char * name);
+	void setString(const std::string v, const char * name);
 	void setInteger(int v, const char * name);
 	void setDouble(double v, const char * name);
 	void setBool(bool v, const char * name);
