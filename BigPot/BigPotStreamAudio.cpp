@@ -42,7 +42,7 @@ int BigPotStreamAudio::closeAudioDevice()
 	return 0;
 }
 
-void BigPotStreamAudio::mixAudioData(Uint8* stream, int len)
+void BigPotStreamAudio::mixAudioData(uint8_t* stream, int len)
 {
 	if (!useMap())
 	{
