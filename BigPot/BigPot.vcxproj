@@ -192,9 +192,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="BigPotDll.cpp" />
     <ClCompile Include="BigPotStreamAudio.cpp" />
     <ClCompile Include="BigPotBase.cpp" />
