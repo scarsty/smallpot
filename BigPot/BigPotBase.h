@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "BigPotEngine.h"
+#include "Engine.h"
 #include "BigPotString.h"
 #include "BigPotConfig.h"
 
@@ -15,15 +15,15 @@
 class BigPotBase
 {
 protected:
-	BigPotEngine* engine_;
-	BigPotConfig* config_;
+    Engine* engine_;
+    BigPotConfig* config_;
 public:
-	BigPotBase();
-	~BigPotBase() {};
+    BigPotBase();
+    ~BigPotBase() {};
 
-	//void setFilePath(char *s) { BigPotString::setFilePath(s); }
-	//static bool fileExist(const string& filename);
-	//void safedelete(void* p){ if (p) delete p; p = nullptr; };
+    //void setFilePath(char *s) { BigPotString::setFilePath(s); }
+    //static bool fileExist(const string& filename);
+    //void safedelete(void* p){ if (p) delete p; p = nullptr; };
 
 };
 

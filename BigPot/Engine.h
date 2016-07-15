@@ -38,16 +38,16 @@ typedef SDL_AudioSpec BP_AudioSpec;
 //这里直接使用SDL的事件结构，如果更换底层需重新实现一套相同的
 typedef SDL_Event BP_Event;
 
-class BigPotEngine
+class Engine
 {
 private:
-    BigPotEngine();
-    virtual ~BigPotEngine();
+    Engine();
+    virtual ~Engine();
 private:
-    static BigPotEngine _engine;
-    BigPotEngine* _this;
+    static Engine _engine;
+    Engine* _this;
 public:
-    static BigPotEngine* getInstance() { return &_engine; };
+    static Engine* getInstance() { return &_engine; };
     //图形相关
 private:
     BP_Window* _win = nullptr;
