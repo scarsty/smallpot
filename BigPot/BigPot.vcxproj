@@ -210,7 +210,7 @@
     <ClCompile Include="BigPotSubtitleSrt.cpp" />
     <ClCompile Include="BigPotUI.cpp" />
     <ClCompile Include="BigPotStreamVideo.cpp" />
-    <ClCompile Include="BigPotEngine.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="hash\sha3.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
@@ -232,7 +232,7 @@
     <ClInclude Include="BigPotSubtitleSrt.h" />
     <ClInclude Include="BigPotUI.h" />
     <ClInclude Include="BigPotStreamVideo.h" />
-    <ClInclude Include="BigPotEngine.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="hash\sha3.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />

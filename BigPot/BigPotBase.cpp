@@ -2,7 +2,7 @@
 
 BigPotBase::BigPotBase()
 {
-	engine_ = BigPotEngine::getInstance();
-	config_ = BigPotConfig::getInstance();
+    engine_ = Engine::getInstance();
+    config_ = BigPotConfig::getInstance();
 }
 

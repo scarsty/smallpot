@@ -48,9 +48,6 @@
     <ClCompile Include="BigPotConv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BigPotSubtitle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,6 +84,9 @@
     <ClCompile Include="BigPotSubtitleAss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BigPotPlayer.h">
@@ -111,9 +111,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BigPotConv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BigPotEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BigPotSubtitle.h">
@@ -150,6 +147,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BigPotSubtitleAss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

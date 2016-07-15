@@ -1,4 +1,4 @@
-﻿#include "BigPotEngine.h"
+﻿#include "Engine.h"
 
 #ifdef _MSC_VER
 #define NOMINMAX
@@ -6,39 +6,39 @@
 #pragma comment(lib, "user32.lib")
 #endif
 
-BigPotEngine BigPotEngine::_engine;
+Engine Engine::_engine;
 
-BigPotEngine::BigPotEngine()
+Engine::Engine()
 {
     _this = &_engine;
 }
 
-BigPotEngine::~BigPotEngine()
+Engine::~Engine()
 {
     //destroy();
 }
 
-BP_Texture* BigPotEngine::createYUVTexture(int w, int h)
+BP_Texture* Engine::createYUVTexture(int w, int h)
 {
     return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
-void BigPotEngine::updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
+void Engine::updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
 {
     SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 }
 
-BP_Texture* BigPotEngine::createRGBATexture(int w, int h)
+BP_Texture* Engine::createRGBATexture(int w, int h)
 {
     return SDL_CreateTexture(_ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
-void BigPotEngine::updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch)
+void Engine::updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch)
 {
     SDL_UpdateTexture(testTexture(t), nullptr, buffer, pitch);
 }
 
-void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inPresent)
+void Engine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inPresent)
 {
     if (inPresent == 1)
     {
@@ -49,24 +49,24 @@ void BigPotEngine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inP
     SDL_RenderCopy(_ren, t, nullptr, &r);
 }
 
-void BigPotEngine::renderCopy(BP_Texture* t /*= nullptr*/)
+void Engine::renderCopy(BP_Texture* t /*= nullptr*/)
 {
     SDL_RenderCopyEx(_ren, testTexture(t), nullptr, &_rect, _rotation, nullptr, SDL_FLIP_NONE);
 }
 
-void BigPotEngine::destroy()
+void Engine::destroy()
 {
     SDL_DestroyTexture(_tex);
     SDL_DestroyRenderer(_ren);
     SDL_DestroyWindow(_win);
 }
 
-void BigPotEngine::mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume)
+void Engine::mixAudio(Uint8 * dst, const Uint8 * src, Uint32 len, int volume)
 {
     SDL_MixAudioFormat(dst, src, BP_AUDIO_DEVICE_FORMAT, len, volume);
 }
 
-int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
+int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
 {
     SDL_AudioSpec want;
     SDL_zero(want);
@@ -112,7 +112,7 @@ int BigPotEngine::openAudio(int& freq, int& channels, int& size, int minsize, Au
     return 0;
 }
 
-void BigPotEngine::mixAudioCallback(void* userdata, Uint8* stream, int len)
+void Engine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 {
     SDL_memset(stream, 0, len);
     if (_engine._callback)
@@ -121,7 +121,7 @@ void BigPotEngine::mixAudioCallback(void* userdata, Uint8* stream, int len)
     }
 }
 
-BP_Texture* BigPotEngine::createSquareTexture(int size)
+BP_Texture* Engine::createSquareTexture(int size)
 {
     int d = size;
     auto square_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
@@ -146,7 +146,7 @@ BP_Texture* BigPotEngine::createSquareTexture(int size)
 }
 
 //注意：当字符串为空时，也会返回一个空字符串  
-std::vector<std::string> BigPotEngine::splitString(const std::string& s, const std::string& delim)
+std::vector<std::string> Engine::splitString(const std::string& s, const std::string& delim)
 {
     std::vector<std::string> ret;
     size_t last = 0;
@@ -164,7 +164,7 @@ std::vector<std::string> BigPotEngine::splitString(const std::string& s, const s
     return ret;
 }
 
-void BigPotEngine::drawSubtitle(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align)
+void Engine::drawSubtitle(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align)
 {
     if (alpha == 0)
         return;
@@ -213,7 +213,7 @@ void BigPotEngine::drawSubtitle(const std::string &fontname, const std::string &
     TTF_CloseFont(font);
 }
 
-BP_Texture* BigPotEngine::createTextTexture(const std::string &fontname, const std::string &text, int size)
+BP_Texture* Engine::createTextTexture(const std::string &fontname, const std::string &text, int size)
 {
     auto font = TTF_OpenFont(fontname.c_str(), size);
     if (!font) return nullptr;
@@ -225,7 +225,7 @@ BP_Texture* BigPotEngine::createTextTexture(const std::string &fontname, const s
     return text_t;
 }
 
-void BigPotEngine::drawText(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align)
+void Engine::drawText(const std::string &fontname, const std::string &text, int size, int x, int y, uint8_t alpha, int align)
 {
     if (alpha == 0)
         return;
@@ -251,7 +251,7 @@ void BigPotEngine::drawText(const std::string &fontname, const std::string &text
     SDL_DestroyTexture(text_t);
 }
 
-int BigPotEngine::init(void* handle)
+int Engine::init(void* handle)
 {
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
     {
@@ -300,28 +300,28 @@ int BigPotEngine::init(void* handle)
     return 0;
 }
 
-int BigPotEngine::getWindowsWidth()
+int Engine::getWindowsWidth()
 {
     int w;
     SDL_GetWindowSize(_win, &w, nullptr);
     return w;
 }
 
-int BigPotEngine::getWindowsHeight()
+int Engine::getWindowsHeight()
 {
     int h;
     SDL_GetWindowSize(_win, nullptr, &h);
     return h;
 }
 
-bool BigPotEngine::isFullScreen()
+bool Engine::isFullScreen()
 {
     Uint32 state = SDL_GetWindowFlags(_win);
     _full_screen = (state & SDL_WINDOW_FULLSCREEN) || (state & SDL_WINDOW_FULLSCREEN_DESKTOP);
     return _full_screen;
 }
 
-void BigPotEngine::toggleFullscreen()
+void Engine::toggleFullscreen()
 {
     _full_screen = !_full_screen;
     if (_full_screen)
@@ -331,24 +331,24 @@ void BigPotEngine::toggleFullscreen()
     SDL_RenderClear(_ren);
 }
 
-BP_Texture* BigPotEngine::loadImage(const std::string& filename)
+BP_Texture* Engine::loadImage(const std::string& filename)
 {
     return IMG_LoadTexture(_ren, filename.c_str());
 }
 
-bool BigPotEngine::setKeepRatio(bool b)
+bool Engine::setKeepRatio(bool b)
 {
     return _keep_ratio = b;
 }
 
-void BigPotEngine::createMainTexture(int w, int h)
+void Engine::createMainTexture(int w, int h)
 {
     _tex = createYUVTexture(w, h);
     //_tex2 = createRGBATexture(w, h);
     setPresentPosition();
 }
 
-void BigPotEngine::setPresentPosition()
+void Engine::setPresentPosition()
 {
     if (!_tex)
         return;
@@ -390,7 +390,7 @@ void BigPotEngine::setPresentPosition()
     }
 }
 
-BP_Texture* BigPotEngine::transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride)
+BP_Texture* Engine::transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride)
 {
     auto s = SDL_CreateRGBSurface(0, w, h, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
     SDL_FillRect(s, nullptr, color);
@@ -409,7 +409,7 @@ BP_Texture* BigPotEngine::transBitmapToTexture(const uint8_t* src, uint32_t colo
     return t;
 }
 
-int BigPotEngine::showMessage(const std::string &content)
+int Engine::showMessage(const std::string &content)
 {
     const SDL_MessageBoxButtonData buttons[] =
     {
@@ -447,7 +447,7 @@ int BigPotEngine::showMessage(const std::string &content)
     return buttonid;
 }
 
-void BigPotEngine::setWindowSize(int w, int h)
+void Engine::setWindowSize(int w, int h)
 {
     if (w <= 0 || h <= 0) return;
     _win_w = std::min(_max_x - _min_x, w);
@@ -463,7 +463,7 @@ void BigPotEngine::setWindowSize(int w, int h)
     //renderPresent();
 }
 
-void BigPotEngine::resetWindowsPosition()
+void Engine::resetWindowsPosition()
 {
     int x, y, w, h, x0, y0;
     SDL_GetWindowSize(_win, &w, &h);
@@ -476,7 +476,7 @@ void BigPotEngine::resetWindowsPosition()
         SDL_SetWindowPosition(_win, x, y);
 }
 
-void BigPotEngine::setWindowPosition(int x, int y)
+void Engine::setWindowPosition(int x, int y)
 {
     int w, h;
     SDL_GetWindowSize(_win, &w, &h);
