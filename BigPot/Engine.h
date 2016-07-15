@@ -73,6 +73,7 @@ public:
     int getMaxWindowWidth() { return _max_x - _min_x; }
     int getMaxWindowHeight() { return _max_y - _min_y; }
     void setWindowSize(int w, int h);
+    void setStartWindowSize(int w, int h) { _start_w = w; _start_h = h; }
     void setWindowPosition(int x, int y);
     void setWindowTitle(const std::string &str) { SDL_SetWindowTitle(_win, str.c_str()); }
     BP_Renderer* getRenderer() { return _ren; }
