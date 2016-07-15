@@ -8,9 +8,9 @@
 
 int main(int argc, char* argv[])
 {
-	auto bp = new BigPotPlayer(argv[0]);
-	bp->beginWithFile(argc > 1 ? argv[1] : "");
-	delete bp;
-	return 0;
+    auto bp = new BigPotPlayer(argv[0]);
+    bp->beginWithFile(argc > 1 ? argv[1] : "");
+    delete bp;
+    return 0;
 }
 
