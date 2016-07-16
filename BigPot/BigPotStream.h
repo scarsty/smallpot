@@ -14,7 +14,7 @@ extern "C"
 
 
 #ifndef __MINGW32__
-#include <mutex> 
+#include <mutex>
 #endif
 
 enum BigPotMediaType
@@ -47,16 +47,16 @@ protected:
     BigPotMediaType type_;
     AVFormatContext* formatCtx_;
     AVStream* stream_;
-    AVCodecContext *codecCtx_;
-    AVCodec *codec_;
+    AVCodecContext* codecCtx_;
+    AVCodec* codec_;
     AVPacket packet_;
     bool needReadPacket_ = true;
     int stream_index_ = -1;
     int decodeSizeInPacket_ = 0;
     double time_per_frame_ = 0, time_base_packet_ = 0;
     int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
-    AVFrame *frame_;
-    AVSubtitle *subtitle_;
+    AVFrame* frame_;
+    AVSubtitle* subtitle_;
     std::string filename_;
     std::mutex mutex_;
 
@@ -69,7 +69,7 @@ protected:
     bool pause_ = false;
     int pause_time_ = 0;
     bool key_frame_ = false;
-    void* data_ = nullptr;	//无缓冲时的用户数据, 可能为纹理或音频缓冲区
+    void* data_ = nullptr;  //无缓冲时的用户数据, 可能为纹理或音频缓冲区
     int data_length_ = 0;
     //int frame_number_;
 private:
@@ -81,7 +81,7 @@ private:
     int(*avcodec_decode_packet_subtitle)(AVCodecContext*, AVSubtitle*, int*, AVPacket*) = nullptr;
 
 private:
-    virtual Content convertFrameToContent(void * p = nullptr)
+    virtual Content convertFrameToContent(void* p = nullptr)
     {
         return{ 0, 0, nullptr };
     }
@@ -100,7 +100,7 @@ protected:
     bool useMap();
     Content getCurrentContent();
 public:
-    int openFile(const std::string & filename);
+    int openFile(const std::string& filename);
     int tryDecodeFrame(bool reset = false);
     void dropDecoded();
     int getTotalTime();
@@ -121,7 +121,7 @@ public:
     int setAnotherTime(int time);
     int skipFrame(int time);
 
-    void getSize(int &w, int&h);
+    void getSize(int& w, int& h);
     int getWidth() { return exist() ? codecCtx_->width : 0; }
     int getHeight() { return exist() ? codecCtx_->height : 0; }
     int getTimedts()
@@ -139,7 +139,7 @@ public:
     virtual void setPause(bool pause);
     void resetDecoderState() { avcodec_flush_buffers(codecCtx_); }
     double getRotation();
-    void getRatio(int &x, int &y);
+    void getRatio(int& x, int& y);
     int getRatioX() { return exist() ? std::max(stream_->sample_aspect_ratio.num, 1) : 1; }
     int getRatioY() { return exist() ? std::max(stream_->sample_aspect_ratio.den, 1) : 1; }
 };

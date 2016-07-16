@@ -4,7 +4,7 @@
 
 BigPotStreamSubtitle::BigPotStreamSubtitle()
 {
-	type_ = BPMEDIA_TYPE_SUBTITLE;
+    type_ = BPMEDIA_TYPE_SUBTITLE;
 }
 
 

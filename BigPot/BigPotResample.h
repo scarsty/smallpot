@@ -12,13 +12,13 @@ extern "C"
 class BigPotResample
 {
 public:
-	BigPotResample();
-	virtual ~BigPotResample();
-	static int convert(AVCodecContext * codecCtx,
-		AVFrame * frame,
-		int out_sample_format,
-		int out_sample_rate,
-		int out_channels,
-		uint8_t* out_buf);
+    BigPotResample();
+    virtual ~BigPotResample();
+    static int convert(AVCodecContext* codecCtx,
+                       AVFrame* frame,
+                       int out_sample_format,
+                       int out_sample_rate,
+                       int out_channels,
+                       uint8_t* out_buf);
 };
 

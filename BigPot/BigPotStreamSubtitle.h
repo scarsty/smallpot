@@ -4,7 +4,7 @@
 class BigPotStreamSubtitle : public BigPotStream
 {
 public:
-	BigPotStreamSubtitle();
-	virtual ~BigPotStreamSubtitle();
+    BigPotStreamSubtitle();
+    virtual ~BigPotStreamSubtitle();
 };
 
