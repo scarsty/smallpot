@@ -140,7 +140,7 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
         {
             BP_Event e;
             //这里只接受QUIT和拖入事件，将其压回主序列，跳出
-            engine_->pollEvent(e);
+            if (engine_->pollEvent(e) > 0)
             {
                 engine_->pushEvent(e);
                 if (e.type == BP_QUIT || e.type == BP_DROPFILE)
