@@ -452,7 +452,6 @@ void Engine::setWindowSize(int w, int h)
     if (w <= 0 || h <= 0) { return; }
     _win_w = std::min(_max_x - _min_x, w);
     _win_h = std::min(_max_y - _min_y, h);
-    if (!_win) { return; }
     SDL_SetWindowSize(_win, _win_w, _win_h);
     setPresentPosition();
 

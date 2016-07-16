@@ -192,71 +192,75 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BigPotDll.cpp" />
-    <ClCompile Include="BigPotStreamAudio.cpp" />
-    <ClCompile Include="BigPotBase.cpp" />
-    <ClCompile Include="BigPotConfig.cpp" />
-    <ClCompile Include="BigPotConv.cpp" />
-    <ClCompile Include="BigPotResample.cpp" />
-    <ClCompile Include="BigPot.cpp" />
-    <ClCompile Include="BigPotStream.cpp" />
-    <ClCompile Include="BigPotPlayer.cpp" />
-    <ClCompile Include="BigPotMedia.cpp" />
-    <ClCompile Include="BigPotStreamSubtitle.cpp" />
-    <ClCompile Include="BigPotString.cpp" />
-    <ClCompile Include="BigPotSubtitle.cpp" />
-    <ClCompile Include="BigPotSubtitleAss.cpp" />
-    <ClCompile Include="BigPotSubtitleFactory.cpp" />
-    <ClCompile Include="BigPotSubtitleSrt.cpp" />
-    <ClCompile Include="BigPotUI.cpp" />
-    <ClCompile Include="BigPotStreamVideo.cpp" />
-    <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="hash\sha3.cpp" />
-    <ClCompile Include="tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="src\BigPot.cpp" />
+    <ClCompile Include="src\BigPotBase.cpp" />
+    <ClCompile Include="src\BigPotConfig.cpp" />
+    <ClCompile Include="src\BigPotConv.cpp" />
+    <ClCompile Include="src\BigPotDll.cpp" />
+    <ClCompile Include="src\BigPotMedia.cpp" />
+    <ClCompile Include="src\BigPotPlayer.cpp" />
+    <ClCompile Include="src\BigPotResample.cpp" />
+    <ClCompile Include="src\BigPotStream.cpp" />
+    <ClCompile Include="src\BigPotStreamAudio.cpp" />
+    <ClCompile Include="src\BigPotStreamSubtitle.cpp" />
+    <ClCompile Include="src\BigPotStreamVideo.cpp" />
+    <ClCompile Include="src\BigPotString.cpp" />
+    <ClCompile Include="src\BigPotSubtitle.cpp" />
+    <ClCompile Include="src\BigPotSubtitleAss.cpp" />
+    <ClCompile Include="src\BigPotSubtitleFactory.cpp" />
+    <ClCompile Include="src\BigPotSubtitleSrt.cpp" />
+    <ClCompile Include="src\BigPotUI.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\hash\sha3.cpp" />
+    <ClCompile Include="src\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BigPotDll.h" />
-    <ClInclude Include="BigPotStreamAudio.h" />
-    <ClInclude Include="BigPotConfig.h" />
-    <ClInclude Include="BigPotConv.h" />
-    <ClInclude Include="BigPotMedia.h" />
-    <ClInclude Include="BigPotStream.h" />
-    <ClInclude Include="BigPotPlayer.h" />
-    <ClInclude Include="BigPotBase.h" />
-    <ClInclude Include="BigPotResample.h" />
-    <ClInclude Include="BigPotStreamSubtitle.h" />
-    <ClInclude Include="BigPotString.h" />
-    <ClInclude Include="BigPotSubtitle.h" />
-    <ClInclude Include="BigPotSubtitleAss.h" />
-    <ClInclude Include="BigPotSubtitleFactory.h" />
-    <ClInclude Include="BigPotSubtitleSrt.h" />
-    <ClInclude Include="BigPotUI.h" />
-    <ClInclude Include="BigPotStreamVideo.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="hash\sha3.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="tinyxml2\tinyxml2.h" />
+    <ClInclude Include="src\BigPotBase.h" />
+    <ClInclude Include="src\BigPotConfig.h" />
+    <ClInclude Include="src\BigPotConv.h" />
+    <ClInclude Include="src\BigPotDll.h" />
+    <ClInclude Include="src\BigPotMedia.h" />
+    <ClInclude Include="src\BigPotPlayer.h" />
+    <ClInclude Include="src\BigPotResample.h" />
+    <ClInclude Include="src\BigPotStream.h" />
+    <ClInclude Include="src\BigPotStreamAudio.h" />
+    <ClInclude Include="src\BigPotStreamSubtitle.h" />
+    <ClInclude Include="src\BigPotStreamVideo.h" />
+    <ClInclude Include="src\BigPotString.h" />
+    <ClInclude Include="src\BigPotSubtitle.h" />
+    <ClInclude Include="src\BigPotSubtitleAss.h" />
+    <ClInclude Include="src\BigPotSubtitleFactory.h" />
+    <ClInclude Include="src\BigPotSubtitleSrt.h" />
+    <ClInclude Include="src\BigPotUI.h" />
+    <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\hash\sha3.h" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="BigPot.rc" />
+    <None Include="src\bigpot.def" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bigpot.ico" />
+    <Image Include="src\bigpot.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bigpot.def" />
+    <ResourceCompile Include="src\BigPot.rc" />
+    <ResourceCompile Include="src\BigPot1.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\lib\x86\ass.lib" />
-    <Library Include="..\lib\x86\avcodec.lib" />
-    <Library Include="..\lib\x86\avformat.lib" />
-    <Library Include="..\lib\x86\avutil.lib" />
-    <Library Include="..\lib\x86\libiconv.lib" />
-    <Library Include="..\lib\x86\SDL2.lib" />
-    <Library Include="..\lib\x86\SDL2main.lib" />
-    <Library Include="..\lib\x86\SDL2_image.lib" />
-    <Library Include="..\lib\x86\SDL2_ttf.lib" />
-    <Library Include="..\lib\x86\swresample.lib" />
+    <Resource Include="src\bigpot.res" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\x86\ass.lib" />
+    <Library Include="lib\x86\avcodec.lib" />
+    <Library Include="lib\x86\avformat.lib" />
+    <Library Include="lib\x86\avutil.lib" />
+    <Library Include="lib\x86\libiconv.lib" />
+    <Library Include="lib\x86\SDL2.lib" />
+    <Library Include="lib\x86\SDL2main.lib" />
+    <Library Include="lib\x86\SDL2_image.lib" />
+    <Library Include="lib\x86\SDL2_ttf.lib" />
+    <Library Include="lib\x86\swresample.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
