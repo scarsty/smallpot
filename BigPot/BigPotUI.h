@@ -21,7 +21,7 @@ public:
     void setTime(int t) { _time = t; };
     void setTotalTime(int t) { _totoalTime = t; };
     void drawBall();
-    void drawText(const std::string &text);
+    void drawText(const std::string& text);
     void drawUI(uint8_t alpha, int time, int totoalTime, int volume);
     void destory();
     std::string convertTimeToString(int time);

@@ -9,7 +9,8 @@ HBAPI void* MYTHAPI BigPotInit(void* handle)
 
 HBAPI int MYTHAPI BigPotInputVideo(void* handle, char* filename)
 {
-    if (handle) {
+    if (handle)
+    {
         BigPotPlayer* bp = (BigPotPlayer*)handle;
         bp->beginWithFile(filename);
     }
@@ -23,7 +24,8 @@ HBAPI int MYTHAPI BigPotSeek(void* handle, int seek)
 
 HBAPI int MYTHAPI BigPotClose(void* handle)
 {
-    if (handle) {
+    if (handle)
+    {
         BigPotPlayer* bp = (BigPotPlayer*)handle;
         delete bp;
     }
