@@ -136,8 +136,9 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
         if (needReadPacket_)
         { av_free_packet(&packet_); }
         //避免卡死
-        if (ret == 0)
+        if (gotsize < 0)
         {
+            printf("decode error.\n");
             BP_Event e;
             //这里只接受QUIT和拖入事件，将其压回主序列，跳出
             if (engine_->pollEvent(e) > 0)

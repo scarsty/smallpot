@@ -31,7 +31,11 @@ int BigPotPlayer::beginWithFile(const std::string& filename)
 
     //首次运行拖拽的文件也认为是同一个
     _drop_filename = filename;
-    auto play_filename = filename;
+#ifdef _CONSOLE
+    _drop_filename = BigPotConv::conv(_drop_filename, _sys_encode, _BP_encode);
+#endif
+    printf("Begin with file: %s\n", filename.c_str());
+    auto play_filename = _drop_filename;
     _run = true;
 
     //_subtitle->init();
@@ -88,7 +92,7 @@ int BigPotPlayer::eventLoop()
     bool havemedia = _media->getAudio()->exist() || havevideo;
     int totalTime = _media->getTotalTime();
     std::string open_filename;
-    printf("Total time is %1.3fs or %dmin%ds\n", totalTime / 1000.0, totalTime / 60000, totalTime % 60000 / 1000);
+    printf("Total time is %1.3fs or %dmin %1.3fs\n", totalTime / 1e3, totalTime / 60000, totalTime % 60000 / 1e3);
 
     int maxDelay = 0; //统计使用
     int prev_show_time = 0;  //上一次显示的时间
@@ -217,6 +221,7 @@ int BigPotPlayer::eventLoop()
             //有文件拖入先检查是不是字幕，不是字幕则当作媒体文件，打开失败活该
             //若将媒体文件当成字幕打开会非常慢，故限制字幕文件的扩展名
             open_filename = BigPotConv::conv(e.drop.file, _BP_encode, _sys_encode);
+            printf("Change file: %s\n", open_filename.c_str());
             //检查是不是字幕，如果是则打开
             if (_subtitle_factory->isSubtitle(open_filename))
             {
@@ -262,8 +267,8 @@ int BigPotPlayer::eventLoop()
 #ifdef _DEBUG
             int videoTime = (_media->getVideo()->getTimedts());
             int delay = -videoTime + audioTime;
-            printf("\rvolume %d, audio %4.3f, video %4.3f, diff %d / %d\t",
-                   _media->getAudio()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay, i);
+            printf("\rvolume %d, audio %4.3f, video %4.3f, diff %1.3f in loop %d\t",
+                   _media->getAudio()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay / 1e3, i);
 #endif
         }
         //静止时，无视频时，视频已放完时40毫秒显示一次
@@ -366,6 +371,7 @@ void BigPotPlayer::openMedia(const std::string& filename)
     {
         _cur_time = 0;
         _cur_time = config_->getRecord(filename.c_str());
+        printf("Play from %1.3fs\n", _cur_time / 1000.0);
         if (_cur_time > 0 && _cur_time < _media->getTotalTime())
         { _media->seekTime(_cur_time, -1); }
     }
