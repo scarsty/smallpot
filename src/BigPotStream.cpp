@@ -82,16 +82,6 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
     //一帧多包，一包多帧都要考虑，甚是麻烦
     while (ret == 0)
     {
-        BP_Event e;
-        //这里只接受QUIT和拖入事件，将其压回主序列，跳出
-        engine_->pollEvent(e);
-        {
-            if (e.type == BP_QUIT || e.type == BP_DROPFILE)
-            {
-                engine_->pushEvent(e);
-                break;
-            }
-        }
         //auto packet = new AVPacket;
         if (needReadPacket_)
         {
@@ -145,6 +135,20 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
         }
         if (needReadPacket_)
         { av_free_packet(&packet_); }
+        //避免卡死
+        if (ret == 0)
+        {
+            BP_Event e;
+            //这里只接受QUIT和拖入事件，将其压回主序列，跳出
+            engine_->pollEvent(e);
+            {
+                engine_->pushEvent(e);
+                if (e.type == BP_QUIT || e.type == BP_DROPFILE)
+                {
+                    break;
+                }
+            }
+        }
     }
     //cout << engine_->getTicks() << '\n';
     return ret;
