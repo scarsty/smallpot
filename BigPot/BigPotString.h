@@ -21,30 +21,30 @@
 
 namespace BigPotString
 {
-	/*private:
-		BigPotString();
-		virtual ~BigPotString();
-		static string _filepath;
-		public:*/
-	enum FindMode
-	{
-		FINDLAST = 0,
-		FINDFIRST = 1
-	};
+    /*private:
+        BigPotString();
+        virtual ~BigPotString();
+        static string _filepath;
+        public:*/
+    enum FindMode
+    {
+        FINDLAST = 0,
+        FINDFIRST = 1
+    };
 
-	bool fileExist(const std::string& filename);
-	std::string readStringFromFile(const std::string& filename);
-	std::string getFileExt(const std::string& filename);
-	std::string getFileMainname(const std::string& fileName, FindMode mode = FINDLAST);
-	std::string getFilenameWithoutPath(const std::string& fileName);
-	std::string changeFileExt(const std::string& filename, const std::string& ext);
-	std::string getFilePath(const std::string& filename);
+    bool fileExist(const std::string& filename);
+    std::string readStringFromFile(const std::string& filename);
+    std::string getFileExt(const std::string& filename);
+    std::string getFileMainname(const std::string& fileName, FindMode mode = FINDLAST);
+    std::string getFilenameWithoutPath(const std::string& fileName);
+    std::string changeFileExt(const std::string& filename, const std::string& ext);
+    std::string getFilePath(const std::string& filename);
 
-	std::string fingFileWithMainName(const std::string& filename);
-	std::string toLowerCase(const std::string& str);
-	std::string formatString(const char *format, ...);
+    std::string fingFileWithMainName(const std::string& filename);
+    std::string toLowerCase(const std::string& str);
+    std::string formatString(const char *format, ...);
 
-	//void setFilePath(char *s);
-	//std::string getFilePath();
+    //void setFilePath(char *s);
+    //std::string getFilePath();
 
 }

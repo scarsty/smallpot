@@ -14,30 +14,30 @@ extern "C"
 
 enum BigPotPSubtitleType
 {
-	BPSUB_TYPE_ASS,
-	BPSUB_TYPE_SRT
+    BPSUB_TYPE_ASS,
+    BPSUB_TYPE_SRT
 };
 
 class BigPotSubtitle :
-	public BigPotBase
+    public BigPotBase
 {
 public:
-	BigPotSubtitle();
-	virtual ~BigPotSubtitle();
+    BigPotSubtitle();
+    virtual ~BigPotSubtitle();
 protected:
-	BigPotPSubtitleType type_;
-	std::string subfilename_, fontname_;
-	bool haveSubtitle_ = false;
+    BigPotPSubtitleType type_;
+    std::string subfilename_, fontname_;
+    bool haveSubtitle_ = false;
 public:
-	bool exist() { return haveSubtitle_; };
-	bool reOpenSubtitle() { return openSubtitle(subfilename_); };
+    bool exist() { return haveSubtitle_; };
+    bool reOpenSubtitle() { return openSubtitle(subfilename_); };
 
-	virtual void init(){};
-	virtual bool openSubtitle(const std::string& filename){ return false; };
-	virtual void closeSubtitle(){};
-	virtual void show(int time){};
-	virtual void destroy(){};
-	virtual void setFrameSize(int w, int h){};
+    virtual void init() {};
+    virtual bool openSubtitle(const std::string& filename) { return false; };
+    virtual void closeSubtitle() {};
+    virtual void show(int time) {};
+    virtual void destroy() {};
+    virtual void setFrameSize(int w, int h) {};
 };
 
 
