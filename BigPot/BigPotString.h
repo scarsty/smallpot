@@ -9,7 +9,7 @@
 #endif
 
 #include <stdio.h>
-#include <stdarg.h> 
+#include <stdarg.h>
 
 //主要是字串和文件名处理，随时可能使用
 
@@ -42,7 +42,7 @@ namespace BigPotString
 
     std::string fingFileWithMainName(const std::string& filename);
     std::string toLowerCase(const std::string& str);
-    std::string formatString(const char *format, ...);
+    std::string formatString(const char* format, ...);
 
     //void setFilePath(char *s);
     //std::string getFilePath();

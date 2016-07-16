@@ -18,9 +18,9 @@ BigPotSubtitle* BigPotSubtitleFactory::createSubtitle(const std::string& filenam
     BigPotSubtitle* ret = nullptr;
     auto ext = toLowerCase(getFileExt(filename));
     if (ext == "ass" || ext == "ssa")
-        ret = new BigPotSubtitleAss;
+    { ret = new BigPotSubtitleAss; }
     else if (ext == "srt" || ext == "txt")
-        ret = new BigPotSubtitleSrt;
+    { ret = new BigPotSubtitleSrt; }
     if (ret)
     {
         //ret->init();
@@ -38,7 +38,7 @@ std::string BigPotSubtitleFactory::lookForSubtitle(const std::string& filename)
     std::string str = "";
     bool b = false;
     //检查默认类型
-    for (auto &ext : _ext)
+    for (auto& ext : _ext)
     {
         str = changeFileExt(filename, ext);
         if (fileExist(str))
@@ -48,7 +48,7 @@ std::string BigPotSubtitleFactory::lookForSubtitle(const std::string& filename)
     }
     str = fingFileWithMainName(filename);
     if (!isSubtitle(str))
-        str = "";
+    { str = ""; }
     return str;
 }
 
@@ -65,7 +65,7 @@ bool BigPotSubtitleFactory::isSubtitle(const std::string& filename)
     ext = toLowerCase(ext);
     //transform(ext.begin(), ext.end(), ext.begin(), tolower);
     bool b = false;
-    for (auto &e : _ext)
+    for (auto& e : _ext)
     {
         if (e == ext)
         {

@@ -28,8 +28,8 @@ bool BigPotSubtitleAss::openSubtitle(const std::string& filename)
     //if (checkFileExt(filename))
     _track = ass_read_file(_lib, (char*)s.c_str(), NULL);
     haveSubtitle_ = (_track != nullptr);
-    if (haveSubtitle_) subfilename_ = filename;
-    return 	haveSubtitle_;
+    if (haveSubtitle_) { subfilename_ = filename; }
+    return  haveSubtitle_;
 }
 
 void BigPotSubtitleAss::show(int time)
@@ -76,7 +76,7 @@ void BigPotSubtitleAss::setFrameSize(int w, int h)
 void BigPotSubtitleAss::closeSubtitle()
 {
     if (_track)
-        ass_free_track(_track);
+    { ass_free_track(_track); }
     _track = nullptr;
 }
 

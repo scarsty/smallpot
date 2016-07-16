@@ -22,10 +22,10 @@ BigPotPlayer::~BigPotPlayer()
     //delete media;
 }
 
-int BigPotPlayer::beginWithFile(const std::string &filename)
+int BigPotPlayer::beginWithFile(const std::string& filename)
 {
     int count = 0;
-    if (init() != 0) return -1;
+    if (init() != 0) { return -1; }
 
     int start_time = engine_->getTicks();
 
@@ -67,7 +67,7 @@ int BigPotPlayer::beginWithFile(const std::string &filename)
         this->eventLoop();
 
         closeMedia(play_filename);
-        if (play_filename != "") count++;
+        if (play_filename != "") { count++; }
         play_filename = _drop_filename;
 
     }
@@ -99,10 +99,12 @@ int BigPotPlayer::eventLoop()
 
         engine_->getMouseState(x, y);
         if (ui_alpha > 0)
-            ui_alpha--;
+        { ui_alpha--; }
         if (_h - y < 50
             || ((_w - x) < 200 && y < 150))
+        {
             ui_alpha = 128;
+        }
         switch (e.type)
         {
         case BP_MOUSEMOTION:
@@ -248,8 +250,7 @@ int BigPotPlayer::eventLoop()
         {
             time_s = 0; //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
         }
-        int videostate = _media->getVideo()
-            ->showTexture(time_s);
+        int videostate = _media->getVideo()->showTexture(time_s);
         //printf("\nvideostate%d", videostate);
         //依据解视频的结果判断是否显示
         bool show = false;
@@ -272,14 +273,14 @@ int BigPotPlayer::eventLoop()
         {
             show = true;
             if (havevideo)
-                engine_->renderCopy();
+            { engine_->renderCopy(); }
             else
-                engine_->showLogo();
+            { engine_->showLogo(); }
         }
         if (show)
         {
             if (_subtitle->exist())
-                _subtitle->show(audioTime);
+            { _subtitle->show(audioTime); }
             _UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudio()->getVolume());
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
@@ -287,7 +288,7 @@ int BigPotPlayer::eventLoop()
         i++;
         engine_->delay(1);
         //if (audioTime >= totalTime)
-            //_media->seekTime(0);
+        //_media->seekTime(0);
     }
     engine_->renderClear();
     engine_->renderPresent();
@@ -299,7 +300,7 @@ int BigPotPlayer::eventLoop()
 
 int BigPotPlayer::init()
 {
-    if (engine_->init(_handle)) return -1;
+    if (engine_->init(_handle)) { return -1; }
     config_->init(_filepath);
 #ifdef _MSC_VER
     _sys_encode = config_->getString("sys_encode", "cp936");
@@ -366,7 +367,7 @@ void BigPotPlayer::openMedia(const std::string& filename)
         _cur_time = 0;
         _cur_time = config_->getRecord(filename.c_str());
         if (_cur_time > 0 && _cur_time < _media->getTotalTime())
-            _media->seekTime(_cur_time, -1);
+        { _media->seekTime(_cur_time, -1); }
     }
 }
 

@@ -23,7 +23,7 @@ BigPotStream::~BigPotStream()
 }
 
 //返回为非负才正常
-int BigPotStream::openFile(const std::string & filename)
+int BigPotStream::openFile(const std::string& filename)
 {
     stream_index_ = -1;
     this->filename_ = filename;
@@ -39,10 +39,10 @@ int BigPotStream::openFile(const std::string & filename)
                 codecCtx_ = stream_->codec;
                 //timebase = av_q2d(formatCtx->streams[i]->time_base);
                 if (stream_->r_frame_rate.den)
-                    time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
-                time_base_packet_ = 1e3*av_q2d(stream_->time_base);
-                total_time_ = formatCtx_->duration *1e3 / AV_TIME_BASE;
-                start_time_ = formatCtx_->start_time *1e3 / AV_TIME_BASE;
+                { time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate); }
+                time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
+                total_time_ = formatCtx_->duration * 1e3 / AV_TIME_BASE;
+                start_time_ = formatCtx_->start_time * 1e3 / AV_TIME_BASE;
                 //totalTime = (int)stream->nb_frames * timePerFrame;
                 stream_index_ = i;
                 codec_ = avcodec_find_decoder(codecCtx_->codec_id);
@@ -71,9 +71,9 @@ int BigPotStream::openFile(const std::string & filename)
 //在长时间无包时可能造成界面卡死，设法改一下
 int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
 {
-    if (!avcodec_decode_packet) return -1;
+    if (!avcodec_decode_packet) { return -1; }
     //3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
-    if (!exist()) return -2;
+    if (!exist()) { return -2; }
     int ret = 0;
     int gotframe = 0;
     int gotsize = 0;
@@ -108,13 +108,13 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
                     while (gotframe == 0)
                     {
                         gotsize = avcodec_decode_packet(codecCtx_, frame_, &gotframe, &packet_);
-                        if (gotsize <= 0) break;
+                        if (gotsize <= 0) { break; }
                         packet_.data += gotsize;
                         totalGotsize += gotsize;
                         packet_.size -= gotsize;
                         needReadPacket_ = packet_.size <= 0;
                         if (needReadPacket_)
-                            break;
+                        { break; }
                     }
                     ret = gotframe;
                 }
@@ -144,7 +144,7 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
             //if (type_ == 0 && key_frame_)printf("\n%dis key\n", time_dts_);
         }
         if (needReadPacket_)
-            av_free_packet(&packet_);
+        { av_free_packet(&packet_); }
     }
     //cout << engine_->getTicks() << '\n';
     return ret;
@@ -164,15 +164,15 @@ int BigPotStream::tryDecodeFrame(bool reset)
             if (_map.size() == 0)
             {
                 if (reset)
-                    resetTimeAxis(time_dts_);
+                { resetTimeAxis(time_dts_); }
             }
             if (_map.count(f.time) == 0 && f.data)
-                _map[f.time] = f;
+            { _map[f.time] = f; }
         }
         else
         {
             if (reset)
-                resetTimeAxis(time_dts_);
+            { resetTimeAxis(time_dts_); }
         }
         setDecoded(true);
         return 0;
@@ -195,7 +195,7 @@ int BigPotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
 
         int flag = 0;
         if (direct < 0)
-            flag = flag | AVSEEK_FLAG_BACKWARD;
+        { flag = flag | AVSEEK_FLAG_BACKWARD; }
         //间隔比较大的情况重置播放器
         if (type_ == BPMEDIA_TYPE_VIDEO
             && (pause_ || reset || engine_->getTicks() - _seek_record > 100))
@@ -238,7 +238,7 @@ void BigPotStream::clearMap()
     //printf("clear buffer begin with %d\n", _map.size());
     //for (auto i = _map.begin(); i != _map.end(); i++)
     mutex_.lock();
-    for (auto &i : _map)
+    for (auto& i : _map)
     {
         freeContent(i.second.data);
     }
@@ -256,11 +256,11 @@ void BigPotStream::setMap(int key, Content f)
 bool BigPotStream::needDecode()
 {
     if (!needDecode2())
-        return false;
+    { return false; }
     if (useMap())
-        return (_map.size() < maxSize_);
+    { return (_map.size() < maxSize_); }
     else
-        return !_decoded;
+    { return !_decoded; }
 }
 
 void BigPotStream::setDecoded(bool b)
@@ -271,9 +271,9 @@ void BigPotStream::setDecoded(bool b)
 void BigPotStream::dropDecoded()
 {
     if (useMap())
-        dropContent();
+    { dropContent(); }
     else
-        _decoded = false;
+    { _decoded = false; }
 }
 
 bool BigPotStream::useMap()
@@ -286,7 +286,7 @@ BigPotStream::Content BigPotStream::getCurrentContent()
     if (useMap())
     {
         if (_map.size() > 0)
-            return _map.begin()->second;
+        { return _map.begin()->second; }
         else
             return{ -1, -1, nullptr };
     }
@@ -312,12 +312,12 @@ bool BigPotStream::haveDecoded()
 int BigPotStream::getTime()
 {
     if (pause_)
-        return pause_time_;
+    { return pause_time_; }
     //if (type_== BPMEDIA_TYPE_AUDIO)
-        //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
+    //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
     //if (exist() && !_ended)
     if (exist())
-        return pause_time_ = std::min(int(time_shown_ + engine_->getTicks() - ticks_shown_), total_time_);
+    { return pause_time_ = std::min(int(time_shown_ + engine_->getTicks() - ticks_shown_), total_time_); }
     return 0;
 }
 
@@ -334,7 +334,7 @@ int BigPotStream::skipFrame(int time)
         n++;
         //视频需解码，因为关键帧不解后续一系列都有问题，音频可以只读不解
         if (decodeNextPacketToFrame(type_ == BPMEDIA_TYPE_VIDEO) < 0)
-            break;
+        { break; }
     }
     //跳帧后需丢弃原来的解码，重置时间轴
     dropAllDecoded();
@@ -342,7 +342,7 @@ int BigPotStream::skipFrame(int time)
     return n;
 }
 
-void BigPotStream::getSize(int &w, int&h)
+void BigPotStream::getSize(int& w, int& h)
 {
     if (exist())
     {
@@ -373,18 +373,18 @@ void BigPotStream::resetTimeAxis(int time)
 
 double BigPotStream::getRotation()
 {
-    if (!exist()) return 0;
+    if (!exist()) { return 0; }
     double r = 0;
     auto dic = stream_->metadata;
     auto entry = av_dict_get(dic, "rotate", nullptr, 0);
     if (entry)
-        r = atof(entry->value);
+    { r = atof(entry->value); }
     return r;
 }
 
-void BigPotStream::getRatio(int &x, int &y)
+void BigPotStream::getRatio(int& x, int& y)
 {
-    if (!exist()) return;
+    if (!exist()) { return; }
     x = stream_->sample_aspect_ratio.num;
     y = stream_->sample_aspect_ratio.den;
 }

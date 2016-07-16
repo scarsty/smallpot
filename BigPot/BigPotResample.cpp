@@ -10,10 +10,9 @@ BigPotResample::~BigPotResample()
 {
 }
 
-int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
-                            int out_sample_format, int out_sample_rate, int out_channels, uint8_t* out_buf)
+int BigPotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sample_format, int out_sample_rate, int out_channels, uint8_t* out_buf)
 {
-    SwrContext * swr_ctx = NULL;
+    SwrContext* swr_ctx = NULL;
     int data_size = 0;
     int ret = 0;
     int64_t src_ch_layout = codecCtx->channel_layout;
@@ -23,7 +22,7 @@ int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
     int src_nb_samples = 0;
     int dst_nb_samples = 0;
     int max_dst_nb_samples = 0;
-    uint8_t **dst_data = NULL;
+    uint8_t** dst_data = NULL;
     int resampled_data_size = 0;
 
     swr_ctx = swr_alloc();
@@ -35,8 +34,8 @@ int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
 
     src_ch_layout = (codecCtx->channels ==
                      av_get_channel_layout_nb_channels(codecCtx->channel_layout)) ?
-        codecCtx->channel_layout :
-        av_get_default_channel_layout(codecCtx->channels);
+                    codecCtx->channel_layout :
+                    av_get_default_channel_layout(codecCtx->channels);
 
     //这里的设置很粗糙，最好详细处理
     switch (out_channels)
@@ -88,8 +87,7 @@ int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
         return -1;
     }
 
-    max_dst_nb_samples = dst_nb_samples = av_rescale_rnd(src_nb_samples,
-                                                         out_sample_rate, codecCtx->sample_rate, AV_ROUND_UP);
+    max_dst_nb_samples = dst_nb_samples = av_rescale_rnd(src_nb_samples, out_sample_rate, codecCtx->sample_rate, AV_ROUND_UP);
     if (max_dst_nb_samples <= 0)
     {
         printf("av_rescale_rnd error \n");
@@ -97,16 +95,14 @@ int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
     }
 
     dst_nb_channels = av_get_channel_layout_nb_channels(dst_ch_layout);
-    ret = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels,
-                                             dst_nb_samples, (AVSampleFormat)out_sample_format, 0);
+    ret = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format, 0);
     if (ret < 0)
     {
         printf("av_samples_alloc_array_and_samples error \n");
         return -1;
     }
 
-    dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, codecCtx->sample_rate) +
-                                    src_nb_samples, out_sample_rate, codecCtx->sample_rate, AV_ROUND_UP);
+    dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, codecCtx->sample_rate) + src_nb_samples, out_sample_rate, codecCtx->sample_rate, AV_ROUND_UP);
     if (dst_nb_samples <= 0)
     {
         printf("av_rescale_rnd error \n");
@@ -115,23 +111,20 @@ int BigPotResample::convert(AVCodecContext * codecCtx, AVFrame * frame,
     if (dst_nb_samples > max_dst_nb_samples)
     {
         av_free(&dst_data[0]);
-        ret = av_samples_alloc(dst_data, &dst_linesize, dst_nb_channels,
-                               dst_nb_samples, (AVSampleFormat)out_sample_format, 1);
+        ret = av_samples_alloc(dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format, 1);
         max_dst_nb_samples = dst_nb_samples;
     }
 
     if (swr_ctx)
     {
-        ret = swr_convert(swr_ctx, dst_data, dst_nb_samples,
-            (const uint8_t **)frame->data, frame->nb_samples);
+        ret = swr_convert(swr_ctx, dst_data, dst_nb_samples, (const uint8_t**)frame->data, frame->nb_samples);
         if (ret < 0)
         {
             printf("swr_convert error \n");
             return -1;
         }
 
-        resampled_data_size = av_samples_get_buffer_size(&dst_linesize, dst_nb_channels,
-                                                         ret, (AVSampleFormat)out_sample_format, 1);
+        resampled_data_size = av_samples_get_buffer_size(&dst_linesize, dst_nb_channels, ret, (AVSampleFormat)out_sample_format, 1);
         if (resampled_data_size < 0)
         {
             printf("av_samples_get_buffer_size error \n");

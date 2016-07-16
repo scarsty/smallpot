@@ -19,7 +19,7 @@ BigPotStreamVideo::~BigPotStreamVideo()
 int BigPotStreamVideo::showTexture(int time)
 {
     if (stream_index_ < 0)
-        return NoVideo;
+    { return NoVideo; }
     if (haveDecoded())
     {
         auto f = getCurrentContent();
@@ -48,7 +48,7 @@ void BigPotStreamVideo::freeContent(void* p)
 
 BigPotStream::Content BigPotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
 {
-    auto &f = frame_;
+    auto& f = frame_;
     auto tex = (BP_Texture*)data_;
     if (useMap())
     {

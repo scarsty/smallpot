@@ -19,13 +19,13 @@ std::string BigPotConv::conv(const std::string& src, const char* from, const cha
     char in[CONV_BUFFER_SIZE] = { '\0' };
     char out[CONV_BUFFER_SIZE] = { '\0' };
 
-    char *pin = in, *pout = out;
+    char* pin = in, *pout = out;
     memcpy(in, src.c_str(), inlen);
     iconv_t cd;
     cd = iconv_open(to, from);
-    if (cd <= 0) return "";
+    if (cd <= 0) { return ""; }
     if (iconv(cd, &pin, &inlen, &pout, &outlen) == -1)
-        out[0] = '\0';
+    { out[0] = '\0'; }
     iconv_close(cd);
     return out;
     return src;

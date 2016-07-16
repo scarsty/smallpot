@@ -15,10 +15,10 @@ BigPotMedia::~BigPotMedia()
     //delete _streamSubtitle;
 }
 
-int BigPotMedia::openFile(const std::string &filename)
+int BigPotMedia::openFile(const std::string& filename)
 {
     if (!BigPotString::fileExist(filename))
-        return -1;
+    { return -1; }
     _streamVideo->openFile(filename);
     _streamAudio->openFile(filename);
     //_streamSubtitle->openFile(filename);
@@ -29,7 +29,7 @@ int BigPotMedia::openFile(const std::string &filename)
         _streamAudio->openAudioDevice();
     }
     else
-        _totalTime = _streamVideo->getTotalTime();
+    { _totalTime = _streamVideo->getTotalTime(); }
     return 0;
 }
 
@@ -40,7 +40,7 @@ int BigPotMedia::decodeFrame()
     _streamVideo->tryDecodeFrame(_seeking);
     //_streamAudio->tryDecodeFrame(_seeking);
     for (int i = 0; i <= _extAudioFrame; i++)
-        _streamAudio->tryDecodeFrame(_seeking);
+    { _streamAudio->tryDecodeFrame(_seeking); }
     _streamSubtitle->tryDecodeFrame(_seeking);
     //int m = _audioStream->getTimedts();
     //int n = _videoStream->getTimedts();
@@ -71,7 +71,7 @@ int BigPotMedia::decodeFrame()
                 }
             }
         }
-        //cout << "se"<<engine_->getTicks()-se << " "<<endl;		
+        //cout << "se"<<engine_->getTicks()-se << " "<<endl;
     }
 
     return 0;
@@ -115,9 +115,9 @@ int BigPotMedia::getVideoTime()
 int BigPotMedia::getTime()
 {
     if (_streamAudio->exist())
-        return _streamAudio->getTime();
+    { return _streamAudio->getTime(); }
     else
-        return _streamVideo->getTime();
+    { return _streamVideo->getTime(); }
 }
 
 void BigPotMedia::destroy()
