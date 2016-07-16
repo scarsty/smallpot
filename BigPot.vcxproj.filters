@@ -13,190 +13,195 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="tinyxml2">
-      <UniqueIdentifier>{de0d4753-806b-480c-b769-2e22c4263679}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="hash">
-      <UniqueIdentifier>{3812f944-8811-4cd1-ba86-7b5a234a7005}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib">
       <UniqueIdentifier>{fe34ce63-78eb-44f5-9467-8e9257074944}</UniqueIdentifier>
     </Filter>
+    <Filter Include="others">
+      <UniqueIdentifier>{de0d4753-806b-480c-b769-2e22c4263679}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BigPot.cpp">
+    <ClCompile Include="src\BigPotBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotPlayer.cpp">
+    <ClCompile Include="src\BigPotConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotMedia.cpp">
+    <ClCompile Include="src\BigPotConv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotResample.cpp">
+    <ClCompile Include="src\BigPotDll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotBase.cpp">
+    <ClCompile Include="src\BigPotMedia.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotConfig.cpp">
+    <ClCompile Include="src\BigPotPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotUI.cpp">
+    <ClCompile Include="src\BigPotResample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotConv.cpp">
+    <ClCompile Include="src\BigPotStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotSubtitle.cpp">
+    <ClCompile Include="src\BigPotStreamAudio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotSubtitleSrt.cpp">
+    <ClCompile Include="src\BigPotStreamSubtitle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotSubtitleFactory.cpp">
+    <ClCompile Include="src\BigPotStreamVideo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tinyxml2\tinyxml2.cpp">
-      <Filter>tinyxml2</Filter>
-    </ClCompile>
-    <ClCompile Include="hash\sha3.cpp">
-      <Filter>hash</Filter>
-    </ClCompile>
-    <ClCompile Include="BigPotString.cpp">
+    <ClCompile Include="src\BigPotString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotStream.cpp">
+    <ClCompile Include="src\BigPotSubtitle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotStreamVideo.cpp">
+    <ClCompile Include="src\BigPotSubtitleAss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotStreamAudio.cpp">
+    <ClCompile Include="src\BigPotSubtitleFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotStreamSubtitle.cpp">
+    <ClCompile Include="src\BigPotSubtitleSrt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotDll.cpp">
+    <ClCompile Include="src\BigPotUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BigPotSubtitleAss.cpp">
+    <ClCompile Include="src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine.cpp">
+    <ClCompile Include="src\tinyxml2\tinyxml2.cpp">
+      <Filter>others</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hash\sha3.cpp">
+      <Filter>others</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BigPot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BigPotPlayer.h">
+    <ClInclude Include="src\BigPotBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotMedia.h">
+    <ClInclude Include="src\BigPotConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotResample.h">
+    <ClInclude Include="src\BigPotConv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="src\BigPotDll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotBase.h">
+    <ClInclude Include="src\BigPotMedia.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotConfig.h">
+    <ClInclude Include="src\BigPotPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotUI.h">
+    <ClInclude Include="src\BigPotResample.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotConv.h">
+    <ClInclude Include="src\BigPotStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotSubtitle.h">
+    <ClInclude Include="src\BigPotStreamAudio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotSubtitleSrt.h">
+    <ClInclude Include="src\BigPotStreamSubtitle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotSubtitleFactory.h">
+    <ClInclude Include="src\BigPotStreamVideo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tinyxml2\tinyxml2.h">
-      <Filter>tinyxml2</Filter>
-    </ClInclude>
-    <ClInclude Include="hash\sha3.h">
-      <Filter>hash</Filter>
-    </ClInclude>
-    <ClInclude Include="BigPotString.h">
+    <ClInclude Include="src\BigPotString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotStream.h">
+    <ClInclude Include="src\BigPotSubtitle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotStreamVideo.h">
+    <ClInclude Include="src\BigPotSubtitleAss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotStreamAudio.h">
+    <ClInclude Include="src\BigPotSubtitleFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotStreamSubtitle.h">
+    <ClInclude Include="src\BigPotSubtitleSrt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotDll.h">
+    <ClInclude Include="src\BigPotUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BigPotSubtitleAss.h">
+    <ClInclude Include="src\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine.h">
+    <ClInclude Include="src\resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tinyxml2\tinyxml2.h">
+      <Filter>others</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hash\sha3.h">
+      <Filter>others</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="BigPot.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="bigpot.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="bigpot.def">
+    <None Include="src\bigpot.def">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\lib\x86\ass.lib">
+    <Image Include="src\bigpot.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\BigPot.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="src\BigPot1.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="src\bigpot.res">
+      <Filter>Resource Files</Filter>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\x86\ass.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\libiconv.lib">
+    <Library Include="lib\x86\avcodec.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\SDL2.lib">
+    <Library Include="lib\x86\avformat.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\SDL2_image.lib">
+    <Library Include="lib\x86\avutil.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\SDL2_ttf.lib">
+    <Library Include="lib\x86\libiconv.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\SDL2main.lib">
+    <Library Include="lib\x86\SDL2.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\swresample.lib">
+    <Library Include="lib\x86\SDL2_image.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\avcodec.lib">
+    <Library Include="lib\x86\SDL2_ttf.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\avformat.lib">
+    <Library Include="lib\x86\SDL2main.lib">
       <Filter>lib</Filter>
     </Library>
-    <Library Include="..\lib\x86\avutil.lib">
+    <Library Include="lib\x86\swresample.lib">
       <Filter>lib</Filter>
     </Library>
   </ItemGroup>
