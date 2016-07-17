@@ -31,7 +31,7 @@ int BigPotPlayer::beginWithFile(const std::string& filename)
 
     //首次运行拖拽的文件也认为是同一个
     _drop_filename = filename;
-#ifdef _CONSOLE
+#ifdef _DEBUG
     _drop_filename = BigPotConv::conv(_drop_filename, _sys_encode, _BP_encode);
 #endif
     printf("Begin with file: %s\n", filename.c_str());

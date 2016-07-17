@@ -23,12 +23,13 @@ void BigPotUI::drawBall()
     int d = 10, x, y;
     y = _win_h - 15;
     engine_->renderCopy(_square, -100, y + d / 2 - 1, _win_w + 200, 2);
-    engine_->renderCopy(_square,
-                        (int)(1.0 * _time / _totoalTime * _win_w - 5), y, d, d);
+    engine_->renderCopy(_square, 1.0 * _time / _totoalTime * _win_w - 5, y, d, d);
 
     x = _win_w - 20;
     y = 40;
-    engine_->renderCopy(_square, x, 40, 2, BP_AUDIO_MIX_MAXVOLUME / 2 + d);
+    engine_->renderCopy(_square, x - 2, y - 2, 6, 2);
+    engine_->renderCopy(_square, x - 2, y + BP_AUDIO_MIX_MAXVOLUME / 2 + d, 6, 2);
+    engine_->renderCopy(_square, x, y, 2, BP_AUDIO_MIX_MAXVOLUME / 2 + d);
     engine_->renderCopy(_square, x - d / 2 + 1, y - _volume / 2 + BP_AUDIO_MIX_MAXVOLUME / 2, d, d);
 }
 
