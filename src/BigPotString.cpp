@@ -1,4 +1,5 @@
 #include "BigPotString.h"
+#include <algorithm>
 
 namespace BigPotString
 {
@@ -105,12 +106,12 @@ namespace BigPotString
     std::string toLowerCase(const std::string& str)
     {
         auto str1 = str;
-        //transform(str1.begin(), str1.end(), str1.begin(), tolower);
-        for (auto& c : str1)
-        {
-            if (c >= 'A' && c <= 'Z')
-            { c = c + 'a' - 'A'; }
-        }
+        std::transform(str1.begin(), str1.end(), str1.begin(), tolower);
+//         for (auto& c : str1)
+//         {
+//             if (c >= 'A' && c <= 'Z')
+//             { c = c + 'a' - 'A'; }
+//         }
         return str1;
     }
 
