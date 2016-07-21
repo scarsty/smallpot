@@ -13,7 +13,6 @@ private:
     BigPotConfig* _this;
     std::string _content;
     std::string _filename;
-    std::string _path;
     SHA3 _sha3;
     BigPotConfig();
     virtual ~BigPotConfig();
