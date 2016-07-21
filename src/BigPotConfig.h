@@ -13,6 +13,7 @@ private:
     BigPotConfig* _this;
     std::string _content;
     std::string _filename;
+    std::string _path;
     SHA3 _sha3;
     BigPotConfig();
     virtual ~BigPotConfig();
@@ -21,7 +22,6 @@ private:
     tinyxml2::XMLElement* _root, *_record;
 
     tinyxml2::XMLElement* getElement(tinyxml2::XMLElement* parent, const char* name);
-
 
 public:
     void init(const std::string& filepath);
