@@ -21,7 +21,6 @@ private:
     BigPotMedia* _media = nullptr;
     BigPotUI* _UI = nullptr;
     BigPotSubtitle* _subtitle = nullptr;
-    BigPotSubtitleFactory* _subtitle_factory = nullptr;
 
     int _w, _h;
     bool _run = true;
