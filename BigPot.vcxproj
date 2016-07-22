@@ -202,12 +202,9 @@
     <ClCompile Include="src\BigPotResample.cpp" />
     <ClCompile Include="src\BigPotStream.cpp" />
     <ClCompile Include="src\BigPotStreamAudio.cpp" />
-    <ClCompile Include="src\BigPotStreamSubtitle.cpp" />
     <ClCompile Include="src\BigPotStreamVideo.cpp" />
-    <ClCompile Include="src\BigPotString.cpp" />
     <ClCompile Include="src\BigPotSubtitle.cpp" />
     <ClCompile Include="src\BigPotSubtitleAss.cpp" />
-    <ClCompile Include="src\BigPotSubtitleFactory.cpp" />
     <ClCompile Include="src\BigPotSubtitleSrt.cpp" />
     <ClCompile Include="src\BigPotUI.cpp" />
     <ClCompile Include="src\Engine.cpp" />
@@ -226,10 +223,8 @@
     <ClInclude Include="src\BigPotStreamAudio.h" />
     <ClInclude Include="src\BigPotStreamSubtitle.h" />
     <ClInclude Include="src\BigPotStreamVideo.h" />
-    <ClInclude Include="src\BigPotString.h" />
     <ClInclude Include="src\BigPotSubtitle.h" />
     <ClInclude Include="src\BigPotSubtitleAss.h" />
-    <ClInclude Include="src\BigPotSubtitleFactory.h" />
     <ClInclude Include="src\BigPotSubtitleSrt.h" />
     <ClInclude Include="src\BigPotUI.h" />
     <ClInclude Include="src\Engine.h" />

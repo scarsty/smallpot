@@ -5,14 +5,14 @@
 #include "BigPotUI.h"
 #include "BigPotConv.h"
 #include "BigPotConfig.h"
-#include "BigPotSubtitleFactory.h"
+#include "BigPotSubtitle.h"
 
 class BigPotPlayer : public BigPotBase
 {
 public:
     BigPotPlayer();
     BigPotPlayer(void* handle) : BigPotPlayer() { _handle = handle; }
-    BigPotPlayer(char* s) : BigPotPlayer() { _filepath = BigPotString::getFilePath(s); }
+    BigPotPlayer(char* s) : BigPotPlayer() { _filepath = getFilePath(s); }
     virtual ~BigPotPlayer();
 private:
     std::string _drop_filename = "", _filepath;

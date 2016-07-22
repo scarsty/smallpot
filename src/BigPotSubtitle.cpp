@@ -1,13 +1,12 @@
 #include "BigPotSubtitle.h"
 #include "BigPotSubtitleAss.h"
 #include "BigPotSubtitleSrt.h"
-
-using namespace BigPotString;
+#include "BigPotConfig.h"
 
 BigPotSubtitle::BigPotSubtitle()
 {
     fontname_ = config_->getString("sub_font");
-    if (!BigPotString::fileExist(fontname_))
+    if (!fileExist(fontname_))
     {
 #ifdef _WIN32
         fontname_ = "c:/windows/fonts/msyh.ttc";
@@ -25,19 +24,10 @@ BigPotSubtitle::~BigPotSubtitle()
     { config_->setString(fontname_, "sub_font"); }
 }
 
-
 std::vector<std::string> BigPotSubtitle::_ext;
 
 BigPotSubtitle* BigPotSubtitle::createSubtitle(const std::string& filename)
 {
-    if (_ext.size() == 0)
-    {
-        _ext.push_back("ass");
-        _ext.push_back("ssa");
-        _ext.push_back("srt");
-        _ext.push_back("txt");
-    }
-
     BigPotSubtitle* ret = nullptr;
     auto ext = toLowerCase(getFileExt(filename));
     if (ext == "ass" || ext == "ssa")
@@ -58,6 +48,14 @@ BigPotSubtitle* BigPotSubtitle::createSubtitle(const std::string& filename)
 
 std::string BigPotSubtitle::lookForSubtitle(const std::string& filename)
 {
+    if (_ext.size() == 0)
+    {
+        _ext.push_back("ass");
+        _ext.push_back("ssa");
+        _ext.push_back("srt");
+        _ext.push_back("txt");
+    }
+
     std::string str = "";
     bool b = false;
     //检查默认类型

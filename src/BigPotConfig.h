@@ -1,12 +1,11 @@
 #pragma once
 
-#include "BigPotString.h"
-
 #include "tinyxml2/tinyxml2.h"
 #include <stdint.h>
 #include "hash/sha3.h"
+#include "BigPotBase.h"
 
-class BigPotConfig
+class BigPotConfig : BigPotBase
 {
 private:
     static BigPotConfig _config;
