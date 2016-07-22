@@ -22,6 +22,9 @@ private:
     virtual Content convertFrameToContent(void* p = nullptr);
     virtual void freeContent(void* buffer);
     virtual bool needDecode2();
+
+    virtual int avcodec_decode_packet(AVCodecContext* cont, void* frame, int* n, AVPacket* packet) override
+    { return avcodec_decode_audio4(cont, (AVFrame*)frame, n, packet); }
 public:
     void openAudioDevice();
     void resetDecodeState();
