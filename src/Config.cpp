@@ -1,21 +1,22 @@
-#include "BigPotConfig.h"
+#include "Config.h"
+#include "File.h"
 
-BigPotConfig BigPotConfig::_config;
+Config Config::_config;
 
-BigPotConfig::BigPotConfig()
+Config::Config()
 {
     _this = &_config;
     //init();
 }
 
 
-BigPotConfig::~BigPotConfig()
+Config::~Config()
 {
     //delete doc;
     //write();
 }
 
-void BigPotConfig::init(const std::string& filepath)
+void Config::init(const std::string& filepath)
 {
     _filename = filepath + "/config.xml";
     printf("try find config file: %s\n", _filename.c_str());
@@ -40,14 +41,14 @@ void BigPotConfig::init(const std::string& filepath)
     { _record = _root->InsertFirstChild(_doc.NewElement("record"))->ToElement(); }
 }
 
-void BigPotConfig::write()
+void Config::write()
 {
     //_doc.LinkEndChild(_doc.NewDeclaration());
     _doc.LinkEndChild(_root);
     _doc.SaveFile(_filename.c_str());
 }
 
-tinyxml2::XMLElement* BigPotConfig::getElement(tinyxml2::XMLElement* parent, const char* name)
+tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const char* name)
 {
     auto p = parent->FirstChildElement(name);
     if (p)
@@ -62,32 +63,32 @@ tinyxml2::XMLElement* BigPotConfig::getElement(tinyxml2::XMLElement* parent, con
     }
 }
 
-int BigPotConfig::getRecord(const char* name)
+int Config::getRecord(const char* name)
 {
     if (strlen(name) == 0) { return 0; }
-    auto mainname = getFilenameWithoutPath(name);
+    auto mainname = File::getFilenameWithoutPath(name);
     const char* str = getElement(_record, ("_" + _sha3(mainname)).c_str())->GetText();
     if (!str)
     { return 0; }
     return atoi(str);
 }
 
-void BigPotConfig::removeRecord(const char* name)
+void Config::removeRecord(const char* name)
 {
     if (strlen(name) == 0) { return; }
-    auto mainname = getFilenameWithoutPath(name);
+    auto mainname = File::getFilenameWithoutPath(name);
     _record->DeleteChild(getElement(_record, ("_" + _sha3(mainname)).c_str()));
 }
 
-void BigPotConfig::setRecord(int v, const char* name)
+void Config::setRecord(int v, const char* name)
 {
     if (strlen(name) == 0) { return; }
-    auto mainname = getFilenameWithoutPath(name);
+    auto mainname = File::getFilenameWithoutPath(name);
     getElement(_record, ("_" + _sha3(mainname)).c_str())
-    ->SetText(formatString("%d", v).c_str());
+    ->SetText(File::formatString("%d", v).c_str());
 }
 
-void BigPotConfig::clearRecord()
+void Config::clearRecord()
 {
     if (_record)
     {
@@ -95,7 +96,7 @@ void BigPotConfig::clearRecord()
     }
 }
 
-std::string BigPotConfig::getString(const char* name, std::string def /*= ""*/)
+std::string Config::getString(const char* name, std::string def /*= ""*/)
 {
     auto p = _root->FirstChildElement(name);
     if (p && p->FirstChild())
@@ -108,38 +109,38 @@ std::string BigPotConfig::getString(const char* name, std::string def /*= ""*/)
     }
 }
 
-int BigPotConfig::getInteger(const char* name, int def /*= 0*/)
+int Config::getInteger(const char* name, int def /*= 0*/)
 {
-    return atoi(getString(name, formatString("%d", def)).c_str());
+    return atoi(getString(name, File::formatString("%d", def)).c_str());
 }
 
-double BigPotConfig::getDouble(const char* name, double def /*= 0.0*/)
+double Config::getDouble(const char* name, double def /*= 0.0*/)
 {
-    return atof(getString(name, formatString("%f", def)).c_str());
+    return atof(getString(name, File::formatString("%f", def)).c_str());
 }
 
-bool BigPotConfig::getBool(bool& v, const char* name)
+bool Config::getBool(bool& v, const char* name)
 {
     return atoi(getString(name, "0").c_str()) != 0;
 }
 
-void BigPotConfig::setString(const std::string v, const char* name)
+void Config::setString(const std::string v, const char* name)
 {
     getElement(_root, name)->SetText(v.c_str());
 }
 
-void BigPotConfig::setInteger(int v, const char* name)
+void Config::setInteger(int v, const char* name)
 {
-    setString(formatString("%d", v), name);
+    setString(File::formatString("%d", v), name);
 }
 
-void BigPotConfig::setDouble(double v, const char* name)
+void Config::setDouble(double v, const char* name)
 {
-    setString(formatString("%f", v), name);
+    setString(File::formatString("%f", v), name);
 }
 
-void BigPotConfig::setBool(bool v, const char* name)
+void Config::setBool(bool v, const char* name)
 {
-    setString(formatString("%d", v != 0), name);
+    setString(File::formatString("%d", v != 0), name);
 }
 

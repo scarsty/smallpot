@@ -1,5 +1,6 @@
 #include "BigPotMedia.h"
-#include "BigPotConfig.h"
+#include "Config.h"
+#include "File.h"
 
 BigPotMedia::BigPotMedia()
 {
@@ -18,7 +19,7 @@ BigPotMedia::~BigPotMedia()
 
 int BigPotMedia::openFile(const std::string& filename)
 {
-    if (!fileExist(filename))
+    if (!File::fileExist(filename))
     { return -1; }
     _streamVideo->openFile(filename);
     _streamAudio->openFile(filename);

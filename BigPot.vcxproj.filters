@@ -24,9 +24,6 @@
     <ClCompile Include="src\BigPotBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BigPotConfig.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\BigPotConv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,12 +72,15 @@
     <ClCompile Include="src\BigPot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BigPotBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BigPotConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BigPotConv.h">
@@ -133,6 +133,12 @@
     </ClInclude>
     <ClInclude Include="src\hash\sha3.h">
       <Filter>others</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\File.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

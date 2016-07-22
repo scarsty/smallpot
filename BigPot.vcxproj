@@ -194,7 +194,7 @@
   <ItemGroup>
     <ClCompile Include="src\BigPot.cpp" />
     <ClCompile Include="src\BigPotBase.cpp" />
-    <ClCompile Include="src\BigPotConfig.cpp" />
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\BigPotConv.cpp" />
     <ClCompile Include="src\BigPotDll.cpp" />
     <ClCompile Include="src\BigPotMedia.cpp" />
@@ -208,12 +208,13 @@
     <ClCompile Include="src\BigPotSubtitleSrt.cpp" />
     <ClCompile Include="src\BigPotUI.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\File.cpp" />
     <ClCompile Include="src\hash\sha3.cpp" />
     <ClCompile Include="src\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BigPotBase.h" />
-    <ClInclude Include="src\BigPotConfig.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\BigPotConv.h" />
     <ClInclude Include="src\BigPotDll.h" />
     <ClInclude Include="src\BigPotMedia.h" />
@@ -228,6 +229,7 @@
     <ClInclude Include="src\BigPotSubtitleSrt.h" />
     <ClInclude Include="src\BigPotUI.h" />
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\File.h" />
     <ClInclude Include="src\hash\sha3.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\tinyxml2\tinyxml2.h" />
