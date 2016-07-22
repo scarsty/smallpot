@@ -10,7 +10,6 @@ BigPotPlayer::BigPotPlayer()
     _UI = new BigPotUI;
     //_config = new BigPotConfig;
     //_subtitle = new BigPotSubtitle;
-    _subtitle_factory = new BigPotSubtitleFactory;
     //config_->init();
     _w = 320;
     _h = 150;
@@ -21,7 +20,6 @@ BigPotPlayer::~BigPotPlayer()
 {
     delete _UI;
     //delete _config;
-    delete _subtitle_factory;
     //delete _subtitle;
     //delete media;
 }
@@ -227,10 +225,10 @@ int BigPotPlayer::eventLoop()
             open_filename = BigPotConv::conv(e.drop.file, _BP_encode, _sys_encode);
             printf("Change file: %s\n", open_filename.c_str());
             //检查是不是字幕，如果是则打开
-            if (_subtitle_factory->isSubtitle(open_filename))
+            if (BigPotSubtitle::isSubtitle(open_filename))
             {
-                _subtitle_factory->destroySubtitle(_subtitle);
-                _subtitle = _subtitle_factory->createSubtitle(open_filename);
+                BigPotSubtitle::destroySubtitle(_subtitle);
+                _subtitle = BigPotSubtitle::createSubtitle(open_filename);
                 _subtitle->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
             }
             else
@@ -358,7 +356,6 @@ void BigPotPlayer::openMedia(const std::string& filename)
     engine_->setWindowSize(_w, _h);
     engine_->createMainTexture(_w, _h);
 
-
     engine_->setRotation(_media->getVideo()->getRotation());
 
     //重新获取尺寸，有可能与之前不同
@@ -369,8 +366,8 @@ void BigPotPlayer::openMedia(const std::string& filename)
     _media->getAudio()->setVolume(_cur_volume);
 
     //试图载入字幕
-    auto open_subfilename = _subtitle_factory->lookForSubtitle(open_filename);
-    _subtitle = _subtitle_factory->createSubtitle(open_subfilename);
+    auto open_subfilename = BigPotSubtitle::lookForSubtitle(open_filename);
+    _subtitle = BigPotSubtitle::createSubtitle(open_subfilename);
     _subtitle->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 
     //读取记录中的文件时间并跳转
@@ -393,7 +390,7 @@ void BigPotPlayer::closeMedia(const std::string& filename)
     _cur_volume = _media->getAudio()->getVolume();
 
     //关闭字幕
-    _subtitle_factory->destroySubtitle(_subtitle);
+    BigPotSubtitle::destroySubtitle(_subtitle);
     //_subtitle->closeSubtitle();
 
     //如果是媒体文件就记录时间
