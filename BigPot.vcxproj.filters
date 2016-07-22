@@ -48,22 +48,13 @@
     <ClCompile Include="src\BigPotStreamAudio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BigPotStreamSubtitle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\BigPotStreamVideo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BigPotString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BigPotSubtitle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BigPotSubtitleAss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BigPotSubtitleFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BigPotSubtitleSrt.cpp">
@@ -119,16 +110,10 @@
     <ClInclude Include="src\BigPotStreamVideo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\BigPotString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\BigPotSubtitle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BigPotSubtitleAss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BigPotSubtitleFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BigPotSubtitleSrt.h">

@@ -1,7 +1,6 @@
 #pragma once
 #include "BigPotBase.h"
 
-
 class BigPotUI : public BigPotBase
 {
 public:

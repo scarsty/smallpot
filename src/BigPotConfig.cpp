@@ -65,7 +65,7 @@ tinyxml2::XMLElement* BigPotConfig::getElement(tinyxml2::XMLElement* parent, con
 int BigPotConfig::getRecord(const char* name)
 {
     if (strlen(name) == 0) { return 0; }
-    auto mainname = BigPotString::getFilenameWithoutPath(name);
+    auto mainname = getFilenameWithoutPath(name);
     const char* str = getElement(_record, ("_" + _sha3(mainname)).c_str())->GetText();
     if (!str)
     { return 0; }
@@ -75,16 +75,16 @@ int BigPotConfig::getRecord(const char* name)
 void BigPotConfig::removeRecord(const char* name)
 {
     if (strlen(name) == 0) { return; }
-    auto mainname = BigPotString::getFilenameWithoutPath(name);
+    auto mainname = getFilenameWithoutPath(name);
     _record->DeleteChild(getElement(_record, ("_" + _sha3(mainname)).c_str()));
 }
 
 void BigPotConfig::setRecord(int v, const char* name)
 {
     if (strlen(name) == 0) { return; }
-    auto mainname = BigPotString::getFilenameWithoutPath(name);
+    auto mainname = getFilenameWithoutPath(name);
     getElement(_record, ("_" + _sha3(mainname)).c_str())
-    ->SetText(BigPotString::formatString("%d", v).c_str());
+    ->SetText(formatString("%d", v).c_str());
 }
 
 void BigPotConfig::clearRecord()
@@ -110,12 +110,12 @@ std::string BigPotConfig::getString(const char* name, std::string def /*= ""*/)
 
 int BigPotConfig::getInteger(const char* name, int def /*= 0*/)
 {
-    return atoi(getString(name, BigPotString::formatString("%d", def)).c_str());
+    return atoi(getString(name, formatString("%d", def)).c_str());
 }
 
 double BigPotConfig::getDouble(const char* name, double def /*= 0.0*/)
 {
-    return atof(getString(name, BigPotString::formatString("%f", def)).c_str());
+    return atof(getString(name, formatString("%f", def)).c_str());
 }
 
 bool BigPotConfig::getBool(bool& v, const char* name)
@@ -130,16 +130,16 @@ void BigPotConfig::setString(const std::string v, const char* name)
 
 void BigPotConfig::setInteger(int v, const char* name)
 {
-    setString(BigPotString::formatString("%d", v), name);
+    setString(formatString("%d", v), name);
 }
 
 void BigPotConfig::setDouble(double v, const char* name)
 {
-    setString(BigPotString::formatString("%f", v), name);
+    setString(formatString("%f", v), name);
 }
 
 void BigPotConfig::setBool(bool v, const char* name)
 {
-    setString(BigPotString::formatString("%d", v != 0), name);
+    setString(formatString("%d", v != 0), name);
 }
 
