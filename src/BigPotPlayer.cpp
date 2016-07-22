@@ -1,9 +1,5 @@
 ﻿#include "BigPotPlayer.h"
-#ifdef _MSC_VER
-#include <direct.h>
-#else
-#include <unistd.h>
-#endif
+#include "BigPotSubtitleManager.h"
 
 BigPotPlayer::BigPotPlayer()
 {
@@ -225,10 +221,10 @@ int BigPotPlayer::eventLoop()
             open_filename = BigPotConv::conv(e.drop.file, _BP_encode, _sys_encode);
             printf("Change file: %s\n", open_filename.c_str());
             //检查是不是字幕，如果是则打开
-            if (BigPotSubtitle::isSubtitle(open_filename))
+            if (BigPotSubtitleManager::isSubtitle(open_filename))
             {
-                BigPotSubtitle::destroySubtitle(_subtitle);
-                _subtitle = BigPotSubtitle::createSubtitle(open_filename);
+                BigPotSubtitleManager::destroySubtitle(_subtitle);
+                _subtitle = BigPotSubtitleManager::createSubtitle(open_filename);
                 _subtitle->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
             }
             else
@@ -335,8 +331,7 @@ void BigPotPlayer::openMedia(const std::string& filename)
     _media = nullptr;
     _media = new BigPotMedia;
 
-    auto path = File::getFilePath(filename);
-    chdir(path.c_str());
+    File::changePath(File::getFilePath(filename));
 
     //如果是控制台程序，通过参数传入的是ansi
     //如果是窗口程序，通过参数传入的是utf-8
@@ -366,8 +361,8 @@ void BigPotPlayer::openMedia(const std::string& filename)
     _media->getAudio()->setVolume(_cur_volume);
 
     //试图载入字幕
-    auto open_subfilename = BigPotSubtitle::lookForSubtitle(open_filename);
-    _subtitle = BigPotSubtitle::createSubtitle(open_subfilename);
+    auto open_subfilename = BigPotSubtitleManager::lookForSubtitle(open_filename);
+    _subtitle = BigPotSubtitleManager::createSubtitle(open_subfilename);
     _subtitle->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 
     //读取记录中的文件时间并跳转
@@ -390,7 +385,7 @@ void BigPotPlayer::closeMedia(const std::string& filename)
     _cur_volume = _media->getAudio()->getVolume();
 
     //关闭字幕
-    BigPotSubtitle::destroySubtitle(_subtitle);
+    BigPotSubtitleManager::destroySubtitle(_subtitle);
     //_subtitle->closeSubtitle();
 
     //如果是媒体文件就记录时间

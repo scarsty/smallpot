@@ -30,5 +30,6 @@ public:
     static std::string fingFileWithMainName(const std::string& filename);
     static std::string toLowerCase(const std::string& str);
     static std::string formatString(const char* format, ...);
+    static void changePath(const std::string& path);
 };
 

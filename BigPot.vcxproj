@@ -210,6 +210,7 @@
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\File.cpp" />
     <ClCompile Include="src\hash\sha3.cpp" />
+    <ClCompile Include="src\BigPotSubtitleManager.cpp" />
     <ClCompile Include="src\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +233,7 @@
     <ClInclude Include="src\File.h" />
     <ClInclude Include="src\hash\sha3.h" />
     <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\BigPotSubtitleManager.h" />
     <ClInclude Include="src\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
