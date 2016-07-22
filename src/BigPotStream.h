@@ -11,7 +11,7 @@ extern "C"
 #include "Engine.h"
 #include <algorithm>
 #include <map>
-#include "BigPotConfig.h"
+#include "Config.h"
 
 
 #ifndef __MINGW32__

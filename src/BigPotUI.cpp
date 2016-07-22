@@ -1,6 +1,7 @@
 #include "BigPotUI.h"
 #include "math.h"
-#include "BigPotConfig.h"
+#include "Config.h"
+#include "File.h"
 
 BigPotUI::BigPotUI()
 {
@@ -65,11 +66,11 @@ void BigPotUI::init()
 {
     _square = engine_->createSquareTexture(30);
     _fontname = config_->getString("ui_font");
-    if (!fileExist(_fontname))
+    if (!File::fileExist(_fontname))
     {
 #ifdef _WIN32
         _fontname = "c:/windows/fonts/cambria.ttc";
-        if (!fileExist(_fontname))
+        if (!File::fileExist(_fontname))
         { _fontname = "c:/windows/fonts/cambria.ttf"; }
 #else
         _fontname = "/System/Library/Fonts/Palatino.ttc";

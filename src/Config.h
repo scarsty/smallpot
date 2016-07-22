@@ -3,18 +3,17 @@
 #include "tinyxml2/tinyxml2.h"
 #include <stdint.h>
 #include "hash/sha3.h"
-#include "BigPotBase.h"
 
-class BigPotConfig : BigPotBase
+class Config
 {
 private:
-    static BigPotConfig _config;
-    BigPotConfig* _this;
+    static Config _config;
+    Config* _this;
     std::string _content;
     std::string _filename;
     SHA3 _sha3;
-    BigPotConfig();
-    virtual ~BigPotConfig();
+    Config();
+    virtual ~Config();
 
     tinyxml2::XMLDocument _doc;
     tinyxml2::XMLElement* _root, *_record;
@@ -24,7 +23,7 @@ private:
 public:
     void init(const std::string& filepath);
     void write();
-    static BigPotConfig* getInstance() { return &_config; };
+    static Config* getInstance() { return &_config; };
 
     //xml只有字串，故首先完成字串功能
     std::string getString(const char* name, std::string def = "");

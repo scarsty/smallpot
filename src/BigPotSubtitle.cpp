@@ -1,12 +1,13 @@
 #include "BigPotSubtitle.h"
 #include "BigPotSubtitleAss.h"
 #include "BigPotSubtitleSrt.h"
-#include "BigPotConfig.h"
+#include "Config.h"
+#include "File.h"
 
 BigPotSubtitle::BigPotSubtitle()
 {
     fontname_ = config_->getString("sub_font");
-    if (!fileExist(fontname_))
+    if (!File::fileExist(fontname_))
     {
 #ifdef _WIN32
         fontname_ = "c:/windows/fonts/msyh.ttc";
@@ -29,7 +30,7 @@ std::vector<std::string> BigPotSubtitle::_ext;
 BigPotSubtitle* BigPotSubtitle::createSubtitle(const std::string& filename)
 {
     BigPotSubtitle* ret = nullptr;
-    auto ext = toLowerCase(getFileExt(filename));
+    auto ext = File::toLowerCase(File::getFileExt(filename));
     if (ext == "ass" || ext == "ssa")
     { ret = new BigPotSubtitleAss; }
     else if (ext == "srt" || ext == "txt")
@@ -61,13 +62,13 @@ std::string BigPotSubtitle::lookForSubtitle(const std::string& filename)
     //检查默认类型
     for (auto& ext : _ext)
     {
-        str = changeFileExt(filename, ext);
-        if (fileExist(str))
+        str = File::changeFileExt(filename, ext);
+        if (File::fileExist(str))
         {
             return str;
         }
     }
-    str = fingFileWithMainName(filename);
+    str = File::fingFileWithMainName(filename);
     if (!isSubtitle(str))
     { str = ""; }
     return str;
@@ -81,8 +82,8 @@ bool BigPotSubtitle::tryOpenSubtitle(const std::string& filename)
 
 bool BigPotSubtitle::isSubtitle(const std::string& filename)
 {
-    auto ext = getFileExt(filename);
-    ext = toLowerCase(ext);
+    auto ext = File::getFileExt(filename);
+    ext = File::toLowerCase(ext);
     //transform(ext.begin(), ext.end(), ext.begin(), tolower);
     bool b = false;
     for (auto& e : _ext)

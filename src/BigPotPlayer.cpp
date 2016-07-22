@@ -300,7 +300,7 @@ int BigPotPlayer::eventLoop()
     engine_->renderClear();
     engine_->renderPresent();
 
-    auto s = formatString("%d", i);
+    auto s = File::formatString("%d", i);
     //engine_->showMessage(s);
     return 0;
 }
@@ -335,7 +335,7 @@ void BigPotPlayer::openMedia(const std::string& filename)
     _media = nullptr;
     _media = new BigPotMedia;
 
-    auto path = getFilePath(filename);
+    auto path = File::getFilePath(filename);
     chdir(path.c_str());
 
     //如果是控制台程序，通过参数传入的是ansi
