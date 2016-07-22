@@ -51,19 +51,6 @@ int BigPotStream::openFile(const std::string& filename)
             }
         }
     }
-    //可以写在子类中的
-    switch (type_)
-    {
-    case BPMEDIA_TYPE_VIDEO:
-        avcodec_decode_packet = &avcodec_decode_video2;
-        break;
-    case BPMEDIA_TYPE_AUDIO:
-        avcodec_decode_packet = &avcodec_decode_audio4;
-        break;
-    case BPMEDIA_TYPE_SUBTITLE:
-        avcodec_decode_packet_subtitle = &avcodec_decode_subtitle2;
-        break;
-    }
     return stream_index_;
 }
 
@@ -71,7 +58,7 @@ int BigPotStream::openFile(const std::string& filename)
 //在长时间无包时可能造成界面卡死，设法改一下
 int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
 {
-    if (!avcodec_decode_packet) { return -1; }
+    //if (!avcodec_decode_packet) { return -1; }
     //3个状态，为正表示解到帧，为0表示还有可能解到帧，为负表示已经无帧
     if (!exist()) { return -2; }
     int ret = 0;

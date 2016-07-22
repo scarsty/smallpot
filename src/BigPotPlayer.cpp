@@ -338,7 +338,6 @@ void BigPotPlayer::openMedia(const std::string& filename)
     _media = new BigPotMedia;
 
     auto path = BigPotString::getFilePath(filename);
-
     chdir(path.c_str());
 
     //如果是控制台程序，通过参数传入的是ansi

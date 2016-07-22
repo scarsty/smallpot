@@ -77,9 +77,7 @@ private:
     std::map<int, Content> _map;
     bool _decoded = false, _skip = false, _ended = false, _seeking = false;
     int _seek_record = 0;  //上次seek的记录
-    int(*avcodec_decode_packet)(AVCodecContext*, AVFrame*, int*, const AVPacket*) = nullptr;
-    int(*avcodec_decode_packet_subtitle)(AVCodecContext*, AVSubtitle*, int*, AVPacket*) = nullptr;
-
+    virtual int avcodec_decode_packet(AVCodecContext*, void*, int*, AVPacket*) { return 0; }
 private:
     virtual Content convertFrameToContent(void* p = nullptr)
     {
