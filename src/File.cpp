@@ -2,10 +2,13 @@
 
 #include <iostream>
 #include <fstream>
-#ifndef _MSC_VER
-#include <sys/uio.h>
-#else
+
+#ifdef _MSC_VER
 #include <io.h>
+#include <direct.h>
+#else
+#include <sys/uio.h>
+#include <unistd.h>
 #endif
 
 #include <stdio.h>
@@ -145,4 +148,9 @@ std::string File::getFilenameWithoutPath(const std::string& filename)
     if (pos_p != std::string::npos)
     { return filename.substr(pos_p + 1); }
     return filename;
+}
+
+void File::changePath(const std::string& path)
+{
+    chdir(path.c_str());
 }
