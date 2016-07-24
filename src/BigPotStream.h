@@ -46,11 +46,11 @@ public:
     virtual ~BigPotStream();
 protected:
     BigPotMediaType type_;
-    AVFormatContext* formatCtx_;
-    AVFrame* frame_;
-    AVStream* stream_;
-    AVCodecContext* codecCtx_;
-    AVCodec* codec_;
+    AVFormatContext* formatCtx_ = nullptr;
+    AVFrame* frame_ = nullptr;
+    AVStream* stream_ = nullptr;
+    AVCodecContext* codecCtx_ = nullptr;
+    AVCodec* codec_ = nullptr;
     AVPacket packet_;
     bool needReadPacket_ = true;
     int stream_index_ = -1;

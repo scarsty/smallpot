@@ -3,7 +3,7 @@
 
 BigPotPlayer::BigPotPlayer()
 {
-    _UI = new BigPotUI;
+    _UI.reset(new BigPotUI);
     //_config = new BigPotConfig;
     //_subtitle = new BigPotSubtitle;
     //config_->init();
@@ -14,7 +14,7 @@ BigPotPlayer::BigPotPlayer()
 
 BigPotPlayer::~BigPotPlayer()
 {
-    delete _UI;
+    //delete _UI;
     //delete _config;
     //delete _subtitle;
     //delete media;
@@ -239,7 +239,7 @@ int BigPotPlayer::eventLoop()
         }
         e.type = BP_FIRSTEVENT;
 
-        if (!loop) break;
+        if (!loop) { break; }
         //在每个循环均尝试预解压
         _media->decodeFrame();
         //尝试以音频为基准显示视频
@@ -248,12 +248,25 @@ int BigPotPlayer::eventLoop()
         {
             cout << audioTime << " " <<_media->getAudioStream()->getTimedts() << endl<<endl;;
         }*/
+
         int time_s = audioTime;
         if (pause)
         {
             time_s = 0; //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
         }
         int videostate = _media->getVideo()->showTexture(time_s);
+
+        //播放回调
+        if (play_callback)
+        { play_callback(audioTime); }
+        //结束回调
+        if (stop_callback && videostate == BigPotStreamVideo::NoVideoFrame)
+        {
+            char s[1024];
+            stop_callback(&loop, s);
+            if (!loop) { _drop_filename = s; }
+        }
+
         //printf("\nvideostate%d", videostate);
         //依据解视频的结果判断是否显示
         bool show = false;

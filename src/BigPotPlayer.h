@@ -6,6 +6,8 @@
 #include "BigPotConv.h"
 #include "BigPotSubtitle.h"
 #include "File.h"
+#include <functional>
+#include <memory>
 
 class BigPotPlayer : public BigPotBase
 {
@@ -19,7 +21,7 @@ private:
     int _cur_time = 0;
 
     BigPotMedia* _media = nullptr;
-    BigPotUI* _UI = nullptr;
+    std::unique_ptr<BigPotUI> _UI = nullptr;
     BigPotSubtitle* _subtitle = nullptr;
 
     int _w, _h;
@@ -39,6 +41,10 @@ public:
     void openMedia(const std::string& filename);
     void closeMedia(const std::string& filename);
 
+    //std::function<void(bool&, std::string&)> stop_callback = nullptr;
+    //std::function<void(int)> play_callback = nullptr;
+    void(*stop_callback)(bool*, char*) = nullptr;
+    void(*play_callback)(int) = nullptr;
 };
 
 
