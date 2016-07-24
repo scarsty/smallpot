@@ -16,7 +16,7 @@ BigPotStream::BigPotStream()
 BigPotStream::~BigPotStream()
 {
     av_frame_free(&frame_);
-    avcodec_close(codecCtx_);
+    if(codecCtx_) avcodec_close(codecCtx_);
     avformat_close_input(&formatCtx_);
     clearMap();
     stream_index_ = -1;
