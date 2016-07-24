@@ -239,7 +239,7 @@ int BigPotPlayer::eventLoop()
         }
         e.type = BP_FIRSTEVENT;
 
-        //if (!loop) break;
+        if (!loop) break;
         //在每个循环均尝试预解压
         _media->decodeFrame();
         //尝试以音频为基准显示视频

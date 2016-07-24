@@ -47,6 +47,7 @@ public:
 protected:
     BigPotMediaType type_;
     AVFormatContext* formatCtx_;
+    AVFrame* frame_;
     AVStream* stream_;
     AVCodecContext* codecCtx_;
     AVCodec* codec_;
@@ -56,7 +57,6 @@ protected:
     int decodeSizeInPacket_ = 0;
     double time_per_frame_ = 0, time_base_packet_ = 0;
     int maxSize_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
-    AVFrame* frame_;
     AVSubtitle* subtitle_;
     std::string filename_;
     std::mutex mutex_;
@@ -72,6 +72,7 @@ protected:
     bool key_frame_ = false;
     void* data_ = nullptr;  //无缓冲时的用户数据, 可能为纹理或音频缓冲区
     int data_length_ = 0;
+    bool stopping = false;  //表示放弃继续解压这个流
     //int frame_number_;
 private:
 
@@ -141,6 +142,7 @@ public:
     void getRatio(int& x, int& y);
     int getRatioX() { return exist() ? std::max(stream_->sample_aspect_ratio.num, 1) : 1; }
     int getRatioY() { return exist() ? std::max(stream_->sample_aspect_ratio.den, 1) : 1; }
+    bool isStopping() { return stopping; }
 };
 
 
