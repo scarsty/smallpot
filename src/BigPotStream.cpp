@@ -16,6 +16,7 @@ BigPotStream::BigPotStream()
 BigPotStream::~BigPotStream()
 {
     av_frame_free(&frame_);
+    avcodec_close(codecCtx_);
     avformat_close_input(&formatCtx_);
     clearMap();
     stream_index_ = -1;
@@ -66,6 +67,7 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
     int gotsize = 0;
     int totalGotsize = 0;
     bool haveFrame = !needReadPacket_;
+    stopping = false;
     //一帧多包，一包多帧都要考虑，甚是麻烦
     while (ret == 0)
     {
@@ -125,14 +127,17 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
         //避免卡死
         if (gotsize < 0)
         {
-            printf("decode error.\n");
+            
             BP_Event e;
             //这里只接受QUIT和拖入事件，将其压回主序列，跳出
             if (engine_->pollEvent(e) > 0)
             {
-                engine_->pushEvent(e);
+
                 if (e.type == BP_QUIT || e.type == BP_DROPFILE)
                 {
+                    engine_->pushEvent(e);
+                    printf("decode error.\n");
+                    stopping = true;
                     break;
                 }
             }

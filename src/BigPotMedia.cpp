@@ -40,6 +40,7 @@ int BigPotMedia::decodeFrame()
 {
     //int se= engine_->getTicks();
     _streamVideo->tryDecodeFrame(_seeking);
+    if (_streamVideo->isStopping()) return 0;
     //_streamAudio->tryDecodeFrame(_seeking);
     for (int i = 0; i <= _extAudioFrame; i++)
     { _streamAudio->tryDecodeFrame(_seeking); }
