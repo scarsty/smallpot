@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <io.h>
 #include <direct.h>
 #else

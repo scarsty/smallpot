@@ -12,11 +12,7 @@ extern "C"
 #include <algorithm>
 #include <map>
 #include "Config.h"
-
-
-#ifndef __MINGW32__
 #include <mutex>
-#endif
 
 enum BigPotMediaType
 {

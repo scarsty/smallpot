@@ -227,16 +227,4 @@ typedef enum
     BP_BUTTON_RIGHT = SDL_BUTTON_RIGHT
 } BP_Button;
 
-//mingw无std::mutex
-#ifdef __MINGW32__
-class mutex
-{
-private:
-    SDL_mutex* _mutex;
-public:
-    mutex() { _mutex = SDL_CreateMutex(); }
-    ~mutex() { SDL_DestroyMutex(_mutex); }
-    int lock() { return SDL_LockMutex(_mutex); }
-    int unlock() { return SDL_UnlockMutex(_mutex); }
-};
-#endif
+
