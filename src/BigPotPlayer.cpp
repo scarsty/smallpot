@@ -1,5 +1,8 @@
 ﻿#include "BigPotPlayer.h"
 #include "BigPotSubtitleManager.h"
+#ifdef _WIN32
+#include <shlobj.h>
+#endif
 
 BigPotPlayer::BigPotPlayer()
 {
@@ -10,6 +13,21 @@ BigPotPlayer::BigPotPlayer()
     _w = 320;
     _h = 150;
     _handle = nullptr;
+}
+
+BigPotPlayer::BigPotPlayer(char* s) : BigPotPlayer()
+{
+    _filepath = File::getFilePath(s);
+#if defined(_WIN32) //&& defined(_SINGLE_FILE)
+    char szPath[MAX_PATH];
+    SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath);
+    //std::wstring ws(szPath);
+    std::string str(szPath);
+    _filepath = str + "/bigpot";
+    if (FindFirstFileA(_filepath.c_str(), NULL) == INVALID_HANDLE_VALUE)
+    { CreateDirectoryA(_filepath.c_str(), NULL); }
+#endif
+
 }
 
 BigPotPlayer::~BigPotPlayer()

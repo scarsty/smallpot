@@ -1,4 +1,4 @@
-CXX=g++ -static -static-libgcc -static-libstdc++
+CXX=g++ -static -static-libgcc -static-libstdc++ -D_SINGLE_FILE
 CC=gcc
 CPPFLAGS=-I. -I../include -I/usr/local/include -I/usr/local/include/ffmpeg -O2 -std=c++0x
 CPPSOURCES=$(wildcard *.cpp) tinyxml2/tinyxml2.cpp hash/sha3.cpp
@@ -19,7 +19,7 @@ all: .dcpp .dc $(CPPSOURCES) $(CSOURCES) $(TARGET) bigpot.res
 -include .dcpp
 -include .dc
 $(TARGET): $(CPPOBJECTS) $(COBJECTS) bigpot.res
-	$(CXX) $(CPPOBJECTS) $(COBJECTS) bigpot.res -o $@ -L/usr/local/lib -lmingw32 -lSDL2main -lSDL2_ttf -lSDL2_image -lSDL2 -liconv -lavformat -lavcodec -lswresample -lavutil -lass -lfontconfig -lfribidi -lfreetype -lbz2 -lharfbuzz -lrtmp -lmodplug -lopus -lschroedinger-1.0 -lspeex -ltiff -llzma -ljpeg -lpng -lxml2 -lvpx -lxvidcore -lvorbis -logg -lmp3lame -lx264 -lx265 -lz -lgraphite2 -glib -lwinmm -lole32 -lm -limm32 -loleaut32 -lshell32 -lversion -luuid -lws2_32 -mwindows
+	$(CXX) $(CPPOBJECTS) $(COBJECTS) bigpot.res -o $@ -L. -lavformat -lavcodec -lswresample -lavutil -lmingw32 -lSDL2main -lSDL2_ttf -lSDL2_image -lSDL2 -lass -lfontconfig -lfribidi -lfreetype -lbz2 -lharfbuzz -lrtmp -lmodplug -lopus -lschroedinger-1.0 -lorc-0.4 -lgnutls -lnettle -lhogweed -ltasn1 -lspeex -ltiff -llzma -ljpeg -lpng -lxml2 -lvpx -lxvidcore -lvorbis -logg -lmp3lame -lx264 -lx265 -lbluray -lcelt0 -ldcadec -lgsm -lopencore-amrnb -ltheora -lvorbis -lvorbisenc -lopencore-amrwb -lwavpack -lz -lgraphite2 -lgmp -lwinmm -lwebp -lexpat -lglib-2.0 -lole32 -lssp -lsecur32 -lintl -liconv -lm -limm32 -loleaut32 -lshell32 -lversion -luuid -lws2_32 -mwindows -Wl,--allow-multiple-definition
 	strip BigPot.exe
     
 clean:

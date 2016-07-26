@@ -14,7 +14,7 @@ class BigPotPlayer : public BigPotBase
 public:
     BigPotPlayer();
     BigPotPlayer(void* handle) : BigPotPlayer() { _handle = handle; }
-    BigPotPlayer(char* s) : BigPotPlayer() { _filepath = File::getFilePath(s); }
+    BigPotPlayer(char* s);
     virtual ~BigPotPlayer();
 private:
     std::string _drop_filename = "", _filepath;
