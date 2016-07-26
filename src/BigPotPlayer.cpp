@@ -24,7 +24,8 @@ BigPotPlayer::BigPotPlayer(char* s) : BigPotPlayer()
     //std::wstring ws(szPath);
     std::string str(szPath);
     _filepath = str + "/bigpot";
-    if (FindFirstFileA(_filepath.c_str(), NULL) == INVALID_HANDLE_VALUE)
+    WIN32_FIND_DATAA wfd;
+    if (FindFirstFileA(_filepath.c_str(), &wfd) == INVALID_HANDLE_VALUE)
     { CreateDirectoryA(_filepath.c_str(), NULL); }
 #endif
 
