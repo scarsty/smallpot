@@ -365,3 +365,4 @@ BigPot.VC.db
 *.o
 *.dcpp
 *.dc
+*.xml
