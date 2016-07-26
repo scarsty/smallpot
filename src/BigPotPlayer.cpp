@@ -337,7 +337,7 @@ int BigPotPlayer::init()
 {
     if (engine_->init(_handle)) { return -1; }
     config_->init(_filepath);
-#ifdef _MSC_VER
+#ifdef _WIN32
     _sys_encode = config_->getString("sys_encode", "cp936");
 #else
     _sys_encode = config_->getString("sys_encode", "utf-8");

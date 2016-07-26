@@ -1,6 +1,6 @@
 ﻿#include "Engine.h"
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #define NOMINMAX
 #include <windows.h>
 #pragma comment(lib, "user32.lib")
@@ -276,7 +276,7 @@ int Engine::init(void* handle)
     renderPresent();
     TTF_Init();
 
-#ifdef _MSC_VER
+#ifdef _WIN32
     RECT r;
     SystemParametersInfo(SPI_GETWORKAREA, 0, (PVOID)&r, 0);
     int w = GetSystemMetrics(SM_CXEDGE);
