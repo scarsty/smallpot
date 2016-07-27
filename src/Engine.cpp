@@ -261,7 +261,7 @@ int Engine::init(void* handle)
     { _win = SDL_CreateWindowFrom(handle); }
     else
         _win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                _start_w, _start_h, SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+                                _start_w, _start_h, SDL_WINDOW_RESIZABLE);
     //SDL_CreateWindowFrom()
     SDL_ShowWindow(_win);
     SDL_RaiseWindow(_win);
