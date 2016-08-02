@@ -2,6 +2,7 @@
 #include "BigPotSubtitleManager.h"
 #ifdef _WIN32
 #include <shlobj.h>
+#pragma comment(lib,"shfolder.lib")
 #endif
 
 BigPotPlayer::BigPotPlayer()
@@ -20,6 +21,7 @@ BigPotPlayer::BigPotPlayer(char* s) : BigPotPlayer()
     _filepath = File::getFilePath(s);
 #if defined(_WIN32) //&& defined(_SINGLE_FILE)
     char szPath[MAX_PATH];
+	//SHGetSpecialFolderPath(NULL, szPath, CSIDL_LOCAL_APPDATA, false);
     SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath);
     //std::wstring ws(szPath);
     std::string str(szPath);
