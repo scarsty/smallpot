@@ -19,16 +19,16 @@ BigPotPlayer::BigPotPlayer()
 BigPotPlayer::BigPotPlayer(char* s) : BigPotPlayer()
 {
     _filepath = File::getFilePath(s);
-#if defined(_WIN32) //&& defined(_SINGLE_FILE)
+#if defined(_WIN32) && defined(_SINGLE_FILE)
     char szPath[MAX_PATH];
-	//SHGetSpecialFolderPath(NULL, szPath, CSIDL_LOCAL_APPDATA, false);
-    SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath);
+    //SHGetSpecialFolderPath(NULL, szPath, CSIDL_LOCAL_APPDATA, false);
+    SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath);
     //std::wstring ws(szPath);
     std::string str(szPath);
     _filepath = str + "/bigpot";
     WIN32_FIND_DATAA wfd;
-    if (FindFirstFile(_filepath.c_str(), &wfd) == INVALID_HANDLE_VALUE)
-    { CreateDirectory(_filepath.c_str(), NULL); }
+    if (FindFirstFileA(_filepath.c_str(), &wfd) == INVALID_HANDLE_VALUE)
+    { CreateDirectoryA(_filepath.c_str(), NULL); }
 #endif
 
 }
