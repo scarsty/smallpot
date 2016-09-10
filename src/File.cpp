@@ -144,13 +144,27 @@ std::string File::formatString(const char* format, ...)
 
 std::string File::getFilenameWithoutPath(const std::string& filename)
 {
-    int pos_p = filename.find_last_of(_path_);
+	std::string filename2 = filename;
+	File::replaceAllString(filename2, ".bt.td", "");
+    int pos_p = filename2.find_last_of(_path_);
     if (pos_p != std::string::npos)
-    { return filename.substr(pos_p + 1); }
-    return filename;
+    { return filename2.substr(pos_p + 1); }
+    return filename2;
 }
 
 void File::changePath(const std::string& path)
 {
     chdir(path.c_str());
+}
+
+int File::replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring)
+{
+	int pos = s.find(oldstring);
+	while (pos >= 0)
+	{
+		s.erase(pos, oldstring.length());
+		s.insert(pos, newstring);
+		pos = s.find(oldstring, pos + newstring.length());
+	}
+	return pos + newstring.length();
 }
