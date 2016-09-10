@@ -423,6 +423,7 @@ void BigPotPlayer::closeMedia(const std::string& filename)
     //_subtitle->closeSubtitle();
 
     //如果是媒体文件就记录时间
+
     if (_media->isMedia()
         && _cur_time < _media->getTotalTime()
         && _cur_time > 0)
