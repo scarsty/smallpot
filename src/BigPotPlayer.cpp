@@ -1,8 +1,8 @@
 ﻿#include "BigPotPlayer.h"
 #include "BigPotSubtitleManager.h"
 #ifdef _WIN32
-#include <shlobj.h>
-#pragma comment(lib,"shfolder.lib")
+//#include <shlobj.h>
+//#pragma comment(lib,"shfolder.lib")
 #endif
 
 BigPotPlayer::BigPotPlayer()
