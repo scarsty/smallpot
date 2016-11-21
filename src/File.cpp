@@ -15,6 +15,9 @@
 #include <stdarg.h>
 #include <algorithm>
 
+#ifdef __clang__
+#define chdir _chdir
+#endif
 
 File::File()
 {

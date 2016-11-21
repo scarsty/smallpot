@@ -2,8 +2,10 @@
 
 #ifdef _WIN32
 #define NOMINMAX
+#if defined(_MSC_VER) && !defined(__clang__)
 #include <windows.h>
 #pragma comment(lib, "user32.lib")
+#endif
 #endif
 
 Engine Engine::_engine;
@@ -276,7 +278,7 @@ int Engine::init(void* handle)
     renderPresent();
     TTF_Init();
 
-#ifdef _WIN32
+#if defined(_MSC_VER) && !defined(__clang__)
     RECT r;
     SystemParametersInfo(SPI_GETWORKAREA, 0, (PVOID)&r, 0);
     int w = GetSystemMetrics(SM_CXEDGE);
@@ -295,7 +297,7 @@ int Engine::init(void* handle)
 #endif
 
 
-    printf("maximium width and height are: %d, %d\n", _max_x, _max_y);
+    printf("maximum width and height are: %d, %d\n", _max_x, _max_y);
 
     return 0;
 }
