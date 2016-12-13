@@ -366,3 +366,4 @@ BigPot.VC.db
 *.dcpp
 *.dc
 *.xml
+.vs/
