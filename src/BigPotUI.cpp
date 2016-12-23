@@ -28,8 +28,8 @@ void BigPotUI::drawBall()
 
     x = _win_w - 20;
     y = 40;
-    engine_->renderCopy(_square, x - 2, y - 2, 6, 2);
-    engine_->renderCopy(_square, x - 2, y + BP_AUDIO_MIX_MAXVOLUME / 2 + d, 6, 2);
+    //engine_->renderCopy(_square, x - 2, y - 2, 6, 2);
+    //engine_->renderCopy(_square, x - 2, y + BP_AUDIO_MIX_MAXVOLUME / 2 + d, 6, 2);
     engine_->renderCopy(_square, x, y, 2, BP_AUDIO_MIX_MAXVOLUME / 2 + d);
     engine_->renderCopy(_square, x - d / 2 + 1, y - _volume / 2 + BP_AUDIO_MIX_MAXVOLUME / 2, d, d);
 }
