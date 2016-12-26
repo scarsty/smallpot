@@ -169,7 +169,9 @@ std::vector<std::string> Engine::splitString(const std::string& s, const std::st
 void Engine::drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
 {
     if (alpha == 0)
-    { return; }
+    {
+        return;
+    }
     auto font = TTF_OpenFont(fontname.c_str(), size);
     if (!font) { return; }
     SDL_Color color = { 255, 255, 255, 255 };
@@ -178,7 +180,9 @@ void Engine::drawSubtitle(const std::string& fontname, const std::string& text, 
     for (int i = 0; i < ret.size(); i++)
     {
         if (ret[i] == "")
-        { continue; }
+        {
+            continue;
+        }
         TTF_SetFontOutline(font, 2);
         auto text_sb = TTF_RenderUTF8_Blended(font, ret[i].c_str(), colorb);
         TTF_SetFontOutline(font, 0);
@@ -230,7 +234,9 @@ BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::st
 void Engine::drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
 {
     if (alpha == 0)
-    { return; }
+    {
+        return;
+    }
     auto text_t = createTextTexture(fontname, text, size);
     if (!text_t) { return; }
     SDL_SetTextureAlphaMod(text_t, alpha);
@@ -260,7 +266,9 @@ int Engine::init(void* handle)
         return -1;
     }
     if (handle)
-    { _win = SDL_CreateWindowFrom(handle); }
+    {
+        _win = SDL_CreateWindowFrom(handle);
+    }
     else
         _win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 _start_w, _start_h, SDL_WINDOW_RESIZABLE);
@@ -295,10 +303,7 @@ int Engine::init(void* handle)
     _max_x = r.w + r.x;
     _max_y = r.h + r.y;
 #endif
-
-
     printf("maximum width and height are: %d, %d\n", _max_x, _max_y);
-
     return 0;
 }
 
@@ -327,9 +332,13 @@ void Engine::toggleFullscreen()
 {
     _full_screen = !_full_screen;
     if (_full_screen)
-    { SDL_SetWindowFullscreen(_win, SDL_WINDOW_FULLSCREEN_DESKTOP); }
+    {
+        SDL_SetWindowFullscreen(_win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
     else
-    { SDL_SetWindowFullscreen(_win, 0); }
+    {
+        SDL_SetWindowFullscreen(_win, 0);
+    }
     SDL_RenderClear(_ren);
 }
 
@@ -353,7 +362,9 @@ void Engine::createMainTexture(int w, int h)
 void Engine::setPresentPosition()
 {
     if (!_tex)
-    { return; }
+    {
+        return;
+    }
     int w_dst = 0, h_dst = 0;
     int w_src = 0, h_src = 0;
     getWindowSize(w_dst, h_dst);
@@ -363,28 +374,19 @@ void Engine::setPresentPosition()
     if (_keep_ratio)
     {
         if (w_src == 0 || h_src == 0) { return; }
-        double w_ratio = 1.0 * w_dst / w_src;
-        double h_ratio = 1.0 * h_dst / h_src;
-        double ratio = std::min(w_ratio, h_ratio);
-        if (w_ratio > h_ratio)
+        double ratio = std::min(1.0 * w_dst / w_src, 1.0 * h_dst / h_src);
+        if (_rotation == 90 || _rotation == 270)
         {
-            //宽度大，左右留空
-            _rect.x = (w_dst - w_src * ratio) / 2;
-            _rect.y = 0;
-            _rect.w = w_src * ratio;
-            _rect.h = h_dst;
+            ratio = std::min(1.0 * w_dst / h_src, 1.0 * h_dst / w_src);
         }
-        else
-        {
-            //高度大，上下留空
-            _rect.x = 0;
-            _rect.y = (h_dst - h_src * ratio) / 2;
-            _rect.w = w_dst;
-            _rect.h = h_src * ratio;
-        }
+        _rect.x = (w_dst - w_src * ratio) / 2;
+        _rect.y = (h_dst - h_src * ratio) / 2;;
+        _rect.w = w_src * ratio;
+        _rect.h = h_src * ratio;
     }
     else
     {
+        //unfinshed
         _rect.x = 0;
         _rect.y = 0;
         _rect.w = w_dst;
@@ -451,10 +453,18 @@ int Engine::showMessage(const std::string& content)
 
 void Engine::setWindowSize(int w, int h)
 {
+    if (_rotation == 90 || _rotation == 270)
+    {
+        std::swap(w, h);
+    }
     if (w <= 0 || h <= 0) { return; }
     _win_w = std::min(_max_x - _min_x, w);
     _win_h = std::min(_max_y - _min_y, h);
-    if (!_win) return;
+    double ratio;
+    ratio = std::min(1.0 * _win_w / w, 1.0 * _win_h / h);
+    _win_w = w * ratio;
+    _win_h = h * ratio;
+    if (!_win) { return; }
 
     SDL_SetWindowSize(_win, _win_w, _win_h);
     setPresentPosition();
@@ -476,7 +486,9 @@ void Engine::resetWindowsPosition()
     if (x + w > _max_x) { x = std::min(x, _max_x - w); }
     if (y + h > _max_y) { y = std::min(y, _max_y - h); }
     if (x != x0 || y != y0)
-    { SDL_SetWindowPosition(_win, x, y); }
+    {
+        SDL_SetWindowPosition(_win, x, y);
+    }
 }
 
 void Engine::setWindowPosition(int x, int y)

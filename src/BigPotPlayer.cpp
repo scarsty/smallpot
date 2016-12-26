@@ -382,10 +382,9 @@ void BigPotPlayer::openMedia(const std::string& filename)
     _w = _media->getVideo()->getWidth();
     _h = _media->getVideo()->getHeight();
     engine_->setRatio(_media->getVideo()->getRatioX(), _media->getVideo()->getRatioY());
-    engine_->setWindowSize(_w, _h);
-    engine_->createMainTexture(_w, _h);
-
     engine_->setRotation(_media->getVideo()->getRotation());
+    engine_->setWindowSize(_w, _h);
+    engine_->createMainTexture(_w, _h); 
 
     //重新获取尺寸，有可能与之前不同
     _w = engine_->getWindowsWidth();
