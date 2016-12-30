@@ -380,7 +380,7 @@ void Engine::setPresentPosition()
             ratio = std::min(1.0 * w_dst / h_src, 1.0 * h_dst / w_src);
         }
         _rect.x = (w_dst - w_src * ratio) / 2;
-        _rect.y = (h_dst - h_src * ratio) / 2;;
+        _rect.y = (h_dst - h_src * ratio) / 2;
         _rect.w = w_src * ratio;
         _rect.h = h_src * ratio;
     }
@@ -391,6 +391,13 @@ void Engine::setPresentPosition()
         _rect.y = 0;
         _rect.w = w_dst;
         _rect.h = h_dst;
+        if (_rotation == 90 || _rotation == 270)
+        {
+            _rect.x = (h_dst - w_dst) / 2;
+            _rect.y = (w_dst - h_dst) / 2;
+            _rect.w = h_dst;
+            _rect.h = w_dst;
+        }
     }
 }
 
