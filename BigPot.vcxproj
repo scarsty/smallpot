@@ -248,7 +248,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\BigPot.rc" />
-    <ResourceCompile Include="src\BigPot1.rc" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="src\bigpot.res" />

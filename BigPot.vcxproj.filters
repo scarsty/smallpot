@@ -161,9 +161,6 @@
     <ResourceCompile Include="src\BigPot.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="src\BigPot1.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="src\bigpot.res">

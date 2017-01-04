@@ -148,7 +148,6 @@ std::string File::formatString(const char* format, ...)
 std::string File::getFilenameWithoutPath(const std::string& filename)
 {
 	std::string filename2 = filename;
-	File::replaceAllString(filename2, ".bt.td", "");
     int pos_p = filename2.find_last_of(_path_);
     if (pos_p != std::string::npos)
     { return filename2.substr(pos_p + 1); }

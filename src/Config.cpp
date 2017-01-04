@@ -66,7 +66,7 @@ tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const cha
 int Config::getRecord(const char* name)
 {
     if (strlen(name) == 0) { return 0; }
-    auto mainname = File::getFilenameWithoutPath(name);
+    auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
     const char* str = getElement(_record, ("_" + _sha3(mainname)).c_str())->GetText();
     if (!str)
     { return 0; }
@@ -76,14 +76,14 @@ int Config::getRecord(const char* name)
 void Config::removeRecord(const char* name)
 {
     if (strlen(name) == 0) { return; }
-    auto mainname = File::getFilenameWithoutPath(name);
+    auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
     _record->DeleteChild(getElement(_record, ("_" + _sha3(mainname)).c_str()));
 }
 
 void Config::setRecord(int v, const char* name)
 {
     if (strlen(name) == 0) { return; }
-    auto mainname = File::getFilenameWithoutPath(name);
+    auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
     getElement(_record, ("_" + _sha3(mainname)).c_str())
     ->SetText(File::formatString("%d", v).c_str());
 }
