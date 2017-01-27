@@ -4,6 +4,7 @@
 BigPotStream::BigPotStream()
 {
     av_register_all();
+    avformat_network_init();
     formatCtx_ = avformat_alloc_context();
     frame_ = av_frame_alloc();
     //subtitle_ = av_
