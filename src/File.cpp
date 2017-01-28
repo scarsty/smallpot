@@ -16,7 +16,7 @@
 #include <algorithm>
 
 #ifdef __clang__
-#define chdir _chdir
+//#define chdir _chdir
 #endif
 
 File::File()
