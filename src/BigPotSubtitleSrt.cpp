@@ -71,8 +71,8 @@ int BigPotSubtitleSrt::readTime(BigPotSubtitleAtom& pot)
     int btimeh, btimem, btimes, btimems;
     int etimeh, etimem, etimes, etimems;
     if (fscanf(_file, "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n",
-               &btimeh, &btimem, &btimes, &btimems,
-               &etimeh, &etimem, &etimes, &etimems) == 8)
+        &btimeh, &btimem, &btimes, &btimems,
+        &etimeh, &etimem, &etimes, &etimems) == 8)
     {
         int totalbegintime = btimems + 1000 * btimes + 1000 * 60 * btimem + 1000 * 3600 * btimeh;
         int totalendtime = etimems + 1000 * etimes + 1000 * 60 * etimem + 1000 * 3600 * etimeh;

@@ -300,13 +300,13 @@ int BigPotPlayer::eventLoop()
             int videoTime = (_media->getVideo()->getTimedts());
             int delay = -videoTime + audioTime;
             printf("\rvolume %d, audio %4.3f, video %4.3f, diff %1.3f in loop %d\t",
-                   _media->getAudio()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay / 1e3, i);
+                _media->getAudio()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay / 1e3, i);
 #endif
         }
         //静止时，无视频时，视频已放完时40毫秒显示一次
         //有视频未暂停且未到时间不会进入此判断
         else if ((pause || videostate == BigPotStreamVideo::NoVideo || videostate == BigPotStreamVideo::NoVideoFrame)
-                 && engine_->getTicks() - prev_show_time > 100)
+            && engine_->getTicks() - prev_show_time > 100)
         {
             show = true;
             if (havevideo)
@@ -384,7 +384,7 @@ void BigPotPlayer::openMedia(const std::string& filename)
     engine_->setRatio(_media->getVideo()->getRatioX(), _media->getVideo()->getRatioY());
     engine_->setRotation(_media->getVideo()->getRotation());
     engine_->setWindowSize(_w, _h);
-    engine_->createMainTexture(_w, _h); 
+    engine_->createMainTexture(_w, _h);
 
     //重新获取尺寸，有可能与之前不同
     _w = engine_->getWindowsWidth();

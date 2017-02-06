@@ -84,8 +84,7 @@ void Config::setRecord(int v, const char* name)
 {
     if (strlen(name) == 0) { return; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
-    getElement(_record, ("_" + _sha3(mainname)).c_str())
-    ->SetText(File::formatString("%d", v).c_str());
+    getElement(_record, ("_" + _sha3(mainname)).c_str())->SetText(File::formatString("%d", v).c_str());
 }
 
 void Config::clearRecord()

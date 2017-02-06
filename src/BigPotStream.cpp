@@ -17,7 +17,7 @@ BigPotStream::BigPotStream()
 BigPotStream::~BigPotStream()
 {
     av_frame_free(&frame_);
-    if(codecCtx_) avcodec_close(codecCtx_);
+    if (codecCtx_) { avcodec_close(codecCtx_); }
     avformat_close_input(&formatCtx_);
     clearMap();
     stream_index_ = -1;
@@ -128,7 +128,6 @@ int BigPotStream::decodeNextPacketToFrame(bool decode /*= true*/)
         //避免卡死
         if (gotsize < 0)
         {
-            
             BP_Event e;
             //这里只接受QUIT和拖入事件，将其压回主序列，跳出
             if (engine_->pollEvent(e) > 0)

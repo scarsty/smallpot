@@ -32,8 +32,7 @@ void BigPotStreamAudio::openAudioDevice()
     _channels = config_->getInteger("channels", -1);
     if (_channels < 0)
     { _channels = codecCtx_->channels; }
-    engine_->openAudio(_freq, _channels, codecCtx_->frame_size,
-                       2048, std::bind(&BigPotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
+    engine_->openAudio(_freq, _channels, codecCtx_->frame_size, 2048, std::bind(&BigPotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 int BigPotStreamAudio::closeAudioDevice()
@@ -111,8 +110,7 @@ void BigPotStreamAudio::mixAudioData(uint8_t* stream, int len)
 
 BigPotStream::Content BigPotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
 {
-    data_length_ = BigPotResample::convert(codecCtx_, frame_,
-                                           BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
+    data_length_ = BigPotResample::convert(codecCtx_, frame_, BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
     if (data_length_ <= 0)
         return{ -1, data_length_, nullptr };
     if (useMap())
