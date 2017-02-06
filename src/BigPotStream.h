@@ -101,15 +101,8 @@ public:
     void dropDecoded();
     int getTotalTime();
 
-    void setSkip(bool b)
-    {
-        _skip = b;
-    }
-
-    void resetTimeBegin()
-    {
-        ticks_shown_ = -1;
-    }
+    void setSkip(bool b) { _skip = b; }
+    void resetTimeBegin() { ticks_shown_ = -1; }
 
     int seek(int time, int direct = 1, int reset = 0);
     void setFrameTime();
@@ -120,14 +113,8 @@ public:
     void getSize(int& w, int& h);
     int getWidth() { return exist() ? codecCtx_->width : 0; }
     int getHeight() { return exist() ? codecCtx_->height : 0; }
-    int getTimedts()
-    {
-        return time_dts_ > 0 ? time_dts_ : time_pts_;
-    }
-    int getTimeShown()
-    {
-        return time_shown_;
-    }
+    int getTimedts() { return time_dts_ > 0 ? time_dts_ : time_pts_; }
+    int getTimeShown() { return time_shown_; }
     bool exist() { return this != nullptr && stream_index_ >= 0; }
     void resetTimeAxis(int time);
     bool isPause() { return pause_; }

@@ -33,9 +33,8 @@ int BigPotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sa
     }
 
     src_ch_layout = (codecCtx->channels ==
-                     av_get_channel_layout_nb_channels(codecCtx->channel_layout)) ?
-                    codecCtx->channel_layout :
-                    av_get_default_channel_layout(codecCtx->channels);
+        av_get_channel_layout_nb_channels(codecCtx->channel_layout)) ?
+        codecCtx->channel_layout : av_get_default_channel_layout(codecCtx->channels);
 
     //这里的设置很粗糙，最好详细处理
     switch (out_channels)
