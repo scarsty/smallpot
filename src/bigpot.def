@@ -1,7 +1,0 @@
-LIBRARY			"bigpot"
-
-
-EXPORTS			BigPotInit
-EXPORTS			BigPotInputVideo
-EXPORTS			BigPotSeek
-EXPORTS			BigPotClose
