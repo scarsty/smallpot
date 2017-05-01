@@ -190,11 +190,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="src\pot.res">
-      <Filter>Resource Files</Filter>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="src\pot.ico">
       <Filter>Resource Files</Filter>
     </Image>

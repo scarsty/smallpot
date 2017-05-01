@@ -271,7 +271,7 @@ int Engine::init(void* handle)
     }
     else
     { 
-        _win = SDL_CreateWindow("BigPotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _start_w, _start_h, SDL_WINDOW_RESIZABLE); 
+        _win = SDL_CreateWindow("PotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _start_w, _start_h, SDL_WINDOW_RESIZABLE); 
     }
     //SDL_CreateWindowFrom()
     SDL_ShowWindow(_win);
@@ -448,7 +448,7 @@ int Engine::showMessage(const std::string& content)
     {
         SDL_MESSAGEBOX_INFORMATION, /* .flags */
         NULL, /* .window */
-        "BigPot Player", /* .title */
+        "Pot Player", /* .title */
         content.c_str(), /* .message */
         SDL_arraysize(buttons), /* .numbuttons */
         buttons, /* .buttons */
