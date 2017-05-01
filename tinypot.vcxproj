@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -245,13 +245,7 @@
     <None Include="src\pot.def" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\pot.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="src\pot.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="src\pot.res" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\x86\ass.lib" />
@@ -264,6 +258,9 @@
     <Library Include="lib\x86\SDL2_image.lib" />
     <Library Include="lib\x86\SDL2_ttf.lib" />
     <Library Include="lib\x86\swresample.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\pot.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
