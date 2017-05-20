@@ -176,7 +176,6 @@ int File::getLastPathPos(const std::string& filename)
     int pos_win = std::string::npos;
 #ifdef _WIN32
     pos_win = filename.find_last_of('\\');
-    pos_win = -1;
 #endif // _WIN32
     int pos_other = filename.find_last_of('/');
     if (pos_win == std::string::npos)
