@@ -1,12 +1,6 @@
 #pragma once
 #include <string>
 
-#ifdef _WIN32
-#define _path_  ('\\')
-#else
-#define _path_  ('/')
-#endif
-
 class File
 {
 public:
@@ -33,5 +27,7 @@ public:
     static void changePath(const std::string& path);
 
 	static int replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring);
+private:
+    static int getLastPathPos(const std::string& filename);
 };
 

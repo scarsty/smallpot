@@ -66,7 +66,7 @@ std::string File::readStringFromFile(const std::string& filename)
 
 std::string File::getFileExt(const std::string& filename)
 {
-    int pos_p = filename.find_last_of(_path_);
+    int pos_p = getLastPathPos(filename);
     int pos_d = filename.find_last_of('.');
     if (pos_p < pos_d)
     { return filename.substr(pos_d + 1); }
@@ -76,7 +76,7 @@ std::string File::getFileExt(const std::string& filename)
 //一般是找最后一个点，为1是找第一个点
 std::string File::getFileMainname(const std::string& filename, FindMode mode)
 {
-    int pos_p = filename.find_last_of(_path_);
+    int pos_p = getLastPathPos(filename);
     int pos_d = filename.find_last_of('.');
     if (mode == FINDFIRST)
     { pos_d = filename.find_first_of('.', pos_p + 1); }
@@ -95,7 +95,7 @@ std::string File::changeFileExt(const std::string& filename, const std::string& 
 
 std::string File::getFilePath(const std::string& filename)
 {
-    int pos_p = filename.find_last_of(_path_);
+    int pos_p = getLastPathPos(filename);
     if (pos_p != std::string::npos)
     { return filename.substr(0, pos_p); }
     return "";
@@ -111,7 +111,7 @@ std::string File::fingFileWithMainName(const std::string& filename)
     long fileHandle;
     std::string path = getFilePath(filename);
     std::string ext = getFileExt(filename);
-    if (path != "") { path = path + _path_; }
+    if (path != "") { path = path + '\\'; }
     std::string findname = getFileMainname(filename) + ".*";
     std::string ret = "";
     fileHandle = _findfirst(findname.c_str(), &file);
@@ -148,7 +148,7 @@ std::string File::formatString(const char* format, ...)
 std::string File::getFilenameWithoutPath(const std::string& filename)
 {
     std::string filename2 = filename;
-    int pos_p = filename2.find_last_of(_path_);
+    int pos_p = getLastPathPos(filename2);
     if (pos_p != std::string::npos)
     { return filename2.substr(pos_p + 1); }
     return filename2;
@@ -170,3 +170,30 @@ int File::replaceAllString(std::string& s, const std::string& oldstring, const s
     }
     return pos + newstring.length();
 }
+
+int File::getLastPathPos(const std::string& filename)
+{
+    int pos_win = std::string::npos;
+#ifdef _WIN32
+    pos_win = filename.find_last_of('\\');
+    pos_win = -1;
+#endif // _WIN32
+    int pos_other = filename.find_last_of('/');
+    if (pos_win == std::string::npos)
+    {
+        return pos_other;
+    }
+    else
+    {
+        if (pos_other == std::string::npos)
+        {
+            return pos_win;
+        }
+        else
+        {
+            return pos_other > pos_win ? pos_other : pos_win;
+        }
+    }
+}
+
+
