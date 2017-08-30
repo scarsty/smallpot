@@ -26,10 +26,10 @@ srt支持不完善，只能使用没有bom的utf8文件，而且时间不能出�
 
 ## 预编译版下载
 windows版：
-<http://www.dawuxia.net/bigpot/bigpot-win32.zip>
+<http://www.dawuxia.net/tinypot/tinypot-win32.zip>
 
 Mac版：
-<http://www.dawuxia.net/bigpot/bigpot.app.zip>
+<http://www.dawuxia.net/tinypot/tinypot.app.zip>
 
 
 ## 常见问题
