@@ -52,6 +52,7 @@ public:
 private:
     BP_Window* _win = nullptr;
     BP_Renderer* _ren = nullptr;
+    int _handle_type = 0;  //0-窗口和渲染器自行创建，1-窗口和渲染器由外部创建
     BP_Texture* _tex = nullptr, *_tex2 = nullptr, *_logo = nullptr;
     BP_AudioSpec _want, _spec;
     BP_Rect _rect;
@@ -64,7 +65,7 @@ private:
     double _rotation = 0;
     int _ratio_x = 1, _ratio_y = 1;
 public:
-    int init(void* handle = 0);
+    int init(void* handle = nullptr, int handle_type = 0);
 
     void getWindowSize(int& w, int& h) { SDL_GetWindowSize(_win, &w, &h); }
     void getWindowMaxSize(int& w, int& h) { SDL_GetWindowMaximumSize(_win, &w, &h); }

@@ -1,32 +1,38 @@
 #include "PotDll.h"
 #include "PotPlayer.h"
 
-HBAPI void* MYTHAPI PotInit(void* handle)
+HBAPI void* MYTHAPI PotCreateFromHandle(void* handle)
 {
     auto bp = new PotPlayer(handle);
     return bp;
 }
 
-HBAPI int MYTHAPI PotInputVideo(void* handle, char* filename)
+HBAPI void* MYTHAPI PotCreateFromWindow(void* handle)
 {
-    if (handle)
+    auto bp = new PotPlayer((BP_Window*)handle, 1);
+    return bp;
+}
+
+HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename)
+{
+    if (pot)
     {
-        PotPlayer* bp = (PotPlayer*)handle;
+        PotPlayer* bp = (PotPlayer*)pot;
         bp->beginWithFile(filename);
     }
     return 0;
 }
 
-HBAPI int MYTHAPI PotSeek(void* handle, int seek)
+HBAPI int MYTHAPI PotSeek(void* pot, int seek)
 {
     return 0;
 }
 
-HBAPI int MYTHAPI PotClose(void* handle)
+HBAPI int MYTHAPI PotDestory(void* pot)
 {
-    if (handle)
+    if (pot)
     {
-        PotPlayer* bp = (PotPlayer*)handle;
+        PotPlayer* bp = (PotPlayer*)pot;
         delete bp;
     }
     return 0;

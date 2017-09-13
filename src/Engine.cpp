@@ -59,8 +59,11 @@ void Engine::renderCopy(BP_Texture* t /*= nullptr*/)
 void Engine::destroy()
 {
     SDL_DestroyTexture(_tex);
-    SDL_DestroyRenderer(_ren);
-    SDL_DestroyWindow(_win);
+    if (_handle_type == 0)
+    {
+        SDL_DestroyRenderer(_ren);
+        SDL_DestroyWindow(_win);
+    }
 }
 
 void Engine::mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume)
@@ -128,18 +131,17 @@ BP_Texture* Engine::createSquareTexture(int size)
     int d = size;
     auto square_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
     SDL_FillRect(square_s, nullptr, 0xffffffff);
-    /*SDL_Rect r = { 0, 0, 1, 1 };
-    auto &x = r.x;
-    auto &y = r.y;
-    for (x = 0; x < d; x++)
-    for (y = 0; y < d; y++)
-    {
-    if ((x - d / 2)*(x - d / 2) + (y - d / 2)*(y - d / 2) < (d / 2) * (d / 2))
-    {
-    SDL_FillRect(ball_s, &r, 0xffffffff);
-    }
-    }
-    */
+    //SDL_Rect r = { 0, 0, 1, 1 };
+    //auto &x = r.x;
+    //auto &y = r.y;
+    //for (x = 0; x < d; x++)
+    //    for (y = 0; y < d; y++)
+    //    {
+    //        if ((x - d / 2)*(x - d / 2) + (y - d / 2)*(y - d / 2) < (d / 2) * (d / 2))
+    //        {
+    //            SDL_FillRect(square_s, &r, 0xffffffff);
+    //        }
+    //    }
     _square = SDL_CreateTextureFromSurface(_ren, square_s);
     SDL_SetTextureBlendMode(_square, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(_square, 128);
@@ -259,25 +261,40 @@ void Engine::drawText(const std::string& fontname, const std::string& text, int 
     SDL_DestroyTexture(text_t);
 }
 
-int Engine::init(void* handle)
+int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
 {
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
     {
         return -1;
     }
+    _handle_type = handle_type;
     if (handle)
     {
-        _win = SDL_CreateWindowFrom(handle);
+        if (handle_type == 0)
+        {
+            _win = SDL_CreateWindowFrom(handle);
+        }
+        else
+        {
+            _win = (BP_Window*)handle;
+        }
     }
     else
-    { 
-        _win = SDL_CreateWindow("PotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _start_w, _start_h, SDL_WINDOW_RESIZABLE); 
+    {
+        _win = SDL_CreateWindow("PotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _start_w, _start_h, SDL_WINDOW_RESIZABLE);
     }
     //SDL_CreateWindowFrom()
     SDL_ShowWindow(_win);
     SDL_RaiseWindow(_win);
-    _ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
 
+    if (handle_type == 1)
+    {
+        _ren = SDL_GetRenderer(_win);
+    }
+    else
+    {
+        _ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
+    }
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
 

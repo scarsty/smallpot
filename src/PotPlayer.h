@@ -13,7 +13,11 @@ class PotPlayer : public PotBase
 {
 public:
     PotPlayer();
-    PotPlayer(void* handle) : PotPlayer() { _handle = handle; }
+    PotPlayer(void* handle, int handle_type = 0) : PotPlayer()
+    {
+        _handle = handle;
+        _handle_type = handle_type;
+    }
     PotPlayer(char* s);
     virtual ~PotPlayer();
 private:
@@ -31,6 +35,7 @@ private:
     int _cur_volume;
     int eventLoop();
     void* _handle;
+    int _handle_type;
     //int drawTex2();
     //int showTex2();
     //string getSysString(const string& str);
