@@ -12,7 +12,8 @@
 #define  MYTHAPI
 #endif
 
-HBAPI void* MYTHAPI PotInit(void* handle);
-HBAPI int MYTHAPI PotInputVideo(void* handle, char* filename);
-HBAPI int MYTHAPI PotSeek(void* handle, int seek);
-HBAPI int MYTHAPI PotClose(void* handle);
+HBAPI void* MYTHAPI PotCreateFromHandle(void* handle);
+HBAPI void* MYTHAPI PotCreateFromWindow(void* handle);
+HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename);
+HBAPI int MYTHAPI PotSeek(void* pot, int seek);
+HBAPI int MYTHAPI PotDestory(void* pot);

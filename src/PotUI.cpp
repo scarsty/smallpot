@@ -64,7 +64,7 @@ std::string PotUI::convertTimeToString(int time)
 
 void PotUI::init()
 {
-    _square = engine_->createSquareTexture(30);
+    _square = engine_->createSquareTexture(40);
     _fontname = config_->getString("ui_font");
     if (!File::fileExist(_fontname))
     {
