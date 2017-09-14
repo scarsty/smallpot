@@ -1,11 +1,11 @@
 # tinypot
 <img src="https://raw.githubusercontent.com/scarsty/bigpot/master/logo.png" width = "20%" />
 
-一个轻量级播放器
+一个轻量级播放器。
 
 ## 编译
 ### Windows
-#### VS2015
+#### VS2017
 已经包含了Windows版本所需的工程文件，以及导入库和dll。其中大部分是作者自行编译。
 #### mingw
 因为各个库的依赖很复杂，不建议使用。
@@ -64,6 +64,10 @@ A：可以。
 
 #### Q：会不会开源？
 A：以lgpl协议开源。
+
+#### Q：还有什么其他功能？
+
+A：可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
 
 ## 播放效果
 <img src="https://raw.githubusercontent.com/scarsty/bigpot/master/1.png" width = "80%" />
