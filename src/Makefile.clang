@@ -6,7 +6,7 @@ CPPSOURCES=$(wildcard *.cpp) tinyxml2/tinyxml2.cpp hash/sha3.cpp
 CPPOBJECTS=$(CPPSOURCES:.cpp=.o)
 #CSOURCES=$(wildcard *.c)
 #COBJECTS=$(CSOURCES:.c=.o)
-TARGET=bigpot
+TARGET=tinypot
 
 .PHONY: all clean
 
