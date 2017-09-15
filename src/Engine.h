@@ -52,6 +52,7 @@ public:
 private:
     BP_Window* _win = nullptr;
     BP_Renderer* _ren = nullptr;
+    bool _ren_self = false;
     int _handle_type = 0;  //0-窗口和渲染器自行创建，1-窗口和渲染器由外部创建
     BP_Texture* _tex = nullptr, *_tex2 = nullptr, *_logo = nullptr;
     BP_AudioSpec _want, _spec;
