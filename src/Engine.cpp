@@ -59,11 +59,8 @@ void Engine::renderCopy(BP_Texture* t /*= nullptr*/)
 void Engine::destroy()
 {
     SDL_DestroyTexture(_tex);
-    if (_handle_type == 0)
-    {
-        SDL_DestroyRenderer(_ren);
-        SDL_DestroyWindow(_win);
-    }
+    if (_ren_self) { SDL_DestroyRenderer(_ren); }
+    if (_handle_type == 0) { SDL_DestroyWindow(_win); }
 }
 
 void Engine::mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume)
@@ -144,8 +141,8 @@ BP_Texture* Engine::createBallTexture(int size)
     auto ball_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
     SDL_FillRect(ball_s, nullptr, 0);
     SDL_Rect r = { 0, 0, 1, 1 };
-    auto &x = r.x;
-    auto &y = r.y;
+    auto& x = r.x;
+    auto& y = r.y;
     for (x = 0; x < d; x++)
     {
         for (y = 0; y < d; y++)
@@ -301,13 +298,11 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     SDL_ShowWindow(_win);
     SDL_RaiseWindow(_win);
 
-    if (handle_type == 1)
-    {
-        _ren = SDL_GetRenderer(_win);
-    }
-    else
+    _ren = SDL_GetRenderer(_win);
+    if (_ren == nullptr)
     {
         _ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
+        _ren_self = true;
     }
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
