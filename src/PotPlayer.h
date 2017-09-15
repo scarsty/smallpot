@@ -38,7 +38,8 @@ private:
     int _handle_type;
     //int drawTex2();
     //int showTex2();
-    //string getSysString(const string& str);
+    //string getSysString(const string& str);    
+
 public:
     int beginWithFile(const std::string& filename);
     int init();
@@ -50,6 +51,8 @@ public:
     //std::function<void(int)> play_callback = nullptr;
     void(*stop_callback)(bool*, char*) = nullptr;
     void(*play_callback)(int) = nullptr;
+
+    int _exit_type = 0;  //0 - 播放完毕或者按esc退出，1 - 按关闭退出
 };
 
 

@@ -224,12 +224,13 @@ int PotPlayer::eventLoop()
             ui_alpha = 128;
             break;
         }
-#ifndef _LIB
+//#ifndef _LIB
         case BP_QUIT:
             loop = false;
             _run = false;
+            _exit_type = 1;
             break;
-#endif
+//#endif
         case BP_WINDOWEVENT:
             if (e.window.event == BP_WINDOWEVENT_RESIZED)
             {

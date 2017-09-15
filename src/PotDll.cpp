@@ -15,12 +15,14 @@ HBAPI void* MYTHAPI PotCreateFromWindow(void* handle)
 
 HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename)
 {
+    int ret = 0;
     if (pot)
     {
         PotPlayer* bp = (PotPlayer*)pot;
         bp->beginWithFile(filename);
+        ret = bp->_exit_type;
     }
-    return 0;
+    return ret;
 }
 
 HBAPI int MYTHAPI PotSeek(void* pot, int seek)
