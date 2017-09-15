@@ -95,7 +95,7 @@ int PotPlayer::beginWithFile(const std::string& filename)
 
     }
     destroy();
-    return 0;
+    return _exit_type;
 }
 
 int PotPlayer::eventLoop()
@@ -115,6 +115,7 @@ int PotPlayer::eventLoop()
 
     int maxDelay = 0; //统计使用
     int prev_show_time = 0;  //上一次显示的时间
+    _exit_type = 0;
 
     while (loop && engine_->pollEvent(e) >= 0)
     {
@@ -348,7 +349,7 @@ int PotPlayer::eventLoop()
 
     auto s = File::formatString("%d", i);
     //engine_->showMessage(s);
-    return 0;
+    return _exit_type;
 }
 
 int PotPlayer::init()

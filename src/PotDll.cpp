@@ -19,8 +19,7 @@ HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename)
     if (pot)
     {
         PotPlayer* bp = (PotPlayer*)pot;
-        bp->beginWithFile(filename);
-        ret = bp->_exit_type;
+        ret = bp->beginWithFile(filename);
     }
     return ret;
 }
