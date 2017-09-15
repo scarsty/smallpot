@@ -1,4 +1,4 @@
-﻿#pragma once
+﻿ #pragma once
 
 extern "C"
 {
@@ -148,6 +148,7 @@ private:
     BP_Texture* _square;
 public:
     BP_Texture* createSquareTexture(int size);
+    BP_Texture* createBallTexture(int size);
     BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size);
     void drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
     void drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);

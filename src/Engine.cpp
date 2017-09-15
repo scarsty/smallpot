@@ -131,22 +131,36 @@ BP_Texture* Engine::createSquareTexture(int size)
     int d = size;
     auto square_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
     SDL_FillRect(square_s, nullptr, 0xffffffff);
-    //SDL_Rect r = { 0, 0, 1, 1 };
-    //auto &x = r.x;
-    //auto &y = r.y;
-    //for (x = 0; x < d; x++)
-    //    for (y = 0; y < d; y++)
-    //    {
-    //        if ((x - d / 2)*(x - d / 2) + (y - d / 2)*(y - d / 2) < (d / 2) * (d / 2))
-    //        {
-    //            SDL_FillRect(square_s, &r, 0xffffffff);
-    //        }
-    //    }
-    _square = SDL_CreateTextureFromSurface(_ren, square_s);
-    SDL_SetTextureBlendMode(_square, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(_square, 128);
+    auto square = SDL_CreateTextureFromSurface(_ren, square_s);
+    SDL_SetTextureBlendMode(square, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(square, 128);
     SDL_FreeSurface(square_s);
-    return _square;
+    return square;
+}
+
+BP_Texture* Engine::createBallTexture(int size)
+{
+    int d = size;
+    auto ball_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
+    SDL_FillRect(ball_s, nullptr, 0);
+    SDL_Rect r = { 0, 0, 1, 1 };
+    auto &x = r.x;
+    auto &y = r.y;
+    for (x = 0; x < d; x++)
+    {
+        for (y = 0; y < d; y++)
+        {
+            if (abs(x - d / 2) + abs(y - d / 2) < d / 2)
+            {
+                SDL_FillRect(ball_s, &r, 0xffffffff);
+            }
+        }
+    }
+    auto ball = SDL_CreateTextureFromSurface(_ren, ball_s);
+    SDL_SetTextureBlendMode(ball, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(ball, 128);
+    SDL_FreeSurface(ball_s);
+    return ball;
 }
 
 //注意：当字符串为空时，也会返回一个空字符串
