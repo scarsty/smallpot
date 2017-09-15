@@ -7,7 +7,7 @@ public:
     PotUI();
     virtual ~PotUI();
 private:
-    BP_Texture* _square, *_text;
+    BP_Texture* _square, *_text, *_ball;
 
     int _time, _totoalTime, _volume;
     int _win_w, _win_h;
