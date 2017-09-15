@@ -1,8 +1,8 @@
 cd src
-rm bigpot
+rm tinypot
 make -f Makefile.clang 
-./repair_dylib.sh bigpot loader_path loader_path\\\/\\\.\\\.\\\/lib
-./repair_dylib.sh bigpot rpath loader_path\\\/\\\.\\\.\\\/lib
-otool -L bigpot
+./repair_dylib.sh tinypot loader_path loader_path\\\/\\\.\\\.\\\/lib
+./repair_dylib.sh tinypot rpath loader_path\\\/\\\.\\\.\\\/lib
+otool -L tinypot
 cd ..
-cp src/bigpot bigpot.app/Contents/MacOS/bigpot
+cp src/tinypot tinypot.app/Contents/MacOS/tinypot
