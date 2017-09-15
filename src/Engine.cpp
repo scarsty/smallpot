@@ -299,6 +299,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     SDL_RaiseWindow(_win);
 
     _ren = SDL_GetRenderer(_win);
+    printf("%s\n", SDL_GetError());
     if (_ren == nullptr)
     {
         _ren = SDL_CreateRenderer(_win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
