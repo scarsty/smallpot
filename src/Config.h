@@ -42,5 +42,9 @@ public:
     void setRecord(int v, const char* name);
     void clearRecord(); //string replace(string str, const char *string_to_replace, const char *new_string);
 
+    int replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring);
+
+    int dealFilename(std::string& s);
+
 };
 

@@ -18,7 +18,9 @@ PotUI::~PotUI()
 void PotUI::drawBall()
 {
     if (_alpha == 0)
-    { return; }
+    {
+        return;
+    }
     engine_->setTextureAlphaMod(_square, _alpha);
 
     int d = 10, x, y;
@@ -35,10 +37,16 @@ void PotUI::drawBall()
         int h = (i + 1) * 2;
         v -= one_square;
         double r = 1;
-        if (v < 0) { r = 1.0 * (one_square + v) / one_square; }
+        if (v < 0)
+        {
+            r = 1.0 * (one_square + v) / one_square;
+        }
         int hc = r * h;
         engine_->renderCopy(_square, x + i * 3, y - hc, 2, hc);
-        if (v < 0) { break; }
+        if (v < 0)
+        {
+            break;
+        }
     }
 
     //x = _win_w - 10 - BP_AUDIO_MIX_MAXVOLUME / 2 - d;
@@ -59,7 +67,9 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
 {
     this->_alpha = alpha;
     if (alpha == 0)
-    { return; }
+    {
+        return;
+    }
     //_win_w = engine_->getWindowsWidth();
     //_win_h = engine_->getWindowsHeight();
     engine_->getWindowSize(_win_w, _win_h);
@@ -87,7 +97,9 @@ void PotUI::init()
 #ifdef _WIN32
         _fontname = "c:/windows/fonts/cambria.ttc";
         if (!File::fileExist(_fontname))
-        { _fontname = "c:/windows/fonts/cambria.ttf"; }
+        {
+            _fontname = "c:/windows/fonts/cambria.ttf";
+        }
 #else
         _fontname = "/System/Library/Fonts/Palatino.ttc";
 #endif
@@ -97,6 +109,8 @@ void PotUI::init()
 void PotUI::destory()
 {
     if (config_->getString("ui_font") == "")
-    { config_->setString(_fontname, "ui_font"); }
+    {
+        config_->setString(_fontname, "ui_font");
+    }
     engine_->destroyTexture(_square);
 }
