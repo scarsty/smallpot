@@ -38,7 +38,9 @@ void Config::init(const std::string& filepath)
 
     _record = _root->FirstChildElement("record");
     if (!_record)
-    { _record = _root->InsertFirstChild(_doc.NewElement("record"))->ToElement(); }
+    {
+        _record = _root->InsertFirstChild(_doc.NewElement("record"))->ToElement();
+    }
 }
 
 void Config::write()
@@ -67,9 +69,12 @@ int Config::getRecord(const char* name)
 {
     if (strlen(name) == 0) { return 0; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
-    const char* str = getElement(_record, ("_" + _sha3(mainname)).c_str())->GetText();
+    dealFilename(mainname);
+    const char* str = getElement(_record, mainname.c_str())->GetText();
     if (!str)
-    { return 0; }
+    {
+        return 0;
+    }
     return atoi(str);
 }
 
@@ -77,14 +82,16 @@ void Config::removeRecord(const char* name)
 {
     if (strlen(name) == 0) { return; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
-    _record->DeleteChild(getElement(_record, ("_" + _sha3(mainname)).c_str()));
+    dealFilename(mainname);
+    _record->DeleteChild(getElement(_record, mainname.c_str()));
 }
 
 void Config::setRecord(int v, const char* name)
 {
     if (strlen(name) == 0) { return; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
-    getElement(_record, ("_" + _sha3(mainname)).c_str())->SetText(File::formatString("%d", v).c_str());
+    dealFilename(mainname);
+    getElement(_record, mainname.c_str())->SetText(File::formatString("%d", v).c_str());
 }
 
 void Config::clearRecord()
@@ -141,5 +148,24 @@ void Config::setDouble(double v, const char* name)
 void Config::setBool(bool v, const char* name)
 {
     setString(File::formatString("%d", v != 0), name);
+}
+
+int Config::replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring)
+{
+    int pos = s.find(oldstring);
+    while (pos >= 0)
+    {
+        s.erase(pos, oldstring.length());
+        s.insert(pos, newstring);
+        pos = s.find(oldstring, pos + newstring.length());
+    }
+    return pos + newstring.length();
+}
+
+int Config::dealFilename(std::string& s)
+{
+    //replaceAllString(s, " ", "_");
+    s = _sha3(s);
+    s = "_" + s;
 }
 

@@ -31,7 +31,9 @@ File::~File()
 bool File::fileExist(const std::string& filename)
 {
     if (filename.length() <= 0)
-    { return false; }
+    {
+        return false;
+    }
 
     std::fstream file;
     bool ret = false;
@@ -69,7 +71,9 @@ std::string File::getFileExt(const std::string& filename)
     int pos_p = getLastPathPos(filename);
     int pos_d = filename.find_last_of('.');
     if (pos_p < pos_d)
-    { return filename.substr(pos_d + 1); }
+    {
+        return filename.substr(pos_d + 1);
+    }
     return "";
 }
 
@@ -79,9 +83,13 @@ std::string File::getFileMainname(const std::string& filename, FindMode mode)
     int pos_p = getLastPathPos(filename);
     int pos_d = filename.find_last_of('.');
     if (mode == FINDFIRST)
-    { pos_d = filename.find_first_of('.', pos_p + 1); }
+    {
+        pos_d = filename.find_first_of('.', pos_p + 1);
+    }
     if (pos_p < pos_d)
-    { return filename.substr(0, pos_d); }
+    {
+        return filename.substr(0, pos_d);
+    }
     return filename;
 }
 
@@ -89,7 +97,9 @@ std::string File::changeFileExt(const std::string& filename, const std::string& 
 {
     auto e = ext;
     if (e != "" && e[0] != '.')
-    { e = "." + e; }
+    {
+        e = "." + e;
+    }
     return getFileMainname(filename) + e;
 }
 
@@ -97,7 +107,9 @@ std::string File::getFilePath(const std::string& filename)
 {
     int pos_p = getLastPathPos(filename);
     if (pos_p != std::string::npos)
-    { return filename.substr(0, pos_p); }
+    {
+        return filename.substr(0, pos_p);
+    }
     return "";
 }
 
@@ -121,7 +133,9 @@ std::string File::fingFileWithMainName(const std::string& filename)
         _findnext(fileHandle, &file);
         ret = path + file.name;
         if (getFileExt(ret) == ext)
-        { ret = ""; }
+        {
+            ret = "";
+        }
     }
     _findclose(fileHandle);
     return ret;
@@ -150,7 +164,9 @@ std::string File::getFilenameWithoutPath(const std::string& filename)
     std::string filename2 = filename;
     int pos_p = getLastPathPos(filename2);
     if (pos_p != std::string::npos)
-    { return filename2.substr(pos_p + 1); }
+    {
+        return filename2.substr(pos_p + 1);
+    }
     return filename2;
 }
 
