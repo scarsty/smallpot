@@ -8,7 +8,9 @@ PotStreamAudio::PotStreamAudio()
     maxSize_ = 100;
     //缓冲区大小4M保存
     if (useMap())
-    { data_ = av_mallocz(_scream_size); }
+    {
+        data_ = av_mallocz(_scream_size);
+    }
     _resample_buffer = (decltype(_resample_buffer))av_mallocz(_convert_size);
     type_ = BPMEDIA_TYPE_AUDIO;
 }
@@ -17,9 +19,13 @@ PotStreamAudio::PotStreamAudio()
 PotStreamAudio::~PotStreamAudio()
 {
     if (useMap())
-    { av_free(data_); }
+    {
+        av_free(data_);
+    }
     if (_resample_buffer)
-    { av_free(_resample_buffer); }
+    {
+        av_free(_resample_buffer);
+    }
     engine_->setAudioCallback(nullptr);
     closeAudioDevice();
 }
@@ -27,11 +33,15 @@ PotStreamAudio::~PotStreamAudio()
 void PotStreamAudio::openAudioDevice()
 {
     if (stream_index_ < 0)
-    { return; }
+    {
+        return;
+    }
     _freq = codecCtx_->sample_rate;
     _channels = config_->getInteger("channels", -1);
     if (_channels < 0)
-    { _channels = codecCtx_->channels; }
+    {
+        _channels = codecCtx_->channels;
+    }
     engine_->openAudio(_freq, _channels, codecCtx_->frame_size, 2048, std::bind(&PotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -51,7 +61,9 @@ void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
     }
 
     if (_data_write <= _data_read)
-    { return; }
+    {
+        return;
+    }
     //SDL_LockMutex(t->mutex_cpp);
     auto data1 = (uint8_t*)data_;
     int pos = _data_read % _scream_size;
@@ -157,7 +169,9 @@ int PotStreamAudio::setVolume(int v)
 int PotStreamAudio::changeVolume(int v)
 {
     if (v == 0)
-    { return _volume; }
+    {
+        return _volume;
+    }
     return setVolume(_volume + v);
 }
 

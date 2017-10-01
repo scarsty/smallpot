@@ -47,7 +47,7 @@ private:
     static Engine _engine;
     Engine* _this;
 public:
-    static Engine* getInstance() { return &_engine; };
+    static Engine* getInstance() { return &_engine; }
     //图形相关
 private:
     BP_Window* _win = nullptr;
@@ -57,7 +57,7 @@ private:
     BP_Texture* _tex = nullptr, *_tex2 = nullptr, *_logo = nullptr;
     BP_AudioSpec _want, _spec;
     BP_Rect _rect;
-    BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->_tex; };
+    BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->_tex; }
     bool _full_screen = false;
     bool _keep_ratio = true;
 
@@ -123,14 +123,14 @@ private:
     SDL_AudioDeviceID _device;
     AudioCallback _callback = nullptr;
 public:
-    void pauseAudio(int pause) { SDL_PauseAudioDevice(_device, pause); };
+    void pauseAudio(int pause) { SDL_PauseAudioDevice(_device, pause); }
     void closeAudio() { SDL_CloseAudioDevice(_device); };
     int getMaxVolume() { return BP_AUDIO_MIX_MAXVOLUME; };
-    void mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume);;
+    void mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume);
 
     int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
     static void mixAudioCallback(void* userdata, Uint8* stream, int len);
-    void setAudioCallback(AudioCallback cb = nullptr) { _callback = cb; };
+    void setAudioCallback(AudioCallback cb = nullptr) { _callback = cb; }
     //事件相关
 private:
     SDL_Event _e;
@@ -140,9 +140,9 @@ public:
     uint32_t getTicks() { return SDL_GetTicks(); }
     uint32_t tic() { return _time = SDL_GetTicks(); }
     void toc() { if (SDL_GetTicks() != _time) { printf("%d\n", SDL_GetTicks() - _time); } }
-    void getMouseState(int& x, int& y) { SDL_GetMouseState(&x, &y); };
-    int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); };
-    int pushEvent(BP_Event& e) { return SDL_PushEvent(&e); };
+    void getMouseState(int& x, int& y) { SDL_GetMouseState(&x, &y); }
+    int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); }
+    int pushEvent(BP_Event& e) { return SDL_PushEvent(&e); }
     void free(void* mem) { SDL_free(mem); }
     //UI相关
 private:

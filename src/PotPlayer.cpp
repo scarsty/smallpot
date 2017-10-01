@@ -28,7 +28,9 @@ PotPlayer::PotPlayer(char* s) : PotPlayer()
     _filepath = str + "/bigpot";
     WIN32_FIND_DATAA wfd;
     if (FindFirstFileA(_filepath.c_str(), &wfd) == INVALID_HANDLE_VALUE)
-    { CreateDirectoryA(_filepath.c_str(), NULL); }
+    {
+        CreateDirectoryA(_filepath.c_str(), NULL);
+    }
 #endif
 
 }
@@ -123,7 +125,9 @@ int PotPlayer::eventLoop()
 
         engine_->getMouseState(x, y);
         if (ui_alpha > 0)
-        { ui_alpha--; }
+        {
+            ui_alpha--;
+        }
         if (_h - y < 50
             || ((_w - x) < 200 && y < 150))
         {
@@ -225,7 +229,7 @@ int PotPlayer::eventLoop()
             ui_alpha = 128;
             break;
         }
-//#ifndef _LIB
+        //#ifndef _LIB
         case BP_QUIT:
             pause = true;
             _media->setPause(pause);
@@ -233,7 +237,7 @@ int PotPlayer::eventLoop()
             _run = false;
             _exit_type = 1;
             break;
-//#endif
+        //#endif
         case BP_WINDOWEVENT:
             if (e.window.event == BP_WINDOWEVENT_RESIZED)
             {
@@ -291,7 +295,9 @@ int PotPlayer::eventLoop()
 
         //播放回调
         if (play_callback)
-        { play_callback(audioTime); }
+        {
+            play_callback(audioTime);
+        }
         //结束回调
         if (stop_callback && videostate == PotStreamVideo::NoVideoFrame)
         {
@@ -322,14 +328,20 @@ int PotPlayer::eventLoop()
         {
             show = true;
             if (havevideo)
-            { engine_->renderCopy(); }
+            {
+                engine_->renderCopy();
+            }
             else
-            { engine_->showLogo(); }
+            {
+                engine_->showLogo();
+            }
         }
         if (show)
         {
             if (_subtitle->exist())
-            { _subtitle->show(audioTime); }
+            {
+                _subtitle->show(audioTime);
+            }
             _UI->drawUI(ui_alpha, audioTime, totalTime, _media->getAudio()->getVolume());
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
@@ -426,7 +438,9 @@ void PotPlayer::openMedia(const std::string& filename)
         _cur_time = config_->getRecord(filename.c_str());
         printf("Play from %1.3fs\n", _cur_time / 1000.0);
         if (_cur_time > 0 && _cur_time < _media->getTotalTime())
-        { _media->seekTime(_cur_time, -1); }
+        {
+            _media->seekTime(_cur_time, -1);
+        }
     }
 #endif
 }

@@ -20,7 +20,9 @@ PotMedia::~PotMedia()
 int PotMedia::openFile(const std::string& filename)
 {
     if (!File::fileExist(filename))
-    { return -1; }
+    {
+        return -1;
+    }
     _streamVideo->openFile(filename);
     _streamAudio->openFile(filename);
     //_streamSubtitle->openFile(filename);
@@ -31,7 +33,9 @@ int PotMedia::openFile(const std::string& filename)
         _streamAudio->openAudioDevice();
     }
     else
-    { _totalTime = _streamVideo->getTotalTime(); }
+    {
+        _totalTime = _streamVideo->getTotalTime();
+    }
     return 0;
 }
 
@@ -43,7 +47,9 @@ int PotMedia::decodeFrame()
     if (_streamVideo->isStopping()) { return 0; }
     //_streamAudio->tryDecodeFrame(_seeking);
     for (int i = 0; i <= _extAudioFrame; i++)
-    { _streamAudio->tryDecodeFrame(_seeking); }
+    {
+        _streamAudio->tryDecodeFrame(_seeking);
+    }
     _streamSubtitle->tryDecodeFrame(_seeking);
     //int m = _audioStream->getTimedts();
     //int n = _videoStream->getTimedts();
@@ -118,9 +124,13 @@ int PotMedia::getVideoTime()
 int PotMedia::getTime()
 {
     if (_streamAudio->exist())
-    { return _streamAudio->getTime(); }
+    {
+        return _streamAudio->getTime();
+    }
     else
-    { return _streamVideo->getTime(); }
+    {
+        return _streamVideo->getTime();
+    }
 }
 
 void PotMedia::destroy()

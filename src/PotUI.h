@@ -17,8 +17,8 @@ private:
     std::string _fontname;
 public:
     void init();
-    void setTime(int t) { _time = t; };
-    void setTotalTime(int t) { _totoalTime = t; };
+    void setTime(int t) { _time = t; }
+    void setTotalTime(int t) { _totoalTime = t; }
     void drawBall();
     void drawText(const std::string& text);
     void drawUI(uint8_t alpha, int time, int totoalTime, int volume);

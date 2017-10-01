@@ -76,7 +76,9 @@ void PotSubtitleAss::setFrameSize(int w, int h)
 void PotSubtitleAss::closeSubtitle()
 {
     if (_track)
-    { ass_free_track(_track); }
+    {
+        ass_free_track(_track);
+    }
     _track = nullptr;
 }
 
