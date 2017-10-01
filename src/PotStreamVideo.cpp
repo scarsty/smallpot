@@ -19,7 +19,9 @@ PotStreamVideo::~PotStreamVideo()
 int PotStreamVideo::showTexture(int time)
 {
     if (stream_index_ < 0)
-    { return NoVideo; }
+    {
+        return NoVideo;
+    }
     if (haveDecoded())
     {
         auto f = getCurrentContent();

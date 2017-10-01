@@ -81,24 +81,34 @@ int PotSubtitleSrt::readTime(PotSubtitleAtom& pot)
         return readString(pot);
     }
     else
-    { return -2; }
+    {
+        return -2;
+    }
 }
 
 int PotSubtitleSrt::readString(PotSubtitleAtom& pot)
 {
     if (!_file)
-    { return 0; }
+    {
+        return 0;
+    }
     if (feof(_file))
-    { return 0; }
+    {
+        return 0;
+    }
     std::string tmpstr = "";
     while (!feof(_file))
     {
         char tmp[4096] = { 0 };
         fgets(tmp, 4096, _file);
         if (strcmp(tmp, "\n") != 0)
-        { tmpstr += tmp; }
+        {
+            tmpstr += tmp;
+        }
         else
-        { break; }
+        {
+            break;
+        }
     }
 
     pot.str = tmpstr;

@@ -41,7 +41,9 @@ int PotStream::openFile(const std::string& filename)
                 codecCtx_ = stream_->codec;
                 //timebase = av_q2d(formatCtx->streams[i]->time_base);
                 if (stream_->r_frame_rate.den)
-                { time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate); }
+                {
+                    time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
+                }
                 time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
                 total_time_ = formatCtx_->duration * 1e3 / AV_TIME_BASE;
                 start_time_ = formatCtx_->start_time * 1e3 / AV_TIME_BASE;
@@ -94,7 +96,9 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
                         packet_.size -= gotsize;
                         needReadPacket_ = packet_.size <= 0;
                         if (needReadPacket_)
-                        { break; }
+                        {
+                            break;
+                        }
                     }
                     ret = gotframe;
                 }
@@ -124,7 +128,9 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
             //if (type_ == 0 && key_frame_)printf("\n%dis key\n", time_dts_);
         }
         if (needReadPacket_)
-        { av_free_packet(&packet_); }
+        {
+            av_free_packet(&packet_);
+        }
         //避免卡死
         if (gotsize < 0)
         {
@@ -161,15 +167,21 @@ int PotStream::tryDecodeFrame(bool reset)
             if (_map.size() == 0)
             {
                 if (reset)
-                { resetTimeAxis(time_dts_); }
+                {
+                    resetTimeAxis(time_dts_);
+                }
             }
             if (_map.count(f.time) == 0 && f.data)
-            { _map[f.time] = f; }
+            {
+                _map[f.time] = f;
+            }
         }
         else
         {
             if (reset)
-            { resetTimeAxis(time_dts_); }
+            {
+                resetTimeAxis(time_dts_);
+            }
         }
         setDecoded(true);
         return 0;
@@ -192,7 +204,9 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
 
         int flag = 0;
         if (direct < 0)
-        { flag = flag | AVSEEK_FLAG_BACKWARD; }
+        {
+            flag = flag | AVSEEK_FLAG_BACKWARD;
+        }
         //间隔比较大的情况重置播放器
         if (type_ == BPMEDIA_TYPE_VIDEO
             && (pause_ || reset || engine_->getTicks() - _seek_record > 100))
@@ -253,11 +267,17 @@ void PotStream::setMap(int key, Content f)
 bool PotStream::needDecode()
 {
     if (!needDecode2())
-    { return false; }
+    {
+        return false;
+    }
     if (useMap())
-    { return (_map.size() < maxSize_); }
+    {
+        return (_map.size() < maxSize_);
+    }
     else
-    { return !_decoded; }
+    {
+        return !_decoded;
+    }
 }
 
 void PotStream::setDecoded(bool b)
@@ -268,9 +288,13 @@ void PotStream::setDecoded(bool b)
 void PotStream::dropDecoded()
 {
     if (useMap())
-    { dropContent(); }
+    {
+        dropContent();
+    }
     else
-    { _decoded = false; }
+    {
+        _decoded = false;
+    }
 }
 
 bool PotStream::useMap()
@@ -283,7 +307,9 @@ PotStream::Content PotStream::getCurrentContent()
     if (useMap())
     {
         if (_map.size() > 0)
-        { return _map.begin()->second; }
+        {
+            return _map.begin()->second;
+        }
         else
             return{ -1, -1, nullptr };
     }
@@ -309,12 +335,16 @@ bool PotStream::haveDecoded()
 int PotStream::getTime()
 {
     if (pause_)
-    { return pause_time_; }
+    {
+        return pause_time_;
+    }
     //if (type_== BPMEDIA_TYPE_AUDIO)
     //printf("%d//%d//%d//\n", time_shown_, ticks_shown_, engine_->getTicks());
     //if (exist() && !_ended)
     if (exist())
-    { return pause_time_ = std::min(int(time_shown_ + engine_->getTicks() - ticks_shown_), total_time_); }
+    {
+        return pause_time_ = std::min(int(time_shown_ + engine_->getTicks() - ticks_shown_), total_time_);
+    }
     return 0;
 }
 
@@ -331,7 +361,9 @@ int PotStream::skipFrame(int time)
         n++;
         //视频需解码，因为关键帧不解后续一系列都有问题，音频可以只读不解
         if (decodeNextPacketToFrame(type_ == BPMEDIA_TYPE_VIDEO) < 0)
-        { break; }
+        {
+            break;
+        }
     }
     //跳帧后需丢弃原来的解码，重置时间轴
     dropAllDecoded();
@@ -375,7 +407,9 @@ double PotStream::getRotation()
     auto dic = stream_->metadata;
     auto entry = av_dict_get(dic, "rotate", nullptr, 0);
     if (entry)
-    { r = atof(entry->value); }
+    {
+        r = atof(entry->value);
+    }
     return r;
 }
 
