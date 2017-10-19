@@ -14,6 +14,7 @@ PotPlayer::PotPlayer()
     _w = 320;
     _h = 150;
     _handle = nullptr;
+    _filepath = "./";
 }
 
 PotPlayer::PotPlayer(char* s) : PotPlayer()
