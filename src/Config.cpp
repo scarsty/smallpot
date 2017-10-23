@@ -167,5 +167,6 @@ int Config::dealFilename(std::string& s)
     //replaceAllString(s, " ", "_");
     s = _sha3(s);
     s = "_" + s;
+    return 0;
 }
 

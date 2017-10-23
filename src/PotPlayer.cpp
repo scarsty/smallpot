@@ -48,7 +48,7 @@ int PotPlayer::beginWithFile(const std::string& filename)
 {
     int count = 0;
     if (init() != 0) { return -1; }
-
+    engine_->resetRenderTarget();
     int start_time = engine_->getTicks();
 
     //首次运行拖拽的文件也认为是同一个
@@ -206,7 +206,9 @@ int PotPlayer::eventLoop()
                 _media->setPause(pause);
                 break;
             case BPK_RETURN:
+#ifndef _LIB
                 engine_->toggleFullscreen();
+#endif
                 break;
             case BPK_ESCAPE:
                 if (engine_->isFullScreen())

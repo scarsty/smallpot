@@ -5,7 +5,7 @@
 
 #include "PotPlayer.h"
 
-
+#ifndef _LIB
 int main(int argc, char* argv[])
 {
     auto bp = new PotPlayer(argv[0]);
@@ -13,4 +13,5 @@ int main(int argc, char* argv[])
     delete bp;
     return 0;
 }
+#endif
 
