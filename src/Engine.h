@@ -1,4 +1,4 @@
-﻿ #pragma once
+﻿#pragma once
 
 extern "C"
 {
@@ -50,6 +50,8 @@ public:
     static Engine* getInstance() { return &_engine; }
     //图形相关
 private:
+
+    bool inited_ = false;
     BP_Window* _win = nullptr;
     BP_Renderer* _ren = nullptr;
     bool _ren_self = false;
@@ -105,7 +107,8 @@ public:
     void renderClear() { SDL_RenderClear(_ren); }
     void setTextureAlphaMod(BP_Texture* t, uint8_t alpha) { SDL_SetTextureAlphaMod(t, alpha); };
     void queryTexture(BP_Texture* t, int* w, int* h) { SDL_QueryTexture(t, nullptr, nullptr, w, h); }
-
+    void setRenderTarget(BP_Texture* t) { SDL_SetRenderTarget(_ren, t); }
+    void resetRenderTarget() { SDL_SetRenderTarget(_ren, nullptr); }
     void createWindow() {}
     void createRenderer() {}
     void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0, int inPresent = 0);

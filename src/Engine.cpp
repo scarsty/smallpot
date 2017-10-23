@@ -274,10 +274,14 @@ void Engine::drawText(const std::string& fontname, const std::string& text, int 
 
 int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
 {
+    if (inited_) return 0;
+    inited_ = true;
+#ifndef _LIB
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
     {
         return -1;
     }
+#endif
     _handle_type = handle_type;
     if (handle)
     {
@@ -295,9 +299,10 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
         _win = SDL_CreateWindow("PotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _start_w, _start_h, SDL_WINDOW_RESIZABLE);
     }
     //SDL_CreateWindowFrom()
+#ifndef _LIB
     SDL_ShowWindow(_win);
     SDL_RaiseWindow(_win);
-
+#endif
     _ren = SDL_GetRenderer(_win);
     printf("%s\n", SDL_GetError());
     if (_ren == nullptr)
