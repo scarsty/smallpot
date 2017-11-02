@@ -235,6 +235,9 @@ int PotPlayer::eventLoop()
         //#ifndef _LIB
         case BP_QUIT:
             pause = true;
+#ifdef _LIB
+            engine_->delay(10);
+#endif
             _media->setPause(pause);
             loop = false;
             _run = false;
