@@ -1,6 +1,7 @@
 cd src
 rm tinypot
-make -f Makefile.clang 
+cmake .
+make -j 
 otool -L tinypot
 cd ..
 cp src/tinypot tinypot.app/Contents/MacOS/tinypot
