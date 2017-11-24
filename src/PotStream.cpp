@@ -11,6 +11,7 @@ PotStream::PotStream()
     //mutex_cpp.;
     time_shown_ = 0;
     ticks_shown_ = engine_->getTicks();
+    av_init_packet(&packet_);
 }
 
 
@@ -129,7 +130,7 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
         }
         if (needReadPacket_)
         {
-            av_free_packet(&packet_);
+            av_packet_unref(&packet_);
         }
         //避免卡死
         if (gotsize < 0)
