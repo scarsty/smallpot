@@ -57,27 +57,24 @@ int PotMedia::decodeFrame()
     {
         _seeking = false;
         //seek之后，音频可能落后，需要追赶音频
-        if (time > 0)
+        if (_streamVideo->exist() && _streamAudio->exist())
         {
-            if (_streamVideo->exist() && _streamAudio->exist())
+            //一定时间以上才跳帧
+            //查看延迟情况
+            int v_dts = _streamVideo->getTimedts();
+            int a_dts = _streamAudio->getTimedts();
+            int max_dts = std::max(v_dts, a_dts);
+            int min_dts = std::min(v_dts, a_dts);
+            printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
+            //一定时间以上才跳帧
+            if (max_dts - min_dts > 100)
             {
-                //一定时间以上才跳帧
-                //查看延迟情况
-                int v_dts = _streamVideo->getTimedts();
-                int a_dts = _streamAudio->getTimedts();
-                int max_dts = std::max(v_dts, a_dts);
-                int min_dts = std::min(v_dts, a_dts);
-                printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
-                //一定时间以上才跳帧
-                if (max_dts - min_dts > 100)
-                {
-                    int sv = _streamVideo->skipFrame(max_dts);
-                    int sa = _streamAudio->skipFrame(max_dts);
-                    printf("drop %d audio frames, %d video frames\n", sa, sv);
-                    /*v_dts = _videoStream->getTimedts();
-                    a_dts = _audioStream->getTimedts();
-                    printf("seeking end diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);*/
-                }
+                int sv = _streamVideo->skipFrame(max_dts);
+                int sa = _streamAudio->skipFrame(max_dts);
+                printf("drop %d audio frames, %d video frames\n", sa, sv);
+                /*v_dts = _videoStream->getTimedts();
+                a_dts = _audioStream->getTimedts();
+                printf("seeking end diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);*/
             }
         }
         //cout << "se"<<engine_->getTicks()-se << " "<<endl;
