@@ -16,6 +16,7 @@ private:
     uint8_t* _resample_buffer = nullptr;
     int64_t _data_read = 0, _data_write = 0;  //读取和写入字节数，实际位置由该值与尺寸的余数计算
     int _freq, _channels;
+    PotResample _resample;
 
     void mixAudioData(uint8_t* stream, int len);
     int closeAudioDevice();

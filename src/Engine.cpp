@@ -65,7 +65,7 @@ void Engine::destroy()
 
 void Engine::mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume)
 {
-    SDL_MixAudioFormat(dst, src, BP_AUDIO_DEVICE_FORMAT, len, volume);
+    SDL_MixAudioFormat(dst, src, _audio_format, len, volume);
 }
 
 int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
@@ -76,32 +76,34 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
     printf("\naudio freq/channels: stream %d/%d, ", freq, channels);
     if (channels <= 2) { channels = 2; }
     want.freq = freq;
-    want.format = BP_AUDIO_DEVICE_FORMAT;
+    want.format = AUDIO_S16;
     want.channels = channels;
     want.samples = size;
     want.callback = mixAudioCallback;
     //want.userdata = this;
     want.silence = 0;
 
-    _callback = f;
+    _audio_callback = f;
     //if (useMap())
     {
         want.samples = std::max(size, minsize);
     }
 
-    _device = 0;
+    _audio_device = 0;
     int i = 10;
-    while (_device == 0 && i > 0)
+    while (_audio_device == 0 && i > 0)
     {
-        _device = SDL_OpenAudioDevice(NULL, 0, &want, &_spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
+        _audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &_spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
         want.channels--;
         i--;
     }
     printf("device %d/%d\n", _spec.freq, _spec.channels);
 
-    if (_device)
+    _audio_format = _spec.format;
+
+    if (_audio_device)
     {
-        SDL_PauseAudioDevice(_device, 0);
+        SDL_PauseAudioDevice(_audio_device, 0);
     }
     else
     {
@@ -117,9 +119,9 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
 void Engine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 {
     SDL_memset(stream, 0, len);
-    if (_engine._callback)
+    if (_engine._audio_callback)
     {
-        _engine._callback(stream, len);
+        _engine._audio_callback(stream, len);
     }
 }
 

@@ -15,7 +15,6 @@ extern "C"
 
 //这里是底层部分，将SDL的函数均封装了一次
 //如需更换底层，则要重新实现下面的全部功能，并重新定义全部常数和类型
-#define BP_AUDIO_DEVICE_FORMAT AUDIO_S16
 #define BP_AUDIO_MIX_MAXVOLUME SDL_MIX_MAXVOLUME
 
 typedef std::function<void(uint8_t*, int)> AudioCallback;
@@ -123,17 +122,18 @@ public:
     void setRatio(int x, int y) { _ratio_x = x; _ratio_y = y; }
     //声音相关
 private:
-    SDL_AudioDeviceID _device;
-    AudioCallback _callback = nullptr;
+    SDL_AudioDeviceID _audio_device;
+    AudioCallback _audio_callback = nullptr;
+    SDL_AudioFormat _audio_format = AUDIO_S16;
 public:
-    void pauseAudio(int pause) { SDL_PauseAudioDevice(_device, pause); }
-    void closeAudio() { SDL_CloseAudioDevice(_device); };
+    void pauseAudio(int pause) { SDL_PauseAudioDevice(_audio_device, pause); }
+    void closeAudio() { SDL_CloseAudioDevice(_audio_device); };
     int getMaxVolume() { return BP_AUDIO_MIX_MAXVOLUME; };
     void mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume);
-
+    SDL_AudioFormat getAudioFormat() { return _audio_format; }
     int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
     static void mixAudioCallback(void* userdata, Uint8* stream, int len);
-    void setAudioCallback(AudioCallback cb = nullptr) { _callback = cb; }
+    void setAudioCallback(AudioCallback cb = nullptr) { _audio_callback = cb; }
     //事件相关
 private:
     SDL_Event _e;
