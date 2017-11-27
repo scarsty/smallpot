@@ -43,6 +43,19 @@ void PotStreamAudio::openAudioDevice()
         _channels = codecCtx_->channels;
     }
     engine_->openAudio(_freq, _channels, codecCtx_->frame_size, 2048, std::bind(&PotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
+
+    auto audio_format = AV_SAMPLE_FMT_S16;
+
+    std::map<SDL_AudioFormat, AVSampleFormat> SDL_FFMPEG_AUDIO_FORMAT =
+    {
+        { AUDIO_U8, AV_SAMPLE_FMT_U8 },
+        { AUDIO_S16, AV_SAMPLE_FMT_S16 },
+        { AUDIO_S32, AV_SAMPLE_FMT_S32 },
+        { AUDIO_F32, AV_SAMPLE_FMT_FLT },
+        //{ AUDIO_U8, AV_SAMPLE_FMT_DBL },
+    };
+
+    _resample.setOutFormat(SDL_FFMPEG_AUDIO_FORMAT[engine_->getAudioFormat()]);
 }
 
 int PotStreamAudio::closeAudioDevice()
@@ -122,7 +135,7 @@ void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
 
 PotStream::Content PotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
 {
-    data_length_ = PotResample::convert(codecCtx_, frame_, BP_AUDIO_RESAMPLE_FORMAT, _freq, _channels, _resample_buffer);
+    data_length_ = _resample.convert(codecCtx_, frame_, _freq, _channels, _resample_buffer);
     if (data_length_ <= 0)
     {
         return{ -1, data_length_, nullptr };

@@ -1,16 +1,17 @@
 #include "PotResample.h"
 
 
+//PotResample PotResample::pot_resample_;
+
 PotResample::PotResample()
 {
 }
-
 
 PotResample::~PotResample()
 {
 }
 
-int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sample_format, int out_sample_rate, int out_channels, uint8_t* out_buf)
+int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sample_rate, int out_channels, uint8_t* out_buf)
 {
     SwrContext* swr_ctx = NULL;
     int data_size = 0;
@@ -78,7 +79,7 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
 
     av_opt_set_int(swr_ctx, "out_channel_layout", dst_ch_layout, 0);
     av_opt_set_int(swr_ctx, "out_sample_rate", out_sample_rate, 0);
-    av_opt_set_sample_fmt(swr_ctx, "out_sample_fmt", (AVSampleFormat)out_sample_format, 0);
+    av_opt_set_sample_fmt(swr_ctx, "out_sample_fmt", (AVSampleFormat)out_sample_format_, 0);
 
     if ((ret = swr_init(swr_ctx)) < 0)
     {
@@ -94,7 +95,7 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
     }
 
     dst_nb_channels = av_get_channel_layout_nb_channels(dst_ch_layout);
-    ret = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format, 0);
+    ret = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format_, 0);
     if (ret < 0)
     {
         printf("av_samples_alloc_array_and_samples error \n");
@@ -110,7 +111,7 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
     if (dst_nb_samples > max_dst_nb_samples)
     {
         av_free(&dst_data[0]);
-        ret = av_samples_alloc(dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format, 1);
+        ret = av_samples_alloc(dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format_, 1);
         max_dst_nb_samples = dst_nb_samples;
     }
 
@@ -123,7 +124,7 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
             return -1;
         }
 
-        resampled_data_size = av_samples_get_buffer_size(&dst_linesize, dst_nb_channels, ret, (AVSampleFormat)out_sample_format, 1);
+        resampled_data_size = av_samples_get_buffer_size(&dst_linesize, dst_nb_channels, ret, (AVSampleFormat)out_sample_format_, 1);
         if (resampled_data_size < 0)
         {
             printf("av_samples_get_buffer_size error \n");
