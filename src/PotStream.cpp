@@ -5,7 +5,7 @@ PotStream::PotStream()
 {
     av_register_all();
     avformat_network_init();
-    formatCtx_ = avformat_alloc_context();
+    format_ctx_ = avformat_alloc_context();
     frame_ = av_frame_alloc();
     //subtitle_ = av_
     //mutex_cpp.;
@@ -18,8 +18,8 @@ PotStream::PotStream()
 PotStream::~PotStream()
 {
     av_frame_free(&frame_);
-    if (codecCtx_) { avcodec_close(codecCtx_); }
-    avformat_close_input(&formatCtx_);
+    if (codec_ctx_) { avcodec_close(codec_ctx_); }
+    avformat_close_input(&format_ctx_);
     clearMap();
     stream_index_ = -1;
     //DestroyMutex(mutex_cpp);
@@ -30,28 +30,28 @@ int PotStream::openFile(const std::string& filename)
 {
     stream_index_ = -1;
     this->filename_ = filename;
-    if (avformat_open_input(&formatCtx_, filename.c_str(), nullptr, nullptr) == 0)
+    if (avformat_open_input(&format_ctx_, filename.c_str(), nullptr, nullptr) == 0)
     {
-        avformat_find_stream_info(formatCtx_, nullptr);
-        for (int i = 0; i < formatCtx_->nb_streams; ++i)
+        avformat_find_stream_info(format_ctx_, nullptr);
+        for (int i = 0; i < format_ctx_->nb_streams; ++i)
         {
-            if (formatCtx_->streams[i]->codec->codec_type == type_)
+            if (format_ctx_->streams[i]->codec->codec_type == type_)
             {
                 //printf("finded media stream: %d\n", type);
-                stream_ = formatCtx_->streams[i];
-                codecCtx_ = stream_->codec;
+                stream_ = format_ctx_->streams[i];
+                codec_ctx_ = stream_->codec;
                 //timebase = av_q2d(formatCtx->streams[i]->time_base);
                 if (stream_->r_frame_rate.den)
                 {
                     time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
                 }
                 time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
-                total_time_ = formatCtx_->duration * 1e3 / AV_TIME_BASE;
-                start_time_ = formatCtx_->start_time * 1e3 / AV_TIME_BASE;
+                total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
+                start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
                 //totalTime = (int)stream->nb_frames * timePerFrame;
                 stream_index_ = i;
-                codec_ = avcodec_find_decoder(codecCtx_->codec_id);
-                avcodec_open2(codecCtx_, codec_, nullptr);
+                codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
+                avcodec_open2(codec_ctx_, codec_, nullptr);
                 break;
             }
         }
@@ -70,16 +70,16 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
     int gotframe = 0;
     int gotsize = 0;
     int totalGotsize = 0;
-    bool haveFrame = !needReadPacket_;
+    bool haveFrame = !need_read_packet_;
     stopping = false;
     //一帧多包，一包多帧都要考虑，甚是麻烦
     while (ret == 0)
     {
         //auto packet = new AVPacket;
-        if (needReadPacket_)
+        if (need_read_packet_)
         {
-            haveFrame = av_read_frame(formatCtx_, &packet_) >= 0;
-            decodeSizeInPacket_ = 0;
+            haveFrame = av_read_frame(format_ctx_, &packet_) >= 0;
+            decode_size_in_packet_ = 0;
         }
         if (haveFrame)
         {
@@ -90,13 +90,13 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
                     //循环处理多次才能解到一帧的情况
                     while (gotframe == 0)
                     {
-                        gotsize = avcodec_decode_packet(codecCtx_, frame_, &gotframe, &packet_);
+                        gotsize = avcodec_decode_packet(codec_ctx_, frame_, &gotframe, &packet_);
                         if (gotsize <= 0) { break; }
                         packet_.data += gotsize;
                         totalGotsize += gotsize;
                         packet_.size -= gotsize;
-                        needReadPacket_ = packet_.size <= 0;
-                        if (needReadPacket_)
+                        need_read_packet_ = packet_.size <= 0;
+                        if (need_read_packet_)
                         {
                             break;
                         }
@@ -105,16 +105,16 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
                 }
                 else
                 {
-                    needReadPacket_ = true;
+                    need_read_packet_ = true;
                     ret = 2;
                 }
             }
-            _ended = false;
+            ended_ = false;
         }
         else
         {
             ret = -1;
-            _ended = true;
+            ended_ = true;
             break;
         }
         if (ret > 0)
@@ -123,12 +123,12 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
             //double t = decodeSizeInPacket_*time_per_packet_ / totalPacketSize;
             time_pts_ = packet_.pts * time_base_packet_;
             time_dts_ = packet_.dts * time_base_packet_;
-            decodeSizeInPacket_ += totalGotsize;
+            decode_size_in_packet_ += totalGotsize;
             //key_frame_ = frame_->key_frame;
             //frame_number_ = codecCtx_->frame_number;
             //if (type_ == 0 && key_frame_)printf("\n%dis key\n", time_dts_);
         }
-        if (needReadPacket_)
+        if (need_read_packet_)
         {
             av_packet_unref(&packet_);
         }
@@ -165,16 +165,16 @@ int PotStream::tryDecodeFrame(bool reset)
         {
             //printf("%d\n", _map.size());
             //如果只有一帧，则静止时间需更新
-            if (_map.size() == 0)
+            if (data_map_.size() == 0)
             {
                 if (reset)
                 {
                     resetTimeAxis(time_dts_);
                 }
             }
-            if (_map.count(f.time) == 0 && f.data)
+            if (data_map_.count(f.time) == 0 && f.data)
             {
-                _map[f.time] = f;
+                data_map_[f.time] = f;
             }
         }
         else
@@ -210,16 +210,16 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
         }
         //间隔比较大的情况重置播放器
         if (type_ == BPMEDIA_TYPE_VIDEO
-            && (pause_ || reset || engine_->getTicks() - _seek_record > 100))
+            && (pause_ || reset || engine_->getTicks() - seek_record_ > 100))
         {
-            avcodec_flush_buffers(codecCtx_);
+            avcodec_flush_buffers(codec_ctx_);
         }
         dropAllDecoded();
-        av_seek_frame(formatCtx_, -1, i, flag);
+        av_seek_frame(format_ctx_, -1, i, flag);
 
         //decodeFrame(true);
     }
-    _seek_record = engine_->getTicks();
+    seek_record_ = engine_->getTicks();
     return 0;
 }
 
@@ -231,14 +231,14 @@ void PotStream::setFrameTime()
 int PotStream::dropContent(int key)
 {
     mutex_.lock();
-    if (_map.size() > 0)
+    if (data_map_.size() > 0)
     {
-        auto p = _map.begin()->second.data;
+        auto p = data_map_.begin()->second.data;
         if (p)
         {
             freeContent(p);
         }
-        _map.erase(_map.begin());
+        data_map_.erase(data_map_.begin());
     }
     mutex_.unlock();
     return 0;
@@ -250,11 +250,11 @@ void PotStream::clearMap()
     //printf("clear buffer begin with %d\n", _map.size());
     //for (auto i = _map.begin(); i != _map.end(); i++)
     mutex_.lock();
-    for (auto& i : _map)
+    for (auto& i : data_map_)
     {
         freeContent(i.second.data);
     }
-    _map.clear();
+    data_map_.clear();
     mutex_.unlock();
     //printf("clear buffer end with %d\n", _map.size());
     //SDL_UnlockMutex(mutex_cpp);
@@ -262,7 +262,7 @@ void PotStream::clearMap()
 
 void PotStream::setMap(int key, Content f)
 {
-    _map[key] = f;
+    data_map_[key] = f;
 }
 
 bool PotStream::needDecode()
@@ -273,17 +273,17 @@ bool PotStream::needDecode()
     }
     if (useMap())
     {
-        return (_map.size() < maxSize_);
+        return (data_map_.size() < max_size_);
     }
     else
     {
-        return !_decoded;
+        return !decoded_;
     }
 }
 
 void PotStream::setDecoded(bool b)
 {
-    _decoded = b;
+    decoded_ = b;
 }
 
 void PotStream::dropDecoded()
@@ -294,22 +294,22 @@ void PotStream::dropDecoded()
     }
     else
     {
-        _decoded = false;
+        decoded_ = false;
     }
 }
 
 bool PotStream::useMap()
 {
-    return maxSize_ > 0;
+    return max_size_ > 0;
 }
 
 PotStream::Content PotStream::getCurrentContent()
 {
     if (useMap())
     {
-        if (_map.size() > 0)
+        if (data_map_.size() > 0)
         {
-            return _map.begin()->second;
+            return data_map_.begin()->second;
         }
         else
             return{ -1, -1, nullptr };
@@ -324,11 +324,11 @@ bool PotStream::haveDecoded()
 {
     if (useMap())
     {
-        return _map.size() > 0;
+        return data_map_.size() > 0;
     }
     else
     {
-        return _decoded;
+        return decoded_;
     }
 }
 
@@ -376,8 +376,8 @@ void PotStream::getSize(int& w, int& h)
 {
     if (exist())
     {
-        w = codecCtx_->width;
-        h = codecCtx_->height;
+        w = codec_ctx_->width;
+        h = codec_ctx_->height;
     }
 }
 
@@ -385,7 +385,7 @@ void PotStream::dropAllDecoded()
 {
     clearMap();
     setDecoded(false);
-    needReadPacket_ = true;
+    need_read_packet_ = true;
 }
 
 void PotStream::setPause(bool pause)

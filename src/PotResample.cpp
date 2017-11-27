@@ -11,12 +11,12 @@ PotResample::~PotResample()
 {
 }
 
-int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sample_rate, int out_channels, uint8_t* out_buf)
+int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_sample_rate, int out_channels, uint8_t* out_buf)
 {
     SwrContext* swr_ctx = NULL;
     int data_size = 0;
     int ret = 0;
-    int64_t src_ch_layout = codecCtx->channel_layout;
+    int64_t src_ch_layout = codec_ctx->channel_layout;
     int64_t dst_ch_layout = AV_CH_LAYOUT_STEREO;
     int dst_nb_channels = 0;
     int dst_linesize = 0;
@@ -33,9 +33,9 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
         return -1;
     }
 
-    src_ch_layout = (codecCtx->channels ==
-        av_get_channel_layout_nb_channels(codecCtx->channel_layout)) ?
-        codecCtx->channel_layout : av_get_default_channel_layout(codecCtx->channels);
+    src_ch_layout = (codec_ctx->channels ==
+        av_get_channel_layout_nb_channels(codec_ctx->channel_layout)) ?
+        codec_ctx->channel_layout : av_get_default_channel_layout(codec_ctx->channels);
 
     //这里的设置很粗糙，最好详细处理
     switch (out_channels)
@@ -74,8 +74,8 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
     }
 
     av_opt_set_int(swr_ctx, "in_channel_layout", src_ch_layout, 0);
-    av_opt_set_int(swr_ctx, "in_sample_rate", codecCtx->sample_rate, 0);
-    av_opt_set_sample_fmt(swr_ctx, "in_sample_fmt", codecCtx->sample_fmt, 0);
+    av_opt_set_int(swr_ctx, "in_sample_rate", codec_ctx->sample_rate, 0);
+    av_opt_set_sample_fmt(swr_ctx, "in_sample_fmt", codec_ctx->sample_fmt, 0);
 
     av_opt_set_int(swr_ctx, "out_channel_layout", dst_ch_layout, 0);
     av_opt_set_int(swr_ctx, "out_sample_rate", out_sample_rate, 0);
@@ -87,7 +87,7 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
         return -1;
     }
 
-    max_dst_nb_samples = dst_nb_samples = av_rescale_rnd(src_nb_samples, out_sample_rate, codecCtx->sample_rate, AV_ROUND_UP);
+    max_dst_nb_samples = dst_nb_samples = av_rescale_rnd(src_nb_samples, out_sample_rate, codec_ctx->sample_rate, AV_ROUND_UP);
     if (max_dst_nb_samples <= 0)
     {
         printf("av_rescale_rnd error \n");
@@ -102,7 +102,7 @@ int PotResample::convert(AVCodecContext* codecCtx, AVFrame* frame, int out_sampl
         return -1;
     }
 
-    dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, codecCtx->sample_rate) + src_nb_samples, out_sample_rate, codecCtx->sample_rate, AV_ROUND_UP);
+    dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, codec_ctx->sample_rate) + src_nb_samples, out_sample_rate, codec_ctx->sample_rate, AV_ROUND_UP);
     if (dst_nb_samples <= 0)
     {
         printf("av_rescale_rnd error \n");

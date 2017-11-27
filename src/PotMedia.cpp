@@ -4,16 +4,16 @@
 
 PotMedia::PotMedia()
 {
-    _streamVideo = new PotStreamVideo();
-    _streamAudio = new PotStreamAudio();
+    stream_video_ = new PotStreamVideo();
+    stream_audio_ = new PotStreamAudio();
     //_streamSubtitle = new BigPotStreamSubtitle();
 }
 
 
 PotMedia::~PotMedia()
 {
-    delete _streamVideo;
-    delete _streamAudio;
+    delete stream_video_;
+    delete stream_audio_;
     //delete _streamSubtitle;
 }
 
@@ -23,18 +23,18 @@ int PotMedia::openFile(const std::string& filename)
     {
         return -1;
     }
-    _streamVideo->openFile(filename);
-    _streamAudio->openFile(filename);
+    stream_video_->openFile(filename);
+    stream_audio_->openFile(filename);
     //_streamSubtitle->openFile(filename);
 
-    if (_streamAudio->exist())
+    if (stream_audio_->exist())
     {
-        _totalTime = _streamAudio->getTotalTime();
-        _streamAudio->openAudioDevice();
+        total_time_ = stream_audio_->getTotalTime();
+        stream_audio_->openAudioDevice();
     }
     else
     {
-        _totalTime = _streamVideo->getTotalTime();
+        total_time_ = stream_video_->getTotalTime();
     }
     return 0;
 }
@@ -43,34 +43,34 @@ int PotMedia::openFile(const std::string& filename)
 int PotMedia::decodeFrame()
 {
     //int se= engine_->getTicks();
-    _streamVideo->tryDecodeFrame(_seeking);
-    if (_streamVideo->isStopping()) { return 0; }
+    stream_video_->tryDecodeFrame(seeking_);
+    if (stream_video_->isStopping()) { return 0; }
     //_streamAudio->tryDecodeFrame(_seeking);
-    for (int i = 0; i <= _extAudioFrame; i++)
+    for (int i = 0; i <= ext_audio_frame_; i++)
     {
-        _streamAudio->tryDecodeFrame(_seeking);
+        stream_audio_->tryDecodeFrame(seeking_);
     }
-    _streamSubtitle->tryDecodeFrame(_seeking);
+    stream_subtitle_->tryDecodeFrame(seeking_);
     //int m = _audioStream->getTimedts();
     //int n = _videoStream->getTimedts();
-    if (_seeking)
+    if (seeking_)
     {
-        _seeking = false;
+        seeking_ = false;
         //seek之后，音频可能落后，需要追赶音频
-        if (_streamVideo->exist() && _streamAudio->exist())
+        if (stream_video_->exist() && stream_audio_->exist())
         {
             //一定时间以上才跳帧
             //查看延迟情况
-            int v_dts = _streamVideo->getTimedts();
-            int a_dts = _streamAudio->getTimedts();
+            int v_dts = stream_video_->getTimedts();
+            int a_dts = stream_audio_->getTimedts();
             int max_dts = std::max(v_dts, a_dts);
             int min_dts = std::min(v_dts, a_dts);
             printf("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
             //一定时间以上才跳帧
             if (max_dts - min_dts > 100)
             {
-                int sv = _streamVideo->skipFrame(max_dts);
-                int sa = _streamAudio->skipFrame(max_dts);
+                int sv = stream_video_->skipFrame(max_dts);
+                int sa = stream_audio_->skipFrame(max_dts);
                 printf("drop %d audio frames, %d video frames\n", sa, sv);
                 /*v_dts = _videoStream->getTimedts();
                 a_dts = _audioStream->getTimedts();
@@ -86,47 +86,47 @@ int PotMedia::decodeFrame()
 int PotMedia::getAudioTime()
 {
     //printf("\t\t\t\t\t\t\r%d,%d,%d", audioStream->time, videoStream->time, audioStream->getAudioTime());
-    return _streamAudio->getTime();
+    return stream_audio_->getTime();
 }
 
 int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 {
-    time = std::min(time, _totalTime - 100);
-    _streamVideo->seek(time, direct, reset);
-    _streamAudio->seek(time, direct, reset);
+    time = std::min(time, total_time_ - 100);
+    stream_video_->seek(time, direct, reset);
+    stream_audio_->seek(time, direct, reset);
 
-    _seeking = true;
+    seeking_ = true;
 
-    _streamAudio->resetDecodeState();
+    stream_audio_->resetDecodeState();
 
     return 0;
 }
 
 int PotMedia::showVideoFrame(int time)
 {
-    return _streamVideo->showTexture(time);
+    return stream_video_->showTexture(time);
 }
 
 int PotMedia::seekPos(double pos, int direct /*= 1*/, int reset /*= 0*/)
 {
     //printf("\nseek %f pos, %f s\n", pos, pos * totalTime / 1e3);
-    return seekTime(pos * _totalTime, direct, reset);
+    return seekTime(pos * total_time_, direct, reset);
 }
 
 int PotMedia::getVideoTime()
 {
-    return _streamVideo->getTime();
+    return stream_video_->getTime();
 }
 
 int PotMedia::getTime()
 {
-    if (_streamAudio->exist())
+    if (stream_audio_->exist())
     {
-        return _streamAudio->getTime();
+        return stream_audio_->getTime();
     }
     else
     {
-        return _streamVideo->getTime();
+        return stream_video_->getTime();
     }
 }
 
@@ -137,13 +137,13 @@ void PotMedia::destroy()
 
 bool PotMedia::isMedia()
 {
-    return _streamAudio->exist() || _streamVideo->exist();
+    return stream_audio_->exist() || stream_video_->exist();
 }
 
 void PotMedia::setPause(bool pause)
 {
-    _streamAudio->setPause(pause);
-    _streamVideo->setPause(pause);
+    stream_audio_->setPause(pause);
+    stream_video_->setPause(pause);
 }
 
 

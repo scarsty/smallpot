@@ -1,11 +1,10 @@
 #include "Config.h"
 #include "File.h"
 
-Config Config::_config;
+Config Config::config_;
 
 Config::Config()
 {
-    _this = &_config;
     //init();
 }
 
@@ -18,36 +17,33 @@ Config::~Config()
 
 void Config::init(const std::string& filepath)
 {
-    _filename = filepath + "/config.xml";
-    printf("try find config file: %s\n", _filename.c_str());
-    _doc.LoadFile(_filename.c_str());
-#ifdef _DEBUG
-    //_doc.Print();
-#endif
+    filename_ = filepath + "/config.xml";
+    printf("try find config file: %s\n", filename_.c_str());
+    doc_.LoadFile(filename_.c_str());
     //初始化结构
-    if (_doc.Error())
+    if (doc_.Error())
     {
         //_doc.DeleteChildren();
-        _doc.LinkEndChild(_doc.NewDeclaration());
-        _root = _doc.NewElement("root");
+        doc_.LinkEndChild(doc_.NewDeclaration());
+        root_ = doc_.NewElement("root");
     }
     else
     {
-        _root = _doc.FirstChildElement("root");
+        root_ = doc_.FirstChildElement("root");
     }
 
-    _record = _root->FirstChildElement("record");
-    if (!_record)
+    record_ = root_->FirstChildElement("record");
+    if (!record_)
     {
-        _record = _root->InsertFirstChild(_doc.NewElement("record"))->ToElement();
+        record_ = root_->InsertFirstChild(doc_.NewElement("record"))->ToElement();
     }
 }
 
 void Config::write()
 {
     //_doc.LinkEndChild(_doc.NewDeclaration());
-    _doc.LinkEndChild(_root);
-    _doc.SaveFile(_filename.c_str());
+    doc_.LinkEndChild(root_);
+    doc_.SaveFile(filename_.c_str());
 }
 
 tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const char* name)
@@ -59,7 +55,7 @@ tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const cha
     }
     else
     {
-        p = parent->InsertFirstChild(_doc.NewElement(name))->ToElement();
+        p = parent->InsertFirstChild(doc_.NewElement(name))->ToElement();
         p->SetText("");
         return p;
     }
@@ -70,7 +66,7 @@ int Config::getRecord(const char* name)
     if (strlen(name) == 0) { return 0; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
     dealFilename(mainname);
-    const char* str = getElement(_record, mainname.c_str())->GetText();
+    const char* str = getElement(record_, mainname.c_str())->GetText();
     if (!str)
     {
         return 0;
@@ -83,7 +79,7 @@ void Config::removeRecord(const char* name)
     if (strlen(name) == 0) { return; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
     dealFilename(mainname);
-    _record->DeleteChild(getElement(_record, mainname.c_str()));
+    record_->DeleteChild(getElement(record_, mainname.c_str()));
 }
 
 void Config::setRecord(int v, const char* name)
@@ -91,20 +87,20 @@ void Config::setRecord(int v, const char* name)
     if (strlen(name) == 0) { return; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
     dealFilename(mainname);
-    getElement(_record, mainname.c_str())->SetText(File::formatString("%d", v).c_str());
+    getElement(record_, mainname.c_str())->SetText(File::formatString("%d", v).c_str());
 }
 
 void Config::clearRecord()
 {
-    if (_record)
+    if (record_)
     {
-        _record->DeleteChildren();
+        record_->DeleteChildren();
     }
 }
 
 std::string Config::getString(const char* name, std::string def /*= ""*/)
 {
-    auto p = _root->FirstChildElement(name);
+    auto p = root_->FirstChildElement(name);
     if (p && p->FirstChild())
     {
         return p->GetText();
@@ -132,7 +128,7 @@ bool Config::getBool(bool& v, const char* name)
 
 void Config::setString(const std::string v, const char* name)
 {
-    getElement(_root, name)->SetText(v.c_str());
+    getElement(root_, name)->SetText(v.c_str());
 }
 
 void Config::setInteger(int v, const char* name)
@@ -165,7 +161,7 @@ int Config::replaceAllString(std::string& s, const std::string& oldstring, const
 int Config::dealFilename(std::string& s)
 {
     //replaceAllString(s, " ", "_");
-    s = _sha3(s);
+    s = sha3_(s);
     s = "_" + s;
     return 0;
 }

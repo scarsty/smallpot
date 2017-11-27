@@ -11,26 +11,26 @@ PotUI::PotUI()
 
 PotUI::~PotUI()
 {
-    engine_->destroyTexture(_square);
+    engine_->destroyTexture(square_);
     //engine->destroyTexture(text);
 }
 
 void PotUI::drawBall()
 {
-    if (_alpha == 0)
+    if (alpha_ == 0)
     {
         return;
     }
-    engine_->setTextureAlphaMod(_square, _alpha);
+    engine_->setTextureAlphaMod(square_, alpha_);
 
     int d = 10, x, y;
-    y = _win_h - 15;
-    engine_->renderCopy(_square, -100, y + d / 2 - 1, _win_w + 200, 2);
-    engine_->renderCopy(_square, 1.0 * _time / _totoalTime * _win_w - 5, y, d, d);
+    y = win_h_ - 15;
+    engine_->renderCopy(square_, -100, y + d / 2 - 1, win_w_ + 200, 2);
+    engine_->renderCopy(square_, 1.0 * time_ / totoal_time_ * win_w_ - 5, y, d, d);
 
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
-    int v = _volume;
-    x = _win_w - 40;
+    int v = volume_;
+    x = win_w_ - 40;
     y = 30;
     for (int i = 0; i < 8; i++)
     {
@@ -42,7 +42,7 @@ void PotUI::drawBall()
             r = 1.0 * (one_square + v) / one_square;
         }
         int hc = r * h;
-        engine_->renderCopy(_square, x + i * 3, y - hc, 2, hc);
+        engine_->renderCopy(square_, x + i * 3, y - hc, 2, hc);
         if (v < 0)
         {
             break;
@@ -59,23 +59,23 @@ void PotUI::drawBall()
 
 void PotUI::drawText(const std::string& text)
 {
-    engine_->drawText(_fontname.c_str(), text, 20, _win_w - 50, 10, _alpha, BP_ALIGN_RIGHT);
+    engine_->drawText(fontname_.c_str(), text, 20, win_w_ - 50, 10, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
 void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
 {
-    this->_alpha = alpha;
+    this->alpha_ = alpha;
     if (alpha == 0)
     {
         return;
     }
     //_win_w = engine_->getWindowsWidth();
     //_win_h = engine_->getWindowsHeight();
-    engine_->getWindowSize(_win_w, _win_h);
-    this->_time = time;
-    this->_totoalTime = totoalTime;
-    this->_volume = volume;
+    engine_->getWindowSize(win_w_, win_h_);
+    this->time_ = time;
+    this->totoal_time_ = totoalTime;
+    this->volume_ = volume;
     drawBall();
     drawText(convertTimeToString(time) + " / " + convertTimeToString(totoalTime));
 }
@@ -89,19 +89,19 @@ std::string PotUI::convertTimeToString(int time)
 
 void PotUI::init()
 {
-    _square = engine_->createSquareTexture(40);
-    _ball = engine_->createBallTexture(40);
-    _fontname = config_->getString("ui_font");
-    if (!File::fileExist(_fontname))
+    square_ = engine_->createSquareTexture(40);
+    ball_ = engine_->createBallTexture(40);
+    fontname_ = config_->getString("ui_font");
+    if (!File::fileExist(fontname_))
     {
 #ifdef _WIN32
-        _fontname = "c:/windows/fonts/cambria.ttc";
-        if (!File::fileExist(_fontname))
+        fontname_ = "c:/windows/fonts/cambria.ttc";
+        if (!File::fileExist(fontname_))
         {
-            _fontname = "c:/windows/fonts/cambria.ttf";
+            fontname_ = "c:/windows/fonts/cambria.ttf";
         }
 #else
-        _fontname = "/System/Library/Fonts/Palatino.ttc";
+        fontname_ = "/System/Library/Fonts/Palatino.ttc";
 #endif
     }
 }
@@ -110,7 +110,7 @@ void PotUI::destory()
 {
     if (config_->getString("ui_font") == "")
     {
-        config_->setString(_fontname, "ui_font");
+        config_->setString(fontname_, "ui_font");
     }
-    engine_->destroyTexture(_square);
+    engine_->destroyTexture(square_);
 }

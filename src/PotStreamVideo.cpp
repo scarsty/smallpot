@@ -4,7 +4,7 @@
 PotStreamVideo::PotStreamVideo()
 {
     //视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
-    maxSize_ = 0;
+    max_size_ = 0;
     type_ = BPMEDIA_TYPE_VIDEO;
 }
 
@@ -54,7 +54,7 @@ PotStream::Content PotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
     auto tex = (BP_Texture*)data_;
     if (useMap())
     {
-        tex = engine_->createYUVTexture(codecCtx_->width, codecCtx_->height);
+        tex = engine_->createYUVTexture(codec_ctx_->width, codec_ctx_->height);
     }
     engine_->updateYUVTexture(tex, f->data[0], f->linesize[0], f->data[1], f->linesize[1], f->data[2], f->linesize[2]);
     return{ time_dts_, f->linesize[0], tex };

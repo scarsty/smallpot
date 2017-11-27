@@ -12,30 +12,30 @@ PotSubtitleSrt::~PotSubtitleSrt()
 bool PotSubtitleSrt::openSubtitle(const std::string& filename)
 {
     haveSubtitle_ = true;
-    _file = fopen(filename.c_str(), "r");
-    if (!_file)
+    file_ = fopen(filename.c_str(), "r");
+    if (!file_)
     {
-        _file = NULL;
+        file_ = NULL;
         return false;
     }
     else
     {
         //BigPotSubtitleAtom bigpottmp;
-        while (!feof(_file))
+        while (!feof(file_))
         {
             readIndex();
         }
         //fscanf("%d")
         return true;
     }
-    fclose(_file);
+    fclose(file_);
 }
 
 void PotSubtitleSrt::show(int time)
 {
-    for (int i = 0; i < _AtomList.size(); i++)
+    for (int i = 0; i < atom_list_.size(); i++)
     {
-        auto tmplist = _AtomList[i];
+        auto tmplist = atom_list_[i];
         if (tmplist.begintime <= time && tmplist.endtime >= time)
         {
             //engine_->renderCopy()
@@ -49,10 +49,10 @@ void PotSubtitleSrt::show(int time)
 
 int PotSubtitleSrt::readIndex()
 {
-    if (!_file) { return 0; }
-    if (feof(_file)) { return 0; }
+    if (!file_) { return 0; }
+    if (feof(file_)) { return 0; }
     int tmpid = -1;
-    fscanf(_file, "%d\n", &tmpid);
+    fscanf(file_, "%d\n", &tmpid);
     if (tmpid != -1)
     {
         PotSubtitleAtom pot;
@@ -66,11 +66,11 @@ int PotSubtitleSrt::readIndex()
 
 int PotSubtitleSrt::readTime(PotSubtitleAtom& pot)
 {
-    if (!_file) { return 0; }
-    if (feof(_file)) { return 0; }
+    if (!file_) { return 0; }
+    if (feof(file_)) { return 0; }
     int btimeh, btimem, btimes, btimems;
     int etimeh, etimem, etimes, etimems;
-    if (fscanf(_file, "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n",
+    if (fscanf(file_, "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n",
         &btimeh, &btimem, &btimes, &btimems,
         &etimeh, &etimem, &etimes, &etimems) == 8)
     {
@@ -88,19 +88,19 @@ int PotSubtitleSrt::readTime(PotSubtitleAtom& pot)
 
 int PotSubtitleSrt::readString(PotSubtitleAtom& pot)
 {
-    if (!_file)
+    if (!file_)
     {
         return 0;
     }
-    if (feof(_file))
+    if (feof(file_))
     {
         return 0;
     }
     std::string tmpstr = "";
-    while (!feof(_file))
+    while (!feof(file_))
     {
         char tmp[4096] = { 0 };
-        fgets(tmp, 4096, _file);
+        fgets(tmp, 4096, file_);
         if (strcmp(tmp, "\n") != 0)
         {
             tmpstr += tmp;
@@ -112,7 +112,7 @@ int PotSubtitleSrt::readString(PotSubtitleAtom& pot)
     }
 
     pot.str = tmpstr;
-    _AtomList.push_back(pot);
+    atom_list_.push_back(pot);
     return 0;
 }
 
