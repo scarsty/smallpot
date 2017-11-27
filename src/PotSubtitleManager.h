@@ -11,7 +11,7 @@ public:
 
     //下面是字幕工厂
 private:
-    static std::vector<std::string> _ext;
+    static std::vector<std::string> ext_names_;
 
 public:
     static PotSubtitle* createSubtitle(const std::string& filename);

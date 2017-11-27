@@ -26,7 +26,7 @@ public:
     static std::string formatString(const char* format, ...);
     static void changePath(const std::string& path);
 
-	static int replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring);
+    static int replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring);
 private:
     static int getLastPathPos(const std::string& filename);
 };

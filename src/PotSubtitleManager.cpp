@@ -3,7 +3,7 @@
 #include "PotSubtitleAss.h"
 #include "PotSubtitleSrt.h"
 
-std::vector<std::string> PotSubtitleManager::_ext;
+std::vector<std::string> PotSubtitleManager::ext_names_;
 
 PotSubtitleManager::PotSubtitleManager()
 {
@@ -40,18 +40,18 @@ PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
 
 std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
 {
-    if (_ext.size() == 0)
+    if (ext_names_.size() == 0)
     {
-        _ext.push_back("ass");
-        _ext.push_back("ssa");
-        _ext.push_back("srt");
-        _ext.push_back("txt");
+        ext_names_.push_back("ass");
+        ext_names_.push_back("ssa");
+        ext_names_.push_back("srt");
+        ext_names_.push_back("txt");
     }
 
     std::string str = "";
     bool b = false;
     //检查默认类型
-    for (auto& ext : _ext)
+    for (auto& ext : ext_names_)
     {
         str = File::changeFileExt(filename, ext);
         if (File::fileExist(str))
@@ -79,7 +79,7 @@ bool PotSubtitleManager::isSubtitle(const std::string& filename)
     ext = File::toLowerCase(ext);
     //transform(ext.begin(), ext.end(), ext.begin(), tolower);
     bool b = false;
-    for (auto& e : _ext)
+    for (auto& e : ext_names_)
     {
         if (e == ext)
         {

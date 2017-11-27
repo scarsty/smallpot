@@ -7,23 +7,22 @@
 class Config
 {
 private:
-    static Config _config;
-    Config* _this;
-    std::string _content;
-    std::string _filename;
-    SHA3 _sha3;
+    static Config config_;
+    std::string content_;
+    std::string filename_;
+    SHA3 sha3_;
     Config();
     virtual ~Config();
 
-    tinyxml2::XMLDocument _doc;
-    tinyxml2::XMLElement* _root, *_record;
+    tinyxml2::XMLDocument doc_;
+    tinyxml2::XMLElement* root_, *record_;
 
     tinyxml2::XMLElement* getElement(tinyxml2::XMLElement* parent, const char* name);
 
 public:
     void init(const std::string& filepath);
     void write();
-    static Config* getInstance() { return &_config; };
+    static Config* getInstance() { return &config_; };
 
     //xml只有字串，故首先完成字串功能
     std::string getString(const char* name, std::string def = "");
