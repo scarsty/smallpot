@@ -59,7 +59,7 @@ std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
             return str;
         }
     }
-    str = File::fingFileWithMainName(filename);
+    str = File::findFileWithMainName(filename);
     if (!isSubtitle(str))
     {
         str = "";
