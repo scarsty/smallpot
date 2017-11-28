@@ -1,4 +1,5 @@
 cd src
+cp CMakeLists-osx.txt CMakeLists.txt -f
 rm tinypot
 cmake .
 make -j 
