@@ -1,28 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyPot", "tinypot.vcxproj", "{BA5597D9-DBCC-45C4-AA58-8D691764A191}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
-		Debug-dll|x86 = Debug-dll|x86
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-		Release-dll|x86 = Release-dll|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Debug|x64.ActiveCfg = Debug|x64
+		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Debug|x64.Build.0 = Debug|x64
 		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Debug|x86.ActiveCfg = Debug|Win32
 		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Debug|x86.Build.0 = Debug|Win32
-		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Debug-dll|x86.ActiveCfg = Debug-dll|Win32
-		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Debug-dll|x86.Build.0 = Debug-dll|Win32
-		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release|x86.ActiveCfg = Release|Win32
-		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release|x86.Build.0 = Release|Win32
-		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release-dll|x86.ActiveCfg = Release-dll|Win32
-		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release-dll|x86.Build.0 = Release-dll|Win32
+		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release|x64.ActiveCfg = Release|x64
+		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release|x64.Build.0 = Release|x64
+		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release|x86.ActiveCfg = Release|x64
+		{BA5597D9-DBCC-45C4-AA58-8D691764A191}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C848948-63DA-427E-8771-945A9620F384}
 	EndGlobalSection
 EndGlobal
