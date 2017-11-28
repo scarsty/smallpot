@@ -18,7 +18,7 @@ void PotSubtitleAss::init()
 {
     library_ = ass_library_init();
     renderer_ = ass_renderer_init(library_);
-    ass_set_fonts(renderer_, fontname_.c_str(), "Sans", 0, "", 0);
+    ass_set_fonts(renderer_, fontname_.c_str(), "Sans", 1, "", 0);
 }
 
 bool PotSubtitleAss::openSubtitle(const std::string& filename)

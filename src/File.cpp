@@ -16,7 +16,7 @@
 #include <algorithm>
 
 #ifdef __clang__
-//#define chdir _chdir
+#define chdir _chdir
 #endif
 
 File::File()
@@ -114,31 +114,32 @@ std::string File::getFilePath(const std::string& filename)
 }
 
 //查找相似文件名的文件，只找两个
-std::string File::fingFileWithMainName(const std::string& filename)
+std::string File::findFileWithMainName(const std::string& filename)
 {
 #ifndef _MSC_VER
     return "";
 #else
-    _finddata_t file;
-    long fileHandle;
-    std::string path = getFilePath(filename);
-    std::string ext = getFileExt(filename);
-    if (path != "") { path = path + '\\'; }
-    std::string findname = getFileMainname(filename) + ".*";
-    std::string ret = "";
-    fileHandle = _findfirst(findname.c_str(), &file);
-    ret = path + file.name;
-    if (getFileExt(ret) == ext)
-    {
-        _findnext(fileHandle, &file);
-        ret = path + file.name;
-        if (getFileExt(ret) == ext)
-        {
-            ret = "";
-        }
-    }
-    _findclose(fileHandle);
-    return ret;
+    //_finddata_t file;
+    //long fileHandle;
+    //std::string path = getFilePath(filename);
+    //std::string ext = getFileExt(filename);
+    //if (path != "") { path = path + '\\'; }
+    //std::string findname = getFileMainname(filename) + ".*";
+    //std::string ret = "";
+    //fileHandle = _findfirst(findname.c_str(), &file);
+    //ret = path + file.name;
+    //if (getFileExt(ret) == ext)
+    //{
+    //    _findnext(fileHandle, &file);
+    //    ret = path + file.name;
+    //    if (getFileExt(ret) == ext)
+    //    {
+    //        ret = "";
+    //    }
+    //}
+    //_findclose(fileHandle);
+    //return ret;
+    return "";
 #endif
 }
 

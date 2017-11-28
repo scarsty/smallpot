@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="lib">
-      <UniqueIdentifier>{fe34ce63-78eb-44f5-9467-8e9257074944}</UniqueIdentifier>
-    </Filter>
     <Filter Include="others">
       <UniqueIdentifier>{de0d4753-806b-480c-b769-2e22c4263679}</UniqueIdentifier>
     </Filter>
@@ -34,9 +31,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\File.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PotUI.cpp">
@@ -79,6 +73,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PotDll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,38 +143,6 @@
     <ClInclude Include="src\PotDll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="lib\x86\ass.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\avcodec.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\avformat.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\avutil.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\libiconv.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\SDL2.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\SDL2_image.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\SDL2_ttf.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\SDL2main.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\x86\swresample.lib">
-      <Filter>lib</Filter>
-    </Library>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\pot.def">
