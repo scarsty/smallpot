@@ -21,7 +21,7 @@ public:
     static std::string changeFileExt(const std::string& filename, const std::string& ext);
     static std::string getFilePath(const std::string& filename);
 
-    static std::string fingFileWithMainName(const std::string& filename);
+    static std::string findFileWithMainName(const std::string& filename);
     static std::string toLowerCase(const std::string& str);
     static std::string formatString(const char* format, ...);
     static void changePath(const std::string& path);
