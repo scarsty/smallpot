@@ -15,7 +15,7 @@
 #include <stdarg.h>
 #include <algorithm>
 
-#ifdef __clang__
+#if defined(__clang__) && defined(_WIN32)
 #define chdir _chdir
 #endif
 

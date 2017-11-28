@@ -1,7 +1,0 @@
-LIBRARY			"pot"
-
-
-EXPORTS			PotInit
-EXPORTS			PotInputVideo
-EXPORTS			PotSeek
-EXPORTS			PotClose
