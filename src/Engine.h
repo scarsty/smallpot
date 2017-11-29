@@ -57,7 +57,7 @@ private:
     BP_Texture* tex_ = nullptr, *tex2_ = nullptr, *logo_ = nullptr;
     BP_AudioSpec audio_spec_;
     BP_Rect rect_;
-    BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : this->tex_; }
+    BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : tex_; }
     bool full_screen_ = false;
     bool keep_ratio_ = true;
 

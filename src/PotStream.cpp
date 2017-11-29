@@ -258,7 +258,7 @@ PotStream::Content PotStream::getCurrentContent()
     }
     else
     {
-        return { -1, -1, nullptr };
+        return { time_dts_, -1, nullptr };
     }
 }
 
