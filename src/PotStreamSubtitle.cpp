@@ -29,7 +29,7 @@ void PotStreamSubtitle::setFrameSize(int w, int h)
     }
 }
 
-PotStream::Content PotStreamSubtitle::convertFrameToContent(void* p /*= nullptr*/)
+FrameContent PotStreamSubtitle::convertFrameToContent()
 {
     if (sub_ && avsubtitle_.num_rects > 0)
     {

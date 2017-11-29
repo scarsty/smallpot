@@ -47,7 +47,7 @@ void PotStreamVideo::freeContent(void* p)
     engine_->destroyTexture((BP_Texture*)p);
 }
 
-PotStream::Content PotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
+FrameContent PotStreamVideo::convertFrameToContent()
 {
     auto& f = frame_;
     auto tex = nullptr;

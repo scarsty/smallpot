@@ -6,8 +6,11 @@
 #include "PotStreamVideo.h"
 #include "PotStreamSubtitle.h"
 
-//#include "BigPotSubtitle.h"
-
+/*
+一个媒体文件包含3类流：视频，音频，字幕
+视频流通常只有一个，而另外两类流
+这里使用3个流来同时打开文件，其中音频和字幕可以通过修改索引来切换
+*/
 
 class PotMedia : public PotBase
 {
@@ -18,7 +21,6 @@ private:
     PotStreamVideo* stream_video_ = nullptr;
     PotStreamAudio* stream_audio_ = nullptr;
     PotStreamSubtitle* stream_subtitle_ = nullptr;
-    int ext_audio_frame_ = 1; //额外解压一帧音频，有时视频尺寸很大，可能导致音频解码过慢
 private:
     int count_ = 0;
     int total_time_ = 0;
