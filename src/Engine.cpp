@@ -19,6 +19,11 @@ Engine::~Engine()
     //destroy();
 }
 
+void Engine::destroyTexture(BP_Texture* t)
+{
+    SDL_DestroyTexture(t);
+}
+
 BP_Texture* Engine::createYUVTexture(int w, int h)
 {
     return SDL_CreateTexture(renderer_, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);

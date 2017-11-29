@@ -153,6 +153,5 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     }
     //printf("%d\n", resampled_data_size);
     return resampled_data_size;
-
 }
 

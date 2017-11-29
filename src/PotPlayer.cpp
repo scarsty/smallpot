@@ -119,6 +119,8 @@ int PotPlayer::eventLoop()
     int prev_show_time = 0;  //上一次显示的时间
     exit_type_ = 0;
 
+    bool show_in_sub = true, show_ex_sub = true;
+
     while (loop && engine_->pollEvent(e) >= 0)
     {
         seeking = false;
@@ -191,6 +193,37 @@ int PotPlayer::eventLoop()
                 break;
             case BPK_DOWN:
                 media_->getAudio()->changeVolume(-volume_step);
+                break;
+            case BPK_1:
+                media_->getAudio()->switchStream();
+                UI_.setText(File::formatString("Switch audio stream to %d", media_->getAudio()->getStreamIndex()));
+                break;
+            case BPK_2:
+                media_->getSubtitle()->switchStream();
+                media_->getSubtitle()->clear();
+                UI_.setText(File::formatString("Switch subtitle stream to %d", media_->getSubtitle()->getStreamIndex()));
+                break;
+            case BPK_3:
+                show_in_sub = !show_in_sub;
+                if (show_in_sub)
+                {
+                    UI_.setText("Show internal subtitle");
+                }
+                else
+                {
+                    UI_.setText("Hide internal subtitle");
+                }
+                break;
+            case BPK_4:
+                show_ex_sub = !show_ex_sub;
+                if (show_ex_sub)
+                {
+                    UI_.setText("Show external subtitle");
+                }
+                else
+                {
+                    UI_.setText("Hide external subtitle");
+                }
                 break;
             }
             ui_alpha = 128;
@@ -296,7 +329,7 @@ int PotPlayer::eventLoop()
         {
             time_s = 0; //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
         }
-        int videostate = media_->getVideo()->showTexture(time_s);
+        int videostate = media_->getVideo()->show(time_s);
 
         //播放回调
         if (play_callback)
@@ -343,11 +376,14 @@ int PotPlayer::eventLoop()
         }
         if (show)
         {
-            if (subtitle_->exist())
+            if (subtitle_->exist() && show_ex_sub)
             {
                 subtitle_->show(audioTime);
             }
-            media_->getSubtitle()->show(audioTime);
+            if (show_in_sub)
+            {
+                media_->getSubtitle()->show(audioTime);
+            }
             UI_.drawUI(ui_alpha, audioTime, totalTime, media_->getAudio()->getVolume());
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();

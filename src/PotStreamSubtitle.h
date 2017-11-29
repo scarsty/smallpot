@@ -11,12 +11,19 @@ private:
 public:
     PotStreamSubtitle();
     virtual ~PotStreamSubtitle();
-    void show(int time);
+    int show(int time);
     void setFrameSize(int w, int h);
-private:
-    virtual int avcodec_decode_packet(AVCodecContext* cont, void* subtitle, int* n, AVPacket* packet) override;
-    virtual Content convertFrameToContent(void* p = nullptr) override;
-public:
     virtual int openFile(const std::string& filename);
+    void clear();
+private:
+
+    virtual int avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet) override
+    {
+        int ret = avcodec_decode_subtitle2(cont, &avsubtitle_, n, packet);
+        return ret;
+    }
+
+    virtual Content convertFrameToContent(void* p = nullptr) override;
+
 };
 

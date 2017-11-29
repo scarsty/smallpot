@@ -31,7 +31,7 @@ bool PotSubtitleSrt::openSubtitle(const std::string& filename)
     fclose(file_);
 }
 
-bool PotSubtitleSrt::show(int time)
+int PotSubtitleSrt::show(int time)
 {
     for (int i = 0; i < atom_list_.size(); i++)
     {
@@ -45,7 +45,7 @@ bool PotSubtitleSrt::show(int time)
             break;
         }
     }
-    return true;
+    return 1;
 }
 
 int PotSubtitleSrt::readIndex()

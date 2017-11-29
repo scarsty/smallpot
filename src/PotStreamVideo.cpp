@@ -4,7 +4,6 @@
 PotStreamVideo::PotStreamVideo()
 {
     //视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
-    max_size_ = 0;
     type_ = BPMEDIA_TYPE_VIDEO;
 }
 
@@ -16,7 +15,7 @@ PotStreamVideo::~PotStreamVideo()
 //-1无视频
 //1有可显示的包，未到时间
 //2已经没有可显示的包
-int PotStreamVideo::showTexture(int time)
+int PotStreamVideo::show(int time)
 {
     if (stream_index_ < 0)
     {
@@ -51,16 +50,9 @@ void PotStreamVideo::freeContent(void* p)
 PotStream::Content PotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
 {
     auto& f = frame_;
-    auto tex = (BP_Texture*)data_;
-    if (useMap())
-    {
-        tex = engine_->createYUVTexture(codec_ctx_->width, codec_ctx_->height);
-    }
+    auto tex = engine_->createYUVTexture(codec_ctx_->width, codec_ctx_->height);
     engine_->updateYUVTexture(tex, f->data[0], f->linesize[0], f->data[1], f->linesize[1], f->data[2], f->linesize[2]);
     return { time_dts_, f->linesize[0], tex };
 }
 
-int PotStreamVideo::dropTexture()
-{
-    return 0;
-}
+

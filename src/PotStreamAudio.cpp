@@ -7,10 +7,9 @@ PotStreamAudio::PotStreamAudio()
     //除非知道音频包定长，否则不应设为0，一般情况下都不建议为0
     max_size_ = 100;
     //缓冲区大小4M保存
-    if (useMap())
-    {
-        data_ = av_mallocz(scream_size_);
-    }
+
+    buffer_ = av_mallocz(buffer_size_);
+
     resample_buffer_ = (decltype(resample_buffer_))av_mallocz(convert_size_);
     type_ = BPMEDIA_TYPE_AUDIO;
 }
@@ -18,10 +17,7 @@ PotStreamAudio::PotStreamAudio()
 
 PotStreamAudio::~PotStreamAudio()
 {
-    if (useMap())
-    {
-        av_free(data_);
-    }
+    av_free(buffer_);
     if (resample_buffer_)
     {
         av_free(resample_buffer_);
@@ -66,21 +62,14 @@ int PotStreamAudio::closeAudioDevice()
 
 void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
 {
-    if (!useMap())
-    {
-        engine_->mixAudio(stream, (uint8_t*)resample_buffer_, len, volume_);
-        dropDecoded();
-        return;
-    }
-
     if (data_write_ <= data_read_)
     {
         return;
     }
     //SDL_LockMutex(t->mutex_cpp);
-    auto data1 = (uint8_t*)data_;
-    int pos = data_read_ % scream_size_;
-    int rest = scream_size_ - pos;
+    auto data1 = (uint8_t*)buffer_;
+    int pos = data_read_ % buffer_size_;
+    int rest = buffer_size_ - pos;
     //一次或者两次，保证缓冲区大小足够
     if (len <= rest)
     {
@@ -140,37 +129,24 @@ PotStream::Content PotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
     {
         return{ -1, data_length_, nullptr };
     }
-    if (useMap())
+    //计算写入位置
+    //printf("%I64d,%I64d, %d\n", dataWrite, dataRead, _map.size());
+    int pos = data_write_ % buffer_size_;
+    int rest = buffer_size_ - pos;
+    //够长一次写入，不够长两次写入，不考虑更长情况，如更长是缓冲区不够，效果也不会正常
+    if (data_length_ <= rest)
     {
-        //计算写入位置
-        //printf("%I64d,%I64d, %d\n", dataWrite, dataRead, _map.size());
-        int pos = data_write_ % scream_size_;
-        int rest = scream_size_ - pos;
-        //够长一次写入，不够长两次写入，不考虑更长情况，如更长是缓冲区不够，效果也不会正常
-        if (data_length_ <= rest)
-        {
-            memcpy((uint8_t*)data_ + pos, resample_buffer_, data_length_);
-        }
-        else
-        {
-            memcpy((uint8_t*)data_ + pos, resample_buffer_, rest);
-            memcpy((uint8_t*)data_, resample_buffer_, data_length_ - rest);
-        }
-        Content f = { time_dts_, data_write_, data_ };
-        data_write_ += data_length_;
-        //返回的是指针位置
-        return f;
+        memcpy((uint8_t*)buffer_ + pos, resample_buffer_, data_length_);
     }
     else
     {
-        memcpy(data_, resample_buffer_, data_length_);
-        return { time_dts_, data_length_, data_ };
+        memcpy((uint8_t*)buffer_ + pos, resample_buffer_, rest);
+        memcpy((uint8_t*)buffer_, resample_buffer_, data_length_ - rest);
     }
-}
-
-void PotStreamAudio::freeContent(void* p)
-{
-    //av_free(p);
+    Content f = { time_dts_, data_write_, buffer_ };
+    data_write_ += data_length_;
+    //返回的是指针位置
+    return f;
 }
 
 int PotStreamAudio::setVolume(int v)
@@ -193,7 +169,7 @@ int PotStreamAudio::changeVolume(int v)
 bool PotStreamAudio::needDecode2()
 {
     //return true;
-    return data_write_ - data_read_ < scream_size_ / 2;
+    return data_write_ - data_read_ < buffer_size_ / 2;
 }
 
 void PotStreamAudio::resetDecodeState()

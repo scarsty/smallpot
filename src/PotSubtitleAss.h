@@ -17,13 +17,14 @@ private:
     void destroyAllTex();
 
 public:
-    virtual void init();
-    virtual void destroy();
-    virtual bool openSubtitle(const std::string& filename);
-    virtual void closeSubtitle();
-    virtual bool show(int time);
-    virtual void setFrameSize(int w, int h);
-    virtual void openSubtitleFromMem(const std::string& str);
-    virtual void readOne(const std::string& str);
+    virtual void init() override;
+    virtual void destroy() override;
+    virtual bool openSubtitle(const std::string& filename) override;
+    virtual void closeSubtitle() override;
+    virtual int show(int time) override;
+    virtual void setFrameSize(int w, int h) override;
+    virtual void openSubtitleFromMem(const std::string& str) override;
+    virtual void readOne(const std::string& str) override;
+    virtual void clear() override;
 };
 

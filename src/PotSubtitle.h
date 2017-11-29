@@ -34,9 +34,10 @@ public:
     virtual void init() {};
     virtual bool openSubtitle(const std::string& filename) { return false; }
     virtual void closeSubtitle() {}
-    virtual bool show(int time) { return true; }
+    virtual int show(int time) { return 1; }
     virtual void destroy() {}
     virtual void setFrameSize(int w, int h) {}
     virtual void openSubtitleFromMem(const std::string& str) {}
     virtual void readOne(const std::string& str) {}
+    virtual void clear() {}
 };

@@ -91,7 +91,7 @@ public:
 
     void destroyMainTexture() { destroyTexture(tex_); }
 
-    void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
+    void destroyTexture(BP_Texture* t);
 
     BP_Texture* createYUVTexture(int w, int h);;
     void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
@@ -187,7 +187,7 @@ typedef enum
     //渲染改变
     BP_RENDER_TARGETS_RESET = SDL_RENDER_TARGETS_RESET,
 
-    BP_LASTEVENT = SDL_LASTEVENT
+    BP_LASTEVENT = SDL_LASTEVENT,
 } BP_EventType;
 
 typedef enum
@@ -209,7 +209,7 @@ typedef enum
     BP_WINDOWEVENT_LEAVE = SDL_WINDOWEVENT_LEAVE,
     BP_WINDOWEVENT_FOCUS_GAINED = SDL_WINDOWEVENT_FOCUS_GAINED,
     BP_WINDOWEVENT_FOCUS_LOST = SDL_WINDOWEVENT_FOCUS_LOST,
-    BP_WINDOWEVENT_CLOSE = SDL_WINDOWEVENT_CLOSE
+    BP_WINDOWEVENT_CLOSE = SDL_WINDOWEVENT_CLOSE,
 } BP_WindowEventID;
 
 typedef enum
@@ -222,14 +222,18 @@ typedef enum
     BPK_ESCAPE = SDLK_ESCAPE,
     BPK_RETURN = SDLK_RETURN,
     BPK_DELETE = SDLK_DELETE,
-    BPK_BACKSPACE = SDLK_BACKSPACE
+    BPK_BACKSPACE = SDLK_BACKSPACE,
+    BPK_1 = SDLK_1,
+    BPK_2 = SDLK_2,
+    BPK_3 = SDLK_3,
+    BPK_4 = SDLK_4,
 } BP_KeyBoard;
 
 typedef enum
 {
     BP_BUTTON_LEFT = SDL_BUTTON_LEFT,
     BP_BUTTON_MIDDLE = SDL_BUTTON_MIDDLE,
-    BP_BUTTON_RIGHT = SDL_BUTTON_RIGHT
+    BP_BUTTON_RIGHT = SDL_BUTTON_RIGHT,
 } BP_Button;
 
 
