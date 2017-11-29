@@ -32,7 +32,7 @@ bool PotSubtitleAss::openSubtitle(const std::string& filename)
     return  haveSubtitle_;
 }
 
-bool PotSubtitleAss::show(int time)
+int PotSubtitleAss::show(int time)
 {
     int a;
     image_ = ass_render_frame(renderer_, track_, time, &a);
@@ -87,6 +87,11 @@ void PotSubtitleAss::readOne(const std::string& str)
         ass_process_data(track_, (char*)str.c_str(), str.size());
         printf("%s\n", str.c_str());
     }
+}
+
+void PotSubtitleAss::clear()
+{
+    ass_flush_events(track_);
 }
 
 void PotSubtitleAss::closeSubtitle()

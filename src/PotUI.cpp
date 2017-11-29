@@ -5,14 +5,11 @@
 
 PotUI::PotUI()
 {
-
 }
 
 
 PotUI::~PotUI()
 {
-    engine_->destroyTexture(square_);
-    //engine->destroyTexture(text);
 }
 
 void PotUI::drawBall()
@@ -68,6 +65,7 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
     this->alpha_ = alpha;
     if (alpha == 0)
     {
+        text_ = "";
         return;
     }
     //_win_w = engine_->getWindowsWidth();
@@ -77,7 +75,14 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
     this->totoal_time_ = totoalTime;
     this->volume_ = volume;
     drawBall();
-    drawText(convertTimeToString(time) + " / " + convertTimeToString(totoalTime));
+    if (text_ == "")
+    {
+        drawText(convertTimeToString(time) + " / " + convertTimeToString(totoalTime));
+    }
+    else
+    {
+        drawText(text_);
+    }
 }
 
 std::string PotUI::convertTimeToString(int time)
@@ -113,4 +118,5 @@ void PotUI::destory()
         config_->setString(fontname_, "ui_font");
     }
     engine_->destroyTexture(square_);
+    engine_->destroyTexture(ball_);
 }

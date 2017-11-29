@@ -1,19 +1,21 @@
 #include "PotDll.h"
 #include "PotPlayer.h"
 
-HBAPI void* MYTHAPI PotCreateFromHandle(void* handle)
+#ifdef _LIB
+
+void* PotCreateFromHandle(void* handle)
 {
     auto bp = new PotPlayer(handle);
     return bp;
 }
 
-HBAPI void* MYTHAPI PotCreateFromWindow(void* handle)
+void* PotCreateFromWindow(void* handle)
 {
     auto bp = new PotPlayer((BP_Window*)handle, 1);
     return bp;
 }
 
-HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename)
+int PotInputVideo(void* pot, char* filename)
 {
     int ret = 0;
     if (pot)
@@ -24,12 +26,12 @@ HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename)
     return ret;
 }
 
-HBAPI int MYTHAPI PotSeek(void* pot, int seek)
+int PotSeek(void* pot, int seek)
 {
     return 0;
 }
 
-HBAPI int MYTHAPI PotDestory(void* pot)
+int PotDestory(void* pot)
 {
     if (pot)
     {
@@ -38,3 +40,5 @@ HBAPI int MYTHAPI PotDestory(void* pot)
     }
     return 0;
 }
+
+#endif

@@ -11,12 +11,14 @@ PotStreamSubtitle::~PotStreamSubtitle()
     delete sub_;
 }
 
-void PotStreamSubtitle::show(int time)
+int PotStreamSubtitle::show(int time)
 {
     if (exist() && sub_ && sub_->show(time) || time + 5000 >= time_dts_)
     {
         dropDecoded();
+        return 1;
     }
+    return 0;
 }
 
 void PotStreamSubtitle::setFrameSize(int w, int h)
@@ -25,12 +27,6 @@ void PotStreamSubtitle::setFrameSize(int w, int h)
     {
         sub_->setFrameSize(w, h);
     }
-}
-
-int PotStreamSubtitle::avcodec_decode_packet(AVCodecContext* cont, void* subtitle, int* n, AVPacket* packet)
-{
-    int ret = avcodec_decode_subtitle2(cont, &avsubtitle_, n, packet);
-    return ret;
 }
 
 PotStream::Content PotStreamSubtitle::convertFrameToContent(void* p /*= nullptr*/)
@@ -63,4 +59,12 @@ int PotStreamSubtitle::openFile(const std::string& filename)
         }
     }
     return ret;
+}
+
+void PotStreamSubtitle::clear()
+{
+    if (sub_)
+    {
+        sub_->clear();
+    }
 }

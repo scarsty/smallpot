@@ -37,6 +37,8 @@ public:
         int64_t info;
         void* data;
     };
+    std::map<int, Content> data_map_;    //解压出的内容的map，key是时间
+    std::vector<int> stream_index_vector_;
 
     PotStream();
     virtual ~PotStream();
@@ -50,12 +52,9 @@ protected:
     AVPacket packet_;
     bool need_read_packet_ = true;
     int stream_index_ = -1;
-    int decode_size_in_packet_ = 0;
     double time_per_frame_ = 0, time_base_packet_ = 0;
-    int max_size_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
-    AVSubtitle* avsubtitle_;
+    int max_size_ = 1;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
     std::string filename_;
-    std::mutex mutex_;
 
     int ticks_shown_ = -1;  //最近展示的ticks
     int time_dts_ = 0, time_pts_ = 0, time_shown_ = 0;  //解压时间，应展示时间，最近已经展示的时间
@@ -66,16 +65,13 @@ protected:
     bool pause_ = false;
     int pause_time_ = 0;
     bool key_frame_ = false;
-    void* data_ = nullptr;  //无缓冲时的用户数据, 可能为纹理或音频缓冲区
     int data_length_ = 0;
     bool stopping = false;  //表示放弃继续解压这个流
     //int frame_number_;
 private:
-
-    std::map<int, Content> data_map_;
     bool decoded_ = false, skip_ = false, ended_ = false, seeking_ = false;
     int seek_record_ = 0;  //上次seek的记录
-    virtual int avcodec_decode_packet(AVCodecContext*, void*, int*, AVPacket*) { return 0; }
+    virtual int avcodec_decode_packet(AVCodecContext*, int*, AVPacket*) { return 0; }
 private:
     virtual Content convertFrameToContent(void* p = nullptr)
     {
@@ -88,12 +84,11 @@ private:
     void clearMap();
     bool needDecode();
     virtual bool needDecode2() { return true; };
-    int decodeNextPacketToFrame(bool decode = true);
+    virtual int decodeNextPacketToFrame(bool decode, bool til_got);
 protected:
     void setDecoded(bool b);
     bool haveDecoded();
     void dropAllDecoded();
-    bool useMap();
     Content getCurrentContent();
 public:
     virtual int openFile(const std::string& filename);
@@ -126,6 +121,11 @@ public:
     int getRatioX() { return exist() ? std::max(stream_->sample_aspect_ratio.num, 1) : 1; }
     int getRatioY() { return exist() ? std::max(stream_->sample_aspect_ratio.den, 1) : 1; }
     bool isStopping() { return stopping; }
+
+    //void setStreamIndex(int stream_index) { stream_index_ = stream_index; }
+    int getStreamIndex() { return stream_index_; }
+    void switchStream();
+
 };
 
 

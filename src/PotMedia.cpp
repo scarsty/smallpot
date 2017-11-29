@@ -104,7 +104,7 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 
 int PotMedia::showVideoFrame(int time)
 {
-    return stream_video_->showTexture(time);
+    return stream_video_->show(time);
 }
 
 int PotMedia::seekPos(double pos, int direct /*= 1*/, int reset /*= 0*/)
