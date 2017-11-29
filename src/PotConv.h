@@ -2,11 +2,7 @@
 
 extern "C"
 {
-#ifdef _MSC_VER
 #include "iconv.h"
-#else
-#include <iconv.h>
-#endif
 }
 
 #include <cstring>

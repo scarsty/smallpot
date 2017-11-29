@@ -250,7 +250,7 @@ int PotPlayer::eventLoop()
                 width_ = e.window.data1;
                 height_ = e.window.data2;
                 engine_->setPresentPosition();
-                subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+                setSubtitleFrameSize();
             }
             else if (e.window.event == BP_WINDOWEVENT_LEAVE)
             {
@@ -267,7 +267,7 @@ int PotPlayer::eventLoop()
             {
                 PotSubtitleManager::destroySubtitle(subtitle_);
                 subtitle_ = PotSubtitleManager::createSubtitle(open_filename);
-                subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+                setSubtitleFrameSize();
             }
             else
             {
@@ -347,6 +347,7 @@ int PotPlayer::eventLoop()
             {
                 subtitle_->show(audioTime);
             }
+            media_->getSubtitle()->show(audioTime);
             UI_.drawUI(ui_alpha, audioTime, totalTime, media_->getAudio()->getVolume());
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
@@ -433,7 +434,8 @@ void PotPlayer::openMedia(const std::string& filename)
     //试图载入字幕
     auto open_subfilename = PotSubtitleManager::lookForSubtitle(open_filename);
     subtitle_ = PotSubtitleManager::createSubtitle(open_subfilename);
-    subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+    setSubtitleFrameSize();
+
 
 #ifndef _LIB
     //读取记录中的文件时间并跳转
@@ -448,6 +450,12 @@ void PotPlayer::openMedia(const std::string& filename)
         }
     }
 #endif
+}
+
+void PotPlayer::setSubtitleFrameSize()
+{
+    subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+    media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 }
 
 void PotPlayer::closeMedia(const std::string& filename)

@@ -44,6 +44,9 @@ public:
     int init();
     void destroy();
     void openMedia(const std::string& filename);
+
+    void setSubtitleFrameSize();
+
     void closeMedia(const std::string& filename);
 
     //std::function<void(bool&, std::string&)> stop_callback = nullptr;

@@ -53,7 +53,7 @@ protected:
     int decode_size_in_packet_ = 0;
     double time_per_frame_ = 0, time_base_packet_ = 0;
     int max_size_ = 0;  //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
-    AVSubtitle* subtitle_;
+    AVSubtitle* avsubtitle_;
     std::string filename_;
     std::mutex mutex_;
 
@@ -96,7 +96,7 @@ protected:
     bool useMap();
     Content getCurrentContent();
 public:
-    int openFile(const std::string& filename);
+    virtual int openFile(const std::string& filename);
     int tryDecodeFrame(bool reset = false);
     void dropDecoded();
     int getTotalTime();

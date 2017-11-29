@@ -21,7 +21,9 @@ public:
     virtual void destroy();
     virtual bool openSubtitle(const std::string& filename);
     virtual void closeSubtitle();
-    virtual void show(int time);
+    virtual bool show(int time);
     virtual void setFrameSize(int w, int h);
+    virtual void openSubtitleFromMem(const std::string& str);
+    virtual void readOne(const std::string& str);
 };
 

@@ -30,7 +30,7 @@ public:
     //virtual void destroy();
     virtual bool openSubtitle(const std::string& filename);
     virtual void closeSubtitle();
-    virtual void show(int time);
+    virtual bool show(int time);
     virtual void setFrameSize(int w, int h) { fram_w_ = w; frame_h_ = h; }
 
     //该类比较简单，init和destroy可以为空

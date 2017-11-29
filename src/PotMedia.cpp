@@ -6,7 +6,7 @@ PotMedia::PotMedia()
 {
     stream_video_ = new PotStreamVideo();
     stream_audio_ = new PotStreamAudio();
-    //_streamSubtitle = new BigPotStreamSubtitle();
+    stream_subtitle_ = new PotStreamSubtitle();
 }
 
 
@@ -14,7 +14,7 @@ PotMedia::~PotMedia()
 {
     delete stream_video_;
     delete stream_audio_;
-    //delete _streamSubtitle;
+    delete stream_subtitle_;
 }
 
 int PotMedia::openFile(const std::string& filename)
@@ -25,7 +25,7 @@ int PotMedia::openFile(const std::string& filename)
     }
     stream_video_->openFile(filename);
     stream_audio_->openFile(filename);
-    //_streamSubtitle->openFile(filename);
+    stream_subtitle_->openFile(filename);
 
     if (stream_audio_->exist())
     {
@@ -79,7 +79,6 @@ int PotMedia::decodeFrame()
         }
         //cout << "se"<<engine_->getTicks()-se << " "<<endl;
     }
-
     return 0;
 }
 
@@ -94,6 +93,7 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
     time = std::min(time, total_time_ - 100);
     stream_video_->seek(time, direct, reset);
     stream_audio_->seek(time, direct, reset);
+    stream_subtitle_->seek(time - 5000, direct, reset);
 
     seeking_ = true;
 
@@ -144,6 +144,7 @@ void PotMedia::setPause(bool pause)
 {
     stream_audio_->setPause(pause);
     stream_video_->setPause(pause);
+    //stream_subtitle_->setPause(pause);
 }
 
 

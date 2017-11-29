@@ -109,6 +109,13 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
                     ret = 2;
                 }
             }
+            else
+            {
+                if (type_ == BPMEDIA_TYPE_SUBTITLE)
+                {
+                    break;
+                }
+            }
             ended_ = false;
         }
         else
@@ -133,7 +140,7 @@ int PotStream::decodeNextPacketToFrame(bool decode /*= true*/)
             av_packet_unref(&packet_);
         }
         //避免卡死
-        if (gotsize < 0)
+        if (type_ == BPMEDIA_TYPE_VIDEO && gotsize < 0)
         {
             BP_Event e;
             //这里只接受QUIT和拖入事件，将其压回主序列，跳出
@@ -209,8 +216,7 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
             flag = flag | AVSEEK_FLAG_BACKWARD;
         }
         //间隔比较大的情况重置播放器
-        if (type_ == BPMEDIA_TYPE_VIDEO
-            && (pause_ || reset || engine_->getTicks() - seek_record_ > 100))
+        if (type_ == BPMEDIA_TYPE_VIDEO && (pause_ || reset || engine_->getTicks() - seek_record_ > 100))
         {
             avcodec_flush_buffers(codec_ctx_);
         }
@@ -230,6 +236,7 @@ void PotStream::setFrameTime()
 
 int PotStream::dropContent(int key)
 {
+    if (!useMap()) { return 0; }
     mutex_.lock();
     if (data_map_.size() > 0)
     {
@@ -246,6 +253,7 @@ int PotStream::dropContent(int key)
 
 void PotStream::clearMap()
 {
+    if (!useMap()) { return; }
     //SDL_LockMutex(mutex_cpp);
     //printf("clear buffer begin with %d\n", _map.size());
     //for (auto i = _map.begin(); i != _map.end(); i++)

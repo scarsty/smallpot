@@ -8,6 +8,7 @@ extern "C"
 }
 
 #include <vector>
+#include <set>
 
 enum PotPSubtitleType
 {
@@ -25,6 +26,7 @@ protected:
     PotPSubtitleType type_;
     std::string subfilename_, fontname_;
     bool haveSubtitle_ = false;
+    std::set<std::string> contents_;
 public:
     bool exist() { return haveSubtitle_; }
     bool reOpenSubtitle() { return openSubtitle(subfilename_); }
@@ -32,8 +34,9 @@ public:
     virtual void init() {};
     virtual bool openSubtitle(const std::string& filename) { return false; }
     virtual void closeSubtitle() {}
-    virtual void show(int time) {}
+    virtual bool show(int time) { return true; }
     virtual void destroy() {}
     virtual void setFrameSize(int w, int h) {}
-
+    virtual void openSubtitleFromMem(const std::string& str) {}
+    virtual void readOne(const std::string& str) {}
 };

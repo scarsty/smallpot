@@ -57,7 +57,7 @@ PotStream::Content PotStreamVideo::convertFrameToContent(void* p /*= nullptr*/)
         tex = engine_->createYUVTexture(codec_ctx_->width, codec_ctx_->height);
     }
     engine_->updateYUVTexture(tex, f->data[0], f->linesize[0], f->data[1], f->linesize[1], f->data[2], f->linesize[2]);
-    return{ time_dts_, f->linesize[0], tex };
+    return { time_dts_, f->linesize[0], tex };
 }
 
 int PotStreamVideo::dropTexture()

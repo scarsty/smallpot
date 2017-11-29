@@ -32,7 +32,7 @@ bool PotSubtitleAss::openSubtitle(const std::string& filename)
     return  haveSubtitle_;
 }
 
-void PotSubtitleAss::show(int time)
+bool PotSubtitleAss::show(int time)
 {
     int a;
     image_ = ass_render_frame(renderer_, track_, time, &a);
@@ -58,6 +58,7 @@ void PotSubtitleAss::show(int time)
             img = img->next;
         }
     }
+    return a;
     //cout << engine_->getTicks() << endl;
 }
 
@@ -71,6 +72,21 @@ void PotSubtitleAss::setFrameSize(int w, int h)
 {
     //if (_track)
     ass_set_frame_size(renderer_, w, h);
+}
+
+void PotSubtitleAss::openSubtitleFromMem(const std::string& str)
+{
+    track_ = ass_read_memory(library_, (char*)str.c_str(), str.size(), NULL);
+}
+
+void PotSubtitleAss::readOne(const std::string& str)
+{
+    if (contents_.count(str) == 0)
+    {
+        contents_.insert(str);
+        ass_process_data(track_, (char*)str.c_str(), str.size());
+        printf("%s\n", str.c_str());
+    }
 }
 
 void PotSubtitleAss::closeSubtitle()
