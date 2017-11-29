@@ -1,5 +1,6 @@
 ﻿#include "PotPlayer.h"
 #include "PotSubtitleManager.h"
+#include "Config.h"
 #ifdef _WIN32
 //#include <shlobj.h>
 //#pragma comment(lib,"shfolder.lib")
@@ -7,9 +8,8 @@
 
 PotPlayer::PotPlayer()
 {
-    //_config = new BigPotConfig;
     //_subtitle = new BigPotSubtitle;
-    //config_->init();
+    //Config::getInstance()->init();
     width_ = 320;
     height_ = 150;
     handle_ = nullptr;
@@ -254,7 +254,7 @@ int PotPlayer::eventLoop()
                 }
                 break;
             case BPK_DELETE:
-                config_->clearRecord();
+                Config::getInstance()->clearRecord();
                 break;
             case BPK_BACKSPACE:
                 media_->seekTime(0);
@@ -411,24 +411,24 @@ int PotPlayer::eventLoop()
 int PotPlayer::init()
 {
     if (engine_->init(handle_, handle_type_)) { return -1; }
-    config_->init(_filepath);
+    Config::getInstance()->init(_filepath);
 #ifdef _WIN32
-    sys_encode_ = config_->getString("sys_encode", "cp936");
+    sys_encode_ = Config::getInstance()->getString("sys_encode", "cp936");
 #else
-    sys_encode_ = config_->getString("sys_encode", "utf-8");
+    sys_encode_ = Config::getInstance()->getString("sys_encode", "utf-8");
 #endif
-    cur_volume_ = config_->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
+    cur_volume_ = Config::getInstance()->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
     UI_.init();
     return 0;
 }
 
 void PotPlayer::destroy()
 {
-    config_->setString(sys_encode_, "sys_encode");
-    config_->setInteger(cur_volume_, "volume");
+    Config::getInstance()->setString(sys_encode_, "sys_encode");
+    Config::getInstance()->setInteger(cur_volume_, "volume");
     UI_.destory();
     engine_->destroy();
-    config_->write();
+    Config::getInstance()->write();
 }
 
 
@@ -478,7 +478,7 @@ void PotPlayer::openMedia(const std::string& filename)
     if (media_->isMedia())
     {
         cur_time_ = 0;
-        cur_time_ = config_->getRecord(filename.c_str());
+        cur_time_ = Config::getInstance()->getRecord(filename.c_str());
         printf("Play from %1.3fs\n", cur_time_ / 1000.0);
         if (cur_time_ > 0 && cur_time_ < media_->getTotalTime())
         {
@@ -508,15 +508,13 @@ void PotPlayer::closeMedia(const std::string& filename)
 
     //如果是媒体文件就记录时间
 #ifndef _LIB
-    if (media_->isMedia()
-        && cur_time_ < media_->getTotalTime()
-        && cur_time_ > 0)
+    if (media_->isMedia() && cur_time_ < media_->getTotalTime() && cur_time_ > 0)
     {
-        config_->setRecord(cur_time_, filename.c_str());
+        Config::getInstance()->setRecord(cur_time_, filename.c_str());
     }
     else
     {
-        config_->removeRecord(filename.c_str());
+        Config::getInstance()->removeRecord(filename.c_str());
     }
 #endif
     delete media_;

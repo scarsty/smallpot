@@ -7,6 +7,7 @@
 #pragma comment(lib, "user32.lib")
 #endif
 #endif
+#include <cmath>
 
 Engine Engine::engine_;
 

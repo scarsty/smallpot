@@ -6,7 +6,7 @@
 
 PotSubtitle::PotSubtitle()
 {
-    fontname_ = config_->getString("sub_font");
+    fontname_ = Config::getInstance()->getString("sub_font");
     if (!File::fileExist(fontname_))
     {
 #ifdef _WIN32
@@ -21,8 +21,8 @@ PotSubtitle::PotSubtitle()
 
 PotSubtitle::~PotSubtitle()
 {
-    if (config_->getString("sub_font") == "")
+    if (Config::getInstance()->getString("sub_font") == "")
     {
-        config_->setString(fontname_, "sub_font");
+        Config::getInstance()->setString(fontname_, "sub_font");
     }
 }
