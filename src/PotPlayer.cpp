@@ -327,7 +327,7 @@ int PotPlayer::eventLoop()
         int time_s = audioTime;
         if (pause)
         {
-            time_s = 0; //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
+            time_s = 0;    //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
         }
         int videostate = media_->getVideo()->show(time_s);
 
