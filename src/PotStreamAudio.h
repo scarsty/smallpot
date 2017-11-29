@@ -20,7 +20,7 @@ private:
 
     void mixAudioData(uint8_t* stream, int len);
     int closeAudioDevice();
-    virtual Content convertFrameToContent(void* p = nullptr) override;
+    virtual FrameContent convertFrameToContent() override;
     virtual bool needDecode2() override;
 
     virtual int avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet) override

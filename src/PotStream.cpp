@@ -131,7 +131,7 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
         {
             av_packet_unref(&packet_);
         }
-        if (!til_got)
+        if (!til_got && ret == 0)
         {
             ret = -2;
         }
@@ -146,8 +146,12 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
 //参数为是否重置暂停时间和显示时间，一般seek后应立刻重置
 int PotStream::tryDecodeFrame(bool reset)
 {
-    if (exist() && needDecode() && decodeNextPacketToFrame(true, type_ != BPMEDIA_TYPE_SUBTITLE) > 0)
+    if (!exist() || !needDecode()) { return -1; }
+    int got_frame = 0;
+    for (int i = 0; i < decode_frame_count_; i++)
     {
+        got_frame = decodeNextPacketToFrame(true, type_ != BPMEDIA_TYPE_SUBTITLE);
+        if (got_frame <= 0) { continue; }
         auto f = convertFrameToContent();
         //printf("%d\n", _map.size());
         //如果只有一帧，则静止时间需更新
@@ -163,6 +167,9 @@ int PotStream::tryDecodeFrame(bool reset)
             data_map_[f.time] = f;
         }
         setDecoded(true);
+    }
+    if (got_frame > 0)
+    {
         return 0;
     }
     return 1;
@@ -202,7 +209,7 @@ void PotStream::setFrameTime()
 
 }
 
-int PotStream::dropContent(int key)
+int PotStream::dropContent()
 {
     if (!data_map_.empty())
     {
@@ -225,7 +232,7 @@ void PotStream::clearMap()
     data_map_.clear();
 }
 
-void PotStream::setMap(int key, Content f)
+void PotStream::setMap(int key, FrameContent f)
 {
     data_map_[key] = f;
 }
@@ -237,7 +244,6 @@ bool PotStream::needDecode()
         return false;
     }
     return (data_map_.size() < max_size_);
-
 }
 
 void PotStream::setDecoded(bool b)
@@ -250,7 +256,7 @@ void PotStream::dropDecoded()
     dropContent();
 }
 
-PotStream::Content PotStream::getCurrentContent()
+FrameContent PotStream::getCurrentContent()
 {
     if (!data_map_.empty())
     {

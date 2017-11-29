@@ -8,11 +8,10 @@ PotStreamAudio::PotStreamAudio()
     //除非知道音频包定长，否则不应设为0，一般情况下都不建议为0
     max_size_ = 100;
     //缓冲区大小4M保存
-
     buffer_ = av_mallocz(buffer_size_);
-
     resample_buffer_ = (decltype(resample_buffer_))av_mallocz(convert_size_);
     type_ = BPMEDIA_TYPE_AUDIO;
+    decode_frame_count_ = 2;
 }
 
 
@@ -123,7 +122,7 @@ void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
     //SDL_UnlockMutex(t->mutex_cpp);
 }
 
-PotStream::Content PotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
+FrameContent PotStreamAudio::convertFrameToContent()
 {
     data_length_ = resample_.convert(codec_ctx_, frame_, freq_, channels_, resample_buffer_);
     if (data_length_ <= 0)
@@ -144,7 +143,7 @@ PotStream::Content PotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
         memcpy((uint8_t*)buffer_ + pos, resample_buffer_, rest);
         memcpy((uint8_t*)buffer_, resample_buffer_, data_length_ - rest);
     }
-    Content f = { time_dts_, data_write_, buffer_ };
+    FrameContent f = { time_dts_, data_write_, buffer_ };
     data_write_ += data_length_;
     //返回的是指针位置
     return f;
@@ -170,7 +169,7 @@ int PotStreamAudio::changeVolume(int v)
 bool PotStreamAudio::needDecode2()
 {
     //return true;
-    return data_write_ - data_read_ < buffer_size_ / 2;
+    return (data_write_ - data_read_ < buffer_size_ / 2);
 }
 
 void PotStreamAudio::resetDecodeState()

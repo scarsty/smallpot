@@ -27,16 +27,17 @@ Frame - 解得的一帧数据
 Content - 转换而得的可以直接显示或播放的数据，包含时间，信息（通常为总字节），和指向数据区的指针
 */
 
+struct FrameContent
+{
+    int time;
+    int64_t info;
+    void* data;
+};
+
 class PotStream : public PotBase
 {
 public:
-    struct Content
-    {
-        int time;
-        int64_t info;
-        void* data;
-    };
-    std::map<int, Content> data_map_;    //解压出的内容的map，key是时间
+    std::map<int, FrameContent> data_map_;    //解压出的内容的map，key是时间
     std::vector<int> stream_index_vector_;
 
     PotStream();
@@ -66,19 +67,16 @@ protected:
     bool key_frame_ = false;
     int data_length_ = 0;
     bool stopping = false;  //表示放弃继续解压这个流
+    int decode_frame_count_ = 1;
     //int frame_number_;
 private:
     bool decoded_ = false, skip_ = false, ended_ = false, seeking_ = false;
     int seek_record_ = 0;  //上次seek的记录
     virtual int avcodec_decode_packet(AVCodecContext*, int*, AVPacket*) { return 0; }
 private:
-    virtual Content convertFrameToContent(void* p = nullptr)
-    {
-        return{ 0, 0, nullptr };
-    }
-
-    int dropContent(int key = -1);
-    void setMap(int key, Content f);
+    virtual FrameContent convertFrameToContent() { return { 0, 0, nullptr }; }
+    int dropContent();
+    void setMap(int key, FrameContent f);
     virtual void freeContent(void* p) {};
     void clearMap();
     bool needDecode();
@@ -88,7 +86,7 @@ protected:
     void setDecoded(bool b);
     bool haveDecoded();
     void dropAllDecoded();
-    Content getCurrentContent();
+    FrameContent getCurrentContent();
 public:
     virtual int openFile(const std::string& filename);
     int tryDecodeFrame(bool reset = false);

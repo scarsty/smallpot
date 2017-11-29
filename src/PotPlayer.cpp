@@ -70,7 +70,6 @@ int PotPlayer::beginWithFile(const std::string& filename)
         }*/
 
         openMedia(play_filename);
-
         bool add_cond = true;
         //printf("%d", engine_->getTicks() - start_time);
         add_cond = engine_->getTicks() - start_time < 2000;
@@ -90,11 +89,9 @@ int PotPlayer::beginWithFile(const std::string& filename)
             engine_->resetWindowsPosition();
         }
         this->eventLoop();
-
         closeMedia(play_filename);
         if (play_filename != "") { count++; }
         play_filename = drop_filename_;
-
     }
     destroy();
     return exit_type_;
@@ -266,11 +263,11 @@ int PotPlayer::eventLoop()
         }
         //#ifndef _LIB
         case BP_QUIT:
-            pause = true;
+            //pause = true;
 #ifdef _LIB
             engine_->delay(10);
 #endif
-            media_->setPause(pause);
+            //media_->setPause(pause);
             loop = false;
             run_ = false;
             exit_type_ = 1;

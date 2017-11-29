@@ -17,7 +17,7 @@ public:
 private:
     //void clear();
     virtual void freeContent(void* p) override;
-    virtual Content convertFrameToContent(void* p = nullptr) override;
+    virtual FrameContent convertFrameToContent() override;
     virtual int avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet) override
     {
         return avcodec_decode_video2(cont, frame_, n, packet);
