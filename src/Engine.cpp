@@ -21,7 +21,7 @@ Engine::~Engine()
 
 void Engine::destroyTexture(BP_Texture* t)
 {
-    SDL_DestroyTexture(t);
+    if (t) { SDL_DestroyTexture(t); }
 }
 
 BP_Texture* Engine::createYUVTexture(int w, int h)
@@ -149,14 +149,24 @@ BP_Texture* Engine::createBallTexture(int size)
     SDL_Rect r = { 0, 0, 1, 1 };
     auto& x = r.x;
     auto& y = r.y;
+    double c = (d - 1) / 2.0;
     for (x = 0; x < d; x++)
     {
         for (y = 0; y < d; y++)
         {
-            if (abs(x - d / 2) + abs(y - d / 2) < d / 2)
+            double ra = sqrt((x - c) * (x - c) + (y - c) * (y - c)) / c;
+            double a0 = 0;
+            if (ra > 1.05)
             {
-                SDL_FillRect(ball_s, &r, 0xffffffff);
+                a0 = 255;
+                //a0 = (ra - 1) * 255 * 4;
             }
+            if (ra < 1)
+            {
+                a0 = (1 - ra) * 255 * 2;
+            }
+            uint8_t a = a0 > 255 ? 255 : a0;
+            SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
         }
     }
     auto ball = SDL_CreateTextureFromSurface(renderer_, ball_s);
@@ -280,7 +290,7 @@ void Engine::drawText(const std::string& fontname, const std::string& text, int 
 
 int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
 {
-    if (inited_) return 0;
+    if (inited_) { return 0; }
     inited_ = true;
 #ifndef _LIB
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
