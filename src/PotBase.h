@@ -6,7 +6,6 @@
 #pragma once
 
 #include "Engine.h"
-#include "Config.h"
 
 //可能不安全
 
@@ -14,7 +13,6 @@ class PotBase
 {
 protected:
     Engine* engine_;
-    Config* config_;
 public:
     PotBase();
     ~PotBase() {};

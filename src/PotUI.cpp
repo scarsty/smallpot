@@ -96,7 +96,7 @@ void PotUI::init()
 {
     square_ = engine_->createSquareTexture(40);
     ball_ = engine_->createBallTexture(50);
-    fontname_ = config_->getString("ui_font");
+    fontname_ = Config::getInstance()->getString("ui_font");
     if (!File::fileExist(fontname_))
     {
 #ifdef _WIN32
@@ -113,9 +113,9 @@ void PotUI::init()
 
 void PotUI::destory()
 {
-    if (config_->getString("ui_font") == "")
+    if (Config::getInstance()->getString("ui_font") == "")
     {
-        config_->setString(fontname_, "ui_font");
+        Config::getInstance()->setString(fontname_, "ui_font");
     }
     engine_->destroyTexture(square_);
     engine_->destroyTexture(ball_);

@@ -11,7 +11,6 @@ extern "C"
 #include "Engine.h"
 #include <algorithm>
 #include <map>
-#include "Config.h"
 #include <mutex>
 
 enum PotMediaType
