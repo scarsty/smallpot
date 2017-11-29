@@ -20,20 +20,43 @@ PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
     auto ext = File::toLowerCase(File::getFileExt(filename));
     if (ext == "ass" || ext == "ssa")
     {
-        ret = new PotSubtitleAss;
+        ret = new PotSubtitleAss();
     }
     else if (ext == "srt" || ext == "txt")
     {
-        ret = new PotSubtitleSrt;
+        ret = new PotSubtitleSrt();
     }
     if (ret)
     {
         //ret->init();
-        ret->openSubtitle(filename);
+        if (File::getFileMainname(File::getFilenameWithoutPath(filename)) != "")
+        {
+            ret->openSubtitle(filename);
+        }
     }
     else
     {
-        ret = new PotSubtitle;
+        ret = new PotSubtitle();
+    }
+    return ret;
+}
+
+PotSubtitle* PotSubtitleManager::createSubtitle(AVSubtitleType type)
+{
+    PotSubtitle* ret = nullptr;
+    switch (type)
+    {
+    case SUBTITLE_NONE:
+        break;
+    case SUBTITLE_BITMAP:
+        break;
+    case SUBTITLE_TEXT:
+        break;
+    case SUBTITLE_ASS:
+        ret = new PotSubtitleAss();
+        break;
+    default:
+        break;
     }
     return ret;
 }

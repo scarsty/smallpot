@@ -2,6 +2,7 @@
 #include <string>
 #include "PotSubtitle.h"
 #include "PotBase.h"
+#include "libavcodec/avcodec.h"
 
 class PotSubtitleManager : PotBase
 {
@@ -15,6 +16,7 @@ private:
 
 public:
     static PotSubtitle* createSubtitle(const std::string& filename);
+    static PotSubtitle* createSubtitle(AVSubtitleType type);
     static void destroySubtitle(PotSubtitle*& sub) { delete sub; sub = nullptr; }
     static std::string lookForSubtitle(const std::string& filename);
 

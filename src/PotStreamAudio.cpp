@@ -164,7 +164,7 @@ PotStream::Content PotStreamAudio::convertFrameToContent(void* p /*= nullptr*/)
     else
     {
         memcpy(data_, resample_buffer_, data_length_);
-        return{ time_dts_, data_length_, data_ };
+        return { time_dts_, data_length_, data_ };
     }
 }
 
