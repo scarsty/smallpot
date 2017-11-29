@@ -158,7 +158,7 @@ int PotStream::tryDecodeFrame(bool reset)
                 resetTimeAxis(time_dts_);
             }
         }
-        if (data_map_.count(f.time) == 0 && f.data)
+        if (data_map_.count(f.time) == 0)
         {
             data_map_[f.time] = f;
         }

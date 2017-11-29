@@ -18,12 +18,12 @@ void PotUI::drawBall()
     {
         return;
     }
-    engine_->setTextureAlphaMod(square_, alpha_);
+    engine_->setTextureAlphaMod(square_, alpha_ / 2);
 
     int d = 10, x, y;
     y = win_h_ - 15;
     engine_->renderCopy(square_, -100, y + d / 2 - 1, win_w_ + 200, 2);
-    engine_->renderCopy(square_, 1.0 * time_ / totoal_time_ * win_w_ - 5, y, d, d);
+    engine_->renderCopy(ball_, 1.0 * time_ / totoal_time_ * win_w_ - d / 2, y, d, d);
 
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
     int v = volume_;
@@ -95,7 +95,7 @@ std::string PotUI::convertTimeToString(int time)
 void PotUI::init()
 {
     square_ = engine_->createSquareTexture(40);
-    ball_ = engine_->createBallTexture(40);
+    ball_ = engine_->createBallTexture(50);
     fontname_ = config_->getString("ui_font");
     if (!File::fileExist(fontname_))
     {
