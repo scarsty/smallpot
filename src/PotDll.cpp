@@ -3,19 +3,19 @@
 
 #ifdef _LIB
 
-void* PotCreateFromHandle(void* handle)
+HBAPI void* MYTHAPI PotCreateFromHandle(void* handle)
 {
     auto bp = new PotPlayer(handle);
     return bp;
 }
 
-void* PotCreateFromWindow(void* handle)
+HBAPI void* MYTHAPI PotCreateFromWindow(void* handle)
 {
     auto bp = new PotPlayer((BP_Window*)handle, 1);
     return bp;
 }
 
-int PotInputVideo(void* pot, char* filename)
+HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename)
 {
     int ret = 0;
     if (pot)
@@ -26,12 +26,12 @@ int PotInputVideo(void* pot, char* filename)
     return ret;
 }
 
-int PotSeek(void* pot, int seek)
+HBAPI int MYTHAPI PotSeek(void* pot, int seek)
 {
     return 0;
 }
 
-int PotDestory(void* pot)
+HBAPI int MYTHAPI PotDestory(void* pot)
 {
     if (pot)
     {
