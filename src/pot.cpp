@@ -5,7 +5,7 @@
 
 #include "PotPlayer.h"
 
-#ifndef _LIB
+#ifndef _WINDLL
 int main(int argc, char* argv[])
 {
     auto bp = new PotPlayer(argv[0]);

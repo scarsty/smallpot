@@ -152,7 +152,7 @@ int PotPlayer::eventLoop()
                     media_->setPause(pause);
                 }
             }
-#ifdef _LIB
+#ifdef _WINDLL 
             if (e.button.button == BP_BUTTON_RIGHT)
             {
                 loop = false;
@@ -235,7 +235,7 @@ int PotPlayer::eventLoop()
                 media_->setPause(pause);
                 break;
             case BPK_RETURN:
-#ifndef _LIB
+#ifndef _WINDLL 
                 engine_->toggleFullscreen();
 #endif
                 break;
@@ -261,10 +261,10 @@ int PotPlayer::eventLoop()
             ui_alpha = 128;
             break;
         }
-        //#ifndef _LIB
+        //#ifndef _WINDLL 
         case BP_QUIT:
             //pause = true;
-#ifdef _LIB
+#ifdef _WINDLL 
             engine_->delay(10);
 #endif
             //media_->setPause(pause);
@@ -389,7 +389,7 @@ int PotPlayer::eventLoop()
         engine_->delay(1);
         //if (audioTime >= totalTime)
         //_media->seekTime(0);
-#ifdef _LIB
+#ifdef _WINDLL 
         if (videostate == PotStreamVideo::NoVideo || time_s >= totalTime)
         {
             loop = false;
@@ -434,7 +434,7 @@ void PotPlayer::openMedia(const std::string& filename)
 {
     media_ = nullptr;
     media_ = new PotMedia;
-#ifndef _LIB
+#ifndef _WINDLL 
     File::changePath(File::getFilePath(filename));
 #endif
     //如果是控制台程序，通过参数传入的是ansi
@@ -451,7 +451,7 @@ void PotPlayer::openMedia(const std::string& filename)
     height_ = media_->getVideo()->getHeight();
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
-#ifndef _LIB
+#ifndef _WINDLL 
     engine_->setWindowSize(width_, height_);
     engine_->setWindowTitle(filename);
 #endif
@@ -470,7 +470,7 @@ void PotPlayer::openMedia(const std::string& filename)
     setSubtitleFrameSize();
 
 
-#ifndef _LIB
+#ifndef _WINDLL 
     //读取记录中的文件时间并跳转
     if (media_->isMedia())
     {
@@ -504,7 +504,7 @@ void PotPlayer::closeMedia(const std::string& filename)
     //_subtitle->closeSubtitle();
 
     //如果是媒体文件就记录时间
-#ifndef _LIB
+#ifndef _WINDLL 
     if (media_->isMedia() && cur_time_ < media_->getTotalTime() && cur_time_ > 0)
     {
         Config::getInstance()->setRecord(cur_time_, filename.c_str());

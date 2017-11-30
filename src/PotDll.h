@@ -11,7 +11,7 @@
 #define HBAPI
 #define  MYTHAPI
 #endif
-#ifdef _LIB
+#ifdef _WINDLL
 HBAPI void* MYTHAPI PotCreateFromHandle(void* handle);
 HBAPI void* MYTHAPI PotCreateFromWindow(void* handle);
 HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename);
