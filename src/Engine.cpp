@@ -293,7 +293,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
 {
     if (inited_) { return 0; }
     inited_ = true;
-#ifndef _LIB
+#ifndef _WINDLL 
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
     {
         return -1;
@@ -316,7 +316,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
         window_ = SDL_CreateWindow("PotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, start_w_, start_h_, SDL_WINDOW_RESIZABLE);
     }
     //SDL_CreateWindowFrom()
-#ifndef _LIB
+#ifndef _WINDLL 
     SDL_ShowWindow(window_);
     SDL_RaiseWindow(window_);
 #endif

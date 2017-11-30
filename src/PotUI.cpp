@@ -19,7 +19,7 @@ void PotUI::drawBall()
         return;
     }
     engine_->setTextureAlphaMod(square_, alpha_ / 2);
-
+    engine_->setTextureAlphaMod(ball_, alpha_);
     int d = 10, x, y;
     y = win_h_ - 15;
     engine_->renderCopy(square_, -100, y + d / 2 - 1, win_w_ + 200, 2);

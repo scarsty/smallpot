@@ -1,7 +1,7 @@
 #include "PotDll.h"
 #include "PotPlayer.h"
 
-#ifdef _LIB
+#ifdef _WINDLL
 
 HBAPI void* MYTHAPI PotCreateFromHandle(void* handle)
 {
