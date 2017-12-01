@@ -3,6 +3,10 @@
 #include "PotStream.h"
 #include "PotResample.h"
 
+/*
+这里假设音频流是连续的，并未考虑有一段缺失的情况
+*/
+
 class PotStreamAudio : public PotStream
 {
 public:
