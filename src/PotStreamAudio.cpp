@@ -14,7 +14,6 @@ PotStreamAudio::PotStreamAudio()
     decode_frame_count_ = 2;
 }
 
-
 PotStreamAudio::~PotStreamAudio()
 {
     av_free(buffer_);
@@ -127,7 +126,7 @@ FrameContent PotStreamAudio::convertFrameToContent()
     data_length_ = resample_.convert(codec_ctx_, frame_, freq_, channels_, resample_buffer_);
     if (data_length_ <= 0)
     {
-        return{ -1, data_length_, nullptr };
+        return { -1, data_length_, nullptr };
     }
     //计算写入位置
     //printf("%I64d,%I64d, %d\n", dataWrite, dataRead, _map.size());
