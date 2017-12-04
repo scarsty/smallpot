@@ -245,9 +245,6 @@
     <ClInclude Include="src\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\pot.def" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="src\pot.rc" />
   </ItemGroup>
   <ItemGroup>

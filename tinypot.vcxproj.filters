@@ -86,9 +86,6 @@
     <ClInclude Include="src\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\tinyxml2\tinyxml2.h">
       <Filter>others</Filter>
     </ClInclude>
@@ -146,11 +143,9 @@
     <ClInclude Include="src\PotDll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\pot.def">
+    <ClInclude Include="src\resource.h">
       <Filter>Resource Files</Filter>
-    </None>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\pot.rc">
