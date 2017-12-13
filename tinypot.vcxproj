@@ -22,7 +22,7 @@
     <ProjectGuid>{BA5597D9-DBCC-45C4-AA58-8D691764A191}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BigPot</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>TinyPot</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

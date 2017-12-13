@@ -18,3 +18,7 @@
 *.db
 x64/
 Win32/
+*.lib
+*.aps
+*.dll
+*.exe
