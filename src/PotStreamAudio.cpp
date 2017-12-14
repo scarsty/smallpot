@@ -170,7 +170,7 @@ int PotStreamAudio::changeVolume(int v)
 
 bool PotStreamAudio::needDecode2()
 {
-    //return true;
+    if (buffer_ == nullptr) { return false; }
     return (data_write_ - data_read_ < buffer_size_ / 2);
 }
 
