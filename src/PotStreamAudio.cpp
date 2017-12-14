@@ -17,11 +17,13 @@ PotStreamAudio::PotStreamAudio()
 PotStreamAudio::~PotStreamAudio()
 {
     av_free(buffer_);
+    buffer_ = nullptr;
     if (resample_buffer_)
     {
         av_free(resample_buffer_);
+        resample_buffer_ = nullptr;
     }
-    engine_->setAudioCallback(nullptr);
+    //engine_->setAudioCallback(nullptr);
     closeAudioDevice();
 }
 
@@ -61,6 +63,7 @@ int PotStreamAudio::closeAudioDevice()
 
 void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
 {
+    if (buffer_ == nullptr) { return; }
     if (data_write_ <= data_read_)
     {
         return;

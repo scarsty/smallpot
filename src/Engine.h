@@ -11,7 +11,7 @@ extern "C"
 #include <functional>
 #include <vector>
 #include <string>
-
+#include <atomic>
 
 //这里是底层部分，将SDL的函数均封装了一次
 //如需更换底层，则要重新实现下面的全部功能，并重新定义全部常数和类型
@@ -44,6 +44,7 @@ private:
     virtual ~Engine();
 private:
     static Engine engine_;
+    //static std::atomic<int> working_;
 public:
     static Engine* getInstance() { return &engine_; }
     //图形相关

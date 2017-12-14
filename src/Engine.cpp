@@ -11,8 +11,11 @@
 
 Engine Engine::engine_;
 
+//std::atomic<int> Engine::working_;
+
 Engine::Engine()
 {
+    //working_ = 1;
 }
 
 Engine::~Engine()
