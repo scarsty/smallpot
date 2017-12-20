@@ -2,7 +2,7 @@
 
 extern "C"
 {
-#include "iconv.h"
+#include "iconv/iconv.h"
 }
 
 #include <cstring>
