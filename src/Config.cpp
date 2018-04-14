@@ -6,6 +6,10 @@ Config Config::config_;
 Config::Config()
 {
     //init();
+    ignore_strs = 
+    {
+        ".bt.td",
+    };
 }
 
 
@@ -64,7 +68,7 @@ tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const cha
 int Config::getRecord(const char* name)
 {
     if (strlen(name) == 0) { return 0; }
-    auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
+    std::string mainname = name;
     dealFilename(mainname);
     const char* str = getElement(record_, mainname.c_str())->GetText();
     if (!str)
@@ -85,7 +89,7 @@ void Config::removeRecord(const char* name)
 void Config::setRecord(int v, const char* name)
 {
     if (strlen(name) == 0) { return; }
-    auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
+    std::string mainname = name;
     dealFilename(mainname);
     getElement(record_, mainname.c_str())->SetText(File::formatString("%d", v).c_str());
 }
@@ -161,6 +165,12 @@ int Config::replaceAllString(std::string& s, const std::string& oldstring, const
 int Config::dealFilename(std::string& s)
 {
     //replaceAllString(s, " ", "_");
+    s = File::getFilenameWithoutPath(s);
+    for (auto str : ignore_strs)
+    {
+        replaceAllString(s, str, "");
+    }
+    s = File::getFileMainname(s);
     s = sha3_(s);
     s = "_" + s;
     return 0;

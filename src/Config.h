@@ -3,6 +3,7 @@
 #include "tinyxml2/tinyxml2.h"
 #include <stdint.h>
 #include "hash/sha3.h"
+#include <vector>
 
 class Config
 {
@@ -18,6 +19,8 @@ private:
     tinyxml2::XMLElement* root_, *record_;
 
     tinyxml2::XMLElement* getElement(tinyxml2::XMLElement* parent, const char* name);
+
+    std::vector<std::string> ignore_strs;
 
 public:
     void init(const std::string& filepath);
