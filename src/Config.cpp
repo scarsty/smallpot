@@ -9,6 +9,7 @@ Config::Config()
     ignore_strs = 
     {
         ".bt.td",
+        ".td",
     };
 }
 
