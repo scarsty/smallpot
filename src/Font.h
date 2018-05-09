@@ -11,7 +11,6 @@ private:
     static Font font_;
     std::map<std::string, BP_Texture*> buffer_;  //缓存所有已经画过的字体
 
-    std::string calIndex(const std::string& fontname, int size, uint16_t c);
     BP_Texture* indexTex(const std::string& fontname, int size, uint16_t c);
 public:
     static Font* getInstance() { return &font_; };

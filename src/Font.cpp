@@ -3,11 +3,6 @@
 
 Font Font::font_;
 
-std::string Font::calIndex(const std::string& fontname, int size, uint16_t c)
-{
-    return fontname + "-" + std::to_string(size * 0x1000000 + c);
-}
-
 Font::~Font()
 {
     for (auto buffer : buffer_)
@@ -18,7 +13,7 @@ Font::~Font()
 
 BP_Texture* Font::indexTex(const std::string& fontname, int size, uint16_t c)
 {
-    auto index = calIndex(fontname, size, c);
+    auto index = fontname + "-" + std::to_string(size * 0x1000000 + c);
     if (buffer_.count(index) == 0)
     {
         uint16_t c2[2] = { 0 };
