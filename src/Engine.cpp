@@ -8,6 +8,7 @@
 #endif
 #endif
 #include <cmath>
+#include "Font.h"
 
 Engine Engine::engine_;
 
@@ -252,11 +253,11 @@ void Engine::drawSubtitle(const std::string& fontname, const std::string& text, 
     TTF_CloseFont(font);
 }
 
-BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::string& text, int size)
+BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c)
 {
     auto font = TTF_OpenFont(fontname.c_str(), size);
     if (!font) { return nullptr; }
-    SDL_Color c = { 255, 255, 255, 128 };
+    //SDL_Color c = { 255, 255, 255, 128 };
     auto text_s = TTF_RenderUTF8_Blended(font, text.c_str(), c);
     auto text_t = SDL_CreateTextureFromSurface(renderer_, text_s);
     SDL_FreeSurface(text_s);
@@ -266,37 +267,31 @@ BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::st
 
 void Engine::drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
 {
-    if (alpha == 0)
+    if (alpha <= 0 || size <= 0)
     {
         return;
     }
-    auto text_t = createTextTexture(fontname, text, size);
-    if (!text_t) { return; }
-    SDL_SetTextureAlphaMod(text_t, alpha);
-    SDL_Rect rect;
-    SDL_QueryTexture(text_t, nullptr, nullptr, &rect.w, &rect.h);
-    rect.y = y;
+
+    int w = Font::getInstance()->getTextWidth(fontname, text, size);
     switch (align)
     {
     case BP_ALIGN_LEFT:
-        rect.x = x;
         break;
     case BP_ALIGN_RIGHT:
-        rect.x = x - rect.w;
+        x = x - w;
         break;
     case BP_ALIGN_MIDDLE:
-        rect.x = x - rect.w / 2;
+        x = x - w / 2;
         break;
     }
-    SDL_RenderCopy(renderer_, text_t, nullptr, &rect);
-    SDL_DestroyTexture(text_t);
+    Font::getInstance()->draw(fontname, text, size, x, y, { 255, 255, 255, 255 }, alpha);
 }
 
 int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
 {
     if (inited_) { return 0; }
     inited_ = true;
-#ifndef _WINDLL 
+#ifndef _WINDLL
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
     {
         return -1;
@@ -319,7 +314,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
         window_ = SDL_CreateWindow("PotPlayer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, start_w_, start_h_, SDL_WINDOW_RESIZABLE);
     }
     //SDL_CreateWindowFrom()
-#ifndef _WINDLL 
+#ifndef _WINDLL
     SDL_ShowWindow(window_);
     SDL_RaiseWindow(window_);
 #endif
@@ -549,6 +544,13 @@ void Engine::resetWindowsPosition()
     {
         SDL_SetWindowPosition(window_, x, y);
     }
+}
+
+void Engine::setColor(BP_Texture* tex, BP_Color c, uint8_t alpha)
+{
+    SDL_SetTextureColorMod(tex, c.r, c.g, c.b);
+    SDL_SetTextureAlphaMod(tex, alpha);
+    SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
 }
 
 void Engine::setWindowPosition(int x, int y)

@@ -22,6 +22,7 @@ typedef SDL_Renderer BP_Renderer;
 typedef SDL_Window BP_Window;
 typedef SDL_Texture BP_Texture;
 typedef SDL_Rect BP_Rect;
+typedef SDL_Color BP_Color;
 
 typedef enum { BP_ALIGN_LEFT, BP_ALIGN_MIDDLE, BP_ALIGN_RIGHT } BP_Align;
 
@@ -92,7 +93,7 @@ public:
 
     void destroyMainTexture() { destroyTexture(tex_); }
 
-    void destroyTexture(BP_Texture* t);
+    static void destroyTexture(BP_Texture* t);
 
     BP_Texture* createYUVTexture(int w, int h);;
     void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
@@ -120,6 +121,7 @@ public:
     double setRotation(double r) { return rotation_ = r; }
     void resetWindowsPosition();
     void setRatio(int x, int y) { ratio_x_ = x; ratio_y_ = y; }
+    void setColor(BP_Texture* tex, BP_Color c, uint8_t alpha);
     //声音相关
 private:
     SDL_AudioDeviceID audio_device_;
@@ -152,7 +154,7 @@ private:
 public:
     BP_Texture* createSquareTexture(int size);
     BP_Texture* createBallTexture(int size);
-    BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size);
+    BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c);
     void drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
     void drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
     //void split(std::string& s, std::string& delim, std::vector< std::string >* ret);

@@ -200,6 +200,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\pot.cpp" />
     <ClCompile Include="src\PotBase.cpp" />
     <ClCompile Include="src\Config.cpp" />
@@ -223,6 +224,7 @@
     <ClCompile Include="src\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\PotBase.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\PotConv.h" />
