@@ -9,6 +9,7 @@
 #endif
 #include <cmath>
 #include "Font.h"
+#include "libavutil/pixfmt.h"
 
 Engine Engine::engine_;
 
@@ -29,19 +30,14 @@ void Engine::destroyTexture(BP_Texture* t)
     if (t) { SDL_DestroyTexture(t); }
 }
 
-BP_Texture* Engine::createYUVTexture(int w, int h)
-{
-    return SDL_CreateTexture(renderer_, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, w, h);
-}
-
 void Engine::updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
 {
     SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 }
 
-BP_Texture* Engine::createRGBATexture(int w, int h)
+BP_Texture* Engine::createTexture(int pix_fmt, int w, int h)
 {
-    return SDL_CreateTexture(renderer_, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+    return SDL_CreateTexture(renderer_, pix_fmt, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
 void Engine::updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch)
@@ -400,9 +396,9 @@ bool Engine::setKeepRatio(bool b)
     return keep_ratio_ = b;
 }
 
-void Engine::createMainTexture(int w, int h)
+void Engine::createMainTexture(int pix_fmt, int w, int h)
 {
-    tex_ = createYUVTexture(w, h);
+    tex_ = createTexture(pix_fmt, w, h);
     //_tex2 = createRGBATexture(w, h);
     setPresentPosition();
 }

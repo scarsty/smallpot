@@ -24,4 +24,6 @@ private:
     }
 public:
     int show(int time);
+public:
+    int getSDLPixFmt();
 };

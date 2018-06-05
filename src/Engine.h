@@ -83,7 +83,7 @@ public:
     void raiseWindow() { SDL_RaiseWindow(window_); }
     BP_Renderer* getRenderer() { return renderer_; }
 
-    void createMainTexture(int w, int h);
+    void createMainTexture(int pix_fmt, int w, int h);
 
     void setPresentPosition();  //设置贴图的位置
 
@@ -95,10 +95,9 @@ public:
 
     static void destroyTexture(BP_Texture* t);
 
-    BP_Texture* createYUVTexture(int w, int h);;
     void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
 
-    BP_Texture* createRGBATexture(int w, int h);;
+    BP_Texture* createTexture(int pix_fmt, int w, int h);
     void updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch);
 
     void renderCopy(BP_Texture* t = nullptr);
