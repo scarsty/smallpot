@@ -13,7 +13,7 @@ aux_source_directory(./hash OTHER_SRC_LIST1)
 aux_source_directory(./tinyxml2 OTHER_SRC_LIST2)
 list(APPEND SRC_LIST ${OTHER_SRC_LIST1} ${OTHER_SRC_LIST2})
 
-set(LINK_LIBRARIES iconv SDL2 SDL2_ttf SDL2_image SDL2main avutil avcodec avformat swresample ass)
+set(LINK_LIBRARIES iconv SDL2 SDL2_ttf SDL2_image SDL2main avutil avcodec avformat swresample swscale ass)
 
 add_executable(tinypot ${SRC_LIST})
 target_link_libraries(tinypot ${LINK_LIBRARIES})
