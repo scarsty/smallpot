@@ -72,7 +72,7 @@ protected:
 private:
     bool decoded_ = false, skip_ = false, ended_ = false, seeking_ = false;
     int seek_record_ = 0;  //上次seek的记录
-    virtual int avcodec_decode_packet(AVCodecContext*, int*, AVPacket*) { return 0; }
+    virtual int avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* packet);
 private:
     virtual FrameContent convertFrameToContent() { return { 0, 0, nullptr }; }
     int dropContent();

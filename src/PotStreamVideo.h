@@ -1,6 +1,10 @@
 #pragma once
 
 #include "PotStream.h"
+extern "C"
+{
+#include "libswscale/swscale.h"
+}
 
 class PotStreamVideo : public PotStream
 {
@@ -18,12 +22,11 @@ private:
     //void clear();
     virtual void freeContent(void* p) override;
     virtual FrameContent convertFrameToContent() override;
-    virtual int avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet) override
-    {
-        return avcodec_decode_video2(cont, frame_, n, packet);
-    }
 public:
     int show(int time);
 public:
     int getSDLPixFmt();
+private:
+    int texture_pix_fmt_;
+    SwsContext* img_convert_ctx_ = nullptr;
 };

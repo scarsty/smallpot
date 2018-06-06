@@ -209,6 +209,31 @@ void PotStream::setFrameTime()
 
 }
 
+int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* packet)
+{
+    int ret;
+    *n = 0;
+    if (packet)
+    {
+        ret = avcodec_send_packet(ctx, packet);
+        if (ret < 0)
+        {
+            return ret == AVERROR_EOF ? 0 : ret;
+        }
+    }
+
+    ret = avcodec_receive_frame(ctx, frame_);
+    if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
+    {
+        return ret;
+    }
+    if (ret >= 0)
+    {
+        *n = 1;
+    }
+    return 0;
+}
+
 int PotStream::dropContent()
 {
     if (!data_map_.empty())

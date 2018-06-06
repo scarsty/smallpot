@@ -1,15 +1,17 @@
 #include "PotStreamVideo.h"
 
-
 PotStreamVideo::PotStreamVideo()
 {
     //视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
     type_ = BPMEDIA_TYPE_VIDEO;
 }
 
-
 PotStreamVideo::~PotStreamVideo()
 {
+    if (img_convert_ctx_)
+    {
+        sws_freeContext(img_convert_ctx_);
+    }
 }
 
 //-1无视频
@@ -67,7 +69,13 @@ int PotStreamVideo::getSDLPixFmt()
         { AV_PIX_FMT_UYVY422,        SDL_PIXELFORMAT_UYVY },
         { AV_PIX_FMT_NONE,           SDL_PIXELFORMAT_UNKNOWN },
     };
-    return pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
+    int r = SDL_PIXELFORMAT_UNKNOWN;
+    if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
+    {
+        r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
+    }
+    texture_pix_fmt_ = r;
+    return r;
 }
 
 void PotStreamVideo::freeContent(void* p)
@@ -79,8 +87,48 @@ FrameContent PotStreamVideo::convertFrameToContent()
 {
     auto& f = frame_;
     auto tex = nullptr;
-    //auto tex = engine_->createYUVTexture(codec_ctx_->width, codec_ctx_->height);
-    engine_->updateYUVTexture(tex, f->data[0], f->linesize[0], f->data[1], f->linesize[1], f->data[2], f->linesize[2]);
+    switch (texture_pix_fmt_)
+    {
+    case SDL_PIXELFORMAT_UNKNOWN:
+        img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width, f->height, AV_PIX_FMT_BGRA, SWS_BICUBIC, NULL, NULL, NULL);
+        if (img_convert_ctx_)
+        {
+            uint8_t* pixels[4];
+            int pitch[4];
+            if (!engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
+            {
+                sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels, pitch);
+                engine_->unlockTexture(tex);
+            }
+        }
+        break;
+    case SDL_PIXELFORMAT_IYUV:
+        if (f->linesize[0] > 0 && f->linesize[1] > 0 && f->linesize[2] > 0)
+        {
+            engine_->updateYUVTexture(tex, f->data[0], f->linesize[0], f->data[1], f->linesize[1], f->data[2], f->linesize[2]);
+        }
+        else if (f->linesize[0] < 0 && f->linesize[1] < 0 && f->linesize[2] < 0)
+        {
+            engine_->updateYUVTexture(tex,
+                f->data[0] + f->linesize[0] * (f->height - 1), -f->linesize[0],
+                f->data[1] + f->linesize[1] * (AV_CEIL_RSHIFT(f->height, 1) - 1), -f->linesize[1],
+                f->data[2] + f->linesize[2] * (AV_CEIL_RSHIFT(f->height, 1) - 1), -f->linesize[2]);
+        }
+        else
+        {
+            fprintf(stderr, "Mixed negative and positive line sizes are not supported.\n");
+        }
+        break;
+    default:
+        if (f->linesize[0] < 0)
+        {
+            engine_->updateARGBTexture(tex, f->data[0] + f->linesize[0] * (f->height - 1), -f->linesize[0]);
+        }
+        else
+        {
+            engine_->updateARGBTexture(tex, f->data[0], f->linesize[0]);
+        }
+    }
     return { time_dts_, f->linesize[0], tex };
 }
 

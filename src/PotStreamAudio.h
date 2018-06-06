@@ -26,10 +26,6 @@ private:
     int closeAudioDevice();
     virtual FrameContent convertFrameToContent() override;
     virtual bool needDecode2() override;
-    virtual int avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet) override
-    {
-        return avcodec_decode_audio4(cont, frame_, n, packet);
-    }
 public:
     void openAudioDevice();
     void resetDecodeState();

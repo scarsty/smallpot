@@ -453,7 +453,7 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL 
     engine_->setWindowSize(width_, height_);
-    engine_->setWindowTitle(filename);
+    engine_->setWindowTitle(File::getFilenameWithoutPath(filename));
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
 

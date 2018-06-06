@@ -9,7 +9,6 @@
 #endif
 #include <cmath>
 #include "Font.h"
-#include "libavutil/pixfmt.h"
 
 Engine Engine::engine_;
 
@@ -32,17 +31,26 @@ void Engine::destroyTexture(BP_Texture* t)
 
 void Engine::updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
 {
-    SDL_UpdateYUVTexture(testTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
+    SDL_UpdateYUVTexture(tryMainTexture(t), nullptr, data0, size0, data1, size1, data2, size2);
 }
 
 BP_Texture* Engine::createTexture(int pix_fmt, int w, int h)
 {
+    if (pix_fmt == SDL_PIXELFORMAT_UNKNOWN)
+    {
+        pix_fmt = SDL_PIXELFORMAT_ARGB8888;
+    }
     return SDL_CreateTexture(renderer_, pix_fmt, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
-void Engine::updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch)
+void Engine::updateARGBTexture(BP_Texture* t, uint8_t* buffer, int pitch)
 {
-    SDL_UpdateTexture(testTexture(t), nullptr, buffer, pitch);
+    SDL_UpdateTexture(tryMainTexture(t), nullptr, buffer, pitch);
+}
+
+int Engine::lockTexture(BP_Texture* t, BP_Rect* r, void** pixel, int* pitch)
+{
+    return SDL_LockTexture(tryMainTexture(t), r, pixel, pitch);
 }
 
 void Engine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inPresent)
@@ -58,7 +66,7 @@ void Engine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inPresent
 
 void Engine::renderCopy(BP_Texture* t /*= nullptr*/)
 {
-    SDL_RenderCopyEx(renderer_, testTexture(t), nullptr, &rect_, rotation_, nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer_, tryMainTexture(t), nullptr, &rect_, rotation_, nullptr, SDL_FLIP_NONE);
 }
 
 void Engine::destroy()

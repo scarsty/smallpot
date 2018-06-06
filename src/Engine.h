@@ -59,7 +59,6 @@ private:
     BP_Texture* tex_ = nullptr, *tex2_ = nullptr, *logo_ = nullptr;
     BP_AudioSpec audio_spec_;
     BP_Rect rect_;
-    BP_Texture* testTexture(BP_Texture* tex) { return tex ? tex : tex_; }
     bool full_screen_ = false;
     bool keep_ratio_ = true;
 
@@ -95,10 +94,12 @@ public:
 
     static void destroyTexture(BP_Texture* t);
 
-    void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
-
+    BP_Texture* tryMainTexture(BP_Texture* tex) { return tex ? tex : tex_; }
     BP_Texture* createTexture(int pix_fmt, int w, int h);
-    void updateRGBATexture(BP_Texture* t, uint8_t* buffer, int pitch);
+    void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
+    void updateARGBTexture(BP_Texture* t, uint8_t* buffer, int pitch);
+    int lockTexture(BP_Texture* t, BP_Rect* r, void** pixel, int* pitch);
+    void unlockTexture(BP_Texture* t) { SDL_UnlockTexture(tryMainTexture(t)); }
 
     void renderCopy(BP_Texture* t = nullptr);
     void showLogo() { SDL_RenderCopy(renderer_, logo_, nullptr, nullptr); }
