@@ -6,10 +6,12 @@ Config Config::config_;
 Config::Config()
 {
     //init();
-    ignore_strs = 
+    ignore_strs =
     {
         ".bt.td",
         ".td",
+        " ",
+        "_",
     };
 }
 
@@ -69,9 +71,10 @@ tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const cha
 int Config::getRecord(const char* name)
 {
     if (strlen(name) == 0) { return 0; }
-    std::string mainname = name;
-    dealFilename(mainname);
-    const char* str = getElement(record_, mainname.c_str())->GetText();
+    std::string key = dealFilename(name);
+    auto r = getElement(record_, key.c_str());
+    //r = getElement(r, "time");
+    const char* str = r->GetText();
     if (!str)
     {
         return 0;
@@ -83,16 +86,18 @@ void Config::removeRecord(const char* name)
 {
     if (strlen(name) == 0) { return; }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
-    dealFilename(mainname);
+    mainname = dealFilename(mainname);
     record_->DeleteChild(getElement(record_, mainname.c_str()));
 }
 
 void Config::setRecord(int v, const char* name)
 {
     if (strlen(name) == 0) { return; }
-    std::string mainname = name;
-    dealFilename(mainname);
-    getElement(record_, mainname.c_str())->SetText(File::formatString("%d", v).c_str());
+    std::string key = dealFilename(name);
+    auto r = getElement(record_, key.c_str());
+    //getElement(r, "time")->SetText(File::formatString("%d", v).c_str());
+    //getElement(r, "name")->SetText(name);
+    r->SetText(File::formatString("%d", v).c_str());
 }
 
 void Config::clearRecord()
@@ -163,8 +168,9 @@ int Config::replaceAllString(std::string& s, const std::string& oldstring, const
     return pos + newstring.length();
 }
 
-int Config::dealFilename(std::string& s)
+std::string Config::dealFilename(const std::string& s0)
 {
+    auto s = s0;
     //replaceAllString(s, " ", "_");
     s = File::getFilenameWithoutPath(s);
     for (auto str : ignore_strs)
@@ -172,8 +178,9 @@ int Config::dealFilename(std::string& s)
         replaceAllString(s, str, "");
     }
     s = File::getFileMainname(s);
+    //s = PotConv::cp950toutf8(s);
     s = sha3_(s);
     s = "_" + s;
-    return 0;
+    return s;
 }
 

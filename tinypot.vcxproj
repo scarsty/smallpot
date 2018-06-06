@@ -196,7 +196,7 @@
       <AdditionalLibraryDirectories>lib/x64;$(USR_LOCAL)\lib\$(Platform)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y x64\Release\*.exe work64\</Command>
+      <Command>copy /y x64\Release\*.exe tinypot-x64\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

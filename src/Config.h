@@ -46,7 +46,7 @@ public:
 
     int replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring);
 
-    int dealFilename(std::string& s);
+    std::string dealFilename(const std::string& s0);
 
 };
 
