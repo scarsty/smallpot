@@ -88,7 +88,7 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
 std::string PotUI::convertTimeToString(int time)
 {
     char s[256];
-    sprintf(s, "%d:%02d:%05.2f", time / 3600000, time % 3600000 / 60000, time % 60000 / 1e3);
+    sprintf(s, "%d:%02d:%02d", time / 3600000, time % 3600000 / 60000, time % 60000 / 1000);
     return s;
 }
 
