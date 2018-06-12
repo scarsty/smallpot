@@ -1,8 +1,8 @@
 #pragma once
 
+#include "hash/sha3.h"
 #include "tinyxml2/tinyxml2.h"
 #include <stdint.h>
-#include "hash/sha3.h"
 #include <vector>
 
 class Config
@@ -16,7 +16,7 @@ private:
     virtual ~Config();
 
     tinyxml2::XMLDocument doc_;
-    tinyxml2::XMLElement* root_, *record_;
+    tinyxml2::XMLElement *root_, *record_;
 
     tinyxml2::XMLElement* getElement(tinyxml2::XMLElement* parent, const char* name);
 
@@ -42,11 +42,9 @@ public:
     int getRecord(const char* name);
     void removeRecord(const char* name);
     void setRecord(int v, const char* name);
-    void clearRecord(); //string replace(string str, const char *string_to_replace, const char *new_string);
+    void clearRecord();    //string replace(string str, const char *string_to_replace, const char *new_string);
 
     int replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring);
 
     std::string dealFilename(const std::string& s0);
-
 };
-

@@ -15,7 +15,6 @@ Config::Config()
     };
 }
 
-
 Config::~Config()
 {
     //delete doc;
@@ -70,7 +69,10 @@ tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const cha
 
 int Config::getRecord(const char* name)
 {
-    if (strlen(name) == 0) { return 0; }
+    if (strlen(name) == 0)
+    {
+        return 0;
+    }
     std::string key = dealFilename(name);
     auto r = getElement(record_, key.c_str());
     //r = getElement(r, "time");
@@ -84,7 +86,10 @@ int Config::getRecord(const char* name)
 
 void Config::removeRecord(const char* name)
 {
-    if (strlen(name) == 0) { return; }
+    if (strlen(name) == 0)
+    {
+        return;
+    }
     auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
     mainname = dealFilename(mainname);
     record_->DeleteChild(getElement(record_, mainname.c_str()));
@@ -92,11 +97,17 @@ void Config::removeRecord(const char* name)
 
 void Config::setRecord(int v, const char* name)
 {
-    if (strlen(name) == 0) { return; }
+    if (strlen(name) == 0)
+    {
+        return;
+    }
     std::string key = dealFilename(name);
     auto r = getElement(record_, key.c_str());
     //getElement(r, "time")->SetText(File::formatString("%d", v).c_str());
-    //getElement(r, "name")->SetText(name);
+    if (getInteger("record_file_name"))
+    {
+        getElement(r, "name")->SetText(name);
+    }
     r->SetText(File::formatString("%d", v).c_str());
 }
 
@@ -183,4 +194,3 @@ std::string Config::dealFilename(const std::string& s0)
     s = "_" + s;
     return s;
 }
-
