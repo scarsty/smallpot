@@ -245,6 +245,7 @@
     <ClInclude Include="src\hash\sha3.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\PotSubtitleManager.h" />
+    <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>

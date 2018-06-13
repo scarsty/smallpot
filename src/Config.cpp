@@ -1,5 +1,7 @@
 #include "Config.h"
 #include "File.h"
+#include "Timer.h"
+#include <iostream>
 
 Config Config::config_;
 
@@ -43,6 +45,18 @@ void Config::init(const std::string& filepath)
     {
         record_ = root_->InsertFirstChild(doc_.NewElement("record"))->ToElement();
     }
+
+    if (getInteger("record_name") == 0)
+    {
+        setInteger(0, "record_name");
+    }
+
+    //auto perAttr = record_->FirstChildElement();
+    //while (perAttr)
+    //{
+    //    std::cout << perAttr->Name() << ":" << perAttr->FirstChildElement("date")->GetText() << std::endl;
+    //    perAttr = perAttr->NextSiblingElement();
+    //}
 }
 
 void Config::write()
@@ -75,7 +89,7 @@ int Config::getRecord(const char* name)
     }
     std::string key = dealFilename(name);
     auto r = getElement(record_, key.c_str());
-    //r = getElement(r, "time");
+    r = getElement(r, "time");
     const char* str = r->GetText();
     if (!str)
     {
@@ -103,12 +117,13 @@ void Config::setRecord(int v, const char* name)
     }
     std::string key = dealFilename(name);
     auto r = getElement(record_, key.c_str());
-    //getElement(r, "time")->SetText(File::formatString("%d", v).c_str());
-    if (getInteger("record_file_name"))
+    getElement(r, "time")->SetText(File::formatString("%d", v).c_str());
+    getElement(r, "date")->SetText(Timer::getNowAsString("%F %T").c_str());
+    if (getInteger("record_name"))
     {
         getElement(r, "name")->SetText(name);
     }
-    r->SetText(File::formatString("%d", v).c_str());
+    //r->SetText(File::formatString("%d", v).c_str());
 }
 
 void Config::clearRecord()
@@ -190,7 +205,7 @@ std::string Config::dealFilename(const std::string& s0)
     }
     s = File::getFileMainname(s);
     //s = PotConv::cp950toutf8(s);
-    s = sha3_(s);
+    s = sha3_(s).substr(0, 10);
     s = "_" + s;
     return s;
 }
