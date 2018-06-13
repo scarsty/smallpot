@@ -46,10 +46,15 @@ void Config::init(const std::string& filepath)
         record_ = root_->InsertFirstChild(doc_.NewElement("record"))->ToElement();
     }
 
-    if (getInteger("record_name") == 0)
+    auto setInit = [&](const char* s)
     {
-        setInteger(0, "record_name");
-    }
+        if (getInteger(s) == 0)
+        {
+            setInteger(0, s);
+        }
+    };
+    setInit("record_name");
+    setInit("auto_play_recent");
 
     //auto perAttr = record_->FirstChildElement();
     //while (perAttr)

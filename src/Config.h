@@ -24,6 +24,7 @@ private:
 
 public:
     void init(const std::string& filepath);
+
     void write();
     static Config* getInstance() { return &config_; };
 

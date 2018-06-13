@@ -1,6 +1,6 @@
-﻿#include "PotPlayer.h"
+﻿#include "Config.h"
+#include "PotPlayer.h"
 #include "PotSubtitleManager.h"
-#include "Config.h"
 #ifdef _WIN32
 //#include <shlobj.h>
 //#pragma comment(lib,"shfolder.lib")
@@ -16,7 +16,8 @@ PotPlayer::PotPlayer()
     _filepath = "./";
 }
 
-PotPlayer::PotPlayer(char* s) : PotPlayer()
+PotPlayer::PotPlayer(char* s)
+    : PotPlayer()
 {
     _filepath = File::getFilePath(s);
 #if defined(_WIN32) && defined(_SINGLE_FILE)
@@ -32,7 +33,6 @@ PotPlayer::PotPlayer(char* s) : PotPlayer()
         CreateDirectoryA(_filepath.c_str(), NULL);
     }
 #endif
-
 }
 
 PotPlayer::~PotPlayer()
@@ -43,15 +43,23 @@ PotPlayer::~PotPlayer()
     //delete media;
 }
 
-int PotPlayer::beginWithFile(const std::string& filename)
+int PotPlayer::beginWithFile(std::string filename)
 {
     int count = 0;
-    if (init() != 0) { return -1; }
+    if (init() != 0)
+    {
+        return -1;
+    }
     engine_->resetRenderTarget();
     int start_time = engine_->getTicks();
 
+    if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
+    {
+        filename = Config::getInstance()->getString("recent_file");
+    }
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = filename;
+
 #ifdef _DEBUG
     drop_filename_ = PotConv::conv(drop_filename_, sys_encode_, BP_encode_);
 #endif
@@ -90,7 +98,10 @@ int PotPlayer::beginWithFile(const std::string& filename)
         }
         this->eventLoop();
         closeMedia(play_filename);
-        if (play_filename != "") { count++; }
+        if (play_filename != "")
+        {
+            count++;
+        }
         play_filename = drop_filename_;
     }
     destroy();
@@ -112,8 +123,8 @@ int PotPlayer::eventLoop()
     std::string open_filename;
     printf("Total time is %1.3fs or %dmin %1.3fs\n", totalTime / 1e3, totalTime / 60000, totalTime % 60000 / 1e3);
 
-    int maxDelay = 0; //统计使用
-    int prev_show_time = 0;  //上一次显示的时间
+    int maxDelay = 0;          //统计使用
+    int prev_show_time = 0;    //上一次显示的时间
     exit_type_ = 0;
 
     bool show_in_sub = true, show_ex_sub = true;
@@ -127,8 +138,7 @@ int PotPlayer::eventLoop()
         {
             ui_alpha--;
         }
-        if (height_ - y < 50
-            || ((width_ - x) < 200 && y < 150))
+        if (height_ - y < 50 || ((width_ - x) < 200 && y < 150))
         {
             ui_alpha = 128;
         }
@@ -152,7 +162,7 @@ int PotPlayer::eventLoop()
                     media_->setPause(pause);
                 }
             }
-#ifdef _WINDLL 
+#ifdef _WINDLL
             if (e.button.button == BP_BUTTON_RIGHT)
             {
                 loop = false;
@@ -235,7 +245,7 @@ int PotPlayer::eventLoop()
                 media_->setPause(pause);
                 break;
             case BPK_RETURN:
-#ifndef _WINDLL 
+#ifndef _WINDLL
                 engine_->toggleFullscreen();
 #endif
                 break;
@@ -261,10 +271,10 @@ int PotPlayer::eventLoop()
             ui_alpha = 128;
             break;
         }
-        //#ifndef _WINDLL 
+        //#ifndef _WINDLL
         case BP_QUIT:
             //pause = true;
-#ifdef _WINDLL 
+#ifdef _WINDLL
             engine_->delay(10);
 #endif
             //media_->setPause(pause);
@@ -311,11 +321,14 @@ int PotPlayer::eventLoop()
         }
         e.type = BP_FIRSTEVENT;
 
-        if (!loop) { break; }
+        if (!loop)
+        {
+            break;
+        }
         //在每个循环均尝试预解压
         media_->decodeFrame();
         //尝试以音频为基准显示视频
-        int audioTime = media_->getTime();  //注意优先为音频时间，若音频不存在使用视频时间
+        int audioTime = media_->getTime();    //注意优先为音频时间，若音频不存在使用视频时间
         /*if (seeking)
         {
             cout << audioTime << " " <<_media->getAudioStream()->getTimedts() << endl<<endl;;
@@ -338,7 +351,10 @@ int PotPlayer::eventLoop()
         {
             char s[1024];
             stop_callback(&loop, s);
-            if (!loop) { drop_filename_ = s; }
+            if (!loop)
+            {
+                drop_filename_ = s;
+            }
         }
 
         //printf("\nvideostate%d", videostate);
@@ -358,8 +374,7 @@ int PotPlayer::eventLoop()
         }
         //静止时，无视频时，视频已放完时40毫秒显示一次
         //有视频未暂停且未到时间不会进入此判断
-        else if ((pause || videostate == PotStreamVideo::NoVideo || videostate == PotStreamVideo::NoVideoFrame)
-            && engine_->getTicks() - prev_show_time > 100)
+        else if ((pause || videostate == PotStreamVideo::NoVideo || videostate == PotStreamVideo::NoVideoFrame) && engine_->getTicks() - prev_show_time > 100)
         {
             show = true;
             if (havevideo)
@@ -389,7 +404,7 @@ int PotPlayer::eventLoop()
         engine_->delay(1);
         //if (audioTime >= totalTime)
         //_media->seekTime(0);
-#ifdef _WINDLL 
+#ifdef _WINDLL
         if (videostate == PotStreamVideo::NoVideo || time_s >= totalTime)
         {
             loop = false;
@@ -407,7 +422,10 @@ int PotPlayer::eventLoop()
 
 int PotPlayer::init()
 {
-    if (engine_->init(handle_, handle_type_)) { return -1; }
+    if (engine_->init(handle_, handle_type_))
+    {
+        return -1;
+    }
     Config::getInstance()->init(_filepath);
 #ifdef _WIN32
     sys_encode_ = Config::getInstance()->getString("sys_encode", "cp936");
@@ -421,20 +439,24 @@ int PotPlayer::init()
 
 void PotPlayer::destroy()
 {
-    Config::getInstance()->setString(sys_encode_, "sys_encode");
-    Config::getInstance()->setInteger(cur_volume_, "volume");
+    auto c = Config::getInstance();
+    c->setString(sys_encode_, "sys_encode");
+    c->setInteger(cur_volume_, "volume");
     UI_.destory();
     engine_->destroy();
-    Config::getInstance()->write();
+    if (c->getInteger("record_name") && !drop_filename_.empty())
+    {
+        c->setString(drop_filename_, "recent_file");
+    }
+    c->write();
 }
-
 
 //参数为utf8编码
 void PotPlayer::openMedia(const std::string& filename)
 {
     media_ = nullptr;
     media_ = new PotMedia;
-#ifndef _WINDLL 
+#ifndef _WINDLL
     File::changePath(File::getFilePath(filename));
 #endif
     //如果是控制台程序，通过参数传入的是ansi
@@ -443,7 +465,7 @@ void PotPlayer::openMedia(const std::string& filename)
     //播放器应以窗口程序为主
 
     //打开文件, 需要进行转换
-    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_); //这个需要ansi
+    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //这个需要ansi
     media_->openFile(open_filename);
 
     //窗口尺寸，时间
@@ -451,7 +473,7 @@ void PotPlayer::openMedia(const std::string& filename)
     height_ = media_->getVideo()->getHeight();
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
-#ifndef _WINDLL 
+#ifndef _WINDLL
     engine_->setWindowSize(width_, height_);
     engine_->setWindowTitle(File::getFilenameWithoutPath(filename));
 #endif
@@ -469,8 +491,7 @@ void PotPlayer::openMedia(const std::string& filename)
     subtitle_ = PotSubtitleManager::createSubtitle(open_subfilename);
     setSubtitleFrameSize();
 
-
-#ifndef _WINDLL 
+#ifndef _WINDLL
     //读取记录中的文件时间并跳转
     if (media_->isMedia())
     {
@@ -504,7 +525,7 @@ void PotPlayer::closeMedia(const std::string& filename)
     //_subtitle->closeSubtitle();
 
     //如果是媒体文件就记录时间
-#ifndef _WINDLL 
+#ifndef _WINDLL
     if (media_->isMedia() && cur_time_ < media_->getTotalTime() && cur_time_ > 0)
     {
         Config::getInstance()->setRecord(cur_time_, filename.c_str());
@@ -516,6 +537,3 @@ void PotPlayer::closeMedia(const std::string& filename)
 #endif
     delete media_;
 }
-
-
-
