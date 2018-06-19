@@ -110,8 +110,7 @@ void Config::removeRecord(const char* name)
     {
         return;
     }
-    auto mainname = File::getFileMainname(File::getFilenameWithoutPath(name));
-    mainname = dealFilename(mainname);
+    auto mainname = dealFilename(name);
     record_->DeleteChild(getElement(record_, mainname.c_str()));
 }
 
