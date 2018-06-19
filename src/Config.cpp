@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "File.h"
 #include "Timer.h"
+#include "libconvert.h"
 #include <iostream>
 
 Config Config::config_;
@@ -122,7 +123,7 @@ void Config::setRecord(int v, const char* name)
     }
     std::string key = dealFilename(name);
     auto r = getElement(record_, key.c_str());
-    getElement(r, "time")->SetText(File::formatString("%d", v).c_str());
+    getElement(r, "time")->SetText(convert::formatString("%d", v).c_str());
     getElement(r, "date")->SetText(Timer::getNowAsString("%F %T").c_str());
     if (getInteger("record_name"))
     {
@@ -154,12 +155,12 @@ std::string Config::getString(const char* name, std::string def /*= ""*/)
 
 int Config::getInteger(const char* name, int def /*= 0*/)
 {
-    return atoi(getString(name, File::formatString("%d", def)).c_str());
+    return atoi(getString(name, convert::formatString("%d", def)).c_str());
 }
 
 double Config::getDouble(const char* name, double def /*= 0.0*/)
 {
-    return atof(getString(name, File::formatString("%f", def)).c_str());
+    return atof(getString(name, convert::formatString("%f", def)).c_str());
 }
 
 bool Config::getBool(bool& v, const char* name)
@@ -174,17 +175,17 @@ void Config::setString(const std::string v, const char* name)
 
 void Config::setInteger(int v, const char* name)
 {
-    setString(File::formatString("%d", v), name);
+    setString(convert::formatString("%d", v), name);
 }
 
 void Config::setDouble(double v, const char* name)
 {
-    setString(File::formatString("%f", v), name);
+    setString(convert::formatString("%f", v), name);
 }
 
 void Config::setBool(bool v, const char* name)
 {
-    setString(File::formatString("%d", v != 0), name);
+    setString(convert::formatString("%d", v != 0), name);
 }
 
 int Config::replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring)

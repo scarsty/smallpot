@@ -1,6 +1,7 @@
 ﻿#include "Config.h"
 #include "PotPlayer.h"
 #include "PotSubtitleManager.h"
+#include "libconvert.h"
 #ifdef _WIN32
 //#include <shlobj.h>
 //#pragma comment(lib,"shfolder.lib")
@@ -61,7 +62,7 @@ int PotPlayer::beginWithFile(std::string filename)
     drop_filename_ = filename;
 
 #ifdef _DEBUG
-    drop_filename_ = PotConv::conv(drop_filename_, sys_encode_, BP_encode_);
+    //drop_filename_ = PotConv::conv(drop_filename_, sys_encode_, BP_encode_);
 #endif
     printf("Begin with file: %s\n", filename.c_str());
     auto play_filename = drop_filename_;
@@ -203,12 +204,12 @@ int PotPlayer::eventLoop()
                 break;
             case BPK_1:
                 media_->getAudio()->switchStream();
-                UI_.setText(File::formatString("Switch audio stream to %d", media_->getAudio()->getStreamIndex()));
+                UI_.setText(convert::formatString("Switch audio stream to %d", media_->getAudio()->getStreamIndex()));
                 break;
             case BPK_2:
                 media_->getSubtitle()->switchStream();
                 media_->getSubtitle()->clear();
-                UI_.setText(File::formatString("Switch subtitle stream to %d", media_->getSubtitle()->getStreamIndex()));
+                UI_.setText(convert::formatString("Switch subtitle stream to %d", media_->getSubtitle()->getStreamIndex()));
                 break;
             case BPK_3:
                 show_in_sub = !show_in_sub;
@@ -402,8 +403,12 @@ int PotPlayer::eventLoop()
         }
         i++;
         engine_->delay(1);
-        //if (audioTime >= totalTime)
-        //_media->seekTime(0);
+        if (audioTime >= totalTime)
+        {
+            auto next_file = findNextFile(drop_filename_);
+            drop_filename_ = next_file;
+            loop = false;
+        }
 #ifdef _WINDLL
         if (videostate == PotStreamVideo::NoVideo || time_s >= totalTime)
         {
@@ -415,7 +420,7 @@ int PotPlayer::eventLoop()
     engine_->renderClear();
     engine_->renderPresent();
 
-    auto s = File::formatString("%d", i);
+    auto s = convert::formatString("%d", i);
     //engine_->showMessage(s);
     return exit_type_;
 }
@@ -536,4 +541,22 @@ void PotPlayer::closeMedia(const std::string& filename)
     }
 #endif
     delete media_;
+}
+
+std::string PotPlayer::findNextFile(const std::string& filename)
+{
+    std::string next_file;
+    auto filename1 = PotConv::conv(drop_filename_, BP_encode_, sys_encode_);
+    auto path = File::getFilePath(filename1);
+    filename1 = File::getFilenameWithoutPath(filename1);
+    auto files = File::getFilesInPath(path);
+    std::sort(files.begin(), files.end());
+    for (int i = 0; i < files.size() - 1; i++)
+    {
+        if (files.at(i) == filename1)
+        {
+            next_file = files.at(i + 1);
+        }
+    }
+    return PotConv::conv(path + "/" + next_file, sys_encode_, BP_encode_);
 }

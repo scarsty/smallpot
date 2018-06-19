@@ -1,11 +1,8 @@
-// BigPot.cpp : Defines the entry point for the console application.
-//
-
-//#include "stdafx.h"
 
 #include "PotPlayer.h"
 
 #ifndef _WINDLL
+//in SDL, this is not the real main function, the argc is of utf-8, not ansi on Windows
 int main(int argc, char* argv[])
 {
     auto bp = new PotPlayer(argv[0]);
@@ -14,4 +11,3 @@ int main(int argc, char* argv[])
     return 0;
 }
 #endif
-

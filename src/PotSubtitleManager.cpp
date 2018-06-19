@@ -1,14 +1,14 @@
-#include "PotSubtitleManager.h"
 #include "File.h"
 #include "PotSubtitleAss.h"
+#include "PotSubtitleManager.h"
 #include "PotSubtitleSrt.h"
+#include "libconvert.h"
 
 std::vector<std::string> PotSubtitleManager::ext_names_;
 
 PotSubtitleManager::PotSubtitleManager()
 {
 }
-
 
 PotSubtitleManager::~PotSubtitleManager()
 {
@@ -17,7 +17,7 @@ PotSubtitleManager::~PotSubtitleManager()
 PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
 {
     PotSubtitle* ret = nullptr;
-    auto ext = File::toLowerCase(File::getFileExt(filename));
+    auto ext = convert::convertCase(File::getFileExt(filename));
     if (ext == "ass" || ext == "ssa")
     {
         ret = new PotSubtitleAss();
@@ -87,11 +87,11 @@ std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
             return str;
         }
     }
-    str = File::findFileWithMainName(filename);
-    if (!isSubtitle(str))
-    {
-        str = "";
-    }
+    //str = File::findFileWithMainName(filename);
+    //if (!isSubtitle(str))
+    //{
+    //    str = "";
+    //}
     return str;
 }
 
@@ -103,9 +103,7 @@ bool PotSubtitleManager::tryOpenSubtitle(const std::string& filename)
 
 bool PotSubtitleManager::isSubtitle(const std::string& filename)
 {
-    auto ext = File::getFileExt(filename);
-    ext = File::toLowerCase(ext);
-    //transform(ext.begin(), ext.end(), ext.begin(), tolower);
+    auto ext = convert::convertCase(File::getFileExt(filename));
     bool b = false;
     for (auto& e : ext_names_)
     {
