@@ -7,7 +7,8 @@
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\work</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>"D:\data\_sty_bak\_数据备份\sty\media\大明王朝1566.2007.46集全.国语.简繁中字￡CMCT小鱼\大明王朝1566.E14.2007.JPN.DVDRip.x264-10bit.AC3-CMCT.mkv"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\tinypot-x64</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
@@ -18,7 +19,8 @@
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\work</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>"D:\data\_sty_bak\_数据备份\sty\media\大明王朝1566.2007.46集全.国语.简繁中字￡CMCT小鱼\大明王朝1566.E14.2007.JPN.DVDRip.x264-10bit.AC3-CMCT.mkv"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\tinypot-x64</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

@@ -449,7 +449,7 @@ void PotPlayer::destroy()
     c->setInteger(cur_volume_, "volume");
     UI_.destory();
     engine_->destroy();
-    if (c->getInteger("record_name") && !drop_filename_.empty())
+    if (c->getInteger("auto_play_recent") && !drop_filename_.empty())
     {
         c->setString(drop_filename_, "recent_file");
     }
