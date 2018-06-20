@@ -130,10 +130,12 @@ int PotPlayer::eventLoop()
 
     bool show_in_sub = true, show_ex_sub = true;
 
+    int find_direct = 1;
+
     while (loop && engine_->pollEvent(e) >= 0)
     {
         seeking = false;
-
+        find_direct++;    //连续24天后方向会出现bug，但是不管了
         engine_->getMouseState(x, y);
         if (ui_alpha > 0)
         {
@@ -197,9 +199,11 @@ int PotPlayer::eventLoop()
                 seeking = true;
                 break;
             case BPK_UP:
+            case BPK_PLUS:
                 media_->getAudio()->changeVolume(volume_step);
                 break;
             case BPK_DOWN:
+            case BPK_MINUS:
                 media_->getAudio()->changeVolume(-volume_step);
                 break;
             case BPK_1:
@@ -267,6 +271,16 @@ int PotPlayer::eventLoop()
             case BPK_BACKSPACE:
                 media_->seekTime(0);
                 seeking = true;
+                break;
+            case BPK_PERIOD:
+                find_direct = 1;
+                drop_filename_ = findNextFile(drop_filename_, find_direct);
+                loop = false;
+                break;
+            case BPK_COMMA:
+                find_direct = -60 * 1000;
+                drop_filename_ = findNextFile(drop_filename_, find_direct);
+                loop = false;
                 break;
             }
             ui_alpha = 128;
@@ -405,7 +419,7 @@ int PotPlayer::eventLoop()
         engine_->delay(1);
         if (audioTime >= totalTime)
         {
-            auto next_file = findNextFile(drop_filename_);
+            auto next_file = findNextFile(drop_filename_, find_direct);
             drop_filename_ = next_file;
             loop = false;
         }
@@ -543,7 +557,7 @@ void PotPlayer::closeMedia(const std::string& filename)
     delete media_;
 }
 
-std::string PotPlayer::findNextFile(const std::string& filename)
+std::string PotPlayer::findNextFile(const std::string& filename, int direct)
 {
     std::string next_file;
     auto filename1 = PotConv::conv(drop_filename_, BP_encode_, sys_encode_);
@@ -551,11 +565,24 @@ std::string PotPlayer::findNextFile(const std::string& filename)
     filename1 = File::getFilenameWithoutPath(filename1);
     auto files = File::getFilesInPath(path);
     std::sort(files.begin(), files.end());
-    for (int i = 0; i < files.size() - 1; i++)
+    if (direct > 0)
     {
-        if (files.at(i) == filename1)
+        for (int i = 0; i < files.size() - 1; i++)
         {
-            next_file = files.at(i + 1);
+            if (files.at(i) == filename1)
+            {
+                next_file = files.at(i + 1);
+            }
+        }
+    }
+    else
+    {
+        for (int i = files.size() - 1; i > 0; i--)
+        {
+            if (files.at(i) == filename1)
+            {
+                next_file = files.at(i - 1);
+            }
         }
     }
     return PotConv::conv(path + "/" + next_file, sys_encode_, BP_encode_);

@@ -1,6 +1,4 @@
-/output
 *.zip
-/ffplay
 *.opensdf
 *.MOV
 *.ssa
@@ -8,7 +6,6 @@
 *.mkv
 *.opendb
 *.sdf
-*/ffplay/Debug/*
 *.wmv
 *.o
 *.dcpp
@@ -23,3 +20,4 @@ Win32/
 *.dll
 *.exe
 *.7z
+common/*

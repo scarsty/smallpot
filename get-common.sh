@@ -1,4 +1,10 @@
 #!/bin/bash
 
 rm common
-git clone https://github.com/scarsty/common
+if [ ! -d "./common" ]; then
+    git clone https://github.com/scarsty/common
+else
+    cd common
+    git pull
+fi
+
