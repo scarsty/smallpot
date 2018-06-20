@@ -14,24 +14,24 @@ PotPlayer::PotPlayer()
     width_ = 320;
     height_ = 150;
     handle_ = nullptr;
-    _filepath = "./";
+    run_path_ = "./";
 }
 
 PotPlayer::PotPlayer(char* s)
     : PotPlayer()
 {
-    _filepath = File::getFilePath(s);
+    run_path_ = File::getFilePath(s);
 #if defined(_WIN32) && defined(_SINGLE_FILE)
     char szPath[MAX_PATH];
     //SHGetSpecialFolderPath(NULL, szPath, CSIDL_LOCAL_APPDATA, false);
     SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, szPath);
     //std::wstring ws(szPath);
     std::string str(szPath);
-    _filepath = str + "/bigpot";
+    run_path_ = str + "/bigpot";
     WIN32_FIND_DATAA wfd;
-    if (FindFirstFileA(_filepath.c_str(), &wfd) == INVALID_HANDLE_VALUE)
+    if (FindFirstFileA(run_path_.c_str(), &wfd) == INVALID_HANDLE_VALUE)
     {
-        CreateDirectoryA(_filepath.c_str(), NULL);
+        CreateDirectoryA(run_path_.c_str(), NULL);
     }
 #endif
 }
@@ -61,16 +61,13 @@ int PotPlayer::beginWithFile(std::string filename)
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = filename;
 
-#ifdef _DEBUG
-    //drop_filename_ = PotConv::conv(drop_filename_, sys_encode_, BP_encode_);
-#endif
     printf("Begin with file: %s\n", filename.c_str());
     auto play_filename = drop_filename_;
-    run_ = true;
+    running_ = true;
 
     //_subtitle->init();
 
-    while (run_)
+    while (running_)
     {
         /*if (count <= 1)
         {
@@ -169,7 +166,7 @@ int PotPlayer::eventLoop()
             if (e.button.button == BP_BUTTON_RIGHT)
             {
                 loop = false;
-                run_ = false;
+                running_ = false;
             }
 #endif
             break;
@@ -262,7 +259,7 @@ int PotPlayer::eventLoop()
                 else
                 {
                     loop = false;
-                    run_ = false;
+                    running_ = false;
                 }
                 break;
             case BPK_DELETE:
@@ -273,15 +270,27 @@ int PotPlayer::eventLoop()
                 seeking = true;
                 break;
             case BPK_PERIOD:
+            {
                 find_direct = 1;
-                drop_filename_ = findNextFile(drop_filename_, find_direct);
-                loop = false;
+                auto next_file = findNextFile(drop_filename_, find_direct);
+                if (next_file != "")
+                {
+                    drop_filename_ = next_file;
+                    loop = false;
+                }
                 break;
+            }
             case BPK_COMMA:
+            {
                 find_direct = -60 * 1000;
-                drop_filename_ = findNextFile(drop_filename_, find_direct);
-                loop = false;
+                auto next_file = findNextFile(drop_filename_, find_direct);
+                if (next_file != "")
+                {
+                    drop_filename_ = next_file;
+                    loop = false;
+                }
                 break;
+            }
             }
             ui_alpha = 128;
             break;
@@ -294,7 +303,7 @@ int PotPlayer::eventLoop()
 #endif
             //media_->setPause(pause);
             loop = false;
-            run_ = false;
+            running_ = false;
             exit_type_ = 1;
             break;
         //#endif
@@ -344,10 +353,10 @@ int PotPlayer::eventLoop()
         media_->decodeFrame();
         //尝试以音频为基准显示视频
         int audioTime = media_->getTime();    //注意优先为音频时间，若音频不存在使用视频时间
-        /*if (seeking)
-        {
-            cout << audioTime << " " <<_media->getAudioStream()->getTimedts() << endl<<endl;;
-        }*/
+        //if (seeking)
+        //{
+        //    cout << audioTime << " " << media_->getAudioStream()->getTimedts() << endl;
+        //}
 
         int time_s = audioTime;
         if (pause)
@@ -420,14 +429,17 @@ int PotPlayer::eventLoop()
         if (audioTime >= totalTime)
         {
             auto next_file = findNextFile(drop_filename_, find_direct);
-            drop_filename_ = next_file;
-            loop = false;
+            if (next_file != "")
+            {
+                drop_filename_ = next_file;
+                loop = false;
+            }
         }
 #ifdef _WINDLL
         if (videostate == PotStreamVideo::NoVideo || time_s >= totalTime)
         {
             loop = false;
-            run_ = false;
+            running_ = false;
         }
 #endif
     }
@@ -445,7 +457,7 @@ int PotPlayer::init()
     {
         return -1;
     }
-    Config::getInstance()->init(_filepath);
+    Config::getInstance()->init(run_path_);
 #ifdef _WIN32
     sys_encode_ = Config::getInstance()->getString("sys_encode", "cp936");
 #else
@@ -458,16 +470,8 @@ int PotPlayer::init()
 
 void PotPlayer::destroy()
 {
-    auto c = Config::getInstance();
-    c->setString(sys_encode_, "sys_encode");
-    c->setInteger(cur_volume_, "volume");
     UI_.destory();
     engine_->destroy();
-    if (c->getInteger("auto_play_recent") && !drop_filename_.empty())
-    {
-        c->setString(drop_filename_, "recent_file");
-    }
-    c->write();
 }
 
 //参数为utf8编码
@@ -476,6 +480,7 @@ void PotPlayer::openMedia(const std::string& filename)
     media_ = nullptr;
     media_ = new PotMedia;
 #ifndef _WINDLL
+    //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
     File::changePath(File::getFilePath(filename));
 #endif
     //如果是控制台程序，通过参数传入的是ansi
@@ -545,20 +550,33 @@ void PotPlayer::closeMedia(const std::string& filename)
 
     //如果是媒体文件就记录时间
 #ifndef _WINDLL
+    auto config = Config::getInstance();
     if (media_->isMedia() && cur_time_ < media_->getTotalTime() && cur_time_ > 0)
     {
-        Config::getInstance()->setRecord(cur_time_, filename.c_str());
+        config->setRecord(cur_time_, filename.c_str());
     }
     else
     {
-        Config::getInstance()->removeRecord(filename.c_str());
+        config->removeRecord(filename.c_str());
     }
+    config->setString(sys_encode_, "sys_encode");
+    config->setInteger(cur_volume_, "volume");
+    if (config->getInteger("auto_play_recent") && !drop_filename_.empty())
+    {
+        config->setString(drop_filename_, "recent_file");
+    }
+    config->write();
 #endif
     delete media_;
+    File::changePath(run_path_);
 }
 
 std::string PotPlayer::findNextFile(const std::string& filename, int direct)
 {
+    if (filename == "")
+    {
+        return "";
+    }
     std::string next_file;
     auto filename1 = PotConv::conv(drop_filename_, BP_encode_, sys_encode_);
     auto path = File::getFilePath(filename1);
@@ -585,5 +603,12 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
             }
         }
     }
-    return PotConv::conv(path + "/" + next_file, sys_encode_, BP_encode_);
+    if (next_file != "")
+    {
+        return PotConv::conv(path + "/" + next_file, sys_encode_, BP_encode_);
+    }
+    else
+    {
+        return "";
+    }
 }

@@ -22,7 +22,7 @@ public:
     virtual ~PotPlayer();
 
 private:
-    std::string drop_filename_ = "", _filepath;
+    std::string drop_filename_ = "", run_path_;
     int cur_time_ = 0;
 
     PotMedia* media_ = nullptr;
@@ -30,7 +30,7 @@ private:
     PotSubtitle* subtitle_ = nullptr;
 
     int width_, height_;
-    bool run_ = true;
+    bool running_ = true;
 
     std::string sys_encode_ = "cp936", BP_encode_ = "utf-8";
     int cur_volume_;
