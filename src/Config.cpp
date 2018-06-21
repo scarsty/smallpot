@@ -1,5 +1,6 @@
 #include "Config.h"
 #include "File.h"
+#include "PotConv.h"
 #include "Timer.h"
 #include "libconvert.h"
 #include <iostream>
@@ -9,7 +10,7 @@ Config Config::config_;
 Config::Config()
 {
     //init();
-    ignore_strs =
+    ignore_strs_ =
     {
         ".bt.td",
         ".td",
@@ -35,34 +36,21 @@ void Config::init(const std::string& filepath)
         //_doc.DeleteChildren();
         doc_.LinkEndChild(doc_.NewDeclaration());
         root_ = doc_.NewElement("root");
+        setInteger("auto_play_recent", 0);
+        setInteger("record_name", 0);
     }
     else
     {
         root_ = doc_.FirstChildElement("root");
     }
 
-    record_ = root_->FirstChildElement("record");
-    if (!record_)
-    {
-        record_ = root_->InsertFirstChild(doc_.NewElement("record"))->ToElement();
-    }
-
-    auto setInit = [&](const char* s)
-    {
-        if (getInteger(s) == 0)
-        {
-            setInteger(0, s);
-        }
-    };
-    setInit("record_name");
-    setInit("auto_play_recent");
-
-    //auto perAttr = record_->FirstChildElement();
-    //while (perAttr)
-    //{
-    //    std::cout << perAttr->Name() << ":" << perAttr->FirstChildElement("date")->GetText() << std::endl;
-    //    perAttr = perAttr->NextSiblingElement();
-    //}
+    record_ = getElement(root_, "record");
+    getElement(root_, "volume")->SetAttribute("comment", u8"音量");
+    getElement(root_, "auto_play_recent")->SetAttribute("comment", u8"自动播放上次关闭时的文件");
+    getElement(root_, "record_name")->SetAttribute("comment", u8"是否记录文件名");
+    getElement(root_, "sys_encode")->SetAttribute("comment", u8"系统字串编码");
+    getElement(root_, "ui_font")->SetAttribute("comment", u8"显示界面的字体");
+    getElement(root_, "sub_font")->SetAttribute("comment", u8"显示字幕的默认字体");
 }
 
 void Config::write()
@@ -87,12 +75,36 @@ tinyxml2::XMLElement* Config::getElement(tinyxml2::XMLElement* parent, const cha
     }
 }
 
-int Config::getRecord(const char* name)
+std::string Config::getString(const std::string& name, std::string def /*= ""*/)
 {
-    if (strlen(name) == 0)
+    auto p = root_->FirstChildElement(name.c_str());
+    if (p && p->FirstChild())
     {
-        return 0;
+        return p->GetText();
     }
+    else
+    {
+        return def;
+    }
+}
+
+int Config::getInteger(const std::string& name, int def /*= 0*/)
+{
+    return atoi(getString(name, convert::formatString("%d", def)).c_str());
+}
+
+void Config::setString(const std::string& name, const std::string v)
+{
+    getElement(root_, name.c_str())->SetText(v.c_str());
+}
+
+void Config::setInteger(const std::string& name, int v)
+{
+    setString(name, convert::formatString("%d", v));
+}
+
+int Config::getRecord(const std::string& name)
+{
     std::string key = dealFilename(name);
     auto r = getElement(record_, key.c_str());
     r = getElement(r, "time");
@@ -104,29 +116,21 @@ int Config::getRecord(const char* name)
     return atoi(str);
 }
 
-void Config::removeRecord(const char* name)
+void Config::removeRecord(const std::string& name)
 {
-    if (strlen(name) == 0)
-    {
-        return;
-    }
     auto mainname = dealFilename(name);
     record_->DeleteChild(getElement(record_, mainname.c_str()));
 }
 
-void Config::setRecord(int v, const char* name)
+void Config::setRecord(const std::string& name, int v)
 {
-    if (strlen(name) == 0)
-    {
-        return;
-    }
     std::string key = dealFilename(name);
     auto r = getElement(record_, key.c_str());
     getElement(r, "time")->SetText(convert::formatString("%d", v).c_str());
     getElement(r, "date")->SetText(Timer::getNowAsString("%F %T").c_str());
     if (getInteger("record_name"))
     {
-        getElement(r, "name")->SetText(name);
+        getElement(r, "name")->SetText(name.c_str());
     }
     //r->SetText(File::formatString("%d", v).c_str());
 }
@@ -139,74 +143,14 @@ void Config::clearRecord()
     }
 }
 
-std::string Config::getString(const char* name, std::string def /*= ""*/)
-{
-    auto p = root_->FirstChildElement(name);
-    if (p && p->FirstChild())
-    {
-        return p->GetText();
-    }
-    else
-    {
-        return def;
-    }
-}
-
-int Config::getInteger(const char* name, int def /*= 0*/)
-{
-    return atoi(getString(name, convert::formatString("%d", def)).c_str());
-}
-
-double Config::getDouble(const char* name, double def /*= 0.0*/)
-{
-    return atof(getString(name, convert::formatString("%f", def)).c_str());
-}
-
-bool Config::getBool(bool& v, const char* name)
-{
-    return atoi(getString(name, "0").c_str()) != 0;
-}
-
-void Config::setString(const std::string v, const char* name)
-{
-    getElement(root_, name)->SetText(v.c_str());
-}
-
-void Config::setInteger(int v, const char* name)
-{
-    setString(convert::formatString("%d", v), name);
-}
-
-void Config::setDouble(double v, const char* name)
-{
-    setString(convert::formatString("%f", v), name);
-}
-
-void Config::setBool(bool v, const char* name)
-{
-    setString(convert::formatString("%d", v != 0), name);
-}
-
-int Config::replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring)
-{
-    int pos = s.find(oldstring);
-    while (pos >= 0)
-    {
-        s.erase(pos, oldstring.length());
-        s.insert(pos, newstring);
-        pos = s.find(oldstring, pos + newstring.length());
-    }
-    return pos + newstring.length();
-}
-
 std::string Config::dealFilename(const std::string& s0)
 {
     auto s = s0;
     //replaceAllString(s, " ", "_");
     s = File::getFilenameWithoutPath(s);
-    for (auto str : ignore_strs)
+    for (auto str : ignore_strs_)
     {
-        replaceAllString(s, str, "");
+        convert::replaceAllString(s, str, "");
     }
     s = File::getFileMainname(s);
     //s = PotConv::cp950toutf8(s);

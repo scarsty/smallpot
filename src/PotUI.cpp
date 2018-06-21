@@ -100,10 +100,10 @@ void PotUI::init()
     if (!File::fileExist(fontname_))
     {
 #ifdef _WIN32
-        fontname_ = "c:/windows/fonts/cambria.ttc";
+        fontname_ = "C:\\Windows\\Fonts\\Cambria.ttc";
         if (!File::fileExist(fontname_))
         {
-            fontname_ = "c:/windows/fonts/cambria.ttf";
+            fontname_ = "C:\\Windows\\Fonts\\Cambria.ttf";
         }
 #else
         fontname_ = "/System/Library/Fonts/Palatino.ttc";
@@ -115,7 +115,7 @@ void PotUI::destory()
 {
     if (Config::getInstance()->getString("ui_font") == "")
     {
-        Config::getInstance()->setString(fontname_, "ui_font");
+        Config::getInstance()->setString("ui_font", fontname_);
     }
     engine_->destroyTexture(square_);
     engine_->destroyTexture(ball_);

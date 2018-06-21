@@ -472,6 +472,7 @@ void PotPlayer::destroy()
 {
     UI_.destory();
     engine_->destroy();
+    Config::getInstance()->write();
 }
 
 //参数为utf8编码
@@ -483,13 +484,9 @@ void PotPlayer::openMedia(const std::string& filename)
     //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
     File::changePath(File::getFilePath(filename));
 #endif
-    //如果是控制台程序，通过参数传入的是ansi
-    //如果是窗口程序，通过参数传入的是utf-8
-    //所有通过拖拽传入的都是utf-8
-    //播放器应以窗口程序为主
-
+    //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
-    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //这个需要ansi
+    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
     media_->openFile(open_filename);
 
     //窗口尺寸，时间
@@ -553,17 +550,17 @@ void PotPlayer::closeMedia(const std::string& filename)
     auto config = Config::getInstance();
     if (media_->isMedia() && cur_time_ < media_->getTotalTime() && cur_time_ > 0)
     {
-        config->setRecord(cur_time_, filename.c_str());
+        config->setRecord(filename, cur_time_);
     }
     else
     {
-        config->removeRecord(filename.c_str());
+        config->removeRecord(filename);
     }
-    config->setString(sys_encode_, "sys_encode");
-    config->setInteger(cur_volume_, "volume");
+    config->setString("sys_encode", sys_encode_);
+    config->setInteger("volume", cur_volume_);
     if (config->getInteger("auto_play_recent") && !drop_filename_.empty())
     {
-        config->setString(drop_filename_, "recent_file");
+        config->setString("recent_file", drop_filename_);
     }
     config->write();
 #endif

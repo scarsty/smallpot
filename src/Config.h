@@ -20,7 +20,7 @@ private:
 
     tinyxml2::XMLElement* getElement(tinyxml2::XMLElement* parent, const char* name);
 
-    std::vector<std::string> ignore_strs;
+    std::vector<std::string> ignore_strs_;
 
 public:
     void init(const std::string& filepath);
@@ -29,23 +29,17 @@ public:
     static Config* getInstance() { return &config_; };
 
     //xml只有字串，故首先完成字串功能
-    std::string getString(const char* name, std::string def = "");
-    int getInteger(const char* name, int def = 0);
-    double getDouble(const char* name, double def = 0.0);
-    bool getBool(bool& v, const char* name);
+    std::string getString(const std::string& name, std::string def = "");
+    int getInteger(const std::string& name, int def = 0);
 
-    void setString(const std::string v, const char* name);
-    void setInteger(int v, const char* name);
-    void setDouble(double v, const char* name);
-    void setBool(bool v, const char* name);
+    void setString(const std::string& name, const std::string v);
+    void setInteger(const std::string& name, int v);
 
     //记录
-    int getRecord(const char* name);
-    void removeRecord(const char* name);
-    void setRecord(int v, const char* name);
-    void clearRecord();    //string replace(string str, const char *string_to_replace, const char *new_string);
-
-    int replaceAllString(std::string& s, const std::string& oldstring, const std::string& newstring);
+    int getRecord(const std::string& name);
+    void removeRecord(const std::string& name);
+    void setRecord(const std::string& name, int v);
+    void clearRecord();
 
     std::string dealFilename(const std::string& s0);
 };
