@@ -46,6 +46,10 @@ int PotStreamVideo::show(int time)
 
 int PotStreamVideo::getSDLPixFmt()
 {
+    if (!exist())
+    {
+        return SDL_PIXELFORMAT_UNKNOWN;
+    }
     std::map<int, int> pix_ffmpeg_sdl =
     {
         { AV_PIX_FMT_RGB8,           SDL_PIXELFORMAT_RGB332 },

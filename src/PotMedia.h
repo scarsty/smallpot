@@ -3,8 +3,8 @@
 #include "PotBase.h"
 #include "PotStream.h"
 #include "PotStreamAudio.h"
-#include "PotStreamVideo.h"
 #include "PotStreamSubtitle.h"
+#include "PotStreamVideo.h"
 
 /*
 一个媒体文件包含3类流：视频，音频，字幕
@@ -17,16 +17,25 @@ class PotMedia : public PotBase
 public:
     PotMedia();
     virtual ~PotMedia();
+
 private:
+    std::vector<PotStream*> streams_;
+
+    AVFormatContext* format_ctx_video_ = nullptr;
+    AVFormatContext* format_ctx_audio_ = nullptr;
+    AVFormatContext* format_ctx_subtitle_ = nullptr;
+
     PotStreamVideo* stream_video_ = nullptr;
     PotStreamAudio* stream_audio_ = nullptr;
     PotStreamSubtitle* stream_subtitle_ = nullptr;
+
 private:
     int count_ = 0;
     int total_time_ = 0;
     int lastdts_ = 0;
     int timebase_ = 0;
     bool seeking_ = false;
+
 public:
     PotStreamVideo* getVideo() { return stream_video_; };
     PotStreamAudio* getAudio() { return stream_audio_; };
@@ -43,5 +52,5 @@ public:
     void destroy();
     bool isMedia();
     void setPause(bool pause);
+    void switchStream(PotMediaType at);
 };
-

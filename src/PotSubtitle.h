@@ -38,6 +38,6 @@ public:
     virtual void destroy() {}
     virtual void setFrameSize(int w, int h) {}
     virtual void openSubtitleFromMem(const std::string& str) {}
-    virtual void readOne(const std::string& str) {}
+    virtual void readOne(const std::string& str, int start_time, int end_time) {}
     virtual void clear() {}
 };

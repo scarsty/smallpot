@@ -16,10 +16,8 @@ class PotSubtitleSrt :
 {
 private:
     std::vector<PotSubtitleAtom> atom_list_;
-    FILE* file_;
+    std::string content_;
     int readIndex();
-    int readTime(PotSubtitleAtom& pot);
-    int readString(PotSubtitleAtom& pot);
 
     int fram_w_, frame_h_;
 public:
@@ -32,6 +30,11 @@ public:
     virtual void closeSubtitle();
     virtual int show(int time);
     virtual void setFrameSize(int w, int h) { fram_w_ = w; frame_h_ = h; }
+
+    std::string code_ = "utf-8";
+
+    bool isUTF8(const void* pBuffer, long size);
+
 
     //该类比较简单，init和destroy可以为空
 

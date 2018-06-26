@@ -71,11 +71,11 @@ std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
         ext_names_.push_back("txt");
     }
 
-    std::string str = "";
     bool b = false;
     //检查默认类型
     for (auto& ext : ext_names_)
     {
+        std::string str = "";
         str = File::changeFileExt(filename, ext);
         if (File::fileExist(str))
         {
@@ -92,7 +92,7 @@ std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
     //{
     //    str = "";
     //}
-    return str;
+    return "";
 }
 
 bool PotSubtitleManager::tryOpenSubtitle(const std::string& filename)

@@ -7,8 +7,8 @@
 #pragma comment(lib, "user32.lib")
 #endif
 #endif
-#include <cmath>
 #include "Font.h"
+#include <cmath>
 
 Engine Engine::engine_;
 
@@ -26,7 +26,10 @@ Engine::~Engine()
 
 void Engine::destroyTexture(BP_Texture* t)
 {
-    if (t) { SDL_DestroyTexture(t); }
+    if (t)
+    {
+        SDL_DestroyTexture(t);
+    }
 }
 
 void Engine::updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2)
@@ -72,8 +75,14 @@ void Engine::renderCopy(BP_Texture* t /*= nullptr*/)
 void Engine::destroy()
 {
     SDL_DestroyTexture(tex_);
-    if (renderer_self_) { SDL_DestroyRenderer(renderer_); }
-    if (window_mode_ == 0) { SDL_DestroyWindow(window_); }
+    if (renderer_self_)
+    {
+        SDL_DestroyRenderer(renderer_);
+    }
+    if (window_mode_ == 0)
+    {
+        SDL_DestroyWindow(window_);
+    }
 }
 
 void Engine::mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume)
@@ -87,7 +96,10 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
     SDL_zero(want);
 
     printf("\naudio freq/channels: stream %d/%d, ", freq, channels);
-    if (channels <= 2) { channels = 2; }
+    if (channels <= 2)
+    {
+        channels = 2;
+    }
     want.freq = freq;
     want.format = AUDIO_S16;
     want.channels = channels;
@@ -210,57 +222,16 @@ void Engine::drawSubtitle(const std::string& fontname, const std::string& text, 
     {
         return;
     }
-    auto font = TTF_OpenFont(fontname.c_str(), size);
-    if (!font) { return; }
-    SDL_Color color = { 255, 255, 255, 255 };
-    SDL_Color colorb = { 0, 0, 0, 255 };
-    auto ret = splitString(text, "\n");
-    for (int i = 0; i < ret.size(); i++)
-    {
-        if (ret[i] == "")
-        {
-            continue;
-        }
-        TTF_SetFontOutline(font, 2);
-        auto text_sb = TTF_RenderUTF8_Blended(font, ret[i].c_str(), colorb);
-        TTF_SetFontOutline(font, 0);
-        auto text_s = TTF_RenderUTF8_Blended(font, ret[i].c_str(), color);
-        //SDL_SetTextureAlphaMod(text_t, alpha);
-        SDL_Rect rectb = { 2, 2, 0, 0 };
-        SDL_BlitSurface(text_s, NULL, text_sb, &rectb);
-
-        auto text_t = SDL_CreateTextureFromSurface(renderer_, text_sb);
-
-        SDL_FreeSurface(text_s);
-        SDL_FreeSurface(text_sb);
-
-        SDL_Rect rect;
-        SDL_QueryTexture(text_t, nullptr, nullptr, &rect.w, &rect.h);
-        rect.y = y + i * (size + 2);
-
-        switch (align)
-        {
-        case BP_ALIGN_LEFT:
-            rect.x = x;
-            break;
-        case BP_ALIGN_RIGHT:
-            rect.x = x - rect.w;
-            break;
-        case BP_ALIGN_MIDDLE:
-            rect.x = x - rect.w / 2;
-            break;
-        }
-
-        SDL_RenderCopy(renderer_, text_t, nullptr, &rect);
-        SDL_DestroyTexture(text_t);
-    }
-    TTF_CloseFont(font);
+    drawText(fontname, text, size, x, y, alpha, align);
 }
 
 BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c)
 {
     auto font = TTF_OpenFont(fontname.c_str(), size);
-    if (!font) { return nullptr; }
+    if (!font)
+    {
+        return nullptr;
+    }
     //SDL_Color c = { 255, 255, 255, 128 };
     auto text_s = TTF_RenderUTF8_Blended(font, text.c_str(), c);
     auto text_t = SDL_CreateTextureFromSurface(renderer_, text_s);
@@ -293,7 +264,10 @@ void Engine::drawText(const std::string& fontname, const std::string& text, int 
 
 int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
 {
-    if (inited_) { return 0; }
+    if (inited_)
+    {
+        return 0;
+    }
     inited_ = true;
 #ifndef _WINDLL
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER))
@@ -326,7 +300,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     printf("%s\n", SDL_GetError());
     if (renderer_ == nullptr)
     {
-        renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE/*| SDL_RENDERER_PRESENTVSYNC*/);
+        renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE /*| SDL_RENDERER_PRESENTVSYNC*/);
         renderer_self_ = true;
     }
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
@@ -425,7 +399,10 @@ void Engine::setPresentPosition()
     h_src *= ratio_y_;
     if (keep_ratio_)
     {
-        if (w_src == 0 || h_src == 0) { return; }
+        if (w_src == 0 || h_src == 0)
+        {
+            return;
+        }
         double ratio = std::min(1.0 * w_dst / w_src, 1.0 * h_dst / h_src);
         if (rotation_ == 90 || rotation_ == 270)
         {
@@ -476,7 +453,7 @@ int Engine::showMessage(const std::string& content)
 {
     const SDL_MessageBoxButtonData buttons[] =
     {
-        { /* .flags, .buttonid, .text */        0, 0, "no" },
+        { /* .flags, .buttonid, .text */ 0, 0, "no" },
         { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
         { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" },
     };
@@ -484,26 +461,26 @@ int Engine::showMessage(const std::string& content)
     {
         { /* .colors (.r, .g, .b) */
             /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
-            { 255,   0,   0 },
+            { 255, 0, 0 },
             /* [SDL_MESSAGEBOX_COLOR_TEXT] */
-            {   0, 255,   0 },
+            { 0, 255, 0 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_BORDER] */
-            { 255, 255,   0 },
+            { 255, 255, 0 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
-            {   0,   0, 255 },
+            { 0, 0, 255 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
-            { 255,   0, 255 }
+            { 255, 0, 255 }
         }
     };
     const SDL_MessageBoxData messageboxdata =
     {
         SDL_MESSAGEBOX_INFORMATION, /* .flags */
-        NULL, /* .window */
-        "Pot Player", /* .title */
-        content.c_str(), /* .message */
-        SDL_arraysize(buttons), /* .numbuttons */
-        buttons, /* .buttons */
-        &colorScheme /* .colorScheme */
+        NULL,                       /* .window */
+        "Pot Player",               /* .title */
+        content.c_str(),            /* .message */
+        SDL_arraysize(buttons),     /* .numbuttons */
+        buttons,                    /* .buttons */
+        &colorScheme                /* .colorScheme */
     };
     int buttonid;
     SDL_ShowMessageBox(&messageboxdata, &buttonid);
@@ -516,14 +493,20 @@ void Engine::setWindowSize(int w, int h)
     {
         std::swap(w, h);
     }
-    if (w <= 0 || h <= 0) { return; }
+    if (w <= 0 || h <= 0)
+    {
+        return;
+    }
     win_w_ = std::min(max_x_ - min_x_, w);
     win_h_ = std::min(max_y_ - min_y_, h);
     double ratio;
     ratio = std::min(1.0 * win_w_ / w, 1.0 * win_h_ / h);
     win_w_ = w * ratio;
     win_h_ = h * ratio;
-    if (!window_) { return; }
+    if (!window_)
+    {
+        return;
+    }
 
     SDL_SetWindowSize(window_, win_w_, win_h_);
     setPresentPosition();
@@ -542,8 +525,14 @@ void Engine::resetWindowsPosition()
     SDL_GetWindowPosition(window_, &x0, &y0);
     x = std::max(min_x_, x0);
     y = std::max(min_y_, y0);
-    if (x + w > max_x_) { x = std::min(x, max_x_ - w); }
-    if (y + h > max_y_) { y = std::min(y, max_y_ - h); }
+    if (x + w > max_x_)
+    {
+        x = std::min(x, max_x_ - w);
+    }
+    if (y + h > max_y_)
+    {
+        y = std::min(y, max_y_ - h);
+    }
     if (x != x0 || y != y0)
     {
         SDL_SetWindowPosition(window_, x, y);
@@ -561,9 +550,13 @@ void Engine::setWindowPosition(int x, int y)
 {
     int w, h;
     SDL_GetWindowSize(window_, &w, &h);
-    if (x == BP_WINDOWPOS_CENTERED) { x = min_x_ + (max_x_ - min_x_ - w) / 2; }
-    if (y == BP_WINDOWPOS_CENTERED) { y = min_y_ + (max_y_ - min_y_ - h) / 2; }
+    if (x == BP_WINDOWPOS_CENTERED)
+    {
+        x = min_x_ + (max_x_ - min_x_ - w) / 2;
+    }
+    if (y == BP_WINDOWPOS_CENTERED)
+    {
+        y = min_y_ + (max_y_ - min_y_ - h) / 2;
+    }
     SDL_SetWindowPosition(window_, x, y);
 }
-
-

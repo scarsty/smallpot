@@ -204,12 +204,12 @@ int PotPlayer::eventLoop()
                 media_->getAudio()->changeVolume(-volume_step);
                 break;
             case BPK_1:
-                media_->getAudio()->switchStream();
+                media_->switchStream(BPMEDIA_TYPE_AUDIO);
                 UI_.setText(convert::formatString("Switch audio stream to %d", media_->getAudio()->getStreamIndex()));
                 break;
             case BPK_2:
-                media_->getSubtitle()->switchStream();
-                media_->getSubtitle()->clear();
+                media_->switchStream(BPMEDIA_TYPE_SUBTITLE);
+                media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
                 UI_.setText(convert::formatString("Switch subtitle stream to %d", media_->getSubtitle()->getStreamIndex()));
                 break;
             case BPK_3:

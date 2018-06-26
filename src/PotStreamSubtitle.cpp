@@ -36,7 +36,7 @@ FrameContent PotStreamSubtitle::convertFrameToContent()
         auto& rect = avsubtitle_.rects[0];
         if (rect->ass)
         {
-            sub_->readOne(rect->ass);
+            sub_->readOne(rect->ass, avsubtitle_.pts, avsubtitle_.end_display_time);
         }
     }
     return { time_dts_, 0, nullptr };
@@ -51,11 +51,14 @@ int PotStreamSubtitle::openFile(const std::string& filename)
         if (codec_ctx_->codec_id == AV_CODEC_ID_ASS)
         {
             sub_ = PotSubtitleManager::createSubtitle(".ass");
-
         }
-        if (sub_)
+        else
         {
-            sub_->openSubtitleFromMem((char*)codec_ctx_->extradata);
+            sub_ = PotSubtitleManager::createSubtitle(".ass");
+        }
+        if (sub_ && codec_ctx_->subtitle_header_size > 0)
+        {
+            sub_->openSubtitleFromMem((char*)codec_ctx_->subtitle_header);
         }
     }
     return ret;

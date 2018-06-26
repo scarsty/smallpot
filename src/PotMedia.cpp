@@ -1,19 +1,31 @@
-#include "PotMedia.h"
 #include "Config.h"
 #include "File.h"
+#include "PotMedia.h"
 
 PotMedia::PotMedia()
 {
-    stream_video_ = new PotStreamVideo();
-    stream_audio_ = new PotStreamAudio();
-    stream_subtitle_ = new PotStreamSubtitle();
+    av_register_all();
+    avformat_network_init();
+    //stream_video_ = new PotStreamVideo();
+    //stream_audio_ = new PotStreamAudio();
+    //stream_subtitle_ = new PotStreamSubtitle();
+    format_ctx_video_ = avformat_alloc_context();
+    format_ctx_audio_ = avformat_alloc_context();
+    format_ctx_subtitle_ = avformat_alloc_context();
 }
 
 PotMedia::~PotMedia()
 {
-    delete stream_video_;
-    delete stream_audio_;
-    delete stream_subtitle_;
+    //delete stream_video_;
+    //delete stream_audio_;
+    //delete stream_subtitle_;
+    for (auto st : streams_)
+    {
+        delete st;
+    }
+    avformat_close_input(&format_ctx_video_);
+    avformat_close_input(&format_ctx_audio_);
+    avformat_close_input(&format_ctx_subtitle_);
 }
 
 int PotMedia::openFile(const std::string& filename)
@@ -22,9 +34,94 @@ int PotMedia::openFile(const std::string& filename)
     {
         return -1;
     }
-    stream_video_->openFile(filename);
-    stream_audio_->openFile(filename);
-    stream_subtitle_->openFile(filename);
+
+    AVFormatContext* format_ctx = avformat_alloc_context();
+    //AVFrame* frame_ = nullptr;
+    //AVStream* stream_ = nullptr;
+    //AVCodecContext* codec_ctx_ = nullptr;
+    //AVCodec* codec_ = nullptr;
+    //AVPacket packet_;
+
+    if (avformat_open_input(&format_ctx, filename.c_str(), nullptr, nullptr) == 0)
+    {
+        avformat_find_stream_info(format_ctx, nullptr);
+
+        avformat_open_input(&format_ctx_video_, filename.c_str(), nullptr, nullptr);
+        avformat_open_input(&format_ctx_audio_, filename.c_str(), nullptr, nullptr);
+        avformat_open_input(&format_ctx_subtitle_, filename.c_str(), nullptr, nullptr);
+
+        avformat_find_stream_info(format_ctx_video_, nullptr);
+        avformat_find_stream_info(format_ctx_audio_, nullptr);
+        avformat_find_stream_info(format_ctx_subtitle_, nullptr);
+
+        streams_.resize(format_ctx->nb_streams);
+        for (int i = 0; i < format_ctx->nb_streams; ++i)
+        {
+            switch (format_ctx->streams[i]->codec->codec_type)
+            {
+            case BPMEDIA_TYPE_VIDEO:
+            {
+                auto st = new PotStreamVideo();
+                st->setFormatCtx(format_ctx_video_);
+                streams_[i] = st;
+                if (stream_video_ == nullptr)
+                {
+                    stream_video_ = st;
+                }
+                break;
+            }
+            case BPMEDIA_TYPE_AUDIO:
+            {
+                auto st = new PotStreamAudio();
+                st->setFormatCtx(format_ctx_audio_);
+                streams_[i] = st;
+                if (stream_audio_ == nullptr)
+                {
+                    stream_audio_ = st;
+                }
+                break;
+            }
+            case BPMEDIA_TYPE_SUBTITLE:
+            {
+                auto st = new PotStreamSubtitle();
+                st->setFormatCtx(format_ctx_subtitle_);
+                streams_[i] = st;
+                if (stream_subtitle_ == nullptr)
+                {
+                    stream_subtitle_ = st;
+                }
+                break;
+            }
+            }
+            if (streams_[i])
+            {
+                streams_[i]->setStreamIndex(i);
+                streams_[i]->openFile(filename);
+            }
+            //stream_index_vector_.push_back(i);
+            //if (stream_index_vector_.size() == 1)
+            //{
+            //    //printf("finded media stream: %d\n", type);
+            //    stream_ = format_ctx_->streams[i];
+            //    codec_ctx_ = stream_->codec;
+            //    if (stream_->r_frame_rate.den)
+            //    {
+            //        time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
+            //    }
+            //    time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
+            //    total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
+            //    start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
+            //    codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
+            //    avcodec_open2(codec_ctx_, codec_, nullptr);
+            //}
+            //}
+        }
+    }
+    avformat_close_input(&format_ctx);
+
+    //stream_video_->openFile(filename);
+    //stream_audio_->openFile(filename);
+    //stream_subtitle_->openFile(filename);
 
     if (stream_audio_->exist())
     {
@@ -38,18 +135,20 @@ int PotMedia::openFile(const std::string& filename)
     return 0;
 }
 
-
 int PotMedia::decodeFrame()
 {
     bool need_reset = seeking_;
     //int se= engine_->getTicks();
     stream_video_->tryDecodeFrame(need_reset);
-    if (stream_video_->isStopping()) { return 0; }
+    if (stream_video_->isStopping())
+    {
+        return 0;
+    }
     stream_audio_->tryDecodeFrame(need_reset);
     stream_subtitle_->tryDecodeFrame(need_reset);
     //int m = _audioStream->getTimedts();
     //int n = _videoStream->getTimedts();
-    
+
     //Í¬²½
     if (seeking_)
     {
@@ -128,7 +227,6 @@ int PotMedia::getTime()
 
 void PotMedia::destroy()
 {
-
 }
 
 bool PotMedia::isMedia()
@@ -143,5 +241,44 @@ void PotMedia::setPause(bool pause)
     //stream_subtitle_->setPause(pause);
 }
 
+void PotMedia::switchStream(PotMediaType at)
+{
+    int current_index = 0;
+    for (int i = 0; i < streams_.size(); i++)
+    {
+        if (streams_[i] && streams_[i]->getType() == at && (streams_[i] == stream_video_ || streams_[i] == stream_audio_ || streams_[i] == stream_subtitle_))
+        {
+            current_index = i;
+            break;
+        }
+    }
 
+    PotStream* st = streams_[current_index];
+    for (int i = 0; i < streams_.size(); i++)
+    {
+        if (streams_[i] && streams_[i]->getType() == at && (i - current_index == 1 || i - current_index < -1))
+        {
+            st = streams_[i];
+            break;
+        }
+    }
 
+    switch (at)
+    {
+    case BPMEDIA_TYPE_VIDEO:
+    {
+        stream_video_ = (PotStreamVideo*)st;
+        break;
+    }
+    case BPMEDIA_TYPE_AUDIO:
+    {
+        stream_audio_ = (PotStreamAudio*)st;
+        break;
+    }
+    case BPMEDIA_TYPE_SUBTITLE:
+    {
+        stream_subtitle_ = (PotStreamSubtitle*)st;
+        break;
+    }
+    }
+}

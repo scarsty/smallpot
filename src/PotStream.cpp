@@ -1,11 +1,9 @@
-﻿#include "PotStream.h"
-#include "PotResample.h"
+﻿#include "PotResample.h"
+#include "PotStream.h"
 
 PotStream::PotStream()
 {
-    av_register_all();
-    avformat_network_init();
-    format_ctx_ = avformat_alloc_context();
+    //format_ctx_ = avformat_alloc_context();
     frame_ = av_frame_alloc();
     //subtitle_ = av_
     //mutex_cpp.;
@@ -14,12 +12,14 @@ PotStream::PotStream()
     av_init_packet(&packet_);
 }
 
-
 PotStream::~PotStream()
 {
     av_frame_free(&frame_);
-    if (codec_ctx_) { avcodec_close(codec_ctx_); }
-    avformat_close_input(&format_ctx_);
+    if (codec_ctx_)
+    {
+        avcodec_close(codec_ctx_);
+    }
+    //avformat_close_input(&format_ctx_);
     clearMap();
     stream_index_ = -1;
     //DestroyMutex(mutex_cpp);
@@ -28,39 +28,48 @@ PotStream::~PotStream()
 //返回为非负才正常
 int PotStream::openFile(const std::string& filename)
 {
-    stream_index_ = -1;
-    this->filename_ = filename;
-    if (avformat_open_input(&format_ctx_, filename.c_str(), nullptr, nullptr) == 0)
+    //stream_index_ = -1;
+    stream_ = format_ctx_->streams[stream_index_];
+    codec_ctx_ = stream_->codec;
+    if (stream_->r_frame_rate.den)
     {
-        avformat_find_stream_info(format_ctx_, nullptr);
-        for (int i = 0; i < format_ctx_->nb_streams; ++i)
-        {
-            if (format_ctx_->streams[i]->codec->codec_type == type_)
-            {
-                stream_index_vector_.push_back(i);
-                if (stream_index_vector_.size() == 1)
-                {
-                    //printf("finded media stream: %d\n", type);
-                    stream_ = format_ctx_->streams[i];
-                    codec_ctx_ = stream_->codec;
-                    if (stream_->r_frame_rate.den)
-                    {
-                        time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
-                    }
-                    time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
-                    total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
-                    start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
-                    codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
-                    avcodec_open2(codec_ctx_, codec_, nullptr);
-                }
-            }
-        }
+        time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
     }
+    time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
+    total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
+    start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
+    codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
+    avcodec_open2(codec_ctx_, codec_, nullptr);
+
+    //for (int i = 0; i < format_ctx_->nb_streams; ++i)
+    //{
+    //    if (format_ctx_->streams[i]->codec->codec_type == type_)
+    //    {
+    //        stream_index_vector_.push_back(i);
+    //        if (stream_index_vector_.size() == 1)
+    //        {
+    //            //printf("finded media stream: %d\n", type);
+    //            stream_ = format_ctx_->streams[i];
+    //            codec_ctx_ = stream_->codec;
+    //            if (stream_->r_frame_rate.den)
+    //            {
+    //                time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
+    //            }
+    //            time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
+    //            total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
+    //            start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
+    //            codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
+    //            avcodec_open2(codec_ctx_, codec_, nullptr);
+    //        }
+    //    }
+    //}
+
     //记录下来所有的流的编号，默认同类流用一个解码器
-    if (!stream_index_vector_.empty())
-    {
-        stream_index_ = stream_index_vector_[0];
-    }
+    //这个设置可能存在问题
+    //if (!stream_index_vector_.empty())
+    //{
+    //    stream_index_ = stream_index_vector_[0];
+    //}
     return stream_index_;
 }
 
@@ -74,7 +83,10 @@ int PotStream::openFile(const std::string& filename)
 //-3 解码错误
 int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
 {
-    if (!exist()) { return -2; }
+    if (!exist())
+    {
+        return -2;
+    }
     int ret = 0;
     int gotframe = 0;
     int gotsize = 0;
@@ -96,11 +108,17 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
                     while (gotframe == 0)
                     {
                         gotsize = avcodec_decode_packet(codec_ctx_, &gotframe, &packet_);    //返回为负表示有错误
-                        if (gotsize <= 0) { break; }    //没解压到则退出
+                        if (gotsize <= 0)
+                        {
+                            break;
+                        }    //没解压到则退出
                         packet_.data += gotsize;
                         packet_.size -= gotsize;
                         need_read_packet_ = packet_.size <= 0;
-                        if (need_read_packet_) { break; }    //packet中已经无数据
+                        if (need_read_packet_)
+                        {
+                            break;
+                        }    //packet中已经无数据
                     }
                     if (gotframe)
                     {
@@ -146,12 +164,18 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
 //参数为是否重置暂停时间和显示时间，一般seek后应立刻重置
 int PotStream::tryDecodeFrame(bool reset)
 {
-    if (!exist() || !needDecode()) { return -1; }
+    if (!exist() || !needDecode())
+    {
+        return -1;
+    }
     int got_frame = 0;
     for (int i = 0; i < decode_frame_count_; i++)
     {
         got_frame = decodeNextPacketToFrame(true, type_ != BPMEDIA_TYPE_SUBTITLE);
-        if (got_frame <= 0) { continue; }
+        if (got_frame <= 0)
+        {
+            continue;
+        }
         auto f = convertFrameToContent();
         //printf("%d\n", _map.size());
         //如果只有一帧，则静止时间需更新
@@ -206,7 +230,6 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
 
 void PotStream::setFrameTime()
 {
-
 }
 
 int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* packet)
@@ -298,7 +321,6 @@ bool PotStream::haveDecoded()
     return data_map_.size() > 0;
 }
 
-
 int PotStream::getTime()
 {
     if (pause_)
@@ -366,7 +388,10 @@ void PotStream::resetTimeAxis(int time)
 
 double PotStream::getRotation()
 {
-    if (!exist()) { return 0; }
+    if (!exist())
+    {
+        return 0;
+    }
     double r = 0;
     auto dic = stream_->metadata;
     auto entry = av_dict_get(dic, "rotate", nullptr, 0);
@@ -379,25 +404,14 @@ double PotStream::getRotation()
 
 void PotStream::getRatio(int& x, int& y)
 {
-    if (!exist()) { return; }
+    if (!exist())
+    {
+        return;
+    }
     x = stream_->sample_aspect_ratio.num;
     y = stream_->sample_aspect_ratio.den;
 }
 
-void PotStream::switchStream()
-{
-    if (stream_index_vector_.size() <= 1) { return; }
-    int i0 = -1;
-    for (int i = 0; i < stream_index_vector_.size(); i++)
-    {
-        if (stream_index_vector_[i] == stream_index_)
-        {
-            i0 = i;
-        }
-    }
-    i0 = (i0 + 1) % stream_index_vector_.size();
-    stream_index_ = stream_index_vector_[i0];
-}
 
 //{
 //    //避免卡死

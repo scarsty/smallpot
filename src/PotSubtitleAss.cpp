@@ -1,4 +1,5 @@
 #include "PotSubtitleAss.h"
+#include "PotConv.h"
 
 
 PotSubtitleAss::PotSubtitleAss()
@@ -79,13 +80,15 @@ void PotSubtitleAss::openSubtitleFromMem(const std::string& str)
     track_ = ass_read_memory(library_, (char*)str.c_str(), str.size(), NULL);
 }
 
-void PotSubtitleAss::readOne(const std::string& str)
+void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_time)
 {
     if (contents_.count(str) == 0)
     {
         contents_.insert(str);
         ass_process_data(track_, (char*)str.c_str(), str.size());
-        printf("%s\n", str.c_str());
+#ifdef _DEBUG
+        printf("%s\n", PotConv::conv(str, "utf-8", "cp936").c_str());
+#endif
     }
 }
 
