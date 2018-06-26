@@ -21,13 +21,15 @@ public:
 private:
     std::vector<PotStream*> streams_;
 
-    AVFormatContext* format_ctx_video_ = nullptr;
-    AVFormatContext* format_ctx_audio_ = nullptr;
-    AVFormatContext* format_ctx_subtitle_ = nullptr;
+    AVFormatContext *format_ctx_video_, *format_ctx_audio_, *format_ctx_subtitle_;
 
     PotStreamVideo* stream_video_ = nullptr;
     PotStreamAudio* stream_audio_ = nullptr;
     PotStreamSubtitle* stream_subtitle_ = nullptr;
+
+    PotStreamVideo blank_video_;
+    PotStreamAudio blank_audio_;
+    PotStreamSubtitle blank_subtitle_;
 
 private:
     int count_ = 0;

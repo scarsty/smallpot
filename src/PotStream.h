@@ -45,10 +45,11 @@ public:
 protected:
     PotMediaType type_;
     AVFormatContext* format_ctx_ = nullptr;
-    AVFrame* frame_ = nullptr;
     AVStream* stream_ = nullptr;
     AVCodecContext* codec_ctx_ = nullptr;
     AVCodec* codec_ = nullptr;
+
+    AVFrame* frame_ = nullptr;
     AVPacket packet_;
 
     bool need_read_packet_ = true;
@@ -57,7 +58,8 @@ protected:
     int max_size_ = 1;    //为0时仅预解一帧, 理论效果与=1相同, 但不使用map和附加缓冲区
     std::string filename_;
 
-    int ticks_shown_ = -1;                                //最近展示的ticks
+    int ticks_shown_ = -1;    //最近展示的ticks
+
     int time_dts_ = 0, time_pts_ = 0, time_shown_ = 0;    //解压时间，应展示时间，最近已经展示的时间
     int time_other_ = 0;
     int start_time_ = 0;
@@ -67,7 +69,7 @@ protected:
     int pause_time_ = 0;
     bool key_frame_ = false;
     int data_length_ = 0;
-    bool stopping = false;    //表示放弃继续解压这个流
+    bool stopping_ = false;    //表示放弃继续解压这个流
     int decode_frame_count_ = 1;
 
 private:
@@ -111,7 +113,7 @@ public:
     int getHeight() { return exist() ? codec_ctx_->height : 0; }
     int getTimedts() { return time_dts_ > 0 ? time_dts_ : time_pts_; }
     int getTimeShown() { return time_shown_; }
-    bool exist() { return this != nullptr && stream_index_ >= 0; }
+    bool exist() { return stream_index_ >= 0; }
     void resetTimeAxis(int time);
     bool isPause() { return pause_; }
     bool isKeyFrame() { return key_frame_; }
@@ -121,7 +123,7 @@ public:
     void getRatio(int& x, int& y);
     int getRatioX() { return exist() ? std::max(stream_->sample_aspect_ratio.num, 1) : 1; }
     int getRatioY() { return exist() ? std::max(stream_->sample_aspect_ratio.den, 1) : 1; }
-    bool isStopping() { return stopping; }
+    bool isStopping() { return stopping_; }
 
     PotMediaType getType() { return type_; }
     void setStreamIndex(int i) { stream_index_ = i; }

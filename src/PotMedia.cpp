@@ -6,9 +6,9 @@ PotMedia::PotMedia()
 {
     av_register_all();
     avformat_network_init();
-    //stream_video_ = new PotStreamVideo();
-    //stream_audio_ = new PotStreamAudio();
-    //stream_subtitle_ = new PotStreamSubtitle();
+    stream_video_ = &blank_video_;
+    stream_audio_ = &blank_audio_;
+    stream_subtitle_ = &blank_subtitle_;
     format_ctx_video_ = avformat_alloc_context();
     format_ctx_audio_ = avformat_alloc_context();
     format_ctx_subtitle_ = avformat_alloc_context();
@@ -16,9 +16,6 @@ PotMedia::PotMedia()
 
 PotMedia::~PotMedia()
 {
-    //delete stream_video_;
-    //delete stream_audio_;
-    //delete stream_subtitle_;
     for (auto st : streams_)
     {
         delete st;
@@ -35,12 +32,7 @@ int PotMedia::openFile(const std::string& filename)
         return -1;
     }
 
-    AVFormatContext* format_ctx = avformat_alloc_context();
-    //AVFrame* frame_ = nullptr;
-    //AVStream* stream_ = nullptr;
-    //AVCodecContext* codec_ctx_ = nullptr;
-    //AVCodec* codec_ = nullptr;
-    //AVPacket packet_;
+    auto format_ctx = avformat_alloc_context();
 
     if (avformat_open_input(&format_ctx, filename.c_str(), nullptr, nullptr) == 0)
     {
@@ -64,7 +56,7 @@ int PotMedia::openFile(const std::string& filename)
                 auto st = new PotStreamVideo();
                 st->setFormatCtx(format_ctx_video_);
                 streams_[i] = st;
-                if (stream_video_ == nullptr)
+                if (!stream_video_->exist())
                 {
                     stream_video_ = st;
                 }
@@ -75,7 +67,7 @@ int PotMedia::openFile(const std::string& filename)
                 auto st = new PotStreamAudio();
                 st->setFormatCtx(format_ctx_audio_);
                 streams_[i] = st;
-                if (stream_audio_ == nullptr)
+                if (!stream_audio_->exist())
                 {
                     stream_audio_ = st;
                 }
@@ -86,7 +78,7 @@ int PotMedia::openFile(const std::string& filename)
                 auto st = new PotStreamSubtitle();
                 st->setFormatCtx(format_ctx_subtitle_);
                 streams_[i] = st;
-                if (stream_subtitle_ == nullptr)
+                if (!stream_subtitle_->exist())
                 {
                     stream_subtitle_ = st;
                 }
@@ -118,10 +110,6 @@ int PotMedia::openFile(const std::string& filename)
         }
     }
     avformat_close_input(&format_ctx);
-
-    //stream_video_->openFile(filename);
-    //stream_audio_->openFile(filename);
-    //stream_subtitle_->openFile(filename);
 
     if (stream_audio_->exist())
     {
@@ -278,6 +266,7 @@ void PotMedia::switchStream(PotMediaType at)
     case BPMEDIA_TYPE_SUBTITLE:
     {
         stream_subtitle_ = (PotStreamSubtitle*)st;
+        stream_subtitle_->seek(getTime() - 5000);
         break;
     }
     }

@@ -4,6 +4,7 @@
 PotStreamSubtitle::PotStreamSubtitle()
 {
     type_ = BPMEDIA_TYPE_SUBTITLE;
+    sub_ = PotSubtitleManager::createSubtitle(".ass");
 }
 
 PotStreamSubtitle::~PotStreamSubtitle()
@@ -50,11 +51,11 @@ int PotStreamSubtitle::openFile(const std::string& filename)
         sub_inited_ = true;
         if (codec_ctx_->codec_id == AV_CODEC_ID_ASS)
         {
-            sub_ = PotSubtitleManager::createSubtitle(".ass");
+            //sub_ = PotSubtitleManager::createSubtitle(".ass");
         }
         else
         {
-            sub_ = PotSubtitleManager::createSubtitle(".ass");
+            //sub_ = PotSubtitleManager::createSubtitle(".ass");
         }
         if (sub_ && codec_ctx_->subtitle_header_size > 0)
         {

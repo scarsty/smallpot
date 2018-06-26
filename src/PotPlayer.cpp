@@ -412,7 +412,7 @@ int PotPlayer::eventLoop()
         }
         if (show)
         {
-            if (subtitle_->exist() && show_ex_sub)
+            if (subtitle_ && show_ex_sub)
             {
                 subtitle_->show(audioTime);
             }
@@ -487,7 +487,10 @@ void PotPlayer::openMedia(const std::string& filename)
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
     auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
-    media_->openFile(open_filename);
+    if (media_->openFile(open_filename) != 0)
+    {
+        return;
+    }
 
     //窗口尺寸，时间
     width_ = media_->getVideo()->getWidth();
