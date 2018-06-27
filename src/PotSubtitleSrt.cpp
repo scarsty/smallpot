@@ -64,13 +64,11 @@ bool PotSubtitleSrt::isUTF8(const void* pBuffer, long size)
             {
                 break;
             }
-
             if ((start[1] & (0xC0)) != 0x80)
             {
                 IsUTF8 = false;
                 break;
             }
-
             start += 2;
         }
         else if (*start < (0xF0))    // (11110000): 此范围内为3字节UTF-8字符
@@ -79,13 +77,11 @@ bool PotSubtitleSrt::isUTF8(const void* pBuffer, long size)
             {
                 break;
             }
-
             if ((start[1] & (0xC0)) != 0x80 || (start[2] & (0xC0)) != 0x80)
             {
                 IsUTF8 = false;
                 break;
             }
-
             start += 3;
         }
         else
@@ -94,7 +90,6 @@ bool PotSubtitleSrt::isUTF8(const void* pBuffer, long size)
             break;
         }
     }
-
     return IsUTF8;
 }
 
