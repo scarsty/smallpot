@@ -21,3 +21,4 @@ Win32/
 *.exe
 *.7z
 common/*
+common
