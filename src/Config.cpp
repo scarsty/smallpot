@@ -43,16 +43,7 @@ void Config::init(const std::string& filepath)
     {
         root_ = doc_.FirstChildElement("root");
     }
-
-#if 0
     record_ = getElement(root_, "record");
-    getElement(root_, "volume")->SetAttribute("comment", u8"音量");
-    getElement(root_, "auto_play_recent")->SetAttribute("comment", u8"自动播放上次关闭时的文件");
-    getElement(root_, "record_name")->SetAttribute("comment", u8"是否记录文件名");
-    getElement(root_, "sys_encode")->SetAttribute("comment", u8"系统字串编码");
-    getElement(root_, "ui_font")->SetAttribute("comment", u8"显示界面的字体");
-    getElement(root_, "sub_font")->SetAttribute("comment", u8"显示字幕的默认字体");
-#endif
 }
 
 void Config::write()
