@@ -1,8 +1,5 @@
 #include "PotResample.h"
 
-
-//PotResample PotResample::pot_resample_;
-
 PotResample::PotResample()
 {
 }
@@ -34,8 +31,9 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     }
 
     src_ch_layout = (codec_ctx->channels ==
-        av_get_channel_layout_nb_channels(codec_ctx->channel_layout)) ?
-        codec_ctx->channel_layout : av_get_default_channel_layout(codec_ctx->channels);
+        av_get_channel_layout_nb_channels(codec_ctx->channel_layout))
+        ? codec_ctx->channel_layout
+        : av_get_default_channel_layout(codec_ctx->channels);
 
     //这里的设置很粗糙，最好详细处理
     switch (out_channels)
@@ -154,4 +152,3 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     //printf("%d\n", resampled_data_size);
     return resampled_data_size;
 }
-

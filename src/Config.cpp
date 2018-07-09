@@ -5,8 +5,6 @@
 #include "libconvert.h"
 #include <iostream>
 
-Config Config::config_;
-
 Config::Config()
 {
     //init();

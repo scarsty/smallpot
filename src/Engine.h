@@ -43,11 +43,12 @@ class Engine
 private:
     Engine();
     virtual ~Engine();
-private:
-    static Engine engine_;
-    //static std::atomic<int> working_;
 public:
-    static Engine* getInstance() { return &engine_; }
+    static Engine* getInstance()
+    {
+        static Engine e;
+        return &e;
+    }
     //图形相关
 private:
 

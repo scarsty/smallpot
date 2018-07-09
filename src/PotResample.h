@@ -16,7 +16,6 @@ public:
 public:
     int convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_sample_rate, int out_channels, uint8_t* out_buf);
     int out_sample_format_ = AV_SAMPLE_FMT_S16;
-    //static PotResample* getInstance() { return &pot_resample_; }
     void setOutFormat(int f) { out_sample_format_ = f; }
 };
 

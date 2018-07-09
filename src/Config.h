@@ -8,7 +8,6 @@
 class Config
 {
 private:
-    static Config config_;
     std::string content_;
     std::string filename_;
     SHA3 sha3_;
@@ -26,7 +25,11 @@ public:
     void init(const std::string& filepath);
 
     void write();
-    static Config* getInstance() { return &config_; };
+    static Config* getInstance()
+    {
+        static Config c;
+        return &c; 
+    }
 
     //xml只有字串，故首先完成字串功能
     std::string getString(const std::string& name, std::string def = "");

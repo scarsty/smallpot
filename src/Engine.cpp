@@ -10,10 +10,6 @@
 #include "Font.h"
 #include <cmath>
 
-Engine Engine::engine_;
-
-//std::atomic<int> Engine::working_;
-
 Engine::Engine()
 {
     //working_ = 1;
@@ -83,6 +79,9 @@ void Engine::destroy()
     {
         SDL_DestroyWindow(window_);
     }
+#ifndef _WINDLL
+    SDL_Quit();
+#endif
 }
 
 void Engine::mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume)
@@ -144,9 +143,9 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
 void Engine::mixAudioCallback(void* userdata, Uint8* stream, int len)
 {
     SDL_memset(stream, 0, len);
-    if (engine_.audio_callback_)
+    if (getInstance()->audio_callback_)
     {
-        engine_.audio_callback_(stream, len);
+        getInstance()->audio_callback_(stream, len);
     }
 }
 

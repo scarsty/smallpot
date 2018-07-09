@@ -1,8 +1,6 @@
 #include "Font.h"
 #include "PotConv.h"
 
-Font Font::font_;
-
 Font::~Font()
 {
     for (auto buffer : buffer_)
@@ -27,7 +25,7 @@ BP_Texture* Font::indexTex(const std::string& fontname, int size, uint16_t c)
 
 int Font::getTextWidth(const std::string& fontname, const std::string& text, int size)
 {
-    int p = 0;    
+    int p = 0;
     int x = 0;
     while (p < text.size())
     {
@@ -69,6 +67,3 @@ void Font::draw(const std::string& fontname, const std::string& text, int size, 
         x += w;
     }
 }
-
-
-
