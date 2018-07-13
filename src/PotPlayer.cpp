@@ -432,6 +432,7 @@ int PotPlayer::eventLoop()
             if (next_file != "")
             {
                 drop_filename_ = next_file;
+                Config::getInstance()->setRecord(drop_filename_, 0);    //若是自动跳转，则设置从头开始
                 loop = false;
             }
         }
