@@ -72,8 +72,8 @@ public:
 
     void getWindowSize(int& w, int& h) { SDL_GetWindowSize(window_, &w, &h); }
     void getWindowMaxSize(int& w, int& h) { SDL_GetWindowMaximumSize(window_, &w, &h); }
-    int getWindowsWidth();
-    int getWindowsHeight();
+    int getWindowWidth();
+    int getWindowHeight();
     int getMaxWindowWidth() { return max_x_ - min_x_; }
     int getMaxWindowHeight() { return max_y_ - min_y_; }
     void setWindowSize(int w, int h);
@@ -158,8 +158,6 @@ public:
     BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c);
     void drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
     void drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
-    //void split(std::string& s, std::string& delim, std::vector< std::string >* ret);
-    std::vector<std::string> splitString(const std::string& s, const std::string& delim);
     int showMessage(const std::string& content);
 };
 

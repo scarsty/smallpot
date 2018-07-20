@@ -196,25 +196,6 @@ BP_Texture* Engine::createBallTexture(int size)
     return ball;
 }
 
-//注意：当字符串为空时，也会返回一个空字符串
-std::vector<std::string> Engine::splitString(const std::string& s, const std::string& delim)
-{
-    std::vector<std::string> ret;
-    size_t last = 0;
-    size_t index = s.find_first_of(delim, last);
-    while (index != std::string::npos)
-    {
-        ret.push_back(s.substr(last, index - last));
-        last = index + 1;
-        index = s.find_first_of(delim, last);
-    }
-    if (index - last > 0)
-    {
-        ret.push_back(s.substr(last, index - last));
-    }
-    return ret;
-}
-
 void Engine::drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
 {
     if (alpha == 0)
@@ -332,14 +313,14 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     return 0;
 }
 
-int Engine::getWindowsWidth()
+int Engine::getWindowWidth()
 {
     int w;
     SDL_GetWindowSize(window_, &w, nullptr);
     return w;
 }
 
-int Engine::getWindowsHeight()
+int Engine::getWindowHeight()
 {
     int h;
     SDL_GetWindowSize(window_, nullptr, &h);
