@@ -183,7 +183,7 @@ BP_Texture* Engine::createBallTexture(int size)
             }
             if (ra < 1)
             {
-                a0 = (1 - ra) * 255 * 2;
+                a0 = 0; // (1 - ra) * 255 * 2;
             }
             uint8_t a = a0 > 255 ? 255 : a0;
             SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));

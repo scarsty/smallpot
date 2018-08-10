@@ -88,7 +88,9 @@ int PotPlayer::beginWithFile(std::string filename)
             printf("%d,%d\n",x,y);
             engine_->setWindowPosition(x, y);*/
             //首次打开文件窗口居中
+#ifndef _WINDLL
             engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+#endif
         }
         else
         {
@@ -473,7 +475,9 @@ void PotPlayer::destroy()
 {
     UI_.destory();
     engine_->destroy();
+#ifndef _WINDLL
     Config::getInstance()->write();
+#endif
 }
 
 //参数为utf8编码
@@ -574,6 +578,9 @@ void PotPlayer::closeMedia(const std::string& filename)
 
 std::string PotPlayer::findNextFile(const std::string& filename, int direct)
 {
+#ifdef _WINDLL
+    return "";
+#endif
     if (filename == "")
     {
         return "";
