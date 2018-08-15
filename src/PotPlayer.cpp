@@ -79,6 +79,7 @@ int PotPlayer::beginWithFile(std::string filename)
         bool add_cond = true;
         //printf("%d", engine_->getTicks() - start_time);
         add_cond = engine_->getTicks() - start_time < 2000;
+#ifndef _WINDLL
         if (count == 0 && add_cond)
         {
             /*auto w = engine_->getMaxWindowWidth();
@@ -88,14 +89,9 @@ int PotPlayer::beginWithFile(std::string filename)
             printf("%d,%d\n",x,y);
             engine_->setWindowPosition(x, y);*/
             //首次打开文件窗口居中
-#ifndef _WINDLL
             engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+        }
 #endif
-        }
-        else
-        {
-            engine_->resetWindowsPosition();
-        }
         this->eventLoop();
         closeMedia(play_filename);
         if (play_filename != "")
@@ -503,7 +499,10 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL
-    engine_->setWindowSize(width_, height_);
+    if (!engine_->isFullScreen())
+    {
+        engine_->setWindowSize(width_, height_);
+    }
     engine_->setWindowTitle(File::getFilenameWithoutPath(filename));
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
