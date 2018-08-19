@@ -1,5 +1,5 @@
-﻿#include "Config.h"
-#include "PotPlayer.h"
+﻿#include "PotPlayer.h"
+#include "Config.h"
 #include "PotSubtitleManager.h"
 #include "libconvert.h"
 #ifdef _WIN32

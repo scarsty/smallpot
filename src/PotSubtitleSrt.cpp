@@ -1,5 +1,5 @@
-#include "PotConv.h"
 #include "PotSubtitleSrt.h"
+#include "PotConv.h"
 #include "libconvert.h"
 
 PotSubtitleSrt::PotSubtitleSrt()

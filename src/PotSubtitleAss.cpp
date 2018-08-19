@@ -1,12 +1,10 @@
 #include "PotSubtitleAss.h"
 #include "PotConv.h"
 
-
 PotSubtitleAss::PotSubtitleAss()
 {
     init();
 }
-
 
 PotSubtitleAss::~PotSubtitleAss()
 {
@@ -29,8 +27,11 @@ bool PotSubtitleAss::openSubtitle(const std::string& filename)
     //if (checkFileExt(filename))
     track_ = ass_read_file(library_, (char*)s.c_str(), NULL);
     haveSubtitle_ = (track_ != nullptr);
-    if (haveSubtitle_) { subfilename_ = filename; }
-    return  haveSubtitle_;
+    if (haveSubtitle_)
+    {
+        subfilename_ = filename;
+    }
+    return haveSubtitle_;
 }
 
 int PotSubtitleAss::show(int time)

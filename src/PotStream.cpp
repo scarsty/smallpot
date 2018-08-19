@@ -1,5 +1,5 @@
-﻿#include "PotResample.h"
-#include "PotStream.h"
+﻿#include "PotStream.h"
+#include "PotResample.h"
 
 PotStream::PotStream()
 {
@@ -411,7 +411,6 @@ void PotStream::getRatio(int& x, int& y)
     x = stream_->sample_aspect_ratio.num;
     y = stream_->sample_aspect_ratio.den;
 }
-
 
 //{
 //    //避免卡死

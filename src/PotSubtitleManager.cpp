@@ -1,6 +1,6 @@
+#include "PotSubtitleManager.h"
 #include "File.h"
 #include "PotSubtitleAss.h"
-#include "PotSubtitleManager.h"
 #include "PotSubtitleSrt.h"
 #include "libconvert.h"
 
