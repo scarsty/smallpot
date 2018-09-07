@@ -23,9 +23,13 @@ Config::~Config()
     //write();
 }
 
-void Config::init(const std::string& filepath)
+void Config::init(std::string filepath)
 {
-    filename_ = filepath + "/tinypot-config.xml";
+    if (filepath != "")
+    {
+        filepath = filepath + "/";
+    }
+    filename_ = filepath + "tinypot-config.xml";
     printf("try find config file: %s\n", filename_.c_str());
     doc_.LoadFile(filename_.c_str());
     //初始化结构

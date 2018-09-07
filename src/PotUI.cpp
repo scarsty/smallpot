@@ -1,12 +1,11 @@
 #include "PotUI.h"
-#include "math.h"
 #include "Config.h"
 #include "File.h"
+#include "math.h"
 
 PotUI::PotUI()
 {
 }
-
 
 PotUI::~PotUI()
 {
@@ -20,14 +19,14 @@ void PotUI::drawBall()
     }
     engine_->setTextureAlphaMod(square_, alpha_ / 2);
     engine_->setTextureAlphaMod(ball_, alpha_);
-    int d = 10, x, y;
+    int x, y;
     y = win_h_ - 15;
-    engine_->renderCopy(square_, -100, y + d / 2 - 1, win_w_ + 200, 2);
-    engine_->renderCopy(ball_, 1.0 * time_ / totoal_time_ * win_w_ - d / 2, y, d, d);
+    engine_->renderCopy(square_, left_, y + d_ / 2 - 1, win_w_ - left_ - right_, 2);
+    engine_->renderCopy(ball_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - d_ / 2, y, d_, d_);
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
     int v = volume_;
-    x = win_w_ - 40;
-    y = 30;
+    x = win_w_ - 30;
+    y = win_h_ - 5;
     for (int i = 0; i < 8; i++)
     {
         int h = (i + 1) * 2;
@@ -55,11 +54,11 @@ void PotUI::drawBall()
 
 void PotUI::drawText(const std::string& text)
 {
-    engine_->drawText(fontname_.c_str(), text, 20, win_w_ - 50, 10, alpha_, BP_ALIGN_RIGHT);
+    engine_->drawText(fontname_.c_str(), text, 20, win_w_ - 20, 10, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
-void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
+void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pause)
 {
     this->alpha_ = alpha;
     if (alpha == 0)
@@ -82,6 +81,25 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume)
     {
         drawText(text_);
     }
+
+    int button_x = button_x_;
+    button_y_ = win_h_ - 15;
+
+    engine_->renderCopy(triangle2_, button_x, button_y_, button_w_ / 2, button_h_);
+    engine_->renderCopy(triangle2_, button_x + 5, button_y_, button_w_ / 2, button_h_);
+    button_x += 15;
+    if (!pause)
+    {
+        engine_->renderCopy(triangle1_, button_x, button_y_, button_w_, button_h_);
+    }
+    else
+    {
+        engine_->renderCopy(square_, button_x, button_y_, 4, button_h_);
+        engine_->renderCopy(square_, button_x + 6, button_y_, 4, button_h_);
+    }
+    button_x += 15;
+    engine_->renderCopy(triangle1_, button_x, button_y_, button_w_ / 2, button_h_);
+    engine_->renderCopy(triangle1_, button_x + 5, button_y_, button_w_ / 2, button_h_);
 }
 
 std::string PotUI::convertTimeToString(int time)
@@ -91,10 +109,48 @@ std::string PotUI::convertTimeToString(int time)
     return s;
 }
 
+double PotUI::inProcess(int x, int y)
+{
+    if (y > win_h_ - 20)
+    {
+        double p = 1.0 * (x - left_) / (win_w_ - left_ - right_);
+        if (p >= 0 && p <= 1)
+        {
+            return p;
+        }
+    }
+    return -1;
+}
+
+int PotUI::inButton(int x, int y)
+{
+    if (y >= button_y_ && y <= button_y_ + button_h_)
+    {
+        int button_x = button_x_;
+        if (x >= button_x && x <= button_x + button_w_)
+        {
+            return 0;
+        }
+        button_x += 15;
+        if (x >= button_x && x <= button_x + button_w_)
+        {
+            return 1;
+        }
+        button_x += 15;
+        if (x >= button_x && x <= button_x + button_w_)
+        {
+            return 2;
+        }
+    }
+    return -1;
+}
+
 void PotUI::init()
 {
     square_ = engine_->createSquareTexture(40);
     ball_ = engine_->createBallTexture(50);
+    triangle1_ = engine_->createBallTexture(200, 1);
+    triangle2_ = engine_->createBallTexture(200, 2);
     fontname_ = Config::getInstance()->getString("ui_font");
     if (!File::fileExist(fontname_))
     {

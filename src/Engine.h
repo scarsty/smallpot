@@ -154,7 +154,7 @@ private:
     BP_Texture* square_;
 public:
     BP_Texture* createSquareTexture(int size);
-    BP_Texture* createBallTexture(int size);
+    BP_Texture* createBallTexture(int size, int mode = 0);
     BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c);
     void drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
     void drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);

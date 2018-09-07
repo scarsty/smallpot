@@ -22,7 +22,7 @@ private:
     std::vector<std::string> ignore_strs_;
 
 public:
-    void init(const std::string& filepath);
+    void init(std::string filepath);
 
     void write();
     static Config* getInstance()

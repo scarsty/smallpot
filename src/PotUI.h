@@ -6,8 +6,9 @@ class PotUI : public PotBase
 public:
     PotUI();
     virtual ~PotUI();
+
 private:
-    BP_Texture* square_ = nullptr, *ball_ = nullptr;
+    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle1_ = nullptr, *triangle2_ = nullptr;
 
     int time_, totoal_time_, volume_;
     int win_w_, win_h_;
@@ -16,15 +17,22 @@ private:
     uint8_t alpha_;
     std::string fontname_;
     std::string text_;
+
+    int button_x_ = 10, button_y_, button_w_ = 10, button_h_ = 10;
+
+    int left_ = 60, right_ = 40;
+    int d_ = 10;
+
 public:
     void init();
     void setTime(int t) { time_ = t; }
     void setTotalTime(int t) { totoal_time_ = t; }
     void drawBall();
     void drawText(const std::string& text);
-    void drawUI(uint8_t alpha, int time, int totoalTime, int volume);
+    void drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pause);
     void destory();
     std::string convertTimeToString(int time);
     void setText(std::string t) { text_ = t; }
+    double inProcess(int x, int y);
+    int inButton(int x, int y);
 };
-

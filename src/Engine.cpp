@@ -161,7 +161,7 @@ BP_Texture* Engine::createSquareTexture(int size)
     return square;
 }
 
-BP_Texture* Engine::createBallTexture(int size)
+BP_Texture* Engine::createBallTexture(int size, int mode)
 {
     int d = size;
     auto ball_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
@@ -174,19 +174,40 @@ BP_Texture* Engine::createBallTexture(int size)
     {
         for (y = 0; y < d; y++)
         {
-            double ra = sqrt((x - c) * (x - c) + (y - c) * (y - c)) / c;
-            double a0 = 0;
-            if (ra > 1.05)
+            if (mode == 0)
             {
-                a0 = 255;
-                //a0 = (ra - 1) * 255 * 4;
+                double ra = sqrt((x - c) * (x - c) + (y - c) * (y - c)) / c;
+                double a0 = 0;
+                if (ra > 1.05)
+                {
+                    a0 = 255;
+                    //a0 = (ra - 1) * 255 * 4;
+                }
+                if (ra < 1)
+                {
+                    a0 = 0;    // (1 - ra) * 255 * 2;
+                }
+                uint8_t a = a0 > 255 ? 255 : a0;
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
             }
-            if (ra < 1)
+            if (mode == 1)
             {
-                a0 = 0; // (1 - ra) * 255 * 2;
+                uint8_t a = 128;
+                if (1.0 * abs(y - size / 2) / (size - x) > 0.5)
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
             }
-            uint8_t a = a0 > 255 ? 255 : a0;
-            SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            if (mode == 2)
+            {
+                uint8_t a = 128;
+                if (1.0 * abs(y - size / 2) / x > 0.5)
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
         }
     }
     auto ball = SDL_CreateTextureFromSurface(renderer_, ball_s);
@@ -431,14 +452,12 @@ BP_Texture* Engine::transBitmapToTexture(const uint8_t* src, uint32_t color, int
 
 int Engine::showMessage(const std::string& content)
 {
-    const SDL_MessageBoxButtonData buttons[] =
-    {
+    const SDL_MessageBoxButtonData buttons[] = {
         { /* .flags, .buttonid, .text */ 0, 0, "no" },
         { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
         { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" },
     };
-    const SDL_MessageBoxColorScheme colorScheme =
-    {
+    const SDL_MessageBoxColorScheme colorScheme = {
         { /* .colors (.r, .g, .b) */
             /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
             { 255, 0, 0 },
@@ -449,11 +468,9 @@ int Engine::showMessage(const std::string& content)
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
             { 0, 0, 255 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
-            { 255, 0, 255 }
-        }
+            { 255, 0, 255 } }
     };
-    const SDL_MessageBoxData messageboxdata =
-    {
+    const SDL_MessageBoxData messageboxdata = {
         SDL_MESSAGEBOX_INFORMATION, /* .flags */
         NULL,                       /* .window */
         "Pot Player",               /* .title */

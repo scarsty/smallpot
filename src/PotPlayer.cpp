@@ -125,7 +125,7 @@ int PotPlayer::eventLoop()
 
     bool show_in_sub = true, show_ex_sub = true;
 
-    int find_direct = 1;
+    int find_direct = 0;
 
     while (loop && engine_->pollEvent(e) >= 0)
     {
@@ -147,17 +147,37 @@ int PotPlayer::eventLoop()
         case BP_MOUSEBUTTONUP:
             if (e.button.button == BP_BUTTON_LEFT)
             {
-                if (height_ - e.button.y < 50)
+                double pos = UI_.inProcess(e.button.x, e.button.y);
+                int button = UI_.inButton(e.button.x, e.button.y);
+                if (pos >= 0)
                 {
-                    double pos = 1.0 * e.button.x / width_;
                     media_->seekPos(pos, 1, 1);
                     seeking = true;
                 }
-
-                if (e.button.y < 50 && e.button.x > width_ - 100)
+                if (button == 1)
                 {
                     pause = !pause;
                     media_->setPause(pause);
+                }
+                if (button == 0)
+                {
+                    find_direct = -60 * 1000;
+                    auto next_file = findNextFile(drop_filename_, find_direct);
+                    if (next_file != "")
+                    {
+                        drop_filename_ = next_file;
+                        loop = false;
+                    }
+                }
+                if (button == 2)
+                {
+                    find_direct = 1;
+                    auto next_file = findNextFile(drop_filename_, find_direct);
+                    if (next_file != "")
+                    {
+                        drop_filename_ = next_file;
+                        loop = false;
+                    }
                 }
             }
 #ifdef _WINDLL
@@ -418,7 +438,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getSubtitle()->show(audioTime);
             }
-            UI_.drawUI(ui_alpha, audioTime, totalTime, media_->getAudio()->getVolume());
+            UI_.drawUI(ui_alpha, audioTime, totalTime, media_->getAudio()->getVolume(), pause);
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
         }
@@ -426,6 +446,10 @@ int PotPlayer::eventLoop()
         engine_->delay(1);
         if (audioTime >= totalTime)
         {
+            if (Config::getInstance()->getInteger("loop", 0))
+            {
+                find_direct = 0;
+            }
             auto next_file = findNextFile(drop_filename_, find_direct);
             if (next_file != "")
             {
@@ -536,7 +560,10 @@ void PotPlayer::openMedia(const std::string& filename)
 
 void PotPlayer::setSubtitleFrameSize()
 {
-    subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+    if (subtitle_)
+    {
+        subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+    }
     media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 }
 
@@ -583,6 +610,10 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     if (filename == "")
     {
         return "";
+    }
+    if (direct == 0)
+    {
+        return filename;
     }
     std::string next_file;
     auto filename1 = PotConv::conv(drop_filename_, BP_encode_, sys_encode_);
