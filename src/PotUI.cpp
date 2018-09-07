@@ -174,4 +174,6 @@ void PotUI::destory()
     }
     engine_->destroyTexture(square_);
     engine_->destroyTexture(ball_);
+    engine_->destroyTexture(triangle1_);
+    engine_->destroyTexture(triangle2_);
 }
