@@ -112,7 +112,7 @@ std::string PotUI::convertTimeToString(int time)
 
 double PotUI::inProcess(int x, int y)
 {
-    if (y > win_h_ - 20)
+    if (y > win_h_ - 30)
     {
         double p = 1.0 * (x - left_) / (win_w_ - left_ - right_);
         if (p >= 0 && p <= 1)
