@@ -84,7 +84,8 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
 
     int button_x = button_x_;
     button_y_ = win_h_ - 15;
-
+    engine_->setTextureAlphaMod(triangle1_, alpha_);
+    engine_->setTextureAlphaMod(triangle2_, alpha_);
     engine_->renderCopy(triangle2_, button_x, button_y_, button_w_ / 2, button_h_);
     engine_->renderCopy(triangle2_, button_x + 5, button_y_, button_w_ / 2, button_h_);
     button_x += 15;

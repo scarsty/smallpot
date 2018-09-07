@@ -11,7 +11,7 @@ Font::~Font()
 
 BP_Texture* Font::indexTex(const std::string& fontname, int size, uint16_t c)
 {
-    auto index = fontname + "-" + std::to_string(size * 0x1000000 + c);
+    auto index = fontname + "-" + std::to_string(size) + "-" + std::to_string(c);
     if (buffer_.count(index) == 0)
     {
         uint16_t c2[2] = { 0 };
