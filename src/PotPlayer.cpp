@@ -523,7 +523,10 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL
-    if (!engine_->isFullScreen())
+    if (engine_->isFullScreen() || (engine_->getWindowWidth() >= width_ && engine_->getWindowHeight() >= height_))
+    {
+    }
+    else
     {
         engine_->setWindowSize(width_, height_);
     }
