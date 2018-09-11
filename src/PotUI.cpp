@@ -22,6 +22,8 @@ void PotUI::drawBall()
     int x, y;
     y = win_h_ - 15;
     engine_->renderCopy(square_, left_, y + d_ / 2 - 1, win_w_ - left_ - right_, 2);
+    engine_->renderCopy(square_, left_ - 2, y + d_ / 2 - 3, 2, 6);
+    engine_->renderCopy(square_, win_w_ - right_, y + d_ / 2 - 3, 2, 6);
     engine_->renderCopy(ball_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - d_ / 2, y, d_, d_);
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
     int v = volume_;
