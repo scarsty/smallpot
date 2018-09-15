@@ -18,13 +18,19 @@ void PotUI::drawBall()
         return;
     }
     engine_->setTextureAlphaMod(square_, alpha_ / 2);
-    engine_->setTextureAlphaMod(ball_, alpha_);
+    engine_->setTextureAlphaMod(ball_, alpha_ / 2);
     int x, y;
     y = win_h_ - 15;
-    engine_->renderCopy(square_, left_, y + d_ / 2 - 1, win_w_ - left_ - right_, 2);
-    engine_->renderCopy(square_, left_ - 2, y + d_ / 2 - 3, 2, 6);
-    engine_->renderCopy(square_, win_w_ - right_, y + d_ / 2 - 3, 2, 6);
-    engine_->renderCopy(ball_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - d_ / 2, y, d_, d_);
+    engine_->renderCopy(square_, left_ - 1, y + d_ / 2 - 1, win_w_ - left_ - right_ + 2, 2);
+    engine_->renderCopy(square_, left_ - 2, y + d_ / 2 - 3, 1, 6);
+    engine_->renderCopy(square_, win_w_ - right_ + 1, y + d_ / 2 - 3, 1, 6);
+    //engine_->renderCopy(ball_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - d_ / 2, y, d_, d_);
+    //engine_->renderCopy(square_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - 1, y, 2, d_);
+    int pos = left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - 1;
+    engine_->renderCopy(square_, pos, y + 2, 2, 2);
+    engine_->renderCopy(square_, pos, y + d_ / 2 + 1, 2, 2);
+    engine_->renderCopy(square_, pos - 1, y + 1, 4, 1);
+    engine_->renderCopy(square_, pos - 1, y + d_ / 2 + 3, 4, 1);
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
     int v = volume_;
     x = win_w_ - 30;
