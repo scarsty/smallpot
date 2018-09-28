@@ -109,7 +109,7 @@ int PotPlayer::eventLoop()
     BP_Event e;
 
     bool loop = true, pause = false, seeking = false;
-    int ui_alpha = 128;
+    int ui_alpha = 128, ui_alpha_count = 128;
     int finished, i = 0, x, y;
     int seek_step = 5000;
     int volume_step = 4;
@@ -132,14 +132,15 @@ int PotPlayer::eventLoop()
         seeking = false;
         find_direct++;    //连续24天后方向会出现bug，但是不管了
         engine_->getMouseState(x, y);
-        if (ui_alpha > 0)
+        if (ui_alpha_count > 0)
         {
-            ui_alpha--;
+            ui_alpha_count--;
         }
         if (height_ - y < 50 || ((width_ - x) < 200 && y < 150))
         {
-            ui_alpha = 128;
+            ui_alpha_count = 256;
         }
+        ui_alpha = (std::min)(ui_alpha_count, 128);
         switch (e.type)
         {
         case BP_MOUSEMOTION:
@@ -198,7 +199,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getAudio()->changeVolume(-volume_step);
             }
-            ui_alpha = 128;
+            ui_alpha_count = 256;
             break;
         }
         case BP_KEYDOWN:
@@ -253,7 +254,7 @@ int PotPlayer::eventLoop()
                 }
                 break;
             }
-            ui_alpha = 128;
+            ui_alpha_count = 256;
             break;
         }
         case BP_KEYUP:
@@ -310,7 +311,7 @@ int PotPlayer::eventLoop()
                 break;
             }
             }
-            ui_alpha = 128;
+            ui_alpha_count = 256;
             break;
         }
         //#ifndef _WINDLL
@@ -336,7 +337,7 @@ int PotPlayer::eventLoop()
             }
             else if (e.window.event == BP_WINDOWEVENT_LEAVE)
             {
-                ui_alpha = 0;
+                ui_alpha_count = 0;
             }
             break;
         case BP_DROPFILE:
