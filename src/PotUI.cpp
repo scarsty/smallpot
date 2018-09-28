@@ -18,13 +18,11 @@ void PotUI::drawBall()
         return;
     }
     engine_->setTextureAlphaMod(square_, alpha_ / 2);
-    engine_->setTextureAlphaMod(ball_, alpha_ / 2);
-    engine_->setTextureAlphaMod(triangle1_, alpha_ / 2);
     //engine_->setTextureAlphaMod(triangle2_, alpha_ / 2);
     int x, y;
-    y = win_h_ - 15;
-    engine_->renderCopy(square_, 0, y - 1, win_w_, 3);
-    engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 3);
+    y = win_h_ - 12;
+    engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
+    engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 4);
     //engine_->renderCopy(square_, left_ - 2, y + d_ / 2 - 3, 1, 6);
     //engine_->renderCopy(square_, win_w_ - right_ + 1, y + d_ / 2 - 3, 1, 6);
     //engine_->renderCopy(ball_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - d_ / 2, y, d_, d_);
@@ -49,7 +47,7 @@ void PotUI::drawBall()
 
 void PotUI::drawText(const std::string& text)
 {
-    engine_->drawText(fontname_.c_str(), text, 20, win_w_ - 20, 10, alpha_, BP_ALIGN_RIGHT);
+    engine_->drawText(fontname_.c_str(), text, 24, win_w_ - 20, 10, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
@@ -61,14 +59,16 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
         text_ = "";
         return;
     }
-    //_win_w = engine_->getWindowsWidth();
-    //_win_h = engine_->getWindowsHeight();
+
     engine_->getWindowSize(win_w_, win_h_);
     this->time_ = time;
     this->totoal_time_ = totoalTime;
     this->volume_ = volume;
     drawBall();
-    engine_->setTextureAlphaMod(square_, alpha_ / 2);
+
+    engine_->setTextureAlphaMod(square_, alpha_);
+    engine_->setTextureAlphaMod(triangle1_, alpha_);
+
     if (text_ == "")
     {
         drawText(convertTimeToString(time) + " / " + convertTimeToString(totoalTime));
@@ -129,7 +129,7 @@ std::string PotUI::convertTimeToString(int time)
 
 double PotUI::inProcess(int x, int y)
 {
-    if (y > win_h_ - 30)
+    if (y > win_h_ - 24)
     {
         double p = 1.0 * x / win_w_;
         if (p >= 0 && p <= 1)
