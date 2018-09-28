@@ -96,7 +96,7 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
     }
     button_x += button_w_+ 10;
     engine_->renderCopy(triangle1_, button_x, button_y_, button_w_ / 2, button_h_);
-    engine_->renderCopy(triangle1_, button_x + 10, button_y_, button_w_ / 2, button_h_);
+    engine_->renderCopy(square_, button_x + 14, button_y_, 6, button_h_);
 
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
     int v = volume_;
