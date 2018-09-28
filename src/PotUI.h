@@ -18,10 +18,10 @@ private:
     std::string fontname_;
     std::string text_;
 
-    int button_x_ = 10, button_y_, button_w_ = 10, button_h_ = 10;
+    int button_x_ = 10, button_y_, button_w_ = 20, button_h_ = 20;
 
     int left_ = 60, right_ = 40;
-    int d_ = 10;
+    int d_ = 20;
 
 public:
     void init();

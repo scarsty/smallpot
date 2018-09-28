@@ -192,7 +192,7 @@ BP_Texture* Engine::createBallTexture(int size, int mode)
             }
             if (mode == 1)
             {
-                uint8_t a = 128;
+                uint8_t a = 255;
                 if (1.0 * abs(y - size / 2) / (size - x) > 0.5)
                 {
                     a = 0;
@@ -201,7 +201,7 @@ BP_Texture* Engine::createBallTexture(int size, int mode)
             }
             if (mode == 2)
             {
-                uint8_t a = 128;
+                uint8_t a = 255;
                 if (1.0 * abs(y - size / 2) / x > 0.5)
                 {
                     a = 0;
