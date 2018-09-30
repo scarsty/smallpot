@@ -17,11 +17,13 @@ void PotUI::drawBall()
     {
         return;
     }
-    engine_->setTextureAlphaMod(square_, alpha_ / 2);
+    //engine_->setTextureAlphaMod(square_, alpha_ / 2);
     //engine_->setTextureAlphaMod(triangle2_, alpha_ / 2);
     int x, y;
     y = win_h_ - 12;
+    engine_->setColor(square_, { 0, 0, 0 }, alpha_ / 2);
     engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
+    engine_->setColor(square_, { 255, 255, 255 }, alpha_);
     engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 4);
     //engine_->renderCopy(square_, left_ - 2, y + d_ / 2 - 3, 1, 6);
     //engine_->renderCopy(square_, win_w_ - right_ + 1, y + d_ / 2 - 3, 1, 6);
@@ -29,7 +31,7 @@ void PotUI::drawBall()
     //engine_->renderCopy(square_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - 1, y, 2, d_);
     //engine_->setTextureAlphaMod(square_, alpha_);
     //int pos = left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - 1;
-    
+
     //engine_->renderCopy(square_, pos, y + 2, 2, 2);
     //engine_->renderCopy(square_, pos, y + d_ / 2 + 1, 2, 2);
     //engine_->renderCopy(square_, pos - 1, y + 1, 4, 1);
@@ -94,7 +96,7 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
         engine_->renderCopy(square_, button_x, button_y_, 8, button_h_);
         engine_->renderCopy(square_, button_x + 12, button_y_, 8, button_h_);
     }
-    button_x += button_w_+ 10;
+    button_x += button_w_ + 10;
     engine_->renderCopy(triangle1_, button_x, button_y_, button_w_ / 2, button_h_);
     engine_->renderCopy(square_, button_x + 14, button_y_, 6, button_h_);
 

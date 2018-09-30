@@ -57,6 +57,10 @@ int PotPlayer::beginWithFile(std::string filename)
     if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
     {
         filename = Config::getInstance()->getString("recent_file");
+        if (!File::fileExist(filename))
+        {
+            filename = "";
+        }
     }
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = filename;
