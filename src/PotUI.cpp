@@ -11,7 +11,7 @@ PotUI::~PotUI()
 {
 }
 
-void PotUI::drawBall()
+void PotUI::drawProcess()
 {
     if (alpha_ == 0)
     {
@@ -21,9 +21,9 @@ void PotUI::drawBall()
     //engine_->setTextureAlphaMod(triangle2_, alpha_ / 2);
     int x, y;
     y = win_h_ - 12;
-    engine_->setColor(square_, { 0, 0, 0 }, alpha_ / 2);
-    engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
+    engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
+    engine_->setColor(square_, { 255, 0, 0 }, alpha_);
     engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 4);
     //engine_->renderCopy(square_, left_ - 2, y + d_ / 2 - 3, 1, 6);
     //engine_->renderCopy(square_, win_w_ - right_ + 1, y + d_ / 2 - 3, 1, 6);
@@ -66,8 +66,9 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
     this->time_ = time;
     this->totoal_time_ = totoalTime;
     this->volume_ = volume;
-    drawBall();
+    drawProcess();
 
+    engine_->setColor(square_, { 255, 255, 255 }, alpha_);
     engine_->setTextureAlphaMod(square_, alpha_);
     engine_->setTextureAlphaMod(triangle1_, alpha_);
 
