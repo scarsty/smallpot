@@ -21,7 +21,7 @@ void PotUI::drawProcess()
     //engine_->setTextureAlphaMod(triangle2_, alpha_ / 2);
     int x, y;
     y = win_h_ - 12;
-    engine_->setColor(square_, { 255, 255, 255 }, alpha_);
+    engine_->setColor(square_, { 255, 255, 255 }, alpha_ / 2);
     engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
     engine_->setColor(square_, { 255, 0, 0 }, alpha_);
     engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 4);
