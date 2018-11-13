@@ -27,7 +27,6 @@ public:
     void init();
     void setTime(int t) { time_ = t; }
     void setTotalTime(int t) { totoal_time_ = t; }
-    void drawProcess();
     void drawText(const std::string& text);
     void drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pause);
     void destory();

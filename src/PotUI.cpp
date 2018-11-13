@@ -11,42 +11,6 @@ PotUI::~PotUI()
 {
 }
 
-void PotUI::drawProcess()
-{
-    if (alpha_ == 0)
-    {
-        return;
-    }
-    //engine_->setTextureAlphaMod(square_, alpha_ / 2);
-    //engine_->setTextureAlphaMod(triangle2_, alpha_ / 2);
-    int x, y;
-    y = win_h_ - 12;
-    engine_->setColor(square_, { 255, 255, 255 }, alpha_ / 2);
-    engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
-    engine_->setColor(square_, { 255, 0, 0 }, alpha_);
-    engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 4);
-    //engine_->renderCopy(square_, left_ - 2, y + d_ / 2 - 3, 1, 6);
-    //engine_->renderCopy(square_, win_w_ - right_ + 1, y + d_ / 2 - 3, 1, 6);
-    //engine_->renderCopy(ball_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - d_ / 2, y, d_, d_);
-    //engine_->renderCopy(square_, left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - 1, y, 2, d_);
-    //engine_->setTextureAlphaMod(square_, alpha_);
-    //int pos = left_ + 1.0 * time_ / totoal_time_ * (win_w_ - left_ - right_) - 1;
-
-    //engine_->renderCopy(square_, pos, y + 2, 2, 2);
-    //engine_->renderCopy(square_, pos, y + d_ / 2 + 1, 2, 2);
-    //engine_->renderCopy(square_, pos - 1, y + 1, 4, 1);
-    //engine_->renderCopy(square_, pos - 1, y + d_ / 2 + 3, 4, 1);
-
-    //engine_->setTextureAlphaMod(square_, alpha_ / 2);
-
-    //x = _win_w - 10 - BP_AUDIO_MIX_MAXVOLUME / 2 - d;
-    //y = 40;
-    //engine_->renderCopy(_square, x - 2, y - 2, 6, 2);
-    //engine_->renderCopy(_square, x - 2, y + BP_AUDIO_MIX_MAXVOLUME / 2 + d, 6, 2);
-    //engine_->renderCopy(_square, x, y, BP_AUDIO_MIX_MAXVOLUME / 2 + d, 2);
-    //engine_->renderCopy(_ball, x + _volume / 2, y - d / 2 + 1, d, d);
-}
-
 void PotUI::drawText(const std::string& text)
 {
     engine_->drawText(fontname_.c_str(), text, 24, win_w_ - 20, 10, alpha_, BP_ALIGN_RIGHT);
@@ -66,7 +30,21 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
     this->time_ = time;
     this->totoal_time_ = totoalTime;
     this->volume_ = volume;
-    drawProcess();
+    if (alpha_ != 0)
+    {
+        int x, y;
+        y = win_h_ - 12;
+        engine_->setColor(square_, { 255, 255, 255 }, alpha_ / 2);
+        engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
+        //int xm, ym;
+        //engine_->getMouseState(xm, ym);
+        //if (inProcess(xm, ym)>0)
+        //{
+        //    engine_->renderCopy(square_, 0, y - 1, xm, 4);
+        //}
+        engine_->setColor(square_, { 255, 0, 0 }, alpha_);
+        engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 4);
+    }
 
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
     engine_->setTextureAlphaMod(square_, alpha_);
