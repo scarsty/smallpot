@@ -8,7 +8,7 @@ public:
     virtual ~PotUI();
 
 private:
-    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle1_ = nullptr, *triangle2_ = nullptr;
+    BP_Texture *square_ = nullptr, *square2_ = nullptr, *ball_ = nullptr, *triangle1_ = nullptr, *triangle2_ = nullptr;
 
     int time_, totoal_time_, volume_;
     int win_w_, win_h_;

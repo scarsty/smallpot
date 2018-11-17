@@ -13,7 +13,7 @@ PotUI::~PotUI()
 
 void PotUI::drawText(const std::string& text)
 {
-    engine_->drawText(fontname_.c_str(), text, 24, win_w_ - 20, 10, alpha_, BP_ALIGN_RIGHT);
+    engine_->drawText(fontname_.c_str(), text, 24, win_w_ - 20, win_h_ - 45, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
@@ -30,6 +30,9 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
     this->time_ = time;
     this->totoal_time_ = totoalTime;
     this->volume_ = volume;
+
+    //engine_->renderCopy(square2_, 0, win_h_ - 75, win_w_, 75);
+
     if (alpha_ != 0)
     {
         int x, y;
@@ -147,9 +150,10 @@ int PotUI::inButton(int x, int y)
 void PotUI::init()
 {
     square_ = engine_->createSquareTexture(40);
-    ball_ = engine_->createBallTexture(50);
-    triangle1_ = engine_->createBallTexture(200, 1);
-    triangle2_ = engine_->createBallTexture(200, 2);
+    ball_ = engine_->createSpecialTexture(50);
+    triangle1_ = engine_->createSpecialTexture(200, 1);
+    triangle2_ = engine_->createSpecialTexture(200, 2);
+    square2_ = engine_->createSpecialTexture(75, 3);
     fontname_ = Config::getInstance()->getString("ui_font");
     if (!File::fileExist(fontname_))
     {

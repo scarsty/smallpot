@@ -161,7 +161,7 @@ BP_Texture* Engine::createSquareTexture(int size)
     return square;
 }
 
-BP_Texture* Engine::createBallTexture(int size, int mode)
+BP_Texture* Engine::createSpecialTexture(int size, int mode)
 {
     int d = size;
     auto ball_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
@@ -207,6 +207,12 @@ BP_Texture* Engine::createBallTexture(int size, int mode)
                     a = 0;
                 }
                 SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 3)
+            {
+                uint8_t a = 255;
+                a = 225.0 / d * y;
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 0, 0, 0, a));
             }
         }
     }
