@@ -57,11 +57,10 @@ int PotPlayer::beginWithFile(std::string filename)
     if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
     {
         filename = Config::getInstance()->getString("recent_file");
-        if (!File::fileExist(filename))
+        if (!File::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
         {
             filename = "";
         }
-        filename = PotConv::conv(filename, sys_encode_, BP_encode_);
     }
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = filename;
@@ -114,7 +113,7 @@ int PotPlayer::eventLoop()
     BP_Event e;
 
     bool loop = true, pause = false, seeking = false;
-    int ui_alpha = 128, ui_alpha_count = 128;
+    int ui_alpha = 192, ui_alpha_count = 192;
     int finished, i = 0, x, y;
     int seek_step = 5000;
     int volume_step = 4;
