@@ -61,6 +61,7 @@ int PotPlayer::beginWithFile(std::string filename)
         {
             filename = "";
         }
+        filename = PotConv::conv(filename, sys_encode_, BP_encode_);
     }
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = filename;
