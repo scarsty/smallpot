@@ -627,7 +627,20 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     auto filename1 = PotConv::conv(drop_filename_, BP_encode_, sys_encode_);
     auto path = File::getFilePath(filename1);
     filename1 = File::getFilenameWithoutPath(filename1);
+    auto ext = File::getFileExt(filename1);
     auto files = File::getFilesInPath(path);
+    //只查找相同扩展名
+    for (auto it = files.begin(); it != files.end();)
+    {
+        if (File::getFileExt(*it) == ext)
+        {
+            it++;
+        }
+        else
+        {
+            it = files.erase(it);
+        }
+    }
     std::sort(files.begin(), files.end());
     if (direct > 0)
     {
