@@ -34,4 +34,11 @@ public:
     void setText(std::string t) { text_ = t; }
     double inProcess(int x, int y);
     int inButton(int x, int y);
+
+private:
+    void setAlpha(uint8_t alpha)
+    {
+        engine_->setTextureAlphaMod(square_, alpha);
+        engine_->setTextureAlphaMod(triangle1_, alpha);
+    }
 };
