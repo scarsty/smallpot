@@ -10,7 +10,6 @@ public:
 private:
     BP_Texture *square_ = nullptr, *square2_ = nullptr, *ball_ = nullptr, *triangle1_ = nullptr, *triangle2_ = nullptr;
 
-    int time_, totoal_time_, volume_;
     int win_w_, win_h_;
 
     //int x = 0, y = 0, w = 0, h = 0;
@@ -25,20 +24,11 @@ private:
 
 public:
     void init();
-    void setTime(int t) { time_ = t; }
-    void setTotalTime(int t) { totoal_time_ = t; }
     void drawText(const std::string& text);
-    void drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pause);
+    void drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pause);
     void destory();
     std::string convertTimeToString(int time);
     void setText(std::string t) { text_ = t; }
     double inProcess(int x, int y);
     int inButton(int x, int y);
-
-private:
-    void setAlpha(uint8_t alpha)
-    {
-        engine_->setTextureAlphaMod(square_, alpha);
-        engine_->setTextureAlphaMod(triangle1_, alpha);
-    }
 };

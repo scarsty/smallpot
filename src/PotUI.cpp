@@ -13,11 +13,11 @@ PotUI::~PotUI()
 
 void PotUI::drawText(const std::string& text)
 {
-    engine_->drawText(fontname_.c_str(), text, 24, win_w_ - 10, win_h_ - 50, alpha_, BP_ALIGN_RIGHT);
+    engine_->drawText(fontname_.c_str(), text, 22, win_w_ - 10, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
-void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pause)
+void PotUI::drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pause)
 {
     this->alpha_ = alpha;
     if (alpha == 0)
@@ -27,81 +27,74 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
     }
 
     engine_->getWindowSize(win_w_, win_h_);
-    this->time_ = time;
-    this->totoal_time_ = totoalTime;
-
     //engine_->renderCopy(square2_, 0, win_h_ - 75, win_w_, 75);
 
-    if (alpha_ != 0)
-    {
-        int x, y;
-        y = win_h_ - 12;
-        engine_->setColor(square_, { 255, 255, 255 }, alpha_ / 2);
-        engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
-        //int xm, ym;
-        //engine_->getMouseState(xm, ym);
-        //if (inProcess(xm, ym)>0)
-        //{
-        //    engine_->renderCopy(square_, 0, y - 1, xm, 4);
-        //}
-        engine_->setColor(square_, { 255, 0, 0 }, alpha_);
-        engine_->renderCopy(square_, 0, y - 1, 1.0 * time_ / totoal_time_ * win_w_, 4);
-    }
+    //进度条
+    int x, y;
+    y = win_h_ - 12;
+    engine_->setColor(square_, { 255, 255, 255 }, alpha_ / 2);
+    engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
+    //int xm, ym;
+    //engine_->getMouseState(xm, ym);
+    //if (inProcess(xm, ym)>0)
+    //{
+    //    engine_->renderCopy(square_, 0, y - 1, xm, 4);
+    //}
+    engine_->setColor(square_, { 255, 0, 0 }, alpha_);
+    engine_->renderCopy(square_, 0, y - 1, 1.0 * time / totoal_time * win_w_, 4);
 
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
-    setAlpha(alpha_);
+    engine_->setColor(triangle1_, { 255, 255, 255 }, alpha_);
 
     if (text_ == "")
     {
-        drawText(convertTimeToString(time) + "/" + convertTimeToString(totoalTime));
+        drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
     }
     else
     {
         drawText(text_);
     }
 
-    button_y_ = win_h_ - 45;
-    //engine_->setTextureAlphaMod(triangle1_, alpha_);
-    //engine_->setTextureAlphaMod(triangle2_, alpha_);
-    //engine_->renderCopy(triangle2_, button_x, button_y_, button_w_ / 2, button_h_);
-    //engine_->renderCopy(triangle2_, button_x + 5, button_y_, button_w_ / 2, button_h_);
-    //button_x += 15;
-
+    //按钮
     int mouse_x, mouse_y;
     engine_->getMouseState(mouse_x, mouse_y);
-
     int in_button = inButton(mouse_x, mouse_y);
-    //pause button
+
+    button_y_ = win_h_ - 45;
+    //暂停按钮
     int button_x = button_x_;
+    int button_y = button_y_;
     if (in_button == 1)
     {
-        setAlpha(alpha_ * 1.5);
+        //button_x++;
+        button_y++;
     }
     if (pause)
     {
-        engine_->renderCopy(triangle1_, button_x, button_y_, button_w_, button_h_);
+        engine_->renderCopy(triangle1_, button_x, button_y, button_w_, button_h_);
     }
     else
     {
-        engine_->renderCopy(square_, button_x, button_y_, 8, button_h_);
-        engine_->renderCopy(square_, button_x + 12, button_y_, 8, button_h_);
+        engine_->renderCopy(square_, button_x, button_y, 8, button_h_);
+        engine_->renderCopy(square_, button_x + 12, button_y, 8, button_h_);
     }
-    setAlpha(alpha_);
 
-    //next button
-    button_x += button_w_ + 10;
+    //下一个的按钮
+    button_x = button_x_ + button_w_ + 10;
+    button_y = button_y_;
     if (in_button == 2)
     {
-        setAlpha(alpha_ * 1.5);
+        //button_x++;
+        button_y++;
     }
-    engine_->renderCopy(triangle1_, button_x, button_y_, button_w_ / 2, button_h_);
-    engine_->renderCopy(square_, button_x + 14, button_y_, 6, button_h_);
-    setAlpha(alpha_);
+    engine_->renderCopy(triangle1_, button_x, button_y, button_w_ / 2, button_h_);
+    engine_->renderCopy(square_, button_x + 14, button_y, 6, button_h_);
 
+    //音量
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
     int v = volume;
-    int x = button_x + 30;
-    int y = button_y_ + 20;
+    x = button_x_ + 2 * (button_w_ + 10);
+    y = button_y_ + 20;
     for (int i = 0; i < 8; i++)
     {
         int h = (i + 1) * 2;
@@ -118,7 +111,6 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoalTime, int volume, bool pau
             break;
         }
     }
-    setAlpha(alpha_);
 }
 
 std::string PotUI::convertTimeToString(int time)
