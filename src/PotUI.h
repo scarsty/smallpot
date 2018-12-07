@@ -25,10 +25,10 @@ private:
 public:
     void init();
     void drawText(const std::string& text);
-    void drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pause);
+    void drawUI(int time, int totoal_time, int volume, bool pause);
     void destory();
     std::string convertTimeToString(int time);
     void setText(std::string t) { text_ = t; }
-    double inProcess(int x, int y);
-    int inButton(int x, int y);
+    double inProcess();
+    int inButton();
 };

@@ -113,8 +113,7 @@ int PotPlayer::eventLoop()
     BP_Event e;
 
     bool loop = true, pause = false, seeking = false;
-    int ui_alpha = 192, ui_alpha_count = 192;
-    int finished, i = 0, x, y;
+    int finished, i = 0;
     int seek_step = 5000;
     int volume_step = 4;
     bool havevideo = media_->getVideo()->exist();
@@ -135,16 +134,6 @@ int PotPlayer::eventLoop()
     {
         seeking = false;
         find_direct++;    //连续24天后方向会出现bug，但是不管了
-        engine_->getMouseState(x, y);
-        if (ui_alpha_count > 0)
-        {
-            ui_alpha_count--;
-        }
-        if (height_ - y < 50 || ((width_ - x) < 200 && y < 150))
-        {
-            ui_alpha_count = 256;
-        }
-        ui_alpha = (std::min)(ui_alpha_count, 128);
         switch (e.type)
         {
         case BP_MOUSEMOTION:
@@ -152,8 +141,8 @@ int PotPlayer::eventLoop()
         case BP_MOUSEBUTTONUP:
             if (e.button.button == BP_BUTTON_LEFT)
             {
-                double pos = UI_.inProcess(e.button.x, e.button.y);
-                int button = UI_.inButton(e.button.x, e.button.y);
+                double pos = UI_.inProcess();
+                int button = UI_.inButton();
                 if (pos >= 0)
                 {
                     media_->seekPos(pos, 1, 1);
@@ -204,7 +193,6 @@ int PotPlayer::eventLoop()
                 media_->getAudio()->changeVolume(-volume_step);
             }
             UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
-            ui_alpha_count = 256;
             break;
         }
         case BP_KEYDOWN:
@@ -261,7 +249,6 @@ int PotPlayer::eventLoop()
                 }
                 break;
             }
-            ui_alpha_count = 256;
             break;
         }
         case BP_KEYUP:
@@ -318,7 +305,6 @@ int PotPlayer::eventLoop()
                 break;
             }
             }
-            ui_alpha_count = 256;
             break;
         }
         //#ifndef _WINDLL
@@ -344,7 +330,6 @@ int PotPlayer::eventLoop()
             }
             else if (e.window.event == BP_WINDOWEVENT_LEAVE)
             {
-                ui_alpha_count = 0;
             }
             break;
         case BP_DROPFILE:
@@ -446,7 +431,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getSubtitle()->show(audioTime);
             }
-            UI_.drawUI(ui_alpha, audioTime, totalTime, media_->getAudio()->getVolume(), pause);
+            UI_.drawUI(audioTime, totalTime, media_->getAudio()->getVolume(), pause);
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
         }

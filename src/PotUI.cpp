@@ -17,35 +17,39 @@ void PotUI::drawText(const std::string& text)
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
-void PotUI::drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pause)
+void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
 {
-    alpha_ = alpha;
-    if (alpha == 0)
+    engine_->getWindowSize(win_w_, win_h_);
+    int in_button = inButton();
+    double process = inProcess();
+    if (in_button >= 0 || process > 0)
+    {
+        alpha_ = 128;
+    }
+    else
+    {
+        if (alpha_ > 0)
+        {
+            alpha_ -= 4;
+        }
+    }
+    if (alpha_ == 0)
     {
         text_ = "";
         return;
     }
-    engine_->getWindowSize(win_w_, win_h_);
-    //engine_->renderCopy(square2_, 0, win_h_ - 75, win_w_, 75);
 
     //进度条
     int x, y;
     y = win_h_ - 12;
     engine_->setColor(square_, { 255, 255, 255 }, alpha_ / 2);
     engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
-    //int xm, ym;
-    //engine_->getMouseState(xm, ym);
-    //if (inProcess(xm, ym)>0)
-    //{
-    //    engine_->renderCopy(square_, 0, y - 1, xm, 4);
-    //}
     engine_->setColor(square_, { 255, 0, 0 }, alpha_);
     engine_->renderCopy(square_, 0, y - 1, 1.0 * time / totoal_time * win_w_, 4);
 
+    //按钮
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
     engine_->setColor(triangle1_, { 255, 255, 255 }, alpha_);
-
-    //按钮
     button_y_ = win_h_ - 45;
     //暂停按钮
     int button_x = button_x_;
@@ -90,10 +94,7 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pa
     }
 
     //文字
-    int mouse_x, mouse_y;
-    engine_->getMouseState(mouse_x, mouse_y);
-    int in_button = inButton(mouse_x, mouse_y);
-    if (in_button==-1)
+    if (in_button <= 0)
     {
         if (text_ == "")
         {
@@ -137,8 +138,10 @@ std::string PotUI::convertTimeToString(int time)
     return s;
 }
 
-double PotUI::inProcess(int x, int y)
+double PotUI::inProcess()
 {
+    int x, y;
+    engine_->getMouseState(x, y);
     if (y > win_h_ - 24)
     {
         double p = 1.0 * x / win_w_;
@@ -150,8 +153,10 @@ double PotUI::inProcess(int x, int y)
     return -1;
 }
 
-int PotUI::inButton(int x, int y)
+int PotUI::inButton()
 {
+    int x, y;
+    engine_->getMouseState(x, y);
     if (y >= button_y_ && y <= button_y_ + button_h_)
     {
         int button_x = button_x_;
@@ -169,6 +174,7 @@ int PotUI::inButton(int x, int y)
         {
             return 3;
         }
+        return 0;
     }
     return -1;
 }
@@ -184,10 +190,10 @@ void PotUI::init()
     if (!File::fileExist(fontname_))
     {
 #ifdef _WIN32
-        fontname_ = "C:\\Windows\\Fonts\\Cambria.ttc";
+        fontname_ = "C:/Windows/Fonts/Cambria.ttc";
         if (!File::fileExist(fontname_))
         {
-            fontname_ = "C:\\Windows\\Fonts\\Cambria.ttf";
+            fontname_ = "C:/Windows/Fonts/Cambria.ttf";
         }
 #else
         fontname_ = "/System/Library/Fonts/Palatino.ttc";
