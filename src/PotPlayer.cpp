@@ -203,6 +203,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getAudio()->changeVolume(-volume_step);
             }
+            UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
             ui_alpha_count = 256;
             break;
         }
@@ -221,10 +222,12 @@ int PotPlayer::eventLoop()
             case BPK_UP:
             case BPK_PLUS:
                 media_->getAudio()->changeVolume(volume_step);
+                UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
                 break;
             case BPK_DOWN:
             case BPK_MINUS:
                 media_->getAudio()->changeVolume(-volume_step);
+                UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
                 break;
             case BPK_1:
                 media_->switchStream(BPMEDIA_TYPE_AUDIO);

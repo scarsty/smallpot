@@ -19,13 +19,12 @@ void PotUI::drawText(const std::string& text)
 
 void PotUI::drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pause)
 {
-    this->alpha_ = alpha;
+    alpha_ = alpha;
     if (alpha == 0)
     {
         text_ = "";
         return;
     }
-
     engine_->getWindowSize(win_w_, win_h_);
     //engine_->renderCopy(square2_, 0, win_h_ - 75, win_w_, 75);
 
@@ -46,29 +45,12 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pa
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
     engine_->setColor(triangle1_, { 255, 255, 255 }, alpha_);
 
-    if (text_ == "")
-    {
-        drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
-    }
-    else
-    {
-        drawText(text_);
-    }
-
     //按钮
-    int mouse_x, mouse_y;
-    engine_->getMouseState(mouse_x, mouse_y);
-    int in_button = inButton(mouse_x, mouse_y);
-
     button_y_ = win_h_ - 45;
     //暂停按钮
     int button_x = button_x_;
     int button_y = button_y_;
-    if (in_button == 1)
-    {
-        //button_x++;
-        button_y++;
-    }
+
     if (pause)
     {
         engine_->renderCopy(triangle1_, button_x, button_y, button_w_, button_h_);
@@ -82,11 +64,6 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pa
     //下一个的按钮
     button_x = button_x_ + button_w_ + 10;
     button_y = button_y_;
-    if (in_button == 2)
-    {
-        //button_x++;
-        button_y++;
-    }
     engine_->renderCopy(triangle1_, button_x, button_y, button_w_ / 2, button_h_);
     engine_->renderCopy(square_, button_x + 14, button_y, 6, button_h_);
 
@@ -110,6 +87,46 @@ void PotUI::drawUI(uint8_t alpha, int time, int totoal_time, int volume, bool pa
         {
             break;
         }
+    }
+
+    //文字
+    int mouse_x, mouse_y;
+    engine_->getMouseState(mouse_x, mouse_y);
+    int in_button = inButton(mouse_x, mouse_y);
+    if (in_button==-1)
+    {
+        if (text_ == "")
+        {
+            drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
+        }
+        else
+        {
+            drawText(text_);
+        }
+    }
+    else
+    {
+        std::string text;
+        if (in_button == 1)
+        {
+            if (pause)
+            {
+                text = "Play";
+            }
+            else
+            {
+                text = "Pause";
+            }
+        }
+        else if (in_button == 2)
+        {
+            text = "Next";
+        }
+        else if (in_button == 3)
+        {
+            text = "Volume " + std::to_string(volume);
+        }
+        drawText(text);
     }
 }
 
@@ -147,11 +164,11 @@ int PotUI::inButton(int x, int y)
         {
             return 2;
         }
-        //button_x += button_w_ + 10;
-        //if (x >= button_x && x <= button_x + button_w_)
-        //{
-        //    return 2;
-        //}
+        button_x += button_w_ + 10;
+        if (x >= button_x && x <= button_x + button_w_)
+        {
+            return 3;
+        }
     }
     return -1;
 }
