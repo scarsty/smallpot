@@ -13,7 +13,7 @@ private:
     int win_w_, win_h_;
 
     //int x = 0, y = 0, w = 0, h = 0;
-    uint8_t alpha_;
+    uint8_t alpha_, alpha_count_;
     std::string fontname_;
     std::string text_;
     int text_count_ = 32;

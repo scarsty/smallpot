@@ -32,21 +32,22 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     }
     if (in_button >= 0 || process > 0)
     {
-        alpha_ = 128;
+        alpha_count_ = 192;
     }
     else
     {
-        if (alpha_ > 0)
+        if (text_count_ == 0 && alpha_count_ > 0)
         {
-            alpha_ -= 4;
+            alpha_count_ -= 4;
         }
     }
-    if (alpha_ == 0)
+    if (alpha_count_ == 0)
     {
         text_ = "";
         return;
     }
 
+    alpha_ = (std::min)(uint8_t(128), alpha_count_);
     //进度条
     int x, y;
     y = win_h_ - 12;
@@ -148,9 +149,11 @@ std::string PotUI::convertTimeToString(int time)
 
 void PotUI::setText(std::string t)
 {
+    //一段时间后文字自动变回时间
     if (text_ != t)
     {
         text_count_ = 32;
+        alpha_count_ = 192;
     }
     text_ = t;
 }
