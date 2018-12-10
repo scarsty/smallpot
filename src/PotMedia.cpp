@@ -231,7 +231,7 @@ void PotMedia::setPause(bool pause)
 
 void PotMedia::switchStream(PotMediaType at)
 {
-    int current_index = 0;
+    int current_index = -1;
     for (int i = 0; i < streams_.size(); i++)
     {
         if (streams_[i] && streams_[i]->getType() == at && (streams_[i] == stream_video_ || streams_[i] == stream_audio_ || streams_[i] == stream_subtitle_))
@@ -240,7 +240,10 @@ void PotMedia::switchStream(PotMediaType at)
             break;
         }
     }
-
+    if (current_index == -1)
+    {
+        return;
+    }
     PotStream* st = streams_[current_index];
     for (int i = 0; i < streams_.size(); i++)
     {

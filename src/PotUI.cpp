@@ -22,6 +22,14 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     engine_->getWindowSize(win_w_, win_h_);
     int in_button = inButton();
     double process = inProcess();
+    if (text_count_ > 0)
+    {
+        text_count_--;
+    }
+    if (text_count_ == 0)
+    {
+        text_ = "";
+    }
     if (in_button >= 0 || process > 0)
     {
         alpha_ = 128;
@@ -136,6 +144,15 @@ std::string PotUI::convertTimeToString(int time)
     char s[256];
     sprintf(s, "%d:%02d:%02d", time / 3600000, time % 3600000 / 60000, time % 60000 / 1000);
     return s;
+}
+
+void PotUI::setText(std::string t)
+{
+    if (text_ != t)
+    {
+        text_count_ = 32;
+    }
+    text_ = t;
 }
 
 double PotUI::inProcess()

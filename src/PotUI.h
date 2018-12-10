@@ -16,6 +16,7 @@ private:
     uint8_t alpha_;
     std::string fontname_;
     std::string text_;
+    int text_count_ = 32;
 
     int button_x_ = 10, button_y_, button_w_ = 20, button_h_ = 20;
 
@@ -28,7 +29,7 @@ public:
     void drawUI(int time, int totoal_time, int volume, bool pause);
     void destory();
     std::string convertTimeToString(int time);
-    void setText(std::string t) { text_ = t; }
+    void setText(std::string t);
     double inProcess();
     int inButton();
 };

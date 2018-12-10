@@ -224,7 +224,14 @@ int PotPlayer::eventLoop()
             case BPK_2:
                 media_->switchStream(BPMEDIA_TYPE_SUBTITLE);
                 media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
-                UI_.setText(convert::formatString("Switch subtitle stream to %d", media_->getSubtitle()->getStreamIndex()));
+                if (media_->getSubtitle()->getStreamIndex() >= 0)
+                {
+                    UI_.setText(convert::formatString("Switch subtitle stream to %d", media_->getSubtitle()->getStreamIndex()));
+                }
+                else
+                {
+                    UI_.setText("No subtitles");
+                }
                 break;
             case BPK_3:
                 show_in_sub = !show_in_sub;
