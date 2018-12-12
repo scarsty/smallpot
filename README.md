@@ -21,8 +21,6 @@ TinyPot是一个轻量级播放器。
 
 ## 编译
 
-需要首先下载<https://github.com/scarsty/common>并置于适合的位置，或者参考脚本get-common.sh。
-
 ### Windows
 
 请使用Visual Studio 2017。已经包含了Windows版本所需的工程文件，以及导入库和dll。主要使用msys2的dll文件。
