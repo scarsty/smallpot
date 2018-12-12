@@ -530,7 +530,7 @@ void PotPlayer::openMedia(const std::string& filename)
     {
         engine_->setWindowSize(width_, height_);
     }
-    engine_->setWindowTitle(File::getFilenameWithoutPath(filename));
+    engine_->setWindowTitle(File::getFilenameWithoutPath(open_filename));
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
 
