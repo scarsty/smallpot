@@ -150,11 +150,8 @@ std::string PotUI::convertTimeToString(int time)
 void PotUI::setText(std::string t)
 {
     //一段时间后文字自动变回时间
-    if (text_ != t)
-    {
-        text_count_ = 32;
-        alpha_count_ = 192;
-    }
+    text_count_ = 32;
+    alpha_count_ = 192;
     text_ = t;
 }
 

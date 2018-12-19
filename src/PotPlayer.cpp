@@ -201,10 +201,12 @@ int PotPlayer::eventLoop()
             {
             case BPK_LEFT:
                 media_->seekTime(media_->getTime() - seek_step, -1);
+                UI_.setText("");
                 seeking = true;
                 break;
             case BPK_RIGHT:
                 media_->seekTime(media_->getTime() + seek_step, 1);
+                UI_.setText("");
                 seeking = true;
                 break;
             case BPK_UP:
