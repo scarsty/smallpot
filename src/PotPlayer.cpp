@@ -153,16 +153,6 @@ int PotPlayer::eventLoop()
                     pause = !pause;
                     media_->setPause(pause);
                 }
-                if (button == 0)
-                {
-                    find_direct = -60 * 1000;
-                    auto next_file = findNextFile(drop_filename_, find_direct);
-                    if (next_file != "")
-                    {
-                        drop_filename_ = next_file;
-                        loop = false;
-                    }
-                }
                 if (button == 2)
                 {
                     find_direct = 1;
@@ -532,7 +522,7 @@ void PotPlayer::openMedia(const std::string& filename)
     {
         engine_->setWindowSize(width_, height_);
     }
-    engine_->setWindowTitle(File::getFilenameWithoutPath(open_filename));
+    engine_->setWindowTitle(PotConv::conv(File::getFilenameWithoutPath(open_filename), sys_encode_, BP_encode_));
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
 
