@@ -21,19 +21,29 @@ TinyPot是一个轻量级播放器。
 
 ## 编译
 
+首先需要取得common库。
+
+```shell
+git clone https://github.com/scarsty/common common
+```
+
+其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-image，SDL2-ttf等，可以使用MSYS2，或者系统的包管理工具获取这些库。
+
+Windows下可以从<https://github.com/scarsty/lib-collection>取得库的头文件和导入库。
+
 ### Windows
 
-请使用Visual Studio 2017。已经包含了Windows版本所需的工程文件，以及导入库和dll。主要使用msys2的dll文件。
+请使用Visual Studio 2017编译x64版。
 
 32位部分默认编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
 
 ### macosx
 
-推荐使用homebrew安装libSDL2，libSDL2-image，libSDL2-ttf，以及libass、FFmpeg、iconv等。
+推荐使用homebrew安装依赖库。
 
 使用CMake生成Makefile。
 
-脚本a.sh可以自动做编译和处理库依赖。
+脚本a.sh可以自动编译和处理动态库的依赖修正。
 
 ### linux
 
