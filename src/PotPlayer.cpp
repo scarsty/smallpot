@@ -114,8 +114,8 @@ int PotPlayer::eventLoop()
 
     bool loop = true, pause = false, seeking = false;
     int finished, i = 0;
-    int seek_step = 5000;
-    int volume_step = 4;
+    const int seek_step = 5000;
+    int volume_step = 1;
     bool havevideo = media_->getVideo()->exist();
     bool havemedia = media_->getAudio()->exist() || havevideo;
     int totalTime = media_->getTotalTime();
@@ -134,6 +134,7 @@ int PotPlayer::eventLoop()
     {
         seeking = false;
         find_direct++;    //连续24天后方向会出现bug，但是不管了
+        int last_volume = media_->getAudio()->getVolume();
         switch (e.type)
         {
         case BP_MOUSEMOTION:
@@ -367,6 +368,15 @@ int PotPlayer::eventLoop()
         //{
         //    cout << audioTime << " " << media_->getAudioStream()->getTimedts() << endl;
         //}
+
+        if (last_volume == media_->getAudio()->getVolume())
+        {
+            volume_step = 1;
+        }
+        else
+        {
+            volume_step = (std::min)(volume_step + 1, 5);
+        }
 
         int time_s = audioTime;
         if (pause)
