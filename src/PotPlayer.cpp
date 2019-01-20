@@ -641,7 +641,7 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     std::sort(files.begin(), files.end());
     if (direct > 0)
     {
-        for (int i = 0; i < files.size() - 1; i++)
+        for (int i = 0; i < int(files.size()) - 1; i++)
         {
             if (files.at(i) == filename1)
             {
@@ -651,7 +651,7 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     }
     else
     {
-        for (int i = files.size() - 1; i > 0; i--)
+        for (int i = int(files.size()) - 1; i > 0; i--)
         {
             if (files.at(i) == filename1)
             {
