@@ -130,7 +130,7 @@ sub_font：显示字幕的默认字体
 
 windows版：
 
-<https://www.dawuxia.net/tinypot/tinypot-x64.7z>
+<https://www.dawuxia.net/tinypot/tinypot-x64-single.zip>
 
 Mac版：
 
