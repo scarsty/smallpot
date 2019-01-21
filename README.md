@@ -49,6 +49,43 @@ Windows下可以从<https://github.com/scarsty/lib-collection>取得库的头文
 
 与上面方法类似，但是通常不需要打包为app。
 
+### 单文件版
+
+如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决。
+
+以下为参考：
+
+```
+sdl2.lib
+sdl2_ttf.lib
+sdl2_image.lib
+sdl2main.lib
+ass.lib
+libiconv.lib
+avutil.lib
+avcodec.lib
+avformat.lib
+swresample.lib
+swscale.lib
+libpng16.lib
+bz2.lib
+fribidi.lib
+harfbuzz.lib
+freetype.lib
+fontconfig.lib
+libcharset.lib
+zlib.lib
+winmm.lib
+version.lib
+imm32.lib
+Bcrypt.lib
+Secur32.lib
+Ws2_32.Lib
+expat.lib
+```
+
+
+
 ## 使用方法
 
 因为没有制作配置的图形界面，所以仅能将文件拖到图标或者窗口上进行播放，或者设置为文件类型默认的打开方式。
