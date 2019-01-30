@@ -319,23 +319,13 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     renderPresent();
     TTF_Init();
 
-#if defined(_MSC_VER) && !defined(__clang__)
-    RECT r;
-    SystemParametersInfo(SPI_GETWORKAREA, 0, (PVOID)&r, 0);
-    int w = GetSystemMetrics(SM_CXEDGE);
-    int h = GetSystemMetrics(SM_CYEDGE);
-    min_x_ = r.left + w;
-    min_y_ = r.top + h + GetSystemMetrics(SM_CYCAPTION);
-    max_x_ = r.right - w;
-    max_y_ = r.bottom - h;
-#else
     SDL_Rect r;
     SDL_GetDisplayBounds(0, &r);
     min_x_ = r.x;
     min_y_ = r.y;
     max_x_ = r.w + r.x;
     max_y_ = r.h + r.y;
-#endif
+
     printf("maximum width and height are: %d, %d\n", max_x_, max_y_);
     return 0;
 }
