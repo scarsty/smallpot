@@ -51,7 +51,7 @@ Windows下可以从<https://github.com/scarsty/lib-collection>取得库的头文
 
 ### 单文件版
 
-如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决。
+如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决（vcpkg生成的fribidi静态库不正确）。
 
 以下为参考：
 
@@ -67,24 +67,22 @@ avcodec.lib
 avformat.lib
 swresample.lib
 swscale.lib
-libpng16.lib
-bz2.lib
 fribidi.lib
 harfbuzz.lib
 freetype.lib
-fontconfig.lib
-libcharset.lib
+bz2.lib
+libpng16.lib
 zlib.lib
+libcharset.lib
 winmm.lib
 version.lib
 imm32.lib
-Bcrypt.lib
-Secur32.lib
-Ws2_32.Lib
-expat.lib
+bcrypt.lib
+secur32.lib
+ws2_32.Lib
 ```
 
-若是编译dll文件，用于在其他基于SDL2的游戏中播放视频时，则TinyPot和游戏均不应静态链接SDL的库。因为SDL的库中含有全局变量，多次静态链接会导致重复初始化。
+若是编译dll文件，用于在其他基于SDL2的游戏中播放视频时，则TinyPot和游戏均不应静态链接SDL的库。因为SDL的库中含有全局变量，多次静态链接后该变量会有多个副本，其中一个很可能是不正确的。
 
 ## 使用方法
 
