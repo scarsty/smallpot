@@ -201,12 +201,10 @@ int PotPlayer::eventLoop()
                 seeking = true;
                 break;
             case BPK_UP:
-            case BPK_PLUS:
                 media_->getAudio()->changeVolume(volume_step);
                 UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
                 break;
             case BPK_DOWN:
-            case BPK_MINUS:
                 media_->getAudio()->changeVolume(-volume_step);
                 UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
                 break;
@@ -304,6 +302,14 @@ int PotPlayer::eventLoop()
                 }
                 break;
             }
+            case BPK_EQUALS:
+                engine_->setWindowSize(width_ * 1.5, height_ * 1.5);
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                break;
+            case BPK_MINUS:
+                engine_->setWindowSize(width_ * 1, height_ * 1);
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                break;
             }
             break;
         }
