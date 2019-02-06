@@ -1,7 +1,7 @@
 #pragma once
 
-#include "hash/sha3.h"
-#include "tinyxml2/tinyxml2.h"
+#include "others/sha3.h"
+#include "others/tinyxml2.h"
 #include <stdint.h>
 #include <vector>
 

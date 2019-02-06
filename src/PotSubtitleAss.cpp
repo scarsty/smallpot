@@ -1,5 +1,7 @@
 #include "PotSubtitleAss.h"
 #include "PotConv.h"
+#include "libconvert.h"
+#include "others/text_encoding_detect.h"
 
 PotSubtitleAss::PotSubtitleAss()
 {
@@ -23,9 +25,39 @@ void PotSubtitleAss::init()
 bool PotSubtitleAss::openSubtitle(const std::string& filename)
 {
     //函数的参数是char*,为免意外复制一份
-    auto s = filename;
+    auto s = convert::readStringFromFile(filename);
+
+    TextEncodingDetect textDetect;
+    TextEncodingDetect::Encoding encoding = textDetect.DetectEncoding((const uint8_t*)s.c_str(), s.size());
+    std::string encode_str = "utf-8";
+
+    if (encoding == TextEncodingDetect::None)
+    {
+        encode_str = "utf-8";
+    }
+    else if (encoding == TextEncodingDetect::ASCII)
+    {
+        encode_str = "utf-8";
+    }
+    else if (encoding == TextEncodingDetect::ANSI)
+    {
+        encode_str = "cp936";
+    }
+    else if (encoding == TextEncodingDetect::UTF8_BOM || encoding == TextEncodingDetect::UTF8_NOBOM)
+    {
+        encode_str = "utf-8";
+    }
+    else if (encoding == TextEncodingDetect::UTF16_LE_BOM || encoding == TextEncodingDetect::UTF16_LE_NOBOM)
+    {
+        encode_str = "utf-16le";
+    }
+    else if (encoding == TextEncodingDetect::UTF16_BE_BOM || encoding == TextEncodingDetect::UTF16_BE_NOBOM)
+    {
+        encode_str = "utf-16be";
+    }
+    auto s1 = PotConv::conv(s, encode_str.c_str(), "utf-8");
     //if (checkFileExt(filename))
-    track_ = ass_read_file(library_, (char*)s.c_str(), NULL);
+    track_ = ass_read_memory(library_, (char*)s1.c_str(), s1.size(), NULL);
     haveSubtitle_ = (track_ != nullptr);
     if (haveSubtitle_)
     {

@@ -9,8 +9,6 @@ extern "C"
 #include <string>
 #include <algorithm>
 
-#define CONV_BUFFER_SIZE 2048
-
 class PotConv
 {
 public:

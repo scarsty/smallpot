@@ -206,6 +206,9 @@
     <ClCompile Include="common\File.cpp" />
     <ClCompile Include="common\libconvert.cpp" />
     <ClCompile Include="src\Font.cpp" />
+    <ClCompile Include="src\others\sha3.cpp" />
+    <ClCompile Include="src\others\text_encoding_detect.cpp" />
+    <ClCompile Include="src\others\tinyxml2.cpp" />
     <ClCompile Include="src\pot.cpp" />
     <ClCompile Include="src\PotBase.cpp" />
     <ClCompile Include="src\Config.cpp" />
@@ -223,15 +226,16 @@
     <ClCompile Include="src\PotSubtitleSrt.cpp" />
     <ClCompile Include="src\PotUI.cpp" />
     <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\hash\sha3.cpp" />
     <ClCompile Include="src\PotSubtitleManager.cpp" />
-    <ClCompile Include="src\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\File.h" />
     <ClInclude Include="common\libconvert.h" />
     <ClInclude Include="common\Timer.h" />
     <ClInclude Include="src\Font.h" />
+    <ClInclude Include="src\others\sha3.h" />
+    <ClInclude Include="src\others\text_encoding_detect.h" />
+    <ClInclude Include="src\others\tinyxml2.h" />
     <ClInclude Include="src\PotBase.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\PotConv.h" />
@@ -248,10 +252,8 @@
     <ClInclude Include="src\PotSubtitleSrt.h" />
     <ClInclude Include="src\PotUI.h" />
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\hash\sha3.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\PotSubtitleManager.h" />
-    <ClInclude Include="src\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\pot.rc" />

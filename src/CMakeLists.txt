@@ -10,8 +10,7 @@ link_directories(. ../lib)
 
 file(GLOB SRC_LIST
     ./*.cpp
-    ./tinyxml2/*.cpp
-    ./hash/*.cpp
+    ./others/*.cpp
     ../common/libconvert.cpp
     ../common/File.cpp)
 
