@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="others">
+      <UniqueIdentifier>{868fc8b2-9fbe-4988-9e59-d03867dd4046}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine.cpp">
@@ -75,14 +78,17 @@
     <ClCompile Include="common\libconvert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\hash\sha3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tinyxml2\tinyxml2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Font.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\others\sha3.cpp">
+      <Filter>others</Filter>
+    </ClCompile>
+    <ClCompile Include="src\others\text_encoding_detect.cpp">
+      <Filter>others</Filter>
+    </ClCompile>
+    <ClCompile Include="src\others\tinyxml2.cpp">
+      <Filter>others</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,11 +158,14 @@
     <ClInclude Include="common\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\hash\sha3.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\others\sha3.h">
+      <Filter>others</Filter>
     </ClInclude>
-    <ClInclude Include="src\tinyxml2\tinyxml2.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\others\text_encoding_detect.h">
+      <Filter>others</Filter>
+    </ClInclude>
+    <ClInclude Include="src\others\tinyxml2.h">
+      <Filter>others</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

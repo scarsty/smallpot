@@ -31,6 +31,8 @@ git clone https://github.com/scarsty/common common
 
 Windows下可以从<https://github.com/scarsty/lib-collection>取得库的头文件和导入库。
 
+使用到的其他库有：https://github.com/AutoItConsulting/text-encoding-detect，sha3，tinyxml2。均直接包含代码到工程中。
+
 ### Windows
 
 请使用Visual Studio 2017编译x64版。

@@ -11,14 +11,16 @@ PotConv::~PotConv()
 std::string PotConv::conv(const std::string& src, const char* from, const char* to)
 {
     //const char *from_charset, const char *to_charset, const char *inbuf, size_t inlen, char *outbuf;
-    size_t inlen = std::min((int)src.length(), CONV_BUFFER_SIZE);
-    size_t outlen = CONV_BUFFER_SIZE;
+    size_t inlen = (int)src.length();
+    size_t outlen = src.length() * 2;
 
-    char in[CONV_BUFFER_SIZE] = { '\0' };
-    char out[CONV_BUFFER_SIZE] = { '\0' };
+    auto in = new char[inlen+1];
+    auto out = new char[outlen+1];
 
     char *pin = in, *pout = out;
+    memset(in, 0, inlen+1);
     memcpy(in, src.c_str(), inlen);
+    memset(out, 0, outlen+1);
     iconv_t cd;
     cd = iconv_open(to, from);
     if (cd == nullptr)
@@ -30,8 +32,10 @@ std::string PotConv::conv(const std::string& src, const char* from, const char* 
         out[0] = '\0';
     }
     iconv_close(cd);
-    return out;
-    return src;
+    delete[] in;
+    std::string result = out;
+    delete out;
+    return result;
 }
 
 std::string PotConv::conv(const std::string& src, const std::string& from, const std::string& to)

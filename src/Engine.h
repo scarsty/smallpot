@@ -225,6 +225,7 @@ typedef enum
     BPK_RETURN = SDLK_RETURN,
     BPK_DELETE = SDLK_DELETE,
     BPK_BACKSPACE = SDLK_BACKSPACE,
+    BPK_0 = SDLK_0,
     BPK_1 = SDLK_1,
     BPK_2 = SDLK_2,
     BPK_3 = SDLK_3,
@@ -233,6 +234,7 @@ typedef enum
     BPK_COMMA = SDLK_COMMA,
     BPK_MINUS = SDLK_MINUS,
     BPK_PERIOD = SDLK_PERIOD,
+    BPK_EQUALS = SDLK_EQUALS,
 } BP_KeyBoard;
 
 typedef enum

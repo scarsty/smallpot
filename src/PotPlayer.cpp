@@ -201,12 +201,10 @@ int PotPlayer::eventLoop()
                 seeking = true;
                 break;
             case BPK_UP:
-            case BPK_PLUS:
                 media_->getAudio()->changeVolume(volume_step);
                 UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
                 break;
             case BPK_DOWN:
-            case BPK_MINUS:
                 media_->getAudio()->changeVolume(-volume_step);
                 UI_.setText("Volume " + std::to_string(media_->getAudio()->getVolume()));
                 break;
@@ -259,11 +257,6 @@ int PotPlayer::eventLoop()
                 pause = !pause;
                 media_->setPause(pause);
                 break;
-            case BPK_RETURN:
-#ifndef _WINDLL
-                engine_->toggleFullscreen();
-#endif
-                break;
             case BPK_ESCAPE:
                 if (engine_->isFullScreen())
                 {
@@ -275,12 +268,16 @@ int PotPlayer::eventLoop()
                     running_ = false;
                 }
                 break;
-            case BPK_DELETE:
-                Config::getInstance()->clearRecord();
-                break;
             case BPK_BACKSPACE:
                 media_->seekTime(0);
                 seeking = true;
+                break;
+#ifndef _WINDLL
+            case BPK_RETURN:
+                engine_->toggleFullscreen();
+                break;
+            case BPK_DELETE:
+                Config::getInstance()->clearRecord();
                 break;
             case BPK_PERIOD:
             {
@@ -304,7 +301,32 @@ int PotPlayer::eventLoop()
                 }
                 break;
             }
+            case BPK_EQUALS:
+            {
+                int w, h;
+                engine_->getWindowSize(w, h);
+                w += width_ / 4;
+                h += height_ / 4;
+                setWindowSize(w, h);
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                break;
             }
+            case BPK_MINUS:
+            {
+                int w, h;
+                engine_->getWindowSize(w, h);
+                w -= width_ / 4;
+                h -= height_ / 4;
+                setWindowSize(w, h);
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                break;
+            }
+            case BPK_0:
+                setWindowSize(media_->getVideo()->getWidth(), media_->getVideo()->getHeight());
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                break;
+            }
+#endif
             break;
         }
         //#ifndef _WINDLL
@@ -322,11 +344,7 @@ int PotPlayer::eventLoop()
         case BP_WINDOWEVENT:
             if (e.window.event == BP_WINDOWEVENT_RESIZED)
             {
-                //需要计算显示和字幕的位置
-                width_ = e.window.data1;
-                height_ = e.window.data2;
-                engine_->setPresentPosition();
-                setSubtitleFrameSize();
+                setWindowSize(e.window.data1, e.window.data2);
             }
             else if (e.window.event == BP_WINDOWEVENT_LEAVE)
             {
@@ -667,4 +685,12 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     {
         return "";
     }
+}
+
+void PotPlayer::setWindowSize(int w, int h)
+{
+    engine_->setWindowSize(w, h);
+    engine_->getWindowSize(width_, height_);
+    engine_->setPresentPosition();
+    setSubtitleFrameSize();
 }

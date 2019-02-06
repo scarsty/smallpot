@@ -59,4 +59,6 @@ public:
     int exit_type_ = 0;    //0 - 播放完毕或者按esc退出，1 - 按关闭退出
 
     std::string findNextFile(const std::string& filename, int direct = 1);
+
+    void setWindowSize(int w, int h);
 };
