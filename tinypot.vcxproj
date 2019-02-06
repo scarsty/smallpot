@@ -195,8 +195,8 @@
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>lib/x64;$(USR_LOCAL)\lib\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;fribidi.lib;harfbuzz.lib;freetype.lib;bz2.lib;libpng16.lib;zlib.lib;libcharset.lib;winmm.lib;version.lib;imm32.lib;bcrypt.lib;secur32.lib;ws2_32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dat\project\vcpkg\installed\x64-windows-static\lib;libb/x64;$(USR_LOCAL)\libb\$(Platform)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /y x64\Release\*.exe tinypot-x64\</Command>

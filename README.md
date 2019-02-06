@@ -51,7 +51,7 @@ Windows下可以从<https://github.com/scarsty/lib-collection>取得库的头文
 
 ### 单文件版
 
-如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决（vcpkg生成的fribidi静态库不正确）。
+如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决（vcpkg生成的fribidi静态库不正确，需手动修正）。
 
 以下为参考：
 
