@@ -225,6 +225,7 @@ typedef enum
     BPK_RETURN = SDLK_RETURN,
     BPK_DELETE = SDLK_DELETE,
     BPK_BACKSPACE = SDLK_BACKSPACE,
+    BPK_0 = SDLK_0,
     BPK_1 = SDLK_1,
     BPK_2 = SDLK_2,
     BPK_3 = SDLK_3,

@@ -303,11 +303,30 @@ int PotPlayer::eventLoop()
                 break;
             }
             case BPK_EQUALS:
-                engine_->setWindowSize(width_ * 1.5, height_ * 1.5);
+            {
+                int w, h;
+                engine_->getWindowSize(w, h);
+                w += width_ / 4;
+                h += height_ / 4;
+                engine_->setWindowSize(w, h);
+                engine_->getWindowSize(width_, height_);
                 engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
                 break;
+            }
             case BPK_MINUS:
-                engine_->setWindowSize(width_ * 1, height_ * 1);
+            {
+                int w, h;
+                engine_->getWindowSize(w, h);
+                w -= width_ / 4;
+                h -= height_ / 4;
+                engine_->setWindowSize(w, h);
+                engine_->getWindowSize(width_, height_);
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                break;
+            }
+            case BPK_0:
+                engine_->setWindowSize(media_->getVideo()->getWidth(), media_->getVideo()->getHeight());
+                engine_->getWindowSize(width_, height_);
                 engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
                 break;
             }
