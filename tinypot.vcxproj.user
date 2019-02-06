@@ -7,7 +7,8 @@
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\work</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>C:\Users\sty\Documents\Tencent Files\24050932\FileRecv\1.mkv</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\tinypot-x64</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

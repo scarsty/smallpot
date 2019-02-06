@@ -325,8 +325,8 @@ int PotPlayer::eventLoop()
                 setWindowSize(media_->getVideo()->getWidth(), media_->getVideo()->getHeight());
                 engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
                 break;
-            }
 #endif
+            }
             break;
         }
         //#ifndef _WINDLL
