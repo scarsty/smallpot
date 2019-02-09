@@ -27,9 +27,9 @@ TinyPot是一个轻量级播放器。
 git clone https://github.com/scarsty/common common
 ```
 
-其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-image，SDL2-ttf等，可以使用MSYS2，或者系统的包管理工具获取这些库。
+其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-image，SDL2-ttf等，可以使用MSYS2，或者系统的包管理工具获取这些库。其中SDL2_image仅有一处使用，且并不是必须的，可以简单修改后去除。
 
-Windows下可以从<https://github.com/scarsty/lib-collection>取得库的头文件和导入库。
+Windows下可以从<https://github.com/scarsty/lib-collection>取得头文件和导入库。
 
 使用到的其他库有：https://github.com/AutoItConsulting/text-encoding-detect，sha3，tinyxml2。均直接包含代码到工程中。
 
@@ -86,6 +86,8 @@ ws2_32.Lib
 
 若是编译dll文件，用于在其他基于SDL2的游戏中播放视频时，则TinyPot和游戏均不应静态链接SDL的库。因为SDL的库中含有全局变量，多次静态链接后该变量会有多个副本，其中一个很可能是不正确的。
 
+vcpkg编译得到的库在删除纹理时似乎有些问题，原因暂时不清楚，故实际上并不推荐静态链接或自己编译SDL的动态库，而使用SDL网站上提供的动态库。
+
 ## 使用方法
 
 因为没有制作配置的图形界面，所以仅能将文件拖到图标或者窗口上进行播放，或者设置为文件类型默认的打开方式。
@@ -100,15 +102,17 @@ FFmpeg能解什么格式它就能放什么格式，FFmpeg不能解的，它也�
 
 打开文件的时候，会先判断有没有字幕，有的话会自动载入。或者播放的时候拖一个字幕进去也会载入字幕，而字幕的扩展名必须是ass、ssa、srt、txt其中之一。其他文件都会当成媒体文件处理，能否播放看解码器的。
 
-查找字幕的方式是先依次将媒体文件的扩展名替换为ass、ssa、srt，并在媒体所在目录的sub子目录下寻找。
+查找字幕的方式是先依次将媒体文件的扩展名替换为ass、ssa、srt，并在媒体所在目录下以及sub子目录中寻找，即可以将字幕集中放到sub子目录。
 
 ### 功能键
 
 方向左右是跳过几秒，上下、加减号或者鼠标滚轮是音量，空格或鼠标点右上是暂停，回车是全屏，退格是返回文件开始，del删除播放记录（打开曾经播放过的文件会自动跳转到上次退出的位置）。
 
-1是切换音频流，2是切换字幕流，3是内部字幕显示/隐藏，4是外部字幕显示/隐藏。
+1切换音频流，2切换字幕流，3内部字幕显示/隐藏，4外部字幕显示/隐藏。
 
-句号（大于号）是下一个文件，逗号（小于号）是上一个文件。
+句号（大于号）下一个文件，逗号（小于号）上一个文件。
+
+0是恢复视频本身大小，-减小窗口，=（+）大窗口。
 
 ### XML中的设置
 
@@ -128,9 +132,13 @@ sub_font：显示字幕的默认字体
 
 ## 预编译版下载
 
-windows版：
+Windows-x64版：
 
 <https://www.dawuxia.net/tinypot/tinypot-x64-single.zip>
+
+Windows动态库版（可在基于SDL2的游戏中播放视频，暂时仅提供x86版）：
+
+<https://www.dawuxia.net/tinypot/tinypot-dll-x86.zip>
 
 Mac版：
 
