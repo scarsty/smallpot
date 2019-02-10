@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "File.h"
 #include "math.h"
+#include "libconvert.h"
 
 PotUI::PotUI()
 {
@@ -134,7 +135,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         }
         else if (in_button == 3)
         {
-            text = "Volume " + std::to_string(volume);
+            text = convert::formatString("Volume %5.1f", 100.0 * volume / 128);
         }
         drawText(text);
     }
