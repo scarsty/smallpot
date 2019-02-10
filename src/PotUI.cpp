@@ -110,6 +110,11 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         {
             drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
         }
+        else if (text_ == "v")
+        {
+            text_ = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+            drawText(text_);
+        }
         else
         {
             drawText(text_);
@@ -135,7 +140,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         }
         else if (in_button == 3)
         {
-            text = convert::formatString("Volume %5.1f", 100.0 * volume / 128);
+            text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
         }
         drawText(text);
     }

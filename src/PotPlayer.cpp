@@ -183,7 +183,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getAudio()->changeVolume(-volume_step);
             }
-            UI_.setText(convert::formatString("Volume %5.1f", 100.0 * media_->getAudio()->getVolume() / 128));
+            UI_.setText("v");
             break;
         }
         case BP_KEYDOWN:
@@ -192,21 +192,21 @@ int PotPlayer::eventLoop()
             {
             case BPK_LEFT:
                 media_->seekTime(media_->getTime() - seek_step, -1);
-                UI_.setText("");
+                //UI_.setText("");
                 seeking = true;
                 break;
             case BPK_RIGHT:
                 media_->seekTime(media_->getTime() + seek_step, 1);
-                UI_.setText("");
+                //UI_.setText("");
                 seeking = true;
                 break;
             case BPK_UP:
                 media_->getAudio()->changeVolume(volume_step);
-                UI_.setText(convert::formatString("Volume %5.1f", 100.0 * media_->getAudio()->getVolume() / 128));
+                UI_.setText("v");
                 break;
             case BPK_DOWN:
                 media_->getAudio()->changeVolume(-volume_step);
-                UI_.setText(convert::formatString("Volume %5.1f", 100.0 * media_->getAudio()->getVolume() / 128));
+                UI_.setText("v");
                 break;
             case BPK_1:
                 media_->switchStream(BPMEDIA_TYPE_AUDIO);
