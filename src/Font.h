@@ -20,4 +20,5 @@ public:
     }
     int getTextWidth(const std::string& fontname, const std::string& text, int size);
     void draw(const std::string& fontname, const std::string& text, int size, int x, int y, BP_Color color = { 255, 255, 255, 255 }, uint8_t alpha = 255);
+    void clearBuffer();
 };

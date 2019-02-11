@@ -2,6 +2,8 @@
 #include "Config.h"
 #include "PotSubtitleManager.h"
 #include "libconvert.h"
+#include "Font.h"
+
 #ifdef _WIN32
 //#include <shlobj.h>
 //#pragma comment(lib,"shfolder.lib")
@@ -192,12 +194,12 @@ int PotPlayer::eventLoop()
             {
             case BPK_LEFT:
                 media_->seekTime(media_->getTime() - seek_step, -1);
-                //UI_.setText("");
+                UI_.setText("");
                 seeking = true;
                 break;
             case BPK_RIGHT:
                 media_->seekTime(media_->getTime() + seek_step, 1);
-                //UI_.setText("");
+                UI_.setText("");
                 seeking = true;
                 break;
             case BPK_UP:
@@ -513,6 +515,7 @@ int PotPlayer::init()
 
 void PotPlayer::destroy()
 {
+    Font::getInstance()->clearBuffer();
     UI_.destory();
     engine_->destroy();
 #ifndef _WINDLL
@@ -592,8 +595,6 @@ void PotPlayer::setSubtitleFrameSize()
 
 void PotPlayer::closeMedia(const std::string& filename)
 {
-    engine_->destroyMainTexture();
-
     //记录播放时间
     cur_time_ = media_->getTime();
     cur_volume_ = media_->getAudio()->getVolume();

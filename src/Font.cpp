@@ -3,10 +3,6 @@
 
 Font::~Font()
 {
-    for (auto buffer : buffer_)
-    {
-        Engine::destroyTexture(buffer.second);
-    }
 }
 
 BP_Texture* Font::indexTex(const std::string& fontname, int size, uint16_t c)
@@ -66,4 +62,13 @@ void Font::draw(const std::string& fontname, const std::string& text, int size, 
 
         x += w;
     }
+}
+
+void Font::clearBuffer()
+{
+    for (auto& buffer : buffer_)
+    {
+        Engine::destroyTexture(buffer.second);
+    }
+    buffer_.clear();
 }

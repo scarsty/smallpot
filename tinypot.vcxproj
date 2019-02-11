@@ -124,23 +124,23 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(USR_LOCAL)\include;common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows-static\include;$(USR_LOCAL)\include;common</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl2d.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2maind.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;fribidi.lib;harfbuzz.lib;freetyped.lib;bz2d.lib;libpng16d.lib;zlibd.lib;libcharset.lib;winmm.lib;version.lib;imm32.lib;bcrypt.lib;secur32.lib;ws2_32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>lib/x64;$(USR_LOCAL)\lib\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x64-windows-static\debug\lib;lib/x64;$(USR_LOCAL)\lib\$(Platform)</AdditionalLibraryDirectories>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
     <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -152,7 +152,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\include\libiconv;$(SolutionDir)\include\ffmpeg;$(SolutionDir)\include;%(AdditionalIncludeDirectories);$(USR_LOCAL)\include;common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(USR_LOCAL)\include;common</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -167,8 +167,8 @@
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalLibraryDirectories>$(USR_LOCAL)/lib/x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x86-windows-static\lib;$(USR_LOCAL)/lib/x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;fribidi.lib;harfbuzz.lib;freetype.lib;bz2.lib;libpng16.lib;zlib.lib;libcharset.lib;winmm.lib;version.lib;imm32.lib;bcrypt.lib;secur32.lib;ws2_32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -180,7 +180,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(USR_LOCAL)\include;common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows-static\include;common</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -196,7 +196,7 @@
       </DelayLoadDLLs>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;fribidi.lib;harfbuzz.lib;freetype.lib;bz2.lib;libpng16.lib;zlib.lib;libcharset.lib;winmm.lib;version.lib;imm32.lib;bcrypt.lib;secur32.lib;ws2_32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\dat\project\vcpkg\installed\x64-windows-static\lib;libb/x64;$(USR_LOCAL)\libb\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x64-windows-static\lib;libb/x64;$(USR_LOCAL)\libb\$(Platform)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /y x64\Release\*.exe tinypot-x64\</Command>

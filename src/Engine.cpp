@@ -54,6 +54,10 @@ int Engine::lockTexture(BP_Texture* t, BP_Rect* r, void** pixel, int* pitch)
 
 void Engine::renderCopy(BP_Texture* t, int x, int y, int w, int h, int inPresent)
 {
+    if (t == nullptr)
+    {
+        return;
+    }
     if (inPresent == 1)
     {
         x += rect_.x;
@@ -70,7 +74,7 @@ void Engine::renderCopy(BP_Texture* t /*= nullptr*/)
 
 void Engine::destroy()
 {
-    SDL_DestroyTexture(tex_);
+    destroyTexture(tex_);
     if (renderer_self_)
     {
         SDL_DestroyRenderer(renderer_);

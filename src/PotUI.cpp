@@ -231,6 +231,7 @@ void PotUI::destory()
         Config::getInstance()->setString("ui_font", fontname_);
     }
     engine_->destroyTexture(square_);
+    engine_->destroyTexture(square2_);
     engine_->destroyTexture(ball_);
     engine_->destroyTexture(triangle1_);
     engine_->destroyTexture(triangle2_);
