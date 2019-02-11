@@ -515,7 +515,6 @@ int PotPlayer::init()
 
 void PotPlayer::destroy()
 {
-    Font::getInstance()->clearBuffer();
     UI_.destory();
     engine_->destroy();
 #ifndef _WINDLL
