@@ -1,8 +1,9 @@
 #include "PotUI.h"
 #include "Config.h"
 #include "File.h"
-#include "math.h"
+#include "Font.h"
 #include "libconvert.h"
+#include "math.h"
 
 PotUI::PotUI()
 {
@@ -14,7 +15,7 @@ PotUI::~PotUI()
 
 void PotUI::drawText(const std::string& text)
 {
-    engine_->drawText(fontname_.c_str(), text, 22, win_w_ - 10, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
+    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 10, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 

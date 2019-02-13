@@ -1,6 +1,10 @@
 #include "Font.h"
 #include "PotConv.h"
 
+ Font::Font()
+{
+}
+
 Font::~Font()
 {
 }
@@ -13,7 +17,7 @@ BP_Texture* Font::indexTex(const std::string& fontname, uint16_t c, int size)
         uint16_t c2[2] = { 0 };
         c2[0] = c;
         auto s = PotConv::cp936toutf8((char*)(c2));
-        buffer_[index] = Engine::getInstance()->createTextTexture2(fontname, s, size);
+        buffer_[index] = Engine::getInstance()->createTextTexture(fontname, s, size, { 255, 255, 255, 255 });
     }
     return buffer_[index];
 }
@@ -62,3 +66,42 @@ void Font::draw(const std::string& fontname, const std::string& text, int size, 
     }
 }
 
+void Font::clearBuffer()
+{
+    for (auto& f : buffer_)
+    {
+        Engine::destroyTexture(f.second);
+    }
+    buffer_.clear();
+}
+
+void Font::drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
+{
+    if (alpha <= 0 || size <= 0)
+    {
+        return;
+    }
+
+    int w = Font::getInstance()->getTextWidth(fontname, text, size);
+    switch (align)
+    {
+    case BP_ALIGN_LEFT:
+        break;
+    case BP_ALIGN_RIGHT:
+        x = x - w;
+        break;
+    case BP_ALIGN_MIDDLE:
+        x = x - w / 2;
+        break;
+    }
+    Font::getInstance()->draw(fontname, text, size, x, y, { 255, 255, 255, 255 }, alpha);
+}
+
+void Font::drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
+{
+    if (alpha == 0)
+    {
+        return;
+    }
+    drawText(fontname, text, size, x, y, alpha, align);
+}

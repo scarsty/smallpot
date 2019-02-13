@@ -75,11 +75,6 @@ void Engine::renderCopy(BP_Texture* t /*= nullptr*/)
 void Engine::destroy()
 {
     destroyTexture(tex_);
-    for (auto& f : font_buffer_)
-    {
-        Engine::destroyTexture(f.second);
-    }
-    font_buffer_.clear();
     if (renderer_self_)
     {
         SDL_DestroyRenderer(renderer_);
@@ -232,14 +227,6 @@ BP_Texture* Engine::createSpecialTexture(int size, int mode)
     return ball;
 }
 
-void Engine::drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
-{
-    if (alpha == 0)
-    {
-        return;
-    }
-    drawText(fontname, text, size, x, y, alpha, align);
-}
 
 BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c)
 {
@@ -254,38 +241,6 @@ BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::st
     SDL_FreeSurface(text_s);
     TTF_CloseFont(font);
     return text_t;
-}
-
-BP_Texture* Engine::createTextTexture2(const std::string& fontname, const std::string& s, int size)
-{
-    auto index = fontname + "-" + s + "-" + std::to_string(size);
-    if (font_buffer_.count(index) == 0)
-    {
-        font_buffer_[index] = createTextTexture(fontname, s, size, { 255, 255, 255, 255 });
-    }
-    return font_buffer_[index];
-}
-
-void Engine::drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align)
-{
-    if (alpha <= 0 || size <= 0)
-    {
-        return;
-    }
-
-    int w = Font::getInstance()->getTextWidth(fontname, text, size);
-    switch (align)
-    {
-    case BP_ALIGN_LEFT:
-        break;
-    case BP_ALIGN_RIGHT:
-        x = x - w;
-        break;
-    case BP_ALIGN_MIDDLE:
-        x = x - w / 2;
-        break;
-    }
-    Font::getInstance()->draw(fontname, text, size, x, y, { 255, 255, 255, 255 }, alpha);
 }
 
 int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)

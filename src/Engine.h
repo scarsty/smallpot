@@ -180,16 +180,11 @@ public:
     //UI相关
 private:
     BP_Texture* square_;
-    std::map<std::string, BP_Texture*> font_buffer_;    //缓存所有已经画过的字体
 public:
     BP_Texture* createSquareTexture(int size);
     BP_Texture* createSpecialTexture(int size, int mode = 0);
     BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c);
-    BP_Texture* createTextTexture2(const std::string& fontname, const std::string& s, int size);
-    void drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
-    int getFontBufferSize() { return font_buffer_.size(); }
-    void drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
-    int showMessage(const std::string& content);
+     int showMessage(const std::string& content);
 };
 
 //这里直接照搬SDL

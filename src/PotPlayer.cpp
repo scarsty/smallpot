@@ -270,11 +270,11 @@ int PotPlayer::eventLoop()
                     running_ = false;
                 }
                 break;
+#ifndef _WINDLL
             case BPK_BACKSPACE:
                 media_->seekTime(0);
                 seeking = true;
                 break;
-#ifndef _WINDLL
             case BPK_RETURN:
                 engine_->toggleFullscreen();
                 break;

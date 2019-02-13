@@ -1,4 +1,5 @@
 #include "PotSubtitleSrt.h"
+#include "Font.h"
 #include "PotConv.h"
 #include "libconvert.h"
 
@@ -35,7 +36,7 @@ int PotSubtitleSrt::show(int time)
             //engine_->renderCopy()
             int w, h;
             engine_->getWindowSize(w, h);
-            engine_->drawSubtitle(fontname_, tmplist.str, w * 16 / 720, w / 2, h * 9 / 10 - 5, 255, 1);
+            Font::getInstance()->drawSubtitle(fontname_, tmplist.str, w * 16 / 720, w / 2, h * 9 / 10 - 5, 255, 1);
             break;
         }
     }
