@@ -27,11 +27,11 @@ TinyPot是一个轻量级播放器。
 git clone https://github.com/scarsty/common common
 ```
 
-其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-image，SDL2-ttf等，可以使用MSYS2，或者系统的包管理工具获取这些库。其中SDL2_image仅有一处使用，且并不是必须的，可以简单修改后去除。
+其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-image，SDL2-ttf等，推荐使用系统的包管理工具获取这些库，Windows下推荐使用vcpkg。其中SDL2_image仅有一处使用，且并不是必须的，可以简单修改后去除。
 
-Windows下可以从<https://github.com/scarsty/lib-collection>取得头文件和导入库。
+Windows下也可以从<https://github.com/scarsty/lib-collection>取得头文件和导入库。
 
-使用到的其他库有：<https://github.com/AutoItConsulting/text-encoding-detect>，sha3，tinyxml2。均直接包含代码到工程中。
+<https://github.com/AutoItConsulting/text-encoding-detect>、sha3、tinyxml2，均直接包含代码到工程中。
 
 ### Windows
 
@@ -39,7 +39,7 @@ Windows下可以从<https://github.com/scarsty/lib-collection>取得头文件和
 
 32位部分默认编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
 
-### macosx
+### Macosx
 
 推荐使用homebrew安装依赖库。
 
@@ -47,15 +47,15 @@ Windows下可以从<https://github.com/scarsty/lib-collection>取得头文件和
 
 脚本a.sh可以自动编译和处理动态库的依赖修正。
 
-### linux
+### Linux
 
-与上面方法类似，但是通常不需要打包为app。
+与上面方法类似，但是通常不需要打包为app，因此比Mac要简单。
 
 ### 单文件版
 
 如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决（vcpkg生成的fribidi静态库不正确，需手动修正）。
 
-以下为参考：
+以下为参考（fribidi及以下是动态链接不需要的）：
 
 ```
 sdl2.lib
@@ -84,7 +84,7 @@ secur32.lib
 ws2_32.Lib
 ```
 
-若是编译dll文件，用于在其他基于SDL2的游戏中播放视频时，则TinyPot和游戏均不应静态链接SDL的库。因为SDL的库中含有全局变量，多次静态链接后该变量会有多个副本，其中一个很可能是不正确的。
+若是需要编译dll文件，用于在其他基于SDL2的游戏中播放视频时，则TinyPot和游戏均不应静态链接SDL。因为SDL的动态库中含有全局变量，多次静态链接后该变量会有多个副本，其中一个很可能是不正确的。
 
 ## 使用方法
 
@@ -104,24 +104,35 @@ FFmpeg能解什么格式它就能放什么格式，FFmpeg不能解的，它也�
 
 ### 功能键
 
-方向左右是跳过几秒，上下、加减号或者鼠标滚轮是音量，空格或鼠标点右上是暂停，回车是全屏，退格是返回文件开始，del删除播放记录（打开曾经播放过的文件会自动跳转到上次退出的位置）。
-
-1切换音频流，2切换字幕流，3内部字幕显示/隐藏，4外部字幕显示/隐藏。
-
-句号（大于号）下一个文件，逗号（小于号）上一个文件。
-
-0是恢复视频本身大小，-减小窗口，=（+）大窗口。
+| 按键               | 功能                   |
+| ------------------ | ---------------------- |
+| 方向左右           | 跳过几秒               |
+| 方向上下，鼠标滚轮 | 音量                   |
+| 空格               | 暂停                   |
+| 回车               | 全屏切换               |
+| 退格               | 回到视频开头           |
+| Delete             | 删除播放记录           |
+| 1                  | 切换音频流             |
+| 2                  | 切换字幕流             |
+| 3                  | 内部字幕显示/隐藏      |
+| 4                  | 外部字幕显示/隐藏      |
+| ,(<)               | 上一个文件             |
+| .(>)               | 下一个文件             |
+| 0                  | 窗口大小调整为视频尺寸 |
+| -                  | 减小窗口               |
+| =(+)               | 增大窗口               |
 
 ### XML中的设置
 
-```xml
-volume：音量
-auto_play_recent：自动播放上次关闭时的文件
-record_name：是否记录文件名
-sys_encode：系统字串编码
-ui_font：显示界面的字体
-sub_font：显示字幕的默认字体
-```
+| 设置             | 功能                     |
+| ---------------- | ------------------------ |
+| volume           | 音量                     |
+| auto_play_recent | 自动播放上次关闭时的文件 |
+| record_name      | 是否记录文件名           |
+| sys_encode       | 系统字串编码             |
+| ui_font          | 显示界面的字体           |
+| sub_font         | 显示字幕的默认字体       |
+
 ## 遗留问题
 
 因为是单线程架构，所以在一些文件跳转时会出现马赛克。一般来说这个可以通过清除解码器状态来解决，但是单线程架构下这个操作会导致后面一帧的解码卡顿，故没有这么做。
@@ -130,17 +141,7 @@ sub_font：显示字幕的默认字体
 
 ## 预编译版下载
 
-Windows-x64版：
-
-<https://www.dawuxia.net/tinypot/tinypot-x64-single.zip>
-
-Windows动态库版（可在基于SDL2的游戏中播放视频，暂时仅提供x86版）：
-
-<https://www.dawuxia.net/tinypot/tinypot-dll-x86.zip>
-
-Mac版：
-
-<https://www.dawuxia.net/tinypot/tinypot.app.zip>
+https://github.com/scarsty/tinypot/issues/5
 
 ## 播放效果
 
