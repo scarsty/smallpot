@@ -485,7 +485,7 @@ void Engine::setWindowSize(int w, int h)
     //renderPresent();
 }
 
-void Engine::resetWindowsPosition()
+void Engine::resetWindowPosition()
 {
     int x, y, w, h, x0, y0;
     SDL_GetWindowSize(window_, &w, &h);

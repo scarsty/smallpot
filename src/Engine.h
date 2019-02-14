@@ -139,7 +139,7 @@ public:
     bool setKeepRatio(bool b);
     BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
     double setRotation(double r) { return rotation_ = r; }
-    void resetWindowsPosition();
+    void resetWindowPosition();
     void setRatio(int x, int y)
     {
         ratio_x_ = x;
