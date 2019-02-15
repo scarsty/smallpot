@@ -11,7 +11,7 @@ for dylib in $DYLIBS; do
 		basename2=`basename $dylib2`
 		if [ ! -f "$basename2" ]; then 
 		    echo "  cp dylib"
-			cp $dylib2 ../lib 
+			cp $dylib2 . 
 	    fi
 	done
 done

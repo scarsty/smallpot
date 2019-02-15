@@ -255,10 +255,6 @@ int PotPlayer::eventLoop()
         {
             switch (e.key.keysym.sym)
             {
-            case BPK_SPACE:
-                pause = !pause;
-                media_->setPause(pause);
-                break;
             case BPK_ESCAPE:
                 if (engine_->isFullScreen())
                 {
@@ -270,10 +266,14 @@ int PotPlayer::eventLoop()
                     running_ = false;
                 }
                 break;
-#ifndef _WINDLL
             case BPK_BACKSPACE:
                 media_->seekTime(0);
                 seeking = true;
+                break;
+#ifndef _WINDLL
+            case BPK_SPACE:
+                pause = !pause;
+                media_->setPause(pause);
                 break;
             case BPK_RETURN:
                 engine_->toggleFullscreen();
