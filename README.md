@@ -141,7 +141,7 @@ FFmpeg能解什么格式它就能放什么格式，FFmpeg不能解的，它也�
 
 ## 预编译版下载
 
-https://github.com/scarsty/tinypot/issues/5
+<https://github.com/scarsty/tinypot/releases/tag/download>
 
 ## 播放效果
 
