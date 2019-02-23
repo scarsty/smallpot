@@ -61,6 +61,8 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     //∞¥≈•
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
     engine_->setColor(triangle1_, { 255, 255, 255 }, alpha_);
+    engine_->setColor(to_full_screen_, { 255, 255, 255 }, alpha_);
+    engine_->setColor(to_window_, { 255, 255, 255 }, alpha_);
     button_y_ = win_h_ - 45;
     //‘›Õ£∞¥≈•
     int button_x = button_x_;
@@ -82,11 +84,23 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     engine_->renderCopy(triangle1_, button_x, button_y, button_w_ / 2, button_h_);
     engine_->renderCopy(square_, button_x + 14, button_y, 6, button_h_);
 
+    //»´∆¡µƒ«–ªª
+    button_x = button_x_ + 2 * (button_w_ + 10);
+    button_y = button_y_;
+    if (engine_->isFullScreen())
+    {
+        engine_->renderCopy(to_window_, button_x, button_y, button_w_, button_h_);
+    }
+    else
+    {
+        engine_->renderCopy(to_full_screen_, button_x, button_y, button_w_, button_h_);
+    }
+
     //“Ù¡ø
     int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
     int v = volume;
-    x = button_x_ + 2 * (button_w_ + 10);
-    y = button_y_ + 20;
+    button_x = button_x_ + 3 * (button_w_ + 10);
+    button_y = button_y_;
     for (int i = 0; i < 8; i++)
     {
         int h = (i + 1) * 2;
@@ -97,7 +111,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             r = 1.0 * (one_square + v) / one_square;
         }
         int hc = r * h;
-        engine_->renderCopy(square_, x + i * 3, y - hc, 2, hc);
+        engine_->renderCopy(square_, button_x + i * 3, button_y + button_h_ - hc, 2, hc);
         if (v < 0)
         {
             break;
@@ -140,6 +154,17 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             text = "Next";
         }
         else if (in_button == 3)
+        {
+            if (engine_->isFullScreen())
+            {
+                text = "Window";
+            }
+            else
+            {
+                text = "Full Screen";
+            }
+        }
+        else if (in_button == 4)
         {
             text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
         }
@@ -184,19 +209,13 @@ int PotUI::inButton()
     if (y >= button_y_ && y <= button_y_ + button_h_)
     {
         int button_x = button_x_;
-        if (x >= button_x && x <= button_x + button_w_)
+        for (int i = 1; i <= 4; i++)
         {
-            return 1;
-        }
-        button_x += button_w_ + 10;
-        if (x >= button_x && x <= button_x + button_w_)
-        {
-            return 2;
-        }
-        button_x += button_w_ + 10;
-        if (x >= button_x && x <= button_x + button_w_)
-        {
-            return 3;
+            if (x >= button_x && x <= button_x + button_w_)
+            {
+                return i;
+            }
+            button_x += button_w_ + 10;
         }
         return 0;
     }
@@ -209,7 +228,8 @@ void PotUI::init()
     ball_ = engine_->createSpecialTexture(50);
     triangle1_ = engine_->createSpecialTexture(200, 1);
     triangle2_ = engine_->createSpecialTexture(200, 2);
-    square2_ = engine_->createSpecialTexture(75, 3);
+    to_full_screen_ = engine_->createSpecialTexture(20, 4);
+    to_window_= engine_->createSpecialTexture(20, 5);
     fontname_ = Config::getInstance()->getString("ui_font");
     if (!File::fileExist(fontname_))
     {
@@ -231,9 +251,9 @@ void PotUI::destory()
     {
         Config::getInstance()->setString("ui_font", fontname_);
     }
-    engine_->destroyTexture(square_);
-    engine_->destroyTexture(square2_);
-    engine_->destroyTexture(ball_);
-    engine_->destroyTexture(triangle1_);
-    engine_->destroyTexture(triangle2_);
+    //engine_->destroyTexture(square_);
+    //engine_->destroyTexture(square2_);
+    //engine_->destroyTexture(ball_);
+    //engine_->destroyTexture(triangle1_);
+    //engine_->destroyTexture(triangle2_);
 }

@@ -1,7 +1,7 @@
 #include "PotDll.h"
 #include "PotPlayer.h"
 
-#ifdef _WINDLL
+//#ifdef _WINDLL
 
 HBAPI void* MYTHAPI PotCreateFromHandle(void* handle)
 {
@@ -41,4 +41,4 @@ HBAPI int MYTHAPI PotDestory(void* pot)
     return 0;
 }
 
-#endif
+//#endif

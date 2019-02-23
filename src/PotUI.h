@@ -8,8 +8,8 @@ public:
     virtual ~PotUI();
 
 private:
-    BP_Texture *square_ = nullptr, *square2_ = nullptr, *ball_ = nullptr, *triangle1_ = nullptr, *triangle2_ = nullptr;
-
+    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle1_ = nullptr, *triangle2_ = nullptr;
+    BP_Texture *to_full_screen_ = nullptr, *to_window_ = nullptr;
     int win_w_, win_h_;
 
     //int x = 0, y = 0, w = 0, h = 0;

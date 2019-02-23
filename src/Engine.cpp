@@ -218,6 +218,28 @@ BP_Texture* Engine::createSpecialTexture(int size, int mode)
                 a = 225.0 / d * y;
                 SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 0, 0, 0, a));
             }
+            if (mode == 4)
+            {
+                uint8_t a = 255;
+                double center = (d - 1) / 2.0;
+                if ((abs(x - center) < d * 0.35 && abs(y - center) < d * 0.35)
+                    || (abs(x - center) < d * 0.1 || abs(y - center) < d * 0.1))
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 5)
+            {
+                uint8_t a = 255;
+                double center = (d - 1) / 2.0;
+                if ((abs(x - center) > d * 0.25 && abs(y - center) > d * 0.25) ||
+                    (abs(x - center) < d * 0.1 || abs(y - center) < d * 0.1))
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
         }
     }
     auto ball = SDL_CreateTextureFromSurface(renderer_, ball_s);
@@ -226,7 +248,6 @@ BP_Texture* Engine::createSpecialTexture(int size, int mode)
     SDL_FreeSurface(ball_s);
     return ball;
 }
-
 
 BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c)
 {
@@ -328,13 +349,18 @@ bool Engine::isFullScreen()
 void Engine::toggleFullscreen()
 {
     full_screen_ = !full_screen_;
+    static int x, y, w, h;
     if (full_screen_)
     {
+        //getWindowPosition(x, y);
+        getWindowSize(w, h);
         SDL_SetWindowFullscreen(window_, SDL_WINDOW_FULLSCREEN_DESKTOP);
     }
     else
     {
         SDL_SetWindowFullscreen(window_, 0);
+        //setWindowPosition(x, y);
+        setWindowSize(w, h);
     }
     SDL_RenderClear(renderer_);
 }
@@ -422,12 +448,14 @@ BP_Texture* Engine::transBitmapToTexture(const uint8_t* src, uint32_t color, int
 
 int Engine::showMessage(const std::string& content)
 {
-    const SDL_MessageBoxButtonData buttons[] = {
+    const SDL_MessageBoxButtonData buttons[] =
+    {
         { /* .flags, .buttonid, .text */ 0, 0, "no" },
         { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
         { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" },
     };
-    const SDL_MessageBoxColorScheme colorScheme = {
+    const SDL_MessageBoxColorScheme colorScheme =
+    {
         { /* .colors (.r, .g, .b) */
             /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
             { 255, 0, 0 },
@@ -438,9 +466,11 @@ int Engine::showMessage(const std::string& content)
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
             { 0, 0, 255 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
-            { 255, 0, 255 } }
+            { 255, 0, 255 }
+        }
     };
-    const SDL_MessageBoxData messageboxdata = {
+    const SDL_MessageBoxData messageboxdata =
+    {
         SDL_MESSAGEBOX_INFORMATION, /* .flags */
         NULL,                       /* .window */
         "Pot Player",               /* .title */

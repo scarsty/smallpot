@@ -166,6 +166,10 @@ int PotPlayer::eventLoop()
                         loop = false;
                     }
                 }
+                if (button == 3)
+                {
+                    engine_->toggleFullscreen();
+                }
             }
 #ifdef _WINDLL
             if (e.button.button == BP_BUTTON_RIGHT)
