@@ -167,7 +167,7 @@
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x86-windows-static\lib;$(USR_LOCAL)/lib/x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x86-windows-static\lib;lib/x86;$(USR_LOCAL)/lib/x86</AdditionalLibraryDirectories>
       <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;fribidi.lib;harfbuzz.lib;freetype.lib;bz2.lib;libpng16.lib;zlib.lib;libcharset.lib;winmm.lib;version.lib;imm32.lib;bcrypt.lib;secur32.lib;ws2_32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -195,7 +195,7 @@
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;libiconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;fribidi.lib;harfbuzz.lib;freetype.lib;bz2.lib;libpng16.lib;zlib.lib;libcharset.lib;winmm.lib;version.lib;imm32.lib;bcrypt.lib;secur32.lib;ws2_32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x64-windows-static\lib;lib/x64;$(USR_LOCAL)\lib\$(Platform)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
