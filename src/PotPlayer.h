@@ -12,8 +12,7 @@ class PotPlayer : public PotBase
 {
 public:
     PotPlayer();
-    PotPlayer(void* handle, int handle_type = 0) :
-        PotPlayer()
+    PotPlayer(void* handle, int handle_type = 0) : PotPlayer()
     {
         handle_ = handle;
         handle_type_ = handle_type;

@@ -2,7 +2,7 @@
 #include "File.h"
 #include "PotSubtitleAss.h"
 #include "PotSubtitleSrt.h"
-#include "libconvert.h"
+#include "convert.h"
 
 std::vector<std::string> PotSubtitleManager::ext_names_;
 

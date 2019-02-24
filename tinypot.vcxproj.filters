@@ -75,9 +75,6 @@
     <ClCompile Include="common\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="common\libconvert.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -89,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="src\others\tinyxml2.cpp">
       <Filter>others</Filter>
+    </ClCompile>
+    <ClCompile Include="common\convert.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +152,6 @@
     <ClInclude Include="common\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="common\libconvert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="common\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -166,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="src\others\tinyxml2.h">
       <Filter>others</Filter>
+    </ClInclude>
+    <ClInclude Include="common\convert.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

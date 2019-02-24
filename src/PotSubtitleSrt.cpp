@@ -1,7 +1,7 @@
 #include "PotSubtitleSrt.h"
 #include "Font.h"
 #include "PotConv.h"
-#include "libconvert.h"
+#include "convert.h"
 
 PotSubtitleSrt::PotSubtitleSrt()
 {

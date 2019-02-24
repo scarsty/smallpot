@@ -30,9 +30,14 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         return -1;
     }
 
-    src_ch_layout = (codec_ctx->channels == av_get_channel_layout_nb_channels(codec_ctx->channel_layout))
-        ? codec_ctx->channel_layout
-        : av_get_default_channel_layout(codec_ctx->channels);
+    if (codec_ctx->channels == av_get_channel_layout_nb_channels(codec_ctx->channel_layout))
+    {
+        src_ch_layout = codec_ctx->channel_layout;
+    }
+    else
+    {
+        src_ch_layout = av_get_default_channel_layout(codec_ctx->channels);
+    }
 
     //这里的设置很粗糙，最好详细处理
     switch (out_channels)

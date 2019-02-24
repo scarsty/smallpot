@@ -7,8 +7,8 @@ extern "C"
 #include "ass/ass_types.h"
 }
 
-#include <vector>
 #include <set>
+#include <vector>
 
 enum PotPSubtitleType
 {
@@ -16,17 +16,18 @@ enum PotPSubtitleType
     BPSUB_TYPE_SRT
 };
 
-class PotSubtitle :
-    public PotBase
+class PotSubtitle : public PotBase
 {
 public:
     PotSubtitle();
     virtual ~PotSubtitle();
+
 protected:
     PotPSubtitleType type_;
     std::string subfilename_, fontname_;
     bool haveSubtitle_ = false;
     std::set<std::string> contents_;
+
 public:
     bool exist() { return haveSubtitle_; }
     bool reOpenSubtitle() { return openSubtitle(subfilename_); }

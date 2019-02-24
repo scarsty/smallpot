@@ -11,7 +11,7 @@ link_directories(. ../lib)
 file(GLOB SRC_LIST
     ./*.cpp
     ./others/*.cpp
-    ../common/libconvert.cpp
+    ../common/convert.cpp
     ../common/File.cpp)
 
 set(LINK_LIBRARIES iconv SDL2 SDL2_ttf SDL2_image SDL2main avutil avcodec avformat swresample swscale ass)

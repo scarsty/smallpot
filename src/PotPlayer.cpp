@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Font.h"
 #include "PotSubtitleManager.h"
-#include "libconvert.h"
+#include "convert.h"
 
 #ifdef _WIN32
 //#include <shlobj.h>
@@ -19,8 +19,7 @@ PotPlayer::PotPlayer()
     run_path_ = "./";
 }
 
-PotPlayer::PotPlayer(char* s) :
-    PotPlayer()
+PotPlayer::PotPlayer(char* s) : PotPlayer()
 {
     run_path_ = File::getFilePath(s);
 #if defined(_WIN32) && defined(_SINGLE_FILE)

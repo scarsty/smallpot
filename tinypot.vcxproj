@@ -204,7 +204,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common\File.cpp" />
-    <ClCompile Include="common\libconvert.cpp" />
+    <ClCompile Include="common\convert.cpp" />
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\others\sha3.cpp" />
     <ClCompile Include="src\others\text_encoding_detect.cpp" />
@@ -230,7 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\File.h" />
-    <ClInclude Include="common\libconvert.h" />
+    <ClInclude Include="common\convert.h" />
     <ClInclude Include="common\Timer.h" />
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\others\sha3.h" />

@@ -1,6 +1,6 @@
 #include "PotSubtitleAss.h"
 #include "PotConv.h"
-#include "libconvert.h"
+#include "convert.h"
 #include "others/text_encoding_detect.h"
 
 PotSubtitleAss::PotSubtitleAss()

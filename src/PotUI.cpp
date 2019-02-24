@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "File.h"
 #include "Font.h"
-#include "libconvert.h"
+#include "convert.h"
 #include "math.h"
 
 PotUI::PotUI()

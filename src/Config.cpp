@@ -2,7 +2,7 @@
 #include "File.h"
 #include "PotConv.h"
 #include "Timer.h"
-#include "libconvert.h"
+#include "convert.h"
 #include <iostream>
 
 Config::Config()
