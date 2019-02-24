@@ -187,5 +187,3 @@ void PotStreamAudio::setPause(bool pause)
     pause_time_ = getTime();
     ticks_shown_ = engine_->getTicks();
 }
-
-

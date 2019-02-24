@@ -1,12 +1,12 @@
 #pragma once
 #include "PotSubtitle.h"
 
-class PotSubtitleAss :
-    public PotSubtitle
+class PotSubtitleAss : public PotSubtitle
 {
 public:
     PotSubtitleAss();
     virtual ~PotSubtitleAss();
+
 private:
     ASS_Library* library_ = nullptr;
     ASS_Renderer* renderer_ = nullptr;
@@ -27,4 +27,3 @@ public:
     virtual void readOne(const std::string& str, int start_time, int end_time) override;
     virtual void clear() override;
 };
-

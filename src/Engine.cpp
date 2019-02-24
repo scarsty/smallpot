@@ -233,8 +233,8 @@ BP_Texture* Engine::createSpecialTexture(int size, int mode)
             {
                 uint8_t a = 255;
                 double center = (d - 1) / 2.0;
-                if ((abs(x - center) > d * 0.25 && abs(y - center) > d * 0.25) ||
-                    (abs(x - center) < d * 0.1 || abs(y - center) < d * 0.1))
+                if ((abs(x - center) > d * 0.25 && abs(y - center) > d * 0.25)
+                    || (abs(x - center) < d * 0.1 || abs(y - center) < d * 0.1))
                 {
                     a = 0;
                 }

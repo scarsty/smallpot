@@ -28,7 +28,7 @@ public:
     static Config* getInstance()
     {
         static Config c;
-        return &c; 
+        return &c;
     }
 
     //xml只有字串，故首先完成字串功能

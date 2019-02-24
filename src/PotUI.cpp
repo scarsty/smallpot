@@ -60,61 +60,64 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
 
     //按钮
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
-    engine_->setColor(triangle1_, { 255, 255, 255 }, alpha_);
+    engine_->setColor(triangle_, { 255, 255, 255 }, alpha_);
     engine_->setColor(to_full_screen_, { 255, 255, 255 }, alpha_);
     engine_->setColor(to_window_, { 255, 255, 255 }, alpha_);
     button_y_ = win_h_ - 45;
-    //暂停按钮
-    int button_x = button_x_;
-    int button_y = button_y_;
 
-    if (pause)
+    for (int i = 1; i < ButtonNone2; i++)
     {
-        engine_->renderCopy(triangle1_, button_x, button_y, button_w_, button_h_);
-    }
-    else
-    {
-        engine_->renderCopy(square_, button_x, button_y, 8, button_h_);
-        engine_->renderCopy(square_, button_x + 12, button_y, 8, button_h_);
-    }
-
-    //下一个的按钮
-    button_x = button_x_ + button_w_ + 10;
-    button_y = button_y_;
-    engine_->renderCopy(triangle1_, button_x, button_y, button_w_ / 2, button_h_);
-    engine_->renderCopy(square_, button_x + 14, button_y, 6, button_h_);
-
-    //全屏的切换
-    button_x = button_x_ + 2 * (button_w_ + 10);
-    button_y = button_y_;
-    if (engine_->isFullScreen())
-    {
-        engine_->renderCopy(to_window_, button_x, button_y, button_w_, button_h_);
-    }
-    else
-    {
-        engine_->renderCopy(to_full_screen_, button_x, button_y, button_w_, button_h_);
-    }
-
-    //音量
-    int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
-    int v = volume;
-    button_x = button_x_ + 3 * (button_w_ + 10);
-    button_y = button_y_;
-    for (int i = 0; i < 8; i++)
-    {
-        int h = (i + 1) * 2;
-        v -= one_square;
-        double r = 1;
-        if (v < 0)
+        int button_x = button_x_ + (i - 1) * (button_w_ + 10);
+        int button_y = button_y_;
+        switch (i)
         {
-            r = 1.0 * (one_square + v) / one_square;
-        }
-        int hc = r * h;
-        engine_->renderCopy(square_, button_x + i * 3, button_y + button_h_ - hc, 2, hc);
-        if (v < 0)
-        {
+        case ButtonPause:
+            if (pause)
+            {
+                engine_->renderCopy(triangle_, button_x, button_y, button_w_, button_h_);
+            }
+            else
+            {
+                engine_->renderCopy(square_, button_x, button_y, 8, button_h_);
+                engine_->renderCopy(square_, button_x + 12, button_y, 8, button_h_);
+            }
             break;
+        case ButtonNext:
+            engine_->renderCopy(triangle_, button_x, button_y, button_w_ / 2, button_h_);
+            engine_->renderCopy(square_, button_x + 14, button_y, 6, button_h_);
+            break;
+        case ButtonFullScreen:
+            if (engine_->isFullScreen())
+            {
+                engine_->renderCopy(to_window_, button_x, button_y, button_w_, button_h_);
+            }
+            else
+            {
+                engine_->renderCopy(to_full_screen_, button_x, button_y, button_w_, button_h_);
+            }
+            break;
+        case ButtonVolume:
+        {
+            int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
+            int v = volume;
+            for (int i_v = 0; i_v < 8; i_v++)
+            {
+                int h = (i_v + 1) * 2;
+                v -= one_square;
+                double r = 1;
+                if (v < 0)
+                {
+                    r = 1.0 * (one_square + v) / one_square;
+                }
+                int hc = r * h;
+                engine_->renderCopy(square_, button_x + i_v * 3, button_y + button_h_ - hc, 2, hc);
+                if (v < 0)
+                {
+                    break;
+                }
+            }
+        }
+        break;
         }
     }
 
@@ -138,8 +141,9 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     else
     {
         std::string text;
-        if (in_button == 1)
+        switch (in_button)
         {
+        case ButtonPause:
             if (pause)
             {
                 text = "Play";
@@ -148,13 +152,11 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             {
                 text = "Pause";
             }
-        }
-        else if (in_button == 2)
-        {
+            break;
+        case ButtonNext:
             text = "Next";
-        }
-        else if (in_button == 3)
-        {
+            break;
+        case ButtonFullScreen:
             if (engine_->isFullScreen())
             {
                 text = "Window";
@@ -163,10 +165,10 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             {
                 text = "Full Screen";
             }
-        }
-        else if (in_button == 4)
-        {
+            break;
+        case ButtonVolume:
             text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+            break;
         }
         drawText(text);
     }
@@ -209,7 +211,7 @@ int PotUI::inButton()
     if (y >= button_y_ && y <= button_y_ + button_h_)
     {
         int button_x = button_x_;
-        for (int i = 1; i <= 4; i++)
+        for (int i = 1; i < ButtonNone2; i++)
         {
             if (x >= button_x && x <= button_x + button_w_)
             {
@@ -226,10 +228,9 @@ void PotUI::init()
 {
     square_ = engine_->createSquareTexture(40);
     ball_ = engine_->createSpecialTexture(50);
-    triangle1_ = engine_->createSpecialTexture(200, 1);
-    triangle2_ = engine_->createSpecialTexture(200, 2);
+    triangle_ = engine_->createSpecialTexture(200, 1);
     to_full_screen_ = engine_->createSpecialTexture(20, 4);
-    to_window_= engine_->createSpecialTexture(20, 5);
+    to_window_ = engine_->createSpecialTexture(20, 5);
     fontname_ = Config::getInstance()->getString("ui_font");
     if (!File::fileExist(fontname_))
     {
@@ -251,9 +252,4 @@ void PotUI::destory()
     {
         Config::getInstance()->setString("ui_font", fontname_);
     }
-    //engine_->destroyTexture(square_);
-    //engine_->destroyTexture(square2_);
-    //engine_->destroyTexture(ball_);
-    //engine_->destroyTexture(triangle1_);
-    //engine_->destroyTexture(triangle2_);
 }

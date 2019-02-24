@@ -1,8 +1,8 @@
 ﻿#include "PotPlayer.h"
 #include "Config.h"
+#include "Font.h"
 #include "PotSubtitleManager.h"
 #include "libconvert.h"
-#include "Font.h"
 
 #ifdef _WIN32
 //#include <shlobj.h>
@@ -19,8 +19,8 @@ PotPlayer::PotPlayer()
     run_path_ = "./";
 }
 
-PotPlayer::PotPlayer(char* s)
-    : PotPlayer()
+PotPlayer::PotPlayer(char* s) :
+    PotPlayer()
 {
     run_path_ = File::getFilePath(s);
 #if defined(_WIN32) && defined(_SINGLE_FILE)
@@ -151,12 +151,12 @@ int PotPlayer::eventLoop()
                     media_->seekPos(pos, 1, 1);
                     seeking = true;
                 }
-                if (button == 1)
+                if (button == PotUI::ButtonPause)
                 {
                     pause = !pause;
                     media_->setPause(pause);
                 }
-                if (button == 2)
+                else if (button == PotUI::ButtonNext)
                 {
                     find_direct = 1;
                     auto next_file = findNextFile(drop_filename_, find_direct);
@@ -166,7 +166,7 @@ int PotPlayer::eventLoop()
                         loop = false;
                     }
                 }
-                if (button == 3)
+                else if (button == PotUI::ButtonFullScreen)
                 {
                     engine_->toggleFullscreen();
                 }
@@ -183,11 +183,11 @@ int PotPlayer::eventLoop()
         {
             if (e.wheel.y > 0)
             {
-                media_->getAudio()->changeVolume(volume_step);
+                cur_volume_ = media_->getAudio()->changeVolume(volume_step);
             }
             else if (e.wheel.y < 0)
             {
-                media_->getAudio()->changeVolume(-volume_step);
+                cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
             }
             UI_.setText("v");
             break;
@@ -207,11 +207,11 @@ int PotPlayer::eventLoop()
                 seeking = true;
                 break;
             case BPK_UP:
-                media_->getAudio()->changeVolume(volume_step);
+                cur_volume_ = media_->getAudio()->changeVolume(volume_step);
                 UI_.setText("v");
                 break;
             case BPK_DOWN:
-                media_->getAudio()->changeVolume(-volume_step);
+                cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
                 UI_.setText("v");
                 break;
             case BPK_1:
@@ -464,7 +464,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getSubtitle()->show(audioTime);
             }
-            UI_.drawUI(audioTime, totalTime, media_->getAudio()->getVolume(), pause);
+            UI_.drawUI(audioTime, totalTime, cur_volume_, pause);
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
         }

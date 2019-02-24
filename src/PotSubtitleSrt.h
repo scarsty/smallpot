@@ -11,8 +11,7 @@ typedef struct PotSubtitleAtom
     std::string str;
 } PotSubtitleAtom;
 
-class PotSubtitleSrt :
-    public PotSubtitle
+class PotSubtitleSrt : public PotSubtitle
 {
 private:
     std::vector<PotSubtitleAtom> atom_list_;
@@ -20,6 +19,7 @@ private:
     int readIndex();
 
     int fram_w_, frame_h_;
+
 public:
     PotSubtitleSrt();
     virtual ~PotSubtitleSrt();
@@ -29,12 +29,15 @@ public:
     virtual bool openSubtitle(const std::string& filename);
     virtual void closeSubtitle();
     virtual int show(int time);
-    virtual void setFrameSize(int w, int h) { fram_w_ = w; frame_h_ = h; }
+    virtual void setFrameSize(int w, int h)
+    {
+        fram_w_ = w;
+        frame_h_ = h;
+    }
 
     std::string code_ = "utf-8";
 
     bool isUTF8(const void* pBuffer, long size);
-
 
     //该类比较简单，init和destroy可以为空
 
@@ -47,4 +50,3 @@ public:
     void init();
     void destroy();*/
 };
-

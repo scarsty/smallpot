@@ -7,8 +7,18 @@ public:
     PotUI();
     virtual ~PotUI();
 
+    enum
+    {
+        ButtonNone = 0,
+        ButtonPause,
+        ButtonNext,
+        ButtonFullScreen,
+        ButtonVolume,
+        ButtonNone2,
+    };
+
 private:
-    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle1_ = nullptr, *triangle2_ = nullptr;
+    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle_ = nullptr;
     BP_Texture *to_full_screen_ = nullptr, *to_window_ = nullptr;
     int win_w_, win_h_;
 
@@ -19,9 +29,6 @@ private:
     int text_count_ = 32;
 
     int button_x_ = 10, button_y_, button_w_ = 20, button_h_ = 20;
-
-    int left_ = 60, right_ = 40;
-    int d_ = 20;
 
 public:
     void init();

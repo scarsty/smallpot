@@ -181,11 +181,12 @@ public:
     //UI相关
 private:
     BP_Texture* square_;
+
 public:
     BP_Texture* createSquareTexture(int size);
     BP_Texture* createSpecialTexture(int size, int mode = 0);
     BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c);
-     int showMessage(const std::string& content);
+    int showMessage(const std::string& content);
 };
 
 //这里直接照搬SDL

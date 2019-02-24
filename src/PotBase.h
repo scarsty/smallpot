@@ -13,6 +13,7 @@ class PotBase
 {
 protected:
     Engine* engine_;
+
 public:
     PotBase();
     ~PotBase() {};
@@ -21,4 +22,3 @@ public:
     //static bool fileExist(const string& filename);
     //void safedelete(void* p){ if (p) delete p; p = nullptr; };
 };
-

@@ -25,5 +25,4 @@ public:
     BP_Texture* createTextTexture2(const std::string& fontname, const std::string& s, int size);
     void drawText(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
     void drawSubtitle(const std::string& fontname, const std::string& text, int size, int x, int y, uint8_t alpha, int align);
-
 };

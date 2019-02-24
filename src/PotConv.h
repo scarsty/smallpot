@@ -5,9 +5,9 @@ extern "C"
 #include <iconv.h>
 }
 
+#include <algorithm>
 #include <cstring>
 #include <string>
-#include <algorithm>
 
 class PotConv
 {
@@ -20,4 +20,3 @@ public:
     static std::string cp936toutf8(const std::string& src) { return conv(src, "cp936", "utf-8"); }
     static std::string cp950toutf8(const std::string& src) { return conv(src, "cp950", "utf-8"); }
 };
-

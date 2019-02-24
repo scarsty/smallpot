@@ -1,8 +1,8 @@
 #include "PotSubtitle.h"
-#include "PotSubtitleAss.h"
-#include "PotSubtitleSrt.h"
 #include "Config.h"
 #include "File.h"
+#include "PotSubtitleAss.h"
+#include "PotSubtitleSrt.h"
 
 PotSubtitle::PotSubtitle()
 {
@@ -17,7 +17,6 @@ PotSubtitle::PotSubtitle()
 #endif
     }
 }
-
 
 PotSubtitle::~PotSubtitle()
 {
