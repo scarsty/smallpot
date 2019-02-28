@@ -4,7 +4,6 @@
 
 PotMedia::PotMedia()
 {
-    av_register_all();
     avformat_network_init();
     stream_video_ = &blank_video_;
     stream_audio_ = &blank_audio_;
@@ -49,7 +48,7 @@ int PotMedia::openFile(const std::string& filename)
         streams_.resize(format_ctx->nb_streams);
         for (int i = 0; i < format_ctx->nb_streams; ++i)
         {
-            switch (format_ctx->streams[i]->codec->codec_type)
+            switch (format_ctx->streams[i]->codecpar->codec_type)
             {
             case BPMEDIA_TYPE_VIDEO:
             {

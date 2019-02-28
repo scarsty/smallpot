@@ -30,7 +30,6 @@ int PotStream::openFile(const std::string& filename)
 {
     //stream_index_ = -1;
     stream_ = format_ctx_->streams[stream_index_];
-    codec_ctx_ = stream_->codec;
     if (stream_->r_frame_rate.den)
     {
         time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
@@ -38,7 +37,9 @@ int PotStream::openFile(const std::string& filename)
     time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
     total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
     start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
-    codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
+    codec_ = avcodec_find_decoder(stream_->codecpar->codec_id);
+    codec_ctx_ = avcodec_alloc_context3(codec_);
+    avcodec_parameters_to_context(codec_ctx_, stream_->codecpar);
     avcodec_open2(codec_ctx_, codec_, nullptr);
 
     //for (int i = 0; i < format_ctx_->nb_streams; ++i)

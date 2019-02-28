@@ -127,6 +127,7 @@
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows-static\include;$(USR_LOCAL)\include;common</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
