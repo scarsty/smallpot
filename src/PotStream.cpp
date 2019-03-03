@@ -40,6 +40,8 @@ int PotStream::openFile(const std::string& filename)
     codec_ = avcodec_find_decoder(stream_->codecpar->codec_id);
     codec_ctx_ = avcodec_alloc_context3(codec_);
     avcodec_parameters_to_context(codec_ctx_, stream_->codecpar);
+    av_codec_set_pkt_timebase(codec_ctx_, stream_->time_base);
+    //codec_ctx_ = stream_->codec;
     avcodec_open2(codec_ctx_, codec_, nullptr);
 
     //for (int i = 0; i < format_ctx_->nb_streams; ++i)

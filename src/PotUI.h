@@ -13,7 +13,8 @@ public:
         ButtonPause,
         ButtonNext,
         ButtonFullScreen,
-        ButtonVolume,
+        ButtonSubtitle,
+        //ButtonVolume,
         ButtonNone2,
     };
 

@@ -228,12 +228,12 @@ void PotMedia::setPause(bool pause)
     //stream_subtitle_->setPause(pause);
 }
 
-void PotMedia::switchStream(PotMediaType at)
+void PotMedia::switchStream(PotMediaType mt)
 {
     int current_index = -1;
     for (int i = 0; i < streams_.size(); i++)
     {
-        if (streams_[i] && streams_[i]->getType() == at && (streams_[i] == stream_video_ || streams_[i] == stream_audio_ || streams_[i] == stream_subtitle_))
+        if (streams_[i] && streams_[i]->getType() == mt && (streams_[i] == stream_video_ || streams_[i] == stream_audio_ || streams_[i] == stream_subtitle_))
         {
             current_index = i;
             break;
@@ -246,14 +246,14 @@ void PotMedia::switchStream(PotMediaType at)
     PotStream* st = streams_[current_index];
     for (int i = 0; i < streams_.size(); i++)
     {
-        if (streams_[i] && streams_[i]->getType() == at && (i - current_index == 1 || i - current_index < -1))
+        if (streams_[i] && streams_[i]->getType() == mt && (i - current_index == 1 || i - current_index < -1))
         {
             st = streams_[i];
             break;
         }
     }
 
-    switch (at)
+    switch (mt)
     {
     case BPMEDIA_TYPE_VIDEO:
     {
@@ -272,4 +272,17 @@ void PotMedia::switchStream(PotMediaType at)
         break;
     }
     }
+}
+
+int PotMedia::getStreamCount(PotMediaType mt)
+{
+    int count = 0;
+    for (int i = 0; i < streams_.size(); i++)
+    {
+        if (streams_[i] && streams_[i]->getType() == mt)
+        {
+            count++;
+        }
+    }
+    return count;
 }

@@ -15,7 +15,7 @@ PotUI::~PotUI()
 
 void PotUI::drawText(const std::string& text)
 {
-    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 10, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
+    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 20 - button_w_, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
@@ -96,28 +96,30 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
                 engine_->renderCopy(to_full_screen_, button_x, button_y, button_w_, button_h_);
             }
             break;
-        case ButtonVolume:
-        {
-            int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
-            int v = volume;
-            for (int i_v = 0; i_v < 8; i_v++)
-            {
-                int h = (i_v + 1) * 2;
-                v -= one_square;
-                double r = 1;
-                if (v < 0)
-                {
-                    r = 1.0 * (one_square + v) / one_square;
-                }
-                int hc = r * h;
-                engine_->renderCopy(square_, button_x + i_v * 3, button_y + button_h_ - hc, 2, hc);
-                if (v < 0)
-                {
-                    break;
-                }
-            }
+        case ButtonSubtitle:
+            engine_->renderCopy(square_, button_x, button_y, button_w_, button_h_ * 0.7);
+            engine_->renderCopy(square_, button_x + button_w_ * 0.1, button_y + button_h_ * 0.8, button_w_ * 0.8, button_h_ * 0.2);
+            break;
         }
-        break;
+    }
+
+    int button_x = win_w_ - 10 - button_w_;
+    int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
+    int v = volume;
+    for (int i_v = 0; i_v < 8; i_v++)
+    {
+        int h = (i_v + 1) * 2;
+        v -= one_square;
+        double r = 1;
+        if (v < 0)
+        {
+            r = 1.0 * (one_square + v) / one_square;
+        }
+        int hc = r * h;
+        engine_->renderCopy(square_, button_x + i_v * 3, button_y_ + button_h_ - hc, 2, hc);
+        if (v < 0)
+        {
+            break;
         }
     }
 
@@ -166,9 +168,12 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
                 text = "Full Screen";
             }
             break;
-        case ButtonVolume:
-            text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+        case ButtonSubtitle:
+            text = "Switch subtitles";
             break;
+            //case ButtonVolume:
+            //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+            //    break;
         }
         drawText(text);
     }

@@ -127,8 +127,16 @@ int PotPlayer::eventLoop()
     int prev_show_time = 0;    //上一次显示的时间
     exit_type_ = 0;
 
-    bool show_in_sub = true, show_ex_sub = true;
-
+    int sub_state = 0;    //0不显示，1外部字幕，2及以上内部字幕
+    int sub_count = media_->getStreamCount(BPMEDIA_TYPE_SUBTITLE);
+    if (subtitle_ && subtitle_->exist())
+    {
+        sub_state = 1;
+    }
+    if (sub_count > 0)
+    {
+        sub_state = 2;
+    }
     int find_direct = 0;
 
     while (loop && engine_->pollEvent(e) >= 0)
@@ -136,6 +144,40 @@ int PotPlayer::eventLoop()
         seeking = false;
         find_direct++;    //连续24天后方向会出现bug，但是不管了
         int last_volume = media_->getAudio()->getVolume();
+
+        auto switchSubtitle = [&]()
+        {
+            sub_state++;
+            if (sub_state == 1)
+            {
+                if (subtitle_ == nullptr || !subtitle_->exist())
+                {
+                    sub_state++;
+                }
+            }
+            else if (sub_state > 2)
+            {
+                media_->switchStream(BPMEDIA_TYPE_SUBTITLE);
+                media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+            }
+            if (sub_state >= 2 + sub_count)
+            {
+                sub_state = 0;
+            }
+            if (sub_state == 0)
+            {
+                UI_.setText("Hide subtitles");
+            }
+            else if (sub_state == 1)
+            {
+                UI_.setText("External subtitles");
+            }
+            else if (sub_state >= 2 && media_->getSubtitle()->getStreamIndex() >= 0)
+            {
+                UI_.setText(convert::formatString("Internal subtitles stream %d", media_->getSubtitle()->getStreamIndex()));
+            }
+        };
+
         switch (e.type)
         {
         case BP_MOUSEMOTION:
@@ -168,6 +210,10 @@ int PotPlayer::eventLoop()
                 else if (button == PotUI::ButtonFullScreen)
                 {
                     engine_->toggleFullscreen();
+                }
+                else if (button == PotUI::ButtonSubtitle)
+                {
+                    switchSubtitle();
                 }
             }
 #ifdef _WINDLL
@@ -218,38 +264,7 @@ int PotPlayer::eventLoop()
                 UI_.setText(convert::formatString("Switch audio stream to %d", media_->getAudio()->getStreamIndex()));
                 break;
             case BPK_2:
-                media_->switchStream(BPMEDIA_TYPE_SUBTITLE);
-                media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
-                if (media_->getSubtitle()->getStreamIndex() >= 0)
-                {
-                    UI_.setText(convert::formatString("Switch subtitle stream to %d", media_->getSubtitle()->getStreamIndex()));
-                }
-                else
-                {
-                    UI_.setText("No subtitles");
-                }
-                break;
-            case BPK_3:
-                show_in_sub = !show_in_sub;
-                if (show_in_sub)
-                {
-                    UI_.setText("Show internal subtitle");
-                }
-                else
-                {
-                    UI_.setText("Hide internal subtitle");
-                }
-                break;
-            case BPK_4:
-                show_ex_sub = !show_ex_sub;
-                if (show_ex_sub)
-                {
-                    UI_.setText("Show external subtitle");
-                }
-                else
-                {
-                    UI_.setText("Hide external subtitle");
-                }
+                switchSubtitle();
                 break;
             }
             break;
@@ -366,6 +381,10 @@ int PotPlayer::eventLoop()
                 PotSubtitleManager::destroySubtitle(subtitle_);
                 subtitle_ = PotSubtitleManager::createSubtitle(open_filename);
                 setSubtitleFrameSize();
+                if (subtitle_ && subtitle_->exist())
+                {
+                    sub_state = 1;
+                }
             }
             else
             {
@@ -455,11 +474,11 @@ int PotPlayer::eventLoop()
         }
         if (show)
         {
-            if (subtitle_ && show_ex_sub)
+            if (sub_state == 1 && subtitle_ && subtitle_->exist())
             {
                 subtitle_->show(audioTime);
             }
-            if (show_in_sub)
+            if (sub_state >= 2)
             {
                 media_->getSubtitle()->show(audioTime);
             }

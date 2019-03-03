@@ -54,5 +54,6 @@ public:
     void destroy();
     bool isMedia();
     void setPause(bool pause);
-    void switchStream(PotMediaType at);
+    void switchStream(PotMediaType mt);
+    int getStreamCount(PotMediaType mt);
 };
