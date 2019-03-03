@@ -230,10 +230,15 @@ void PotMedia::setPause(bool pause)
 
 void PotMedia::switchStream(PotMediaType mt)
 {
+    if (getStreamCount(mt) <= 1)
+    {
+        return;
+    }
     int current_index = -1;
     for (int i = 0; i < streams_.size(); i++)
     {
-        if (streams_[i] && streams_[i]->getType() == mt && (streams_[i] == stream_video_ || streams_[i] == stream_audio_ || streams_[i] == stream_subtitle_))
+        if (streams_[i] && streams_[i]->getType() == mt
+            && (streams_[i] == stream_video_ || streams_[i] == stream_audio_ || streams_[i] == stream_subtitle_))
         {
             current_index = i;
             break;
@@ -246,7 +251,7 @@ void PotMedia::switchStream(PotMediaType mt)
     PotStream* st = streams_[current_index];
     for (int i = 0; i < streams_.size(); i++)
     {
-        if (streams_[i] && streams_[i]->getType() == mt && (i - current_index == 1 || i - current_index < -1))
+        if (streams_[i] && streams_[i]->getType() == mt && (i - current_index == 1 || i - current_index <= -1))
         {
             st = streams_[i];
             break;
@@ -262,7 +267,15 @@ void PotMedia::switchStream(PotMediaType mt)
     }
     case BPMEDIA_TYPE_AUDIO:
     {
+        //注意此处效果不佳
+        //若假设所有音频使用同一解码器，则切换的效果会较好
+        int t = getTime();
+        stream_audio_->closeAudioDevice();
+        //stream_audio_->clearMap();
         stream_audio_ = (PotStreamAudio*)st;
+        stream_audio_->openAudioDevice();
+        stream_audio_->seek(t);
+        //stream_audio_->setStreamIndex(st->getStreamIndex());
         break;
     }
     case BPMEDIA_TYPE_SUBTITLE:

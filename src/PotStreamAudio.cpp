@@ -1,6 +1,8 @@
 ﻿#include "PotStreamAudio.h"
 #include "Config.h"
 
+int PotStreamAudio::volume_;
+
 PotStreamAudio::PotStreamAudio()
 {
     volume_ = engine_->getMaxVolume() / 2;

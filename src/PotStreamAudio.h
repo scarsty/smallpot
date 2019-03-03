@@ -16,7 +16,7 @@ public:
 private:
     const int buffer_size_ = 0x400000, convert_size_ = 192000;
     void* buffer_ = nullptr;
-    int volume_;
+    static int volume_;
     int scream_length_ = 0;
     uint8_t* resample_buffer_ = nullptr;
     int64_t data_read_ = 0, data_write_ = 0;    //读取和写入字节数，实际位置由该值与尺寸的余数计算
@@ -24,12 +24,12 @@ private:
     PotResample resample_;
 
     void mixAudioData(uint8_t* stream, int len);
-    int closeAudioDevice();
     virtual FrameContent convertFrameToContent() override;
     virtual bool needDecode2() override;
 
 public:
     void openAudioDevice();
+    int closeAudioDevice();
     void resetDecodeState();
     int setVolume(int v);
     int changeVolume(int v);
