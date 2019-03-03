@@ -46,7 +46,7 @@ int PotMedia::openFile(const std::string& filename)
         avformat_find_stream_info(format_ctx_subtitle_, nullptr);
 
         streams_.resize(format_ctx->nb_streams);
-        for (int i = 0; i < format_ctx->nb_streams; ++i)
+        for (int i = 0; i < format_ctx->nb_streams; i++)
         {
             switch (format_ctx->streams[i]->codecpar->codec_type)
             {
@@ -279,7 +279,7 @@ int PotMedia::getStreamCount(PotMediaType mt)
     int count = 0;
     for (int i = 0; i < streams_.size(); i++)
     {
-        if (streams_[i] && streams_[i]->getType() == mt)
+        if (streams_[i] && streams_[i]->getType() == mt && streams_[i]->exist())
         {
             count++;
         }

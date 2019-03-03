@@ -14,7 +14,7 @@ PotStreamSubtitle::~PotStreamSubtitle()
 
 int PotStreamSubtitle::show(int time)
 {
-    if (exist() && sub_ && sub_->show(time) || time + 5000 >= time_dts_)
+    if (exist() && sub_ && sub_->exist() && sub_->show(time) || time + 5000 >= time_dts_)
     {
         dropDecoded();
         return 1;

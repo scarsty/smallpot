@@ -13,7 +13,7 @@ PotSubtitleSrt::~PotSubtitleSrt()
 
 bool PotSubtitleSrt::openSubtitle(const std::string& filename)
 {
-    haveSubtitle_ = true;
+    exist_ = true;
     content_ = convert::readStringFromFile(filename);
     if (content_.empty())
     {

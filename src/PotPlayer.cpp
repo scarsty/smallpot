@@ -128,14 +128,14 @@ int PotPlayer::eventLoop()
     exit_type_ = 0;
 
     int sub_state = 0;    //0不显示，1外部字幕，2及以上内部字幕
-    int sub_count = media_->getStreamCount(BPMEDIA_TYPE_SUBTITLE);
+    int internal_sub_count = media_->getStreamCount(BPMEDIA_TYPE_SUBTITLE);
+    if (internal_sub_count > 0)
+    {
+        sub_state = 2;
+    }
     if (subtitle_ && subtitle_->exist())
     {
         sub_state = 1;
-    }
-    if (sub_count > 0)
-    {
-        sub_state = 2;
     }
     int find_direct = 0;
 
@@ -160,7 +160,7 @@ int PotPlayer::eventLoop()
                 media_->switchStream(BPMEDIA_TYPE_SUBTITLE);
                 media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
             }
-            if (sub_state >= 2 + sub_count)
+            if (sub_state >= 2 + internal_sub_count)
             {
                 sub_state = 0;
             }

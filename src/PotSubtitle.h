@@ -25,11 +25,11 @@ public:
 protected:
     PotPSubtitleType type_;
     std::string subfilename_, fontname_;
-    bool haveSubtitle_ = false;
+    bool exist_ = false;
     std::set<std::string> contents_;
 
 public:
-    bool exist() { return haveSubtitle_; }
+    bool exist() { return exist_; }
     bool reOpenSubtitle() { return openSubtitle(subfilename_); }
 
     virtual void init() {};

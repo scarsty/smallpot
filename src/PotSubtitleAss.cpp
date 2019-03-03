@@ -58,17 +58,17 @@ bool PotSubtitleAss::openSubtitle(const std::string& filename)
     auto s1 = PotConv::conv(s, encode_str.c_str(), "utf-8");
     //if (checkFileExt(filename))
     track_ = ass_read_memory(library_, (char*)s1.c_str(), s1.size(), NULL);
-    haveSubtitle_ = (track_ != nullptr);
-    if (haveSubtitle_)
+    exist_ = (track_ != nullptr);
+    if (exist_)
     {
         subfilename_ = filename;
     }
-    return haveSubtitle_;
+    return exist_;
 }
 
 int PotSubtitleAss::show(int time)
 {
-    int a;
+    int a = 0;
     image_ = ass_render_frame(renderer_, track_, time, &a);
     //cout << engine_->getTicks() << endl;
     auto img = image_;
