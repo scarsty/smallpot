@@ -111,6 +111,7 @@ void PotSubtitleAss::setFrameSize(int w, int h)
 void PotSubtitleAss::openSubtitleFromMem(const std::string& str)
 {
     track_ = ass_read_memory(library_, (char*)str.c_str(), str.size(), NULL);
+    exist_ = (track_ != nullptr);
 }
 
 void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_time)
