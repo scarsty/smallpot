@@ -124,16 +124,16 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     }
 
     //ÎÄ×Ö
-    if (in_button <= 0)
+    if (text_ == "v")
+    {
+        text_ = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+        drawText(text_);
+    }
+    else if (in_button <= 0)
     {
         if (text_ == "")
         {
             drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
-        }
-        else if (text_ == "v")
-        {
-            text_ = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
-            drawText(text_);
         }
         else
         {
@@ -143,37 +143,44 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     else
     {
         std::string text;
-        switch (in_button)
+        if (text_.empty())
         {
-        case ButtonPause:
-            if (pause)
+            switch (in_button)
             {
-                text = "Play";
+            case ButtonPause:
+                if (pause)
+                {
+                    text = "Play";
+                }
+                else
+                {
+                    text = "Pause";
+                }
+                break;
+            case ButtonNext:
+                text = "Next";
+                break;
+            case ButtonFullScreen:
+                if (engine_->isFullScreen())
+                {
+                    text = "Window";
+                }
+                else
+                {
+                    text = "Full Screen";
+                }
+                break;
+            case ButtonSubtitle:
+                text = "Switch subtitles";
+                break;
+                //case ButtonVolume:
+                //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+                //    break;
             }
-            else
-            {
-                text = "Pause";
-            }
-            break;
-        case ButtonNext:
-            text = "Next";
-            break;
-        case ButtonFullScreen:
-            if (engine_->isFullScreen())
-            {
-                text = "Window";
-            }
-            else
-            {
-                text = "Full Screen";
-            }
-            break;
-        case ButtonSubtitle:
-            text = "Switch subtitles";
-            break;
-            //case ButtonVolume:
-            //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
-            //    break;
+        }
+        else
+        {
+            text = text_;
         }
         drawText(text);
     }

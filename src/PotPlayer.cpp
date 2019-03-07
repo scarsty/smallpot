@@ -210,6 +210,7 @@ int PotPlayer::eventLoop()
                 else if (button == PotUI::ButtonFullScreen)
                 {
                     engine_->toggleFullscreen();
+                    setSubtitleFrameSize();
                 }
                 else if (button == PotUI::ButtonSubtitle)
                 {
@@ -277,6 +278,7 @@ int PotPlayer::eventLoop()
                 if (engine_->isFullScreen())
                 {
                     engine_->toggleFullscreen();
+                    setSubtitleFrameSize();
                 }
                 else
                 {
@@ -295,6 +297,7 @@ int PotPlayer::eventLoop()
                 break;
             case BPK_RETURN:
                 engine_->toggleFullscreen();
+                setSubtitleFrameSize();
                 break;
             case BPK_DELETE:
                 Config::getInstance()->clearRecord();

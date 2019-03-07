@@ -249,12 +249,23 @@ void PotMedia::switchStream(PotMediaType mt)
         return;
     }
     PotStream* st = streams_[current_index];
-    for (int i = 0; i < streams_.size(); i++)
+    for (int i = current_index + 1; i < streams_.size(); i++)
     {
-        if (streams_[i] && streams_[i]->getType() == mt && (i - current_index == 1 || i - current_index <= -1))
+        if (streams_[i] && streams_[i]->getType() == mt)
         {
             st = streams_[i];
             break;
+        }
+    }
+    if (st == streams_[current_index])
+    {
+        for (int i = 0; i < current_index; i++)
+        {
+            if (streams_[i] && streams_[i]->getType() == mt)
+            {
+                st = streams_[i];
+                break;
+            }
         }
     }
 
