@@ -121,8 +121,7 @@ int PotSubtitleSrt::readIndex()
         }
         if (lines.empty() || line.find_first_not_of(" \t\r") == std::string::npos)
         {
-            convert::replaceAllString(pot.str, "\r", "");
-            pot.str = PotConv::conv(pot.str, code_, "cp936");
+            pot.str = PotConv::conv(convert::replaceAllSubString(pot.str, "\r", ""), code_, "cp936");
             atom_list_.push_back(pot);
             pot.str.clear();
             state = -1;

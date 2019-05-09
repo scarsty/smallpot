@@ -145,7 +145,7 @@ std::string Config::dealFilename(const std::string& s0)
     s = File::getFilenameWithoutPath(s);
     for (auto str : ignore_strs_)
     {
-        convert::replaceAllString(s, str, "");
+        s = convert::replaceAllSubString(s, str, "");
     }
     s = File::getFileMainname(s);
     //s = PotConv::cp950toutf8(s);
