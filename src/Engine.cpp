@@ -291,7 +291,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     }
     else
     {
-        window_ = SDL_CreateWindow("TinyPot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, start_w_, start_h_, SDL_WINDOW_RESIZABLE);
+        window_ = SDL_CreateWindow("SmallPot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, start_w_, start_h_, SDL_WINDOW_RESIZABLE);
     }
     //SDL_CreateWindowFrom()
 #ifndef _WINDLL

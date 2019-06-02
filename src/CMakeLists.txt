@@ -1,4 +1,4 @@
-project(tinypot)
+project(smallpot)
 cmake_minimum_required(VERSION 2.6)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
@@ -16,5 +16,5 @@ file(GLOB SRC_LIST
 
 set(LINK_LIBRARIES iconv SDL2 SDL2_ttf SDL2_image SDL2main avutil avcodec avformat swresample swscale ass)
 
-add_executable(tinypot ${SRC_LIST})
-target_link_libraries(tinypot ${LINK_LIBRARIES})
+add_executable(smallpot ${SRC_LIST})
+target_link_libraries(smallpot ${LINK_LIBRARIES})

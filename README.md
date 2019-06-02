@@ -1,15 +1,15 @@
-# tinypot
+# smallpot
 <img src="https://raw.githubusercontent.com/scarsty/bigpot/master/logo.png" width = "20%" />
 
 ## 简介
 
-TinyPot是一个轻量级播放器。
+SmallPot是一个轻量级播放器。
 
 该播放器的前身是金庸水浒传的片头动画播放子程。在整个游戏过程中该子程仅被调用了一次，但是为了做好这个部分，开发组使用了FFmpeg进行解码，BASS进行播放，SDL2进行输出，并成功将其移植到了其他平台。因此，金庸水浒传的片头实际支持相当多的格式。而大水壶播放器在设计阶段，也是使用类似的架构，但是在开发阶段发现音频难以控制，因此改为了使用SDL2播放。
 
 而水浒的谐音是水壶，同时新论坛叫大武侠，有个“大”字，所以该播放器起名“大水壶”，英文BigPot。至于跟著名的播放器PotPlayer有没有关系，答案是一点都没有，而且PotPlayer的功能远远强于大水壶，名字有点像只是巧合。
 
-另外现在改叫小水壶了……
+另外据说叫大太嚣张，现在改叫小水壶了。
 
 ## 架构
 
@@ -17,7 +17,7 @@ TinyPot是一个轻量级播放器。
 
 该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解，原理如下图。在跳转的时候可能会稍慢于其他的主流播放器，但是相差并不明显。
 
-<img src="https://raw.githubusercontent.com/scarsty/bigpot/master/pic/ac.png" width = "50%" />
+<img src="https://raw.githubusercontent.com/scarsty/smallpot/master/pic/ac.png" width = "50%" />
 
 ## 编译
 
@@ -143,4 +143,4 @@ FFmpeg能解什么格式它就能放什么格式，FFmpeg不能解的，它也�
 
 ## 播放效果
 
-<img src="https://raw.githubusercontent.com/scarsty/bigpot/master/pic/1.png" width = "80%" />
+<img src="https://raw.githubusercontent.com/scarsty/smallpot/master/pic/1.png" width = "80%" />

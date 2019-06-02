@@ -17,7 +17,7 @@ PotSubtitleManager::~PotSubtitleManager()
 PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
 {
     PotSubtitle* ret = nullptr;
-    auto ext = convert::convertCase(File::getFileExt(filename));
+    auto ext = convert::toLowerCase(File::getFileExt(filename));
     if (ext == "ass" || ext == "ssa")
     {
         ret = new PotSubtitleAss();
@@ -103,7 +103,7 @@ bool PotSubtitleManager::tryOpenSubtitle(const std::string& filename)
 
 bool PotSubtitleManager::isSubtitle(const std::string& filename)
 {
-    auto ext = convert::convertCase(File::getFileExt(filename));
+    auto ext = convert::toLowerCase(File::getFileExt(filename));
     bool b = false;
     for (auto& e : ext_names_)
     {

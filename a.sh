@@ -1,11 +1,12 @@
+NAME=smallpot
 cd src
 #cp CMakeLists-osx.txt CMakeLists.txt -f
-rm tinypot
+rm $NAME
 cmake .
 make -j 
-otool -L tinypot
+otool -L $NAME
 cd ..
-cp src/tinypot tinypot.app/Contents/MacOS/tinypot
-cd tinypot.app/Contents/MacOS
+cp src/$NAME $NAME.app/Contents/MacOS/$NAME
+cd $NAME.app/Contents/MacOS
 ../../../src/repair_dylib.sh
-otool -L tinypot
+otool -L $NAME
