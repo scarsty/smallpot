@@ -29,7 +29,7 @@ void Config::init(std::string filepath)
     {
         filepath = filepath + "/";
     }
-    filename_ = filepath + "tinypot-config.xml";
+    filename_ = filepath + "smallpot.config.xml";
     printf("try find config file: %s\n", filename_.c_str());
     doc_.LoadFile(filename_.c_str());
     //初始化结构
