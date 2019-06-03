@@ -18,19 +18,19 @@ extern "C"
 //如需更换底层，则要重新实现下面的全部功能，并重新定义全部常数和类型
 #define BP_AUDIO_MIX_MAXVOLUME SDL_MIX_MAXVOLUME
 
-typedef std::function<void(uint8_t*, int)> AudioCallback;
-typedef SDL_Renderer BP_Renderer;
-typedef SDL_Window BP_Window;
-typedef SDL_Texture BP_Texture;
-typedef SDL_Rect BP_Rect;
-typedef SDL_Color BP_Color;
+using AudioCallback = std::function<void(uint8_t*, int)>;
+using BP_Renderer = SDL_Renderer;
+using BP_Window = SDL_Window;
+using BP_Texture = SDL_Texture;
+using BP_Rect = SDL_Rect;
+using BP_Color = SDL_Color;
 
-typedef enum
+enum BP_Align
 {
     BP_ALIGN_LEFT,
     BP_ALIGN_MIDDLE,
     BP_ALIGN_RIGHT
-} BP_Align;
+};
 
 #define BP_WINDOWPOS_CENTERED SDL_WINDOWPOS_CENTERED
 
@@ -40,9 +40,9 @@ typedef enum
 #define AMASK (0xff000000)
 
 //声音类型在其他文件中未使用
-typedef SDL_AudioSpec BP_AudioSpec;
+using BP_AudioSpec = SDL_AudioSpec;
 //这里直接使用SDL的事件结构，如果更换底层需重新实现一套相同的
-typedef SDL_Event BP_Event;
+using BP_Event = SDL_Event;
 
 class Engine
 {
@@ -192,7 +192,7 @@ public:
 //这里直接照搬SDL
 //更换底层需自己定义一套
 //好像是瞎折腾
-typedef enum
+enum BP_EventType
 {
     BP_FIRSTEVENT = SDL_FIRSTEVENT,
     //按关闭按钮
@@ -218,9 +218,9 @@ typedef enum
     BP_RENDER_TARGETS_RESET = SDL_RENDER_TARGETS_RESET,
 
     BP_LASTEVENT = SDL_LASTEVENT,
-} BP_EventType;
+};
 
-typedef enum
+enum BP_WindowEventID
 {
     BP_WINDOWEVENT_NONE = SDL_WINDOWEVENT_NONE, /**< Never used */
     BP_WINDOWEVENT_SHOWN = SDL_WINDOWEVENT_SHOWN,
@@ -240,9 +240,9 @@ typedef enum
     BP_WINDOWEVENT_FOCUS_GAINED = SDL_WINDOWEVENT_FOCUS_GAINED,
     BP_WINDOWEVENT_FOCUS_LOST = SDL_WINDOWEVENT_FOCUS_LOST,
     BP_WINDOWEVENT_CLOSE = SDL_WINDOWEVENT_CLOSE,
-} BP_WindowEventID;
+};
 
-typedef enum
+enum BP_KeyBoard
 {
     BPK_LEFT = SDLK_LEFT,
     BPK_RIGHT = SDLK_RIGHT,
@@ -263,11 +263,11 @@ typedef enum
     BPK_MINUS = SDLK_MINUS,
     BPK_PERIOD = SDLK_PERIOD,
     BPK_EQUALS = SDLK_EQUALS,
-} BP_KeyBoard;
+};
 
-typedef enum
+enum BP_Button
 {
     BP_BUTTON_LEFT = SDL_BUTTON_LEFT,
     BP_BUTTON_MIDDLE = SDL_BUTTON_MIDDLE,
     BP_BUTTON_RIGHT = SDL_BUTTON_RIGHT,
-} BP_Button;
+};

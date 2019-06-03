@@ -1,15 +1,15 @@
 #pragma once
 #include "PotSubtitle.h"
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 
-typedef struct PotSubtitleAtom
+struct PotSubtitleAtom
 {
     int begintime;
     int endtime;
     std::string str;
-} PotSubtitleAtom;
+};
 
 class PotSubtitleSrt : public PotSubtitle
 {
