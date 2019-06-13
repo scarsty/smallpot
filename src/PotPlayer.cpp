@@ -567,6 +567,11 @@ void PotPlayer::openMedia(const std::string& filename)
     //窗口尺寸，时间
     width_ = media_->getVideo()->getWidth();
     height_ = media_->getVideo()->getHeight();
+    int maxw, maxh;
+    engine_->getWindowMaxSize(maxw, maxh);
+    //搞点余量？
+    width_ = std::min(width_, maxw - 80);
+    height_ = std::min(height_, maxh - 80);
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL
