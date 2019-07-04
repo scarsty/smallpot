@@ -145,8 +145,8 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
         }
         if (ret > 0)
         {
-            time_pts_ = packet_.pts * time_base_packet_;
-            time_dts_ = packet_.dts * time_base_packet_;
+            time_pts_ = packet_.pts * time_base_packet_ - start_time_;
+            time_dts_ = packet_.dts * time_base_packet_ - start_time_;
         }
         if (need_read_packet_)
         {
