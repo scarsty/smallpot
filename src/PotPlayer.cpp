@@ -121,7 +121,7 @@ int PotPlayer::eventLoop()
     bool havemedia = media_->getAudio()->exist() || havevideo;
     int totalTime = media_->getTotalTime();
     std::string open_filename;
-    printf("Total time is %1.3fs or %dmin %1.3fs\n", totalTime / 1e3, totalTime / 60000, totalTime % 60000 / 1e3);
+    printf("Total time is %1.3f s or %d min %1.3f s\n", totalTime / 1e3, totalTime / 60000, totalTime % 60000 / 1e3);
 
     int maxDelay = 0;          //统计使用
     int prev_show_time = 0;    //上一次显示的时间

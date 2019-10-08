@@ -39,13 +39,15 @@ Windows下也可以从<https://github.com/scarsty/lib-collection>取得头文件
 
 32位部分默认编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
 
-### Macosx
+### MacOS
 
 推荐使用homebrew安装依赖库。
 
 使用CMake生成Makefile。
 
 脚本a.sh可以自动编译和处理动态库的依赖修正。
+
+**由于Mac上App目录的参数传递非常SB，目前无法直接打开文件。**
 
 ### Linux
 

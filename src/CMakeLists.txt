@@ -5,8 +5,8 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_COMPILER $ENV{CXX})
 set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -pthread")
 
-include_directories(../include . ../common)
-link_directories(. ../lib)
+include_directories(../include . ../common /usr/local/include)
+link_directories(. ../lib /usr/local/lib)
 
 file(GLOB SRC_LIST
     ./*.cpp
