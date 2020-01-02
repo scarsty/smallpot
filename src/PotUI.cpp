@@ -63,6 +63,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     engine_->setColor(triangle_, { 255, 255, 255 }, alpha_);
     engine_->setColor(to_full_screen_, { 255, 255, 255 }, alpha_);
     engine_->setColor(to_window_, { 255, 255, 255 }, alpha_);
+    engine_->setColor(hollow_, { 255, 255, 255 }, alpha_);
     button_y_ = win_h_ - 45;
 
     for (int i = 1; i < ButtonNone2; i++)
@@ -97,8 +98,8 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             }
             break;
         case ButtonSubtitle:
-            engine_->renderCopy(square_, button_x, button_y, button_w_, button_h_ * 0.7);
-            engine_->renderCopy(square_, button_x + button_w_ * 0.1, button_y + button_h_ * 0.8, button_w_ * 0.8, button_h_ * 0.2);
+            engine_->renderCopy(hollow_, button_x, button_y, button_w_, button_h_);
+            engine_->renderCopy(square_, button_x + button_w_* 0.2, button_y + button_h_ * 0.6, button_w_ * 0.6, button_h_ * 0.2);
             break;
         }
     }
@@ -243,6 +244,7 @@ void PotUI::init()
     triangle_ = engine_->createSpecialTexture(200, 1);
     to_full_screen_ = engine_->createSpecialTexture(20, 4);
     to_window_ = engine_->createSpecialTexture(20, 5);
+    hollow_ = engine_->createSpecialTexture(20, 6);
     fontname_ = Config::getInstance()->getString("ui_font");
     if (!File::fileExist(fontname_))
     {

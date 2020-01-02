@@ -19,7 +19,7 @@ public:
     };
 
 private:
-    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle_ = nullptr;
+    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle_ = nullptr, *hollow_ = nullptr;
     BP_Texture *to_full_screen_ = nullptr, *to_window_ = nullptr;
     int win_w_, win_h_;
 

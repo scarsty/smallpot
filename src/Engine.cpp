@@ -240,6 +240,16 @@ BP_Texture* Engine::createSpecialTexture(int size, int mode)
                 }
                 SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
             }
+            if (mode == 6)
+            {
+                uint8_t a = 255;
+                double center = (d - 1) / 2.0;
+                if ((abs(x - center) < d * 0.35 && abs(y - center) < d * 0.35))
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
         }
     }
     auto ball = SDL_CreateTextureFromSurface(renderer_, ball_s);
