@@ -22,3 +22,6 @@ Win32/
 *.7z
 common/*
 common
+*.bin
+*.param
+*.ini

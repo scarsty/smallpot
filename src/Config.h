@@ -1,7 +1,6 @@
 #pragma once
 
-#include "others/sha3.h"
-#include "others/tinyxml2.h"
+#include "INIReader.h"
 #include <stdint.h>
 #include <vector>
 
@@ -10,14 +9,10 @@ class Config
 private:
     std::string content_;
     std::string filename_;
-    SHA3 sha3_;
     Config();
     virtual ~Config();
 
-    tinyxml2::XMLDocument doc_;
-    tinyxml2::XMLElement *root_, *record_;
-
-    tinyxml2::XMLElement* getElement(tinyxml2::XMLElement* parent, const char* name);
+    INIReaderNormal ini_;
 
     std::vector<std::string> ignore_strs_;
 

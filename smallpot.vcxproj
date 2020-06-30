@@ -181,7 +181,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows\include;$(USR_LOCAL)\include;common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows\include;$(USR_LOCAL)\include;../common</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -204,12 +204,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="common\File.cpp" />
-    <ClCompile Include="common\convert.cpp" />
+    <ClCompile Include="..\common\File.cpp" />
+    <ClCompile Include="..\common\convert.cpp" />
     <ClCompile Include="src\Font.cpp" />
-    <ClCompile Include="src\others\sha3.cpp" />
     <ClCompile Include="src\others\text_encoding_detect.cpp" />
-    <ClCompile Include="src\others\tinyxml2.cpp" />
     <ClCompile Include="src\pot.cpp" />
     <ClCompile Include="src\PotBase.cpp" />
     <ClCompile Include="src\Config.cpp" />
@@ -234,9 +232,7 @@
     <ClInclude Include="common\convert.h" />
     <ClInclude Include="common\Timer.h" />
     <ClInclude Include="src\Font.h" />
-    <ClInclude Include="src\others\sha3.h" />
     <ClInclude Include="src\others\text_encoding_detect.h" />
-    <ClInclude Include="src\others\tinyxml2.h" />
     <ClInclude Include="src\PotBase.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\PotConv.h" />
