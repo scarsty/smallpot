@@ -12,8 +12,6 @@ Config::Config()
     {
         ".bt.td",
         ".td",
-        " ",
-        "_",
     };
 }
 
@@ -36,16 +34,24 @@ void Config::init(std::string filepath)
 
 void Config::write()
 {
-    ini_.saveFile(filename_);
+    convert::writeStringToFile(ini_.toPureString(), filename_);
 }
 
 std::string Config::getString(const std::string& name, std::string def /*= ""*/)
 {
+    if (!ini_.hasKey("", name))
+    {
+        setString(name, def);
+    }
     return ini_.getString("", name);
 }
 
 int Config::getInteger(const std::string& name, int def /*= 0*/)
 {
+    if (!ini_.hasKey("", name))
+    {
+        setInteger(name, def);
+    }
     return ini_.getInt("", name);
 }
 
@@ -61,13 +67,23 @@ void Config::setInteger(const std::string& name, int v)
 
 int Config::getRecord(const std::string& name)
 {
-    return ini_.getInt("record", dealFilename(name));
+    auto s1 = getFileKey(name);
+    for (auto& s : ini_.getAllKeys("record"))
+    {
+        if (getFileKey(s) == s1)
+        {
+            auto i = ini_.getInt("record", s);
+            ini_.eraseKey("record", s);
+            return i;
+        }
+    }
+    return 0;
 }
 
 void Config::removeRecord(const std::string& name)
 {
     auto mainname = dealFilename(name);
-    //
+    ini_.eraseKey("record", mainname);
 }
 
 void Config::setRecord(const std::string& name, int v)
@@ -75,25 +91,37 @@ void Config::setRecord(const std::string& name, int v)
     ini_.setKey("record", dealFilename(name), std::to_string(v));
 }
 
-void Config::clearRecord()
+void Config::clearAllRecord()
 {
-    //if (record_)
-    //{
-    //    record_->DeleteChildren();
-    //}
+    for (auto& s : ini_.getAllKeys("record"))
+    {
+        ini_.eraseKey("record", s);
+    }
+}
+
+void Config::autoClearRecord()
+{
+    for (auto& s : ini_.getAllKeys("record"))
+    {
+        auto s1 = PotConv::conv(s, "utf-8", getString("sys_encode"));
+        if (!File::fileExist(s1) && s1.find("video") == s1.npos)
+        {
+            ini_.eraseKey("record", s);
+        }
+    }
 }
 
 std::string Config::dealFilename(const std::string& s0)
 {
     auto s = s0;
-    //replaceAllString(s, " ", "_");
-    s = File::getFilenameWithoutPath(s);
     for (auto str : ignore_strs_)
     {
         s = convert::replaceAllSubString(s, str, "");
     }
-    s = File::getFileMainname(s);
-    //s = PotConv::cp950toutf8(s);
-    s = "_" + s;
     return s;
+}
+
+std::string Config::getFileKey(const std::string& s0)
+{
+    return File::getFileMainname(File::getFilenameWithoutPath(s0));
 }

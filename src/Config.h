@@ -37,7 +37,9 @@ public:
     int getRecord(const std::string& name);
     void removeRecord(const std::string& name);
     void setRecord(const std::string& name, int v);
-    void clearRecord();
+    void clearAllRecord();
+    void autoClearRecord();
 
     std::string dealFilename(const std::string& s0);
+    std::string getFileKey(const std::string& s0);
 };

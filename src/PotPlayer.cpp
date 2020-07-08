@@ -300,7 +300,7 @@ int PotPlayer::eventLoop()
                 setSubtitleFrameSize();
                 break;
             case BPK_DELETE:
-                Config::getInstance()->clearRecord();
+                Config::getInstance()->clearAllRecord();
                 break;
             case BPK_PERIOD:
             {
@@ -648,6 +648,7 @@ void PotPlayer::closeMedia(const std::string& filename)
     {
         config->setString("recent_file", drop_filename_);
     }
+    config->autoClearRecord();
     config->write();
 #endif
     delete media_;
