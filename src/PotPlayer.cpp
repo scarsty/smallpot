@@ -648,7 +648,7 @@ void PotPlayer::closeMedia(const std::string& filename)
     {
         config->setString("recent_file", drop_filename_);
     }
-    config->autoClearRecord();
+    //config->autoClearRecord();
     config->write();
 #endif
     delete media_;

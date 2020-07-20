@@ -4,6 +4,7 @@
 #include "Timer.h"
 #include "convert.h"
 #include <iostream>
+#include <thread>
 
 Config::Config()
 {
@@ -30,6 +31,9 @@ void Config::init(std::string filepath)
     filename_ = filepath + "smallpot.config.ini";
     printf("try find config file: %s\n", filename_.c_str());
     ini_.loadFile(filename_);
+    std::thread th{ [this]()
+        { autoClearRecord(); } };
+    th.detach();
 }
 
 void Config::write()
@@ -104,7 +108,8 @@ void Config::autoClearRecord()
     for (auto& s : ini_.getAllKeys("record"))
     {
         auto s1 = PotConv::conv(s, "utf-8", getString("sys_encode"));
-        if (!File::fileExist(s1) && s1.find("video") == s1.npos)
+        if ((s1.find("Z:") == s1.npos || s1.find("Y:") == s1.npos || s1.find("X:") == s1.npos)
+            && !File::fileExist(s1))
         {
             ini_.eraseKey("record", s);
         }
