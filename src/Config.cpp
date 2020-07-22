@@ -38,7 +38,7 @@ void Config::init(std::string filepath)
 
 void Config::write()
 {
-    convert::writeStringToFile(ini_.toPureString(), filename_);
+    ini_.saveFile(filename_);
 }
 
 std::string Config::getString(const std::string& name, std::string def /*= ""*/)
@@ -108,7 +108,7 @@ void Config::autoClearRecord()
     for (auto& s : ini_.getAllKeys("record"))
     {
         auto s1 = PotConv::conv(s, "utf-8", getString("sys_encode"));
-        if ((s1.find("Z:") == s1.npos || s1.find("Y:") == s1.npos || s1.find("X:") == s1.npos)
+        if ((s1.find("Z:") == s1.npos && s1.find("Y:") == s1.npos && s1.find("X:") == s1.npos)
             && !File::fileExist(s1))
         {
             ini_.eraseKey("record", s);
