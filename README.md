@@ -13,7 +13,7 @@ SmallPot是一个轻量级播放器。
 
 ## 架构
 
-程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。配置文件使用的是tinyxml2，hash是sha3。
+程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。配置文件使用的是ini。
 
 该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解，原理如下图。在跳转的时候可能会稍慢于其他的主流播放器，但是相差并不明显。
 
@@ -21,7 +21,7 @@ SmallPot是一个轻量级播放器。
 
 ## 编译
 
-首先需要取得common库。
+首先需要取得common工程。
 
 ```shell
 git clone https://github.com/scarsty/common common
@@ -31,7 +31,7 @@ git clone https://github.com/scarsty/common common
 
 Windows下也可以从<https://github.com/scarsty/lib-collection>取得头文件和导入库。
 
-<https://github.com/AutoItConsulting/text-encoding-detect>、sha3、tinyxml2，均直接包含代码到工程中。
+<https://github.com/AutoItConsulting/text-encoding-detect>直接包含代码到工程中。
 
 ### Windows
 
@@ -122,7 +122,7 @@ FFmpeg能解什么格式它就能放什么格式，FFmpeg不能解的，它也�
 | -                  | 减小窗口               |
 | =(+)               | 增大窗口               |
 
-### XML中的设置
+### ini中的设置
 
 | 设置             | 功能                     |
 | ---------------- | ------------------------ |
