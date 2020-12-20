@@ -570,10 +570,10 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL
-    if (engine_->isFullScreen())    // || (engine_->getWindowWidth() >= width_ && engine_->getWindowHeight() >= height_))
-    {
-        //此处原来是视频尺寸小于窗口则不改变，现移除此功能
-    }
+    if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
+        {
+            //此处原来是视频尺寸小于窗口则不改变，现移除此功能
+        }
     else
     {
         int maxw = engine_->getMaxWindowWidth();
@@ -709,7 +709,11 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     }
     if (next_file != "")
     {
+#ifdef _WIN32
+        return PotConv::conv(path + "\\" + next_file, sys_encode_, BP_encode_);
+#else
         return PotConv::conv(path + "/" + next_file, sys_encode_, BP_encode_);
+#endif
     }
     else
     {

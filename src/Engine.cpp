@@ -494,6 +494,11 @@ int Engine::showMessage(const std::string& content)
     return buttonid;
 }
 
+bool Engine::getWindowIsMaximized()
+{
+    return SDL_GetWindowFlags(window_) & SDL_WINDOW_MAXIMIZED;
+}
+
 void Engine::setWindowSize(int w, int h)
 {
     if (rotation_ == 90 || rotation_ == 270)

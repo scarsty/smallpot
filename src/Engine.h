@@ -84,6 +84,7 @@ public:
     int getMaxWindowWidth() { return max_x_ - min_x_; }
     int getMaxWindowHeight() { return max_y_ - min_y_; }
     void getWindowPosition(int& x, int& y) { SDL_GetWindowPosition(window_, &x, &y); }
+    bool getWindowIsMaximized();
     void setWindowSize(int w, int h);
     void setStartWindowSize(int w, int h)
     {
