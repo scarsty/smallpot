@@ -108,8 +108,7 @@ void Config::autoClearRecord()
     for (auto& s : ini_.getAllKeys("record"))
     {
         auto s1 = PotConv::conv(s, "utf-8", getString("sys_encode"));
-        if ((s1.find("Z:") == s1.npos && s1.find("Y:") == s1.npos && s1.find("X:") == s1.npos)
-            && !File::fileExist(s1))
+        if (!File::fileExist(s1))
         {
             ini_.eraseKey("record", s);
         }
