@@ -30,8 +30,8 @@ void Config::init(std::string filepath)
     }
     filename_ = filepath + "smallpot.config.ini";
     printf("try find config file: %s\n", filename_.c_str());
-    setString("filepath", filepath);
     ini_.loadFile(filename_);
+    setString("filepath", filepath);
     std::thread th{ [this]()
         { autoClearRecord(); } };
     th.detach();
