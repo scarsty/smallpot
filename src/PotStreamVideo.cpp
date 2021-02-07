@@ -7,22 +7,19 @@ PotStreamVideo::PotStreamVideo()
     //视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
     type_ = BPMEDIA_TYPE_VIDEO;
 
-    create_module_ = DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "create_module");
+    create_module_ = (create_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "create_module");
     if (create_module_)
     {
-        using CREATE_FUNC = void* (*)(const wchar_t*, const wchar_t*);
-        printf("%s\n", typeid(CREATE_FUNC).name());
-        auto c = CREATE_FUNC(create_module_);
-
         auto model = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("model");
         auto bin = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("bin");
 
         std::wstring modelw(model.begin(), model.end());
         std::wstring binw(bin.begin(), bin.end());
 
-        plugin_ = c(modelw.c_str(), binw.c_str());
+        plugin_ = create_module_(modelw.c_str(), binw.c_str());
         scale_ = Config::getInstance()->getInteger("scale");
-        run_module_ = DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "run_module");
+        run_module_ = (run_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "run_module");
+        destroy_module_ = (destroy_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "destroy_module");
     }
     else
     {
@@ -36,6 +33,7 @@ PotStreamVideo::~PotStreamVideo()
     {
         sws_freeContext(img_convert_ctx_);
     }
+    destroy_module_(plugin_);
 }
 
 //-1无视频
@@ -144,9 +142,7 @@ FrameContent PotStreamVideo::convertFrameToContent()
                 pixels1[0] = (uint8_t*)buffer.data();
                 pitch1[0] = int(f->width / scale_) * 3;
                 sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels1, pitch1);
-                using RUN_FUNC = void (*)(void*, int, int, int, const char*, char*);
-                auto r = RUN_FUNC(run_module_);
-                r(plugin_, f->width / scale_, f->height / scale_, 3, buffer.data(), (char*)pixels[0]);
+                run_module_(plugin_, f->width / scale_, f->height / scale_, 3, buffer.data(), (char*)pixels[0]);
                 engine_->unlockTexture(tex);
             }
         }

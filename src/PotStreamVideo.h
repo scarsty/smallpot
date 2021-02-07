@@ -6,7 +6,13 @@ extern "C"
 #include "libswscale/swscale.h"
 }
 
-void run_module_t(void* module, int w, int h, int c, const char* src, char* dst);
+void* create_module(const wchar_t*, const wchar_t*);
+void run_module(void* module, int w, int h, int c, const char* src, char* dst);
+void destroy_module(void* module);
+
+using create_module_t = decltype(&create_module);
+using run_module_t = decltype(&run_module);
+using destroy_module_t = decltype(&destroy_module);
 
 class PotStreamVideo : public PotStream
 {
@@ -39,7 +45,8 @@ private:
     int texture_pix_fmt_;
     SwsContext* img_convert_ctx_ = nullptr;
     void* plugin_ = nullptr;
-    void* create_module_ = nullptr;
-    void* run_module_ = nullptr;
+    create_module_t create_module_ = nullptr;
+    run_module_t run_module_ = nullptr;
+    destroy_module_t destroy_module_ = nullptr;
     double scale_ = 1;
 };
