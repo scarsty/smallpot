@@ -1,9 +1,33 @@
 #include "PotStreamVideo.h"
+#include "Config.h"
+#include "DynamicLibrary.h"
 
 PotStreamVideo::PotStreamVideo()
 {
     //视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
     type_ = BPMEDIA_TYPE_VIDEO;
+
+    create_module_ = DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "create_module");
+    if (create_module_)
+    {
+        using CREATE_FUNC = void* (*)(const wchar_t*, const wchar_t*);
+        printf("%s\n", typeid(CREATE_FUNC).name());
+        auto c = CREATE_FUNC(create_module_);
+
+        auto model = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("model");
+        auto bin = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("bin");
+
+        std::wstring modelw(model.begin(), model.end());
+        std::wstring binw(bin.begin(), bin.end());
+
+        plugin_ = c(modelw.c_str(), binw.c_str());
+        scale_ = Config::getInstance()->getInteger("scale");
+        run_module_ = DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "run_module");
+    }
+    else
+    {
+        printf("Load %s failed!\n", Config::getInstance()->getString("plugin").c_str());
+    }
 }
 
 PotStreamVideo::~PotStreamVideo()
@@ -52,31 +76,34 @@ int PotStreamVideo::getSDLPixFmt()
     }
     std::map<int, int> pix_ffmpeg_sdl =
     {
-        { AV_PIX_FMT_RGB8,           SDL_PIXELFORMAT_RGB332 },
-        { AV_PIX_FMT_RGB444,         SDL_PIXELFORMAT_RGB444 },
-        { AV_PIX_FMT_RGB555,         SDL_PIXELFORMAT_RGB555 },
-        { AV_PIX_FMT_BGR555,         SDL_PIXELFORMAT_BGR555 },
-        { AV_PIX_FMT_RGB565,         SDL_PIXELFORMAT_RGB565 },
-        { AV_PIX_FMT_BGR565,         SDL_PIXELFORMAT_BGR565 },
-        { AV_PIX_FMT_RGB24,          SDL_PIXELFORMAT_RGB24 },
-        { AV_PIX_FMT_BGR24,          SDL_PIXELFORMAT_BGR24 },
-        { AV_PIX_FMT_0RGB32,         SDL_PIXELFORMAT_RGB888 },
-        { AV_PIX_FMT_0BGR32,         SDL_PIXELFORMAT_BGR888 },
+        { AV_PIX_FMT_RGB8, SDL_PIXELFORMAT_RGB332 },
+        { AV_PIX_FMT_RGB444, SDL_PIXELFORMAT_RGB444 },
+        { AV_PIX_FMT_RGB555, SDL_PIXELFORMAT_RGB555 },
+        { AV_PIX_FMT_BGR555, SDL_PIXELFORMAT_BGR555 },
+        { AV_PIX_FMT_RGB565, SDL_PIXELFORMAT_RGB565 },
+        { AV_PIX_FMT_BGR565, SDL_PIXELFORMAT_BGR565 },
+        { AV_PIX_FMT_RGB24, SDL_PIXELFORMAT_RGB24 },
+        { AV_PIX_FMT_BGR24, SDL_PIXELFORMAT_BGR24 },
+        { AV_PIX_FMT_0RGB32, SDL_PIXELFORMAT_RGB888 },
+        { AV_PIX_FMT_0BGR32, SDL_PIXELFORMAT_BGR888 },
         { AV_PIX_FMT_NE(RGB0, 0BGR), SDL_PIXELFORMAT_RGBX8888 },
         { AV_PIX_FMT_NE(BGR0, 0RGB), SDL_PIXELFORMAT_BGRX8888 },
-        { AV_PIX_FMT_RGB32,          SDL_PIXELFORMAT_ARGB8888 },
-        { AV_PIX_FMT_RGB32_1,        SDL_PIXELFORMAT_RGBA8888 },
-        { AV_PIX_FMT_BGR32,          SDL_PIXELFORMAT_ABGR8888 },
-        { AV_PIX_FMT_BGR32_1,        SDL_PIXELFORMAT_BGRA8888 },
-        { AV_PIX_FMT_YUV420P,        SDL_PIXELFORMAT_IYUV },
-        { AV_PIX_FMT_YUYV422,        SDL_PIXELFORMAT_YUY2 },
-        { AV_PIX_FMT_UYVY422,        SDL_PIXELFORMAT_UYVY },
-        { AV_PIX_FMT_NONE,           SDL_PIXELFORMAT_UNKNOWN },
+        { AV_PIX_FMT_RGB32, SDL_PIXELFORMAT_ARGB8888 },
+        { AV_PIX_FMT_RGB32_1, SDL_PIXELFORMAT_RGBA8888 },
+        { AV_PIX_FMT_BGR32, SDL_PIXELFORMAT_ABGR8888 },
+        { AV_PIX_FMT_BGR32_1, SDL_PIXELFORMAT_BGRA8888 },
+        { AV_PIX_FMT_YUV420P, SDL_PIXELFORMAT_IYUV },
+        { AV_PIX_FMT_YUYV422, SDL_PIXELFORMAT_YUY2 },
+        { AV_PIX_FMT_UYVY422, SDL_PIXELFORMAT_UYVY },
+        { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
     };
     int r = SDL_PIXELFORMAT_UNKNOWN;
-    if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
+    if (plugin_ == nullptr)
     {
-        r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
+        if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
+        {
+            r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
+        }
     }
     texture_pix_fmt_ = r;
     return r;
@@ -94,18 +121,37 @@ FrameContent PotStreamVideo::convertFrameToContent()
     switch (texture_pix_fmt_)
     {
     case SDL_PIXELFORMAT_UNKNOWN:
-        img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width, f->height, AV_PIX_FMT_BGRA, SWS_BICUBIC, NULL, NULL, NULL);
-        if (img_convert_ctx_)
+    {
+        uint8_t* pixels[4];
+        int pitch[4];
+        if (plugin_ == nullptr)
         {
-            uint8_t* pixels[4];
-            int pitch[4];
+            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width, f->height, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
             if (!engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
             {
                 sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels, pitch);
                 engine_->unlockTexture(tex);
             }
         }
-        break;
+        else
+        {
+            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width / scale_, f->height / scale_, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+            if (!engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
+            {
+                std::vector<char> buffer(f->width * f->height);
+                uint8_t* pixels1[4];
+                int pitch1[4];
+                pixels1[0] = (uint8_t*)buffer.data();
+                pitch1[0] = int(f->width / scale_) * 3;
+                sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels1, pitch1);
+                using RUN_FUNC = void (*)(void*, int, int, int, const char*, char*);
+                auto r = RUN_FUNC(run_module_);
+                r(plugin_, f->width / scale_, f->height / scale_, 3, buffer.data(), (char*)pixels[0]);
+                engine_->unlockTexture(tex);
+            }
+        }
+    }
+    break;
     case SDL_PIXELFORMAT_IYUV:
         if (f->linesize[0] > 0 && f->linesize[1] > 0 && f->linesize[2] > 0)
         {
@@ -135,5 +181,3 @@ FrameContent PotStreamVideo::convertFrameToContent()
     }
     return { time_dts_, f->linesize[0], tex };
 }
-
-

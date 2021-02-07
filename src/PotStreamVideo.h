@@ -6,6 +6,8 @@ extern "C"
 #include "libswscale/swscale.h"
 }
 
+void run_module_t(void* module, int w, int h, int c, const char* src, char* dst);
+
 class PotStreamVideo : public PotStream
 {
 public:
@@ -27,10 +29,17 @@ private:
 public:
     int show(int time);
 
+    virtual int getWidth() { return exist() ? int(codec_ctx_->width / scale_) * scale_ : 0; }
+    virtual int getHeight() { return exist() ? int(codec_ctx_->height / scale_) * scale_ : 0; }
+
 public:
     int getSDLPixFmt();
 
 private:
     int texture_pix_fmt_;
     SwsContext* img_convert_ctx_ = nullptr;
+    void* plugin_ = nullptr;
+    void* create_module_ = nullptr;
+    void* run_module_ = nullptr;
+    double scale_ = 1;
 };

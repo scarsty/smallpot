@@ -110,8 +110,8 @@ public:
     int skipFrame(int time);
 
     void getSize(int& w, int& h);
-    int getWidth() { return exist() ? codec_ctx_->width : 0; }
-    int getHeight() { return exist() ? codec_ctx_->height : 0; }
+    virtual int getWidth() { return exist() ? codec_ctx_->width : 0; }
+    virtual int getHeight() { return exist() ? codec_ctx_->height : 0; }
     int getTimedts() { return time_dts_ > 0 ? time_dts_ : time_pts_; }
     int getTimeShown() { return time_shown_; }
     virtual bool exist() { return stream_index_ >= 0; }
