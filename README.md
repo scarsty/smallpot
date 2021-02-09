@@ -35,9 +35,8 @@ Windows下也可以从<https://github.com/scarsty/lib-collection>取得头文件
 
 ### Windows
 
-请使用Visual Studio 2017编译x64版。
-
-32位部分默认编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
+请使用Visual Studio编译。
+若编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
 
 ### MacOS
 
