@@ -35,8 +35,8 @@ private:
 public:
     int show(int time);
 
-    virtual int getWidth() { return exist() ? int(codec_ctx_->width / scale_) * scale_ : 0; }
-    virtual int getHeight() { return exist() ? int(codec_ctx_->height / scale_) * scale_ : 0; }
+    virtual int getWidth() { return exist() ? int(codec_ctx_->width / 1) * scale_ : 0; }
+    virtual int getHeight() { return exist() ? int(codec_ctx_->height / 1) * scale_ : 0; }
 
 public:
     int getSDLPixFmt();

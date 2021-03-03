@@ -33,7 +33,10 @@ PotStreamVideo::~PotStreamVideo()
     {
         sws_freeContext(img_convert_ctx_);
     }
-    destroy_module_(plugin_);
+    if (destroy_module_ && plugin_)
+    {
+        destroy_module_(plugin_);
+    }
 }
 
 //-1ÎÞÊÓÆµ
@@ -133,16 +136,17 @@ FrameContent PotStreamVideo::convertFrameToContent()
         }
         else
         {
-            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width / scale_, f->height / scale_, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+            double scale = 1;
+            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width / scale, f->height / scale, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
             if (!engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
             {
-                std::vector<char> buffer(f->width * f->height);
+                std::vector<char> buffer(f->width * f->height * 3);
                 uint8_t* pixels1[4];
                 int pitch1[4];
                 pixels1[0] = (uint8_t*)buffer.data();
-                pitch1[0] = int(f->width / scale_) * 3;
-                sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels1, pitch1);
-                run_module_(plugin_, f->width / scale_, f->height / scale_, 3, buffer.data(), (char*)pixels[0]);
+                pitch1[0] = int(f->width / scale) * 3;
+                sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels1, pitch1);                
+                run_module_(plugin_, f->width / scale, f->height / scale, 3, buffer.data(), (char*)pixels[0]);
                 engine_->unlockTexture(tex);
             }
         }

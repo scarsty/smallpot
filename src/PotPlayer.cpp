@@ -85,7 +85,7 @@ int PotPlayer::beginWithFile(std::string filename)
         //printf("%d", engine_->getTicks() - start_time);
         add_cond = engine_->getTicks() - start_time < 2000;
 #ifndef _WINDLL
-        if (count == 0 && add_cond)
+        //if (count == 0 && add_cond)
         {
             /*auto w = engine_->getMaxWindowWidth();
             auto h = engine_->getMaxWindowHeight();
