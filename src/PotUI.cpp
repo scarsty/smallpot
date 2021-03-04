@@ -246,11 +246,11 @@ void PotUI::init()
     to_window_ = engine_->createSpecialTexture(20, 5);
     hollow_ = engine_->createSpecialTexture(20, 6);
     fontname_ = Config::getInstance()->getString("ui_font");
-    if (!File::fileExist(fontname_))
+    if (!File::isExist(fontname_))
     {
 #ifdef _WIN32
         fontname_ = "C:/Windows/Fonts/Cambria.ttc";
-        if (!File::fileExist(fontname_))
+        if (!File::isExist(fontname_))
         {
             fontname_ = "C:/Windows/Fonts/Cambria.ttf";
         }

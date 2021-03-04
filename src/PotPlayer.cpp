@@ -58,7 +58,7 @@ int PotPlayer::beginWithFile(std::string filename)
     if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
     {
         filename = Config::getInstance()->getString("recent_file");
-        if (!File::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
+        if (!File::isExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
         {
             filename = "";
         }
@@ -554,7 +554,10 @@ void PotPlayer::openMedia(const std::string& filename)
     media_ = new PotMedia;
 #ifndef _WINDLL
     //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
-    File::changePath(File::getFilePath(filename));
+    if (File::getFileExt(filename) == "m3u8")
+    {
+        File::changePath(File::getFilePath(filename));
+    }
 #endif
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
@@ -571,9 +574,9 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL
     if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
-        {
-            //此处原来是视频尺寸小于窗口则不改变，现移除此功能
-        }
+    {
+        //此处原来是视频尺寸小于窗口则不改变，现移除此功能
+    }
     else
     {
         int maxw = engine_->getMaxWindowWidth();
