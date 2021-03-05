@@ -26,7 +26,7 @@ PotMedia::~PotMedia()
 
 int PotMedia::openFile(const std::string& filename)
 {
-    if (!File::isExist(filename))
+    if (!File::fileExist(filename))
     {
         return -1;
     }

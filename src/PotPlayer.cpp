@@ -58,7 +58,7 @@ int PotPlayer::beginWithFile(std::string filename)
     if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
     {
         filename = Config::getInstance()->getString("recent_file");
-        if (!File::isExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
+        if (!File::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
         {
             filename = "";
         }

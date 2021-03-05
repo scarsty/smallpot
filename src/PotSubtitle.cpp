@@ -7,7 +7,7 @@
 PotSubtitle::PotSubtitle()
 {
     fontname_ = Config::getInstance()->getString("sub_font");
-    if (!File::isExist(fontname_))
+    if (!File::fileExist(fontname_))
     {
 #ifdef _WIN32
         fontname_ = "C:\\Windows\\Fonts\\msyh.ttc";
