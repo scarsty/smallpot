@@ -7,24 +7,24 @@ PotStreamVideo::PotStreamVideo()
     //视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
     type_ = BPMEDIA_TYPE_VIDEO;
 
-    create_module_ = (create_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "create_module");
-    if (create_module_)
-    {
-        auto model = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("model");
-        auto bin = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("bin");
+    //create_module_ = (create_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "create_module");
+    //if (create_module_)
+    //{
+    //    auto model = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("model");
+    //    auto bin = Config::getInstance()->getString("filepath") + Config::getInstance()->getString("bin");
 
-        std::wstring modelw(model.begin(), model.end());
-        std::wstring binw(bin.begin(), bin.end());
+    //    std::wstring modelw(model.begin(), model.end());
+    //    std::wstring binw(bin.begin(), bin.end());
 
-        plugin_ = create_module_(modelw.c_str(), binw.c_str());
-        scale_ = Config::getInstance()->getInteger("scale");
-        run_module_ = (run_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "run_module");
-        destroy_module_ = (destroy_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "destroy_module");
-    }
-    else
-    {
-        printf("Load %s failed!\n", Config::getInstance()->getString("plugin").c_str());
-    }
+    //    plugin_ = create_module_(modelw.c_str(), binw.c_str());
+    //    scale_ = Config::getInstance()->getInteger("scale");
+    //    run_module_ = (run_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "run_module");
+    //    destroy_module_ = (destroy_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "destroy_module");
+    //}
+    //else
+    //{
+    //    printf("Load %s failed!\n", Config::getInstance()->getString("plugin").c_str());
+    //}
 }
 
 PotStreamVideo::~PotStreamVideo()

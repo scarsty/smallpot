@@ -57,7 +57,7 @@ int PotPlayer::beginWithFile(std::string filename)
 
     if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
     {
-        filename = Config::getInstance()->getString("recent_file");
+        filename = Config::getInstance()->getNewestRecord();
         if (!File::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
         {
             filename = "";
@@ -647,10 +647,6 @@ void PotPlayer::closeMedia(const std::string& filename)
     }
     config->setString("sys_encode", sys_encode_);
     config->setInteger("volume", cur_volume_);
-    if (config->getInteger("auto_play_recent") && !drop_filename_.empty())
-    {
-        config->setString("recent_file", drop_filename_);
-    }
     //config->autoClearRecord();
     config->write();
 #endif

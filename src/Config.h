@@ -6,6 +6,13 @@
 
 class Config
 {
+    struct Record
+    {
+        std::string filename;
+        int second;
+        int64_t time;
+    };
+
 private:
     std::string content_;
     std::string filename_;
@@ -35,11 +42,15 @@ public:
 
     //¼ÇÂ¼
     int getRecord(const std::string& name);
+    std::string getNewestRecord();
     void removeRecord(const std::string& name);
     void setRecord(const std::string& name, int v);
     void clearAllRecord();
     void autoClearRecord();
 
     std::string dealFilename(const std::string& s0);
-    std::string getFileKey(const std::string& s0);
+
+    std::string enStr(const std::string& in);
+    std::string deStr(std::string out);
+    std::vector<Record> getSortedRecord();
 };
