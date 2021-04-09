@@ -11,6 +11,8 @@ SmallPot是一个轻量级播放器。
 
 另外据说叫大太嚣张，现在改叫小水壶了。
 
+因为播放器的很多问题解决不了，且性能不及vlc，估计以后也不更新了。
+
 ## 架构
 
 程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。配置文件使用的是ini。
@@ -37,6 +39,7 @@ Windows下也可以从<https://github.com/scarsty/lib-collection>取得头文件
 
 请使用Visual Studio编译。
 若编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
+建议使用vcpkg安装依赖库。
 
 ### MacOS
 
