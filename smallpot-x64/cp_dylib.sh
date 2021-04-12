@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #DYLIBS=`ls -1`
-DYLIBS=TinyPot.exe
+DYLIBS=SmallPot.exe
 for dylib in $DYLIBS; do		
 	#echo found $dylib
 	BIN=$dylib

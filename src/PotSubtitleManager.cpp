@@ -81,7 +81,7 @@ std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
         {
             return str;
         }
-        str = File::getFilePath(str) + "/sub/" + File::getFilenameWithoutPath(str);
+        str = File::getFilePath(str) + "/subs/" + File::getFilenameWithoutPath(str);
         if (File::fileExist(str))
         {
             return str;
