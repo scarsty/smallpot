@@ -113,6 +113,8 @@ int PotPlayer::eventLoop()
 {
     BP_Event e;
 
+    bool hold_mouse = false;
+    int64_t hold_time = 0;
     bool loop = true, pause = false, seeking = false;
     int finished, i = 0;
     const int seek_step = 5000;
@@ -178,11 +180,37 @@ int PotPlayer::eventLoop()
             }
         };
 
+        auto seekButton = [&]()
+        {
+            if (e.button.button == BP_BUTTON_LEFT)
+            {
+                int button = UI_.inButton();
+                if (button == PotUI::ButtonLeft)
+                {
+                    media_->seekTime(media_->getTime() - seek_step, -1);
+                    UI_.setText("");
+                    seeking = true;
+                }
+                else if (button == PotUI::ButtonRight)
+                {
+                    media_->seekTime(media_->getTime() + seek_step, 1);
+                    UI_.setText("");
+                    seeking = true;
+                }
+            }
+        };
+
+        if (hold_mouse && engine_->getTicks() - hold_time > 500)
+        {
+            seekButton();
+        }
+
         switch (e.type)
         {
         case BP_MOUSEMOTION:
             break;
         case BP_MOUSEBUTTONUP:
+            hold_mouse = false;
             if (e.button.button == BP_BUTTON_LEFT)
             {
                 double pos = UI_.inProcess();
@@ -224,6 +252,11 @@ int PotPlayer::eventLoop()
                 running_ = false;
             }
 #endif
+            break;
+        case BP_MOUSEBUTTONDOWN:
+            hold_mouse = true;
+            hold_time = engine_->getTicks();
+            seekButton();
             break;
         case BP_MOUSEWHEEL:
         {

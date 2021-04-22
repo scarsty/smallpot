@@ -61,6 +61,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     //°´Å¥
     engine_->setColor(square_, { 255, 255, 255 }, alpha_);
     engine_->setColor(triangle_, { 255, 255, 255 }, alpha_);
+    engine_->setColor(triangle2_, { 255, 255, 255 }, alpha_);
     engine_->setColor(to_full_screen_, { 255, 255, 255 }, alpha_);
     engine_->setColor(to_window_, { 255, 255, 255 }, alpha_);
     engine_->setColor(hollow_, { 255, 255, 255 }, alpha_);
@@ -99,7 +100,15 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             break;
         case ButtonSubtitle:
             engine_->renderCopy(hollow_, button_x, button_y, button_w_, button_h_);
-            engine_->renderCopy(square_, button_x + button_w_* 0.2, button_y + button_h_ * 0.6, button_w_ * 0.6, button_h_ * 0.2);
+            engine_->renderCopy(square_, button_x + button_w_ * 0.2, button_y + button_h_ * 0.6, button_w_ * 0.6, button_h_ * 0.2);
+            break;
+        case ButtonLeft:
+            engine_->renderCopy(triangle2_, button_x, button_y, button_w_ / 2, button_h_);
+            engine_->renderCopy(triangle2_, button_x + 12, button_y, button_w_ / 2, button_h_);
+            break;
+        case ButtonRight:
+            engine_->renderCopy(triangle_, button_x, button_y, button_w_ / 2, button_h_);
+            engine_->renderCopy(triangle_, button_x + 12, button_y, button_w_ / 2, button_h_);
             break;
         }
     }
@@ -174,6 +183,12 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             case ButtonSubtitle:
                 text = "Switch subtitles";
                 break;
+            case ButtonLeft:
+                text = "Backward some seconds";
+                break;
+            case ButtonRight:
+                text = "Forward some seconds";
+                break;
                 //case ButtonVolume:
                 //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
                 //    break;
@@ -242,6 +257,7 @@ void PotUI::init()
     square_ = engine_->createSquareTexture(40);
     ball_ = engine_->createSpecialTexture(50);
     triangle_ = engine_->createSpecialTexture(200, 1);
+    triangle2_ = engine_->createSpecialTexture(200, 2);
     to_full_screen_ = engine_->createSpecialTexture(20, 4);
     to_window_ = engine_->createSpecialTexture(20, 5);
     hollow_ = engine_->createSpecialTexture(20, 6);
