@@ -250,6 +250,15 @@ BP_Texture* Engine::createSpecialTexture(int size, int mode)
                 }
                 SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
             }
+            if (mode == 7)
+            {
+                uint8_t a = 0;
+                if (x == 0 || y == 0 || x == size - 1 || y == size - 1)
+                {
+                    a = 255;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
         }
     }
     auto ball = SDL_CreateTextureFromSurface(renderer_, ball_s);
@@ -476,8 +485,7 @@ int Engine::showMessage(const std::string& content)
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
             { 0, 0, 255 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
-            { 255, 0, 255 }
-        }
+            { 255, 0, 255 } }
     };
     const SDL_MessageBoxData messageboxdata =
     {

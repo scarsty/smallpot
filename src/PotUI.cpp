@@ -86,7 +86,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             break;
         case ButtonNext:
             engine_->renderCopy(triangle_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderCopy(square_, button_x + 14, button_y, 6, button_h_);
+            engine_->renderCopy(square_, button_x + 12, button_y, 8, button_h_);
             break;
         case ButtonFullScreen:
             if (engine_->isFullScreen())
@@ -104,13 +104,17 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             break;
         case ButtonLeft:
             engine_->renderCopy(triangle2_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderCopy(triangle2_, button_x + 12, button_y, button_w_ / 2, button_h_);
+            engine_->renderCopy(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonRight:
             engine_->renderCopy(triangle_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderCopy(triangle_, button_x + 12, button_y, button_w_ / 2, button_h_);
+            engine_->renderCopy(triangle_, button_x + 10, button_y, button_w_ / 2, button_h_);
             break;
         }
+    }
+    if (in_button > 0)
+    {
+        engine_->renderCopy(frame_, button_x_ + (in_button - 1) * (button_w_ + 10) - 2, button_y_ - 2, button_w_ + 4, button_h_ + 4);
     }
 
     int button_x = win_w_ - 10 - button_w_;
@@ -139,67 +143,51 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         text_ = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
         drawText(text_);
     }
-    else if (in_button <= 0)
-    {
-        if (text_ == "")
-        {
-            drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
-        }
-        else
-        {
-            drawText(text_);
-        }
-    }
     else
     {
-        std::string text;
-        if (text_.empty())
+        drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
+    }
+    std::string text;
+
+    switch (in_button)
+    {
+    case ButtonPause:
+        if (pause)
         {
-            switch (in_button)
-            {
-            case ButtonPause:
-                if (pause)
-                {
-                    text = "Play";
-                }
-                else
-                {
-                    text = "Pause";
-                }
-                break;
-            case ButtonNext:
-                text = "Next";
-                break;
-            case ButtonFullScreen:
-                if (engine_->isFullScreen())
-                {
-                    text = "Window";
-                }
-                else
-                {
-                    text = "Full Screen";
-                }
-                break;
-            case ButtonSubtitle:
-                text = "Switch subtitles";
-                break;
-            case ButtonLeft:
-                text = "Backward some seconds";
-                break;
-            case ButtonRight:
-                text = "Forward some seconds";
-                break;
-                //case ButtonVolume:
-                //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
-                //    break;
-            }
+            text = "Play";
         }
         else
         {
-            text = text_;
+            text = "Pause";
         }
-        drawText(text);
+        break;
+    case ButtonNext:
+        text = "Next";
+        break;
+    case ButtonFullScreen:
+        if (engine_->isFullScreen())
+        {
+            text = "Window";
+        }
+        else
+        {
+            text = "Full Screen";
+        }
+        break;
+    case ButtonSubtitle:
+        text = "Switch subtitles";
+        break;
+    case ButtonLeft:
+        text = "Backward some seconds";
+        break;
+    case ButtonRight:
+        text = "Forward some seconds";
+        break;
+    //case ButtonVolume:
+    //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+    //    break;
     }
+    Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, BP_ALIGN_LEFT);
 }
 
 std::string PotUI::convertTimeToString(int time)
@@ -261,6 +249,7 @@ void PotUI::init()
     to_full_screen_ = engine_->createSpecialTexture(20, 4);
     to_window_ = engine_->createSpecialTexture(20, 5);
     hollow_ = engine_->createSpecialTexture(20, 6);
+    frame_ = engine_->createSpecialTexture(20, 7);
     fontname_ = Config::getInstance()->getString("ui_font");
     if (!File::fileExist(fontname_))
     {
