@@ -138,15 +138,15 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     }
 
     //ÎÄ×Ö
-    if (text_ == "v")
-    {
-        text_ = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
-        drawText(text_);
-    }
-    else
-    {
-        drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
-    }
+    //if (text_ == "v")
+    //{
+    //    text_ = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+    //    drawText(text_);
+    //}
+    //else
+    //{
+    drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
+    //}
     std::string text;
 
     switch (in_button)
@@ -183,9 +183,9 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     case ButtonRight:
         text = "Forward some seconds";
         break;
-    //case ButtonVolume:
-    //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
-    //    break;
+        //case ButtonVolume:
+        //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+        //    break;
     }
     Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, BP_ALIGN_LEFT);
 }
