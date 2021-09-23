@@ -117,7 +117,7 @@ int PotPlayer::eventLoop()
     int64_t hold_time = 0;
     bool loop = true, pause = false, seeking = false;
     int finished, i = 0;
-    const int seek_step = 5000;
+    const int seek_step = 1000;
     int volume_step = 1;
     bool havevideo = media_->getVideo()->exist();
     bool havemedia = media_->getAudio()->exist() || havevideo;
@@ -262,13 +262,19 @@ int PotPlayer::eventLoop()
         {
             if (e.wheel.y > 0)
             {
-                cur_volume_ = media_->getAudio()->changeVolume(volume_step);
+                media_->seekTime(media_->getTime() - seek_step, -1);
+                UI_.setText("");
+                seeking = true;
+                //cur_volume_ = media_->getAudio()->changeVolume(volume_step);
             }
             else if (e.wheel.y < 0)
             {
-                cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
+                media_->seekTime(media_->getTime() + seek_step, 1);
+                UI_.setText("");
+                seeking = true;
+                //cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
             }
-            UI_.setText("v");
+            //UI_.setText("v");
             break;
         }
         case BP_KEYDOWN:
