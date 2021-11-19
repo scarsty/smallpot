@@ -124,6 +124,7 @@ std::string Config::dealFilename(const std::string& s0)
 
 std::string Config::enStr(const std::string& in)
 {
+    return in;
     std::string out;
     uint8_t a = 0;
     for (auto& c : in)
@@ -141,6 +142,7 @@ std::string Config::enStr(const std::string& in)
 
 std::string Config::deStr(std::string out)
 {
+    return out;
     std::string in;
     std::reverse(out.begin(), out.end());
 
