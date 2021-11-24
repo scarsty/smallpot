@@ -227,7 +227,8 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
             avcodec_flush_buffers(codec_ctx_);
         }
         dropAllDecoded();
-        avformat_seek_file(format_ctx_, -1, INT64_MIN, i, INT64_MAX, 0);
+        av_seek_frame(format_ctx_, -1, i, flag);
+        //avformat_seek_file(format_ctx_, -1, INT64_MIN, i, INT64_MAX, 0);
     }
     seek_record_ = engine_->getTicks();
     return 0;
