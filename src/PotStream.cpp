@@ -135,6 +135,8 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
                     ret = 2;    //有数据，跳过
                 }
             }
+            time_pts_ = packet_.pts * time_base_packet_ - start_time_;
+            time_dts_ = packet_.dts * time_base_packet_ - start_time_;
             ended_ = false;
         }
         else
@@ -143,11 +145,11 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
             ended_ = true;
             break;
         }
-        if (ret > 0)
-        {
-            time_pts_ = packet_.pts * time_base_packet_ - start_time_;
-            time_dts_ = packet_.dts * time_base_packet_ - start_time_;
-        }
+        //if (ret > 0)
+        //{
+        //    time_pts_ = packet_.pts * time_base_packet_ - start_time_;
+        //    time_dts_ = packet_.dts * time_base_packet_ - start_time_;
+        //}
         if (need_read_packet_)
         {
             av_packet_unref(&packet_);
@@ -225,7 +227,7 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
             avcodec_flush_buffers(codec_ctx_);
         }
         dropAllDecoded();
-        av_seek_frame(format_ctx_, -1, i, flag);
+        avformat_seek_file(format_ctx_, -1, INT64_MIN, i, INT64_MAX, 0);
     }
     seek_record_ = engine_->getTicks();
     return 0;
