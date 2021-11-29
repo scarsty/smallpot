@@ -21,10 +21,10 @@ SmallPot是一个轻量级播放器。
 
 ## 编译
 
-首先需要取得common工程。
+首先需要取得nb工程。
 
 ```shell
-git clone https://github.com/scarsty/common common
+git clone https://github.com/scarsty/nb nb
 ```
 
 其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-image，SDL2-ttf等，推荐使用系统的包管理工具获取这些库，Windows下推荐使用vcpkg。其中SDL2_image仅有一处使用，且并不是必须的，可以简单修改后去除。
