@@ -333,12 +333,18 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     renderPresent();
     TTF_Init();
 
-    SDL_Rect r;
-    SDL_GetDisplayBounds(0, &r);
-    min_x_ = r.x;
-    min_y_ = r.y;
-    max_x_ = r.w + r.x;
-    max_y_ = r.h + r.y;
+    SDL_Rect r1, r2;
+    SDL_GetDisplayUsableBounds(0, &r1);
+    SDL_GetDisplayBounds(0, &r2);
+    min_x_ = r1.x;
+    min_y_ = r1.y;
+    max_x_ = r1.w + r1.x;
+    max_y_ = r1.h + r1.y;
+    if (min_y_ == 0)
+    {
+        //min_y_ = r2.h - r1.h;
+        //max_y_ -= min_y_;
+    }
 
     printf("maximum width and height are: %d, %d\n", max_x_, max_y_);
     return 0;
