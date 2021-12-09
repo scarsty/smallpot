@@ -24,7 +24,7 @@ std::string PotConv::conv(const std::string& src, const char* from, const char* 
     memset(in, 0, inlen + 1);
     memcpy(in, src.c_str(), inlen);
     memset(out, 0, outlen + 1);
-    char *pin = in, *pout = out;
+    char* pin = in, * pout = out;
     if (iconv(cd, &pin, &inlen, &pout, &outlen) == -1)
     {
         out[0] = '\0';

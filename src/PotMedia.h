@@ -21,7 +21,7 @@ public:
 private:
     std::vector<PotStream*> streams_;
 
-    AVFormatContext *format_ctx_video_, *format_ctx_audio_, *format_ctx_subtitle_;
+    AVFormatContext* format_ctx_video_, * format_ctx_audio_, * format_ctx_subtitle_;
 
     PotStreamVideo* stream_video_ = nullptr;
     PotStreamAudio* stream_audio_ = nullptr;

@@ -32,8 +32,7 @@ void Config::init(std::string filepath)
     printf("try find config file: %s\n", filename_.c_str());
     ini_.loadFile(filename_);
     //setString("filepath", filepath);
-    std::thread th{ [this]()
-        { autoClearRecord(); } };
+    std::thread th{ [this]() { autoClearRecord(); return; } };
     th.detach();
 }
 
@@ -201,7 +200,6 @@ std::vector<Config::Record> Config::getSortedRecord()
             rv.push_back(r);
         }
     }
-    std::sort(rv.begin(), rv.end(), [](const Record& l, const Record& r)
-        { return l.time > r.time; });
+    std::sort(rv.begin(), rv.end(), [](const Record& l, const Record& r) { return l.time > r.time; });
     return rv;
 }

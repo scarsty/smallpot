@@ -402,7 +402,7 @@ int PotPlayer::eventLoop()
             running_ = false;
             exit_type_ = 1;
             break;
-        //#endif
+            //#endif
         case BP_WINDOWEVENT:
             if (e.window.event == BP_WINDOWEVENT_RESIZED)
             {
@@ -618,10 +618,7 @@ void PotPlayer::openMedia(const std::string& filename)
     }
     else
     {
-        int maxw = engine_->getMaxWindowWidth();
-        int maxh = engine_->getMaxWindowHeight();
-        //搞点余量？
-        engine_->setWindowSize(std::min(width_, maxw - 80), std::min(height_, maxh - 80));
+        engine_->setWindowSize(width_, height_);
     }
     engine_->setWindowTitle(PotConv::conv(File::getFilenameWithoutPath(open_filename), sys_encode_, BP_encode_));
 #endif

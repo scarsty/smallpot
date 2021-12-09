@@ -63,7 +63,7 @@ private:
     BP_Renderer* renderer_ = nullptr;
     bool renderer_self_ = false;
     int window_mode_ = 0;    //0-窗口和渲染器自行创建，1-窗口和渲染器由外部创建
-    BP_Texture *tex_ = nullptr, *tex2_ = nullptr, *logo_ = nullptr;
+    BP_Texture* tex_ = nullptr, * tex2_ = nullptr, * logo_ = nullptr;
     BP_AudioSpec audio_spec_;
     BP_Rect rect_;
     bool full_screen_ = false;

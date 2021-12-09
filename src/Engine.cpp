@@ -342,10 +342,9 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     max_y_ = r1.h + r1.y;
     if (min_y_ == 0)
     {
-        //min_y_ = r2.h - r1.h;
-        //max_y_ -= min_y_;
+        min_y_ = r2.h - r1.h;
+        max_y_ -= min_y_;
     }
-
     printf("maximum width and height are: %d, %d\n", max_x_, max_y_);
     return 0;
 }
@@ -491,7 +490,8 @@ int Engine::showMessage(const std::string& content)
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
             { 0, 0, 255 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
-            { 255, 0, 255 } }
+            { 255, 0, 255 }
+        }
     };
     const SDL_MessageBoxData messageboxdata =
     {
@@ -515,6 +515,10 @@ bool Engine::getWindowIsMaximized()
 
 void Engine::setWindowSize(int w, int h)
 {
+    if (getWindowIsMaximized())
+    {
+        return;
+    }
     if (rotation_ == 90 || rotation_ == 270)
     {
         std::swap(w, h);
@@ -523,12 +527,15 @@ void Engine::setWindowSize(int w, int h)
     {
         return;
     }
+    //w = 1920;
+    //h = 1080;
     win_w_ = std::min(max_x_ - min_x_, w);
     win_h_ = std::min(max_y_ - min_y_, h);
     double ratio;
     ratio = std::min(1.0 * win_w_ / w, 1.0 * win_h_ / h);
     win_w_ = w * ratio;
     win_h_ = h * ratio;
+    printf("%d, %d, %d, %d, %f\n", win_w_, win_h_, w, h, ratio);
     if (!window_)
     {
         return;
@@ -540,6 +547,7 @@ void Engine::setWindowSize(int w, int h)
     SDL_ShowWindow(window_);
     SDL_RaiseWindow(window_);
     SDL_GetWindowSize(window_, &win_w_, &win_h_);
+    printf("%d, %d, %d, %d, %f\n", win_w_, win_h_, w, h, ratio);
     //resetWindowsPosition();
     //renderPresent();
 }

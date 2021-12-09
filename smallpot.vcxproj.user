@@ -7,7 +7,7 @@
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\work</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>C:\Users\sty\Desktop\1.rmvb</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>D:\_sty_bak\sty\media\大明王朝1566.2007.46集全.国语.简繁中字￡CMCT小鱼\大明王朝1566.E01.2007.JPN.DVDRip.x264-10bit.AC3-CMCT.mkv</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\smallpot-x64</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
