@@ -66,7 +66,7 @@ int PotPlayer::beginWithFile(std::string filename)
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = filename;
 
-    printf("Begin with file: %s\n", filename.c_str());
+    fmt1::print("Begin with file: {}\n", filename);
     auto play_filename = drop_filename_;
     running_ = true;
 
@@ -82,7 +82,7 @@ int PotPlayer::beginWithFile(std::string filename)
 
         openMedia(play_filename);
         bool add_cond = true;
-        //printf("%d", engine_->getTicks() - start_time);
+        //fmt1::print("{}", engine_->getTicks() - start_time);
         add_cond = engine_->getTicks() - start_time < 2000;
 #ifndef _WINDLL
         //if (count == 0 && add_cond)
@@ -91,7 +91,7 @@ int PotPlayer::beginWithFile(std::string filename)
             auto h = engine_->getMaxWindowHeight();
             auto x = max(0, (w-_w)/2);
             auto y = max(0, (h-_h)/2);
-            printf("%d,%d\n",x,y);
+            fmt1::print("{},{}\n",x,y);
             engine_->setWindowPosition(x, y);*/
             //首次打开文件窗口居中
             engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
@@ -123,7 +123,7 @@ int PotPlayer::eventLoop()
     bool havemedia = media_->getAudio()->exist() || havevideo;
     int totalTime = media_->getTotalTime();
     std::string open_filename;
-    printf("Total time is %1.3f s or %d min %1.3f s\n", totalTime / 1e3, totalTime / 60000, totalTime % 60000 / 1e3);
+    fmt1::print("Total time is {:1.3}s or {}min {:1.3}s\n", totalTime / 1e3, totalTime / 60000, totalTime % 60000 / 1e3);
 
     int maxDelay = 0;          //统计使用
     int prev_show_time = 0;    //上一次显示的时间
@@ -176,7 +176,7 @@ int PotPlayer::eventLoop()
             }
             else if (sub_state >= 2 && media_->getSubtitle()->getStreamIndex() >= 0)
             {
-                UI_.setText(convert::formatString("Internal subtitles stream %d", media_->getSubtitle()->getStreamIndex()));
+                UI_.setText(fmt1::format("Internal subtitles stream {}", media_->getSubtitle()->getStreamIndex()));
             }
         };
 
@@ -301,7 +301,7 @@ int PotPlayer::eventLoop()
                 break;
             case BPK_1:
                 media_->switchStream(BPMEDIA_TYPE_AUDIO);
-                UI_.setText(convert::formatString("Switch audio stream to %d", media_->getAudio()->getStreamIndex()));
+                UI_.setText(fmt1::format("Switch audio stream to {}", media_->getAudio()->getStreamIndex()));
                 break;
             case BPK_2:
                 switchSubtitle();
@@ -416,7 +416,7 @@ int PotPlayer::eventLoop()
             //有文件拖入先检查是不是字幕，不是字幕则当作媒体文件，打开失败活该
             //若将媒体文件当成字幕打开会非常慢，故限制字幕文件的扩展名
             open_filename = PotConv::conv(e.drop.file, BP_encode_, sys_encode_);
-            printf("Change file: %s\n", open_filename.c_str());
+            fmt1::print("Change file: {}\n", open_filename);
             //检查是不是字幕，如果是则打开
             if (PotSubtitleManager::isSubtitle(open_filename))
             {
@@ -485,7 +485,7 @@ int PotPlayer::eventLoop()
             }
         }
 
-        //printf("\nvideostate%d", videostate);
+        //fmt1::print("\nvideostate{}", videostate);
         //依据解视频的结果判断是否显示
         bool show = false;
         //有视频显示成功，或者有静态视频，或者只有音频，均刷新
@@ -496,7 +496,7 @@ int PotPlayer::eventLoop()
 #ifdef _DEBUG
             int videoTime = (media_->getVideo()->getTimedts());
             int delay = -videoTime + audioTime;
-            printf("\rvolume %d, audio %4.3f, video %4.3f, diff %1.3f in loop %d\t",
+            fmt1::print("\rvolume {}, audio {:4.3}, video {:4.3}, diff {:1.3} in loop {}\t",
                 media_->getAudio()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay / 1e3, i);
 #endif
         }
@@ -555,7 +555,7 @@ int PotPlayer::eventLoop()
     engine_->renderClear();
     engine_->renderPresent();
 
-    auto s = convert::formatString("%d", i);
+    auto s = fmt1::format("{}", i);
     //engine_->showMessage(s);
     return exit_type_;
 }
@@ -642,7 +642,7 @@ void PotPlayer::openMedia(const std::string& filename)
     {
         cur_time_ = 0;
         cur_time_ = Config::getInstance()->getRecord(filename.c_str());
-        printf("Play from %1.3fs\n", cur_time_ / 1000.0);
+        fmt1::print("Play from {:1.3}s\n", cur_time_ / 1000.0);
         if (cur_time_ > 0 && cur_time_ < media_->getTotalTime())
         {
             media_->seekTime(cur_time_, -1);

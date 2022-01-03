@@ -192,9 +192,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
 
 std::string PotUI::convertTimeToString(int time)
 {
-    char s[256];
-    sprintf(s, "%d:%02d:%02d", time / 3600000, time % 3600000 / 60000, time % 60000 / 1000);
-    return s;
+    return fmt1::format("{}:{:02}:{:02}", time / 3600000, time % 3600000 / 60000, time % 60000 / 1000);
 }
 
 void PotUI::setText(std::string t)

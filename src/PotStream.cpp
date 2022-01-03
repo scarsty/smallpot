@@ -51,7 +51,7 @@ int PotStream::openFile(const std::string& filename)
     //        stream_index_vector_.push_back(i);
     //        if (stream_index_vector_.size() == 1)
     //        {
-    //            //printf("finded media stream: %d\n", type);
+    //            //fmt1::print("finded media stream: %d\n", type);
     //            stream_ = format_ctx_->streams[i];
     //            codec_ctx_ = stream_->codec;
     //            if (stream_->r_frame_rate.den)
@@ -182,7 +182,7 @@ int PotStream::tryDecodeFrame(bool reset)
             continue;
         }
         auto f = convertFrameToContent();
-        //printf("%d\n", _map.size());
+        //fmt1::print("{}\n", _map.size());
         //如果只有一帧，则静止时间需更新
         if (data_map_.size() == 0)
         {
@@ -430,7 +430,7 @@ void PotStream::getRatio(int& x, int& y)
 //            if (e.type == BP_QUIT || e.type == BP_DROPFILE)
 //            {
 //                engine_->pushEvent(e);
-//                printf("decode error.\n");
+//                fmt1::print("decode error.\n");
 //                stopping = true;
 //                break;
 //            }

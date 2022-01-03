@@ -1,4 +1,5 @@
 #include "PotResample.h"
+#include "fmt1.h"
 
 PotResample::PotResample()
 {
@@ -26,7 +27,7 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     swr_ctx = swr_alloc();
     if (!swr_ctx)
     {
-        printf("swr_alloc error \n");
+        fmt1::print("swr_alloc error \n");
         return -1;
     }
 
@@ -64,14 +65,14 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
 
     if (src_ch_layout <= 0)
     {
-        printf("src_ch_layout error \n");
+        fmt1::print("src_ch_layout error \n");
         return -1;
     }
 
     src_nb_samples = frame->nb_samples;
     if (src_nb_samples <= 0)
     {
-        printf("src_nb_samples error \n");
+        fmt1::print("src_nb_samples error \n");
         return -1;
     }
 
@@ -85,14 +86,14 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
 
     if ((ret = swr_init(swr_ctx)) < 0)
     {
-        printf("Failed to initialize the resampling context\n");
+        fmt1::print("Failed to initialize the resampling context\n");
         return -1;
     }
 
     max_dst_nb_samples = dst_nb_samples = av_rescale_rnd(src_nb_samples, out_sample_rate, codec_ctx->sample_rate, AV_ROUND_UP);
     if (max_dst_nb_samples <= 0)
     {
-        printf("av_rescale_rnd error \n");
+        fmt1::print("av_rescale_rnd error \n");
         return -1;
     }
 
@@ -100,14 +101,14 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     ret = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format_, 0);
     if (ret < 0)
     {
-        printf("av_samples_alloc_array_and_samples error \n");
+        fmt1::print("av_samples_alloc_array_and_samples error \n");
         return -1;
     }
 
     dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, codec_ctx->sample_rate) + src_nb_samples, out_sample_rate, codec_ctx->sample_rate, AV_ROUND_UP);
     if (dst_nb_samples <= 0)
     {
-        printf("av_rescale_rnd error \n");
+        fmt1::print("av_rescale_rnd error \n");
         return -1;
     }
     if (dst_nb_samples > max_dst_nb_samples)
@@ -122,20 +123,20 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         ret = swr_convert(swr_ctx, dst_data, dst_nb_samples, (const uint8_t**)frame->data, frame->nb_samples);
         if (ret < 0)
         {
-            printf("swr_convert error \n");
+            fmt1::print("swr_convert error \n");
             return -1;
         }
 
         resampled_data_size = av_samples_get_buffer_size(&dst_linesize, dst_nb_channels, ret, (AVSampleFormat)out_sample_format_, 1);
         if (resampled_data_size < 0)
         {
-            printf("av_samples_get_buffer_size error \n");
+            fmt1::print("av_samples_get_buffer_size error \n");
             return -1;
         }
     }
     else
     {
-        printf("swr_ctx null error \n");
+        fmt1::print("swr_ctx null error \n");
         return -1;
     }
 
@@ -153,6 +154,6 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     {
         swr_free(&swr_ctx);
     }
-    //printf("%d\n", resampled_data_size);
+    //fmt1::print("%d\n", resampled_data_size);
     return resampled_data_size;
 }

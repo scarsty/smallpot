@@ -92,6 +92,7 @@
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -128,6 +129,8 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <SDLCheck>false</SDLCheck>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,9 +184,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(VCPKG_LIB_PATH)\x64-windows\include;../nb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../nb</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -196,8 +201,8 @@
       <DelayLoadDLLs>
       </DelayLoadDLLs>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>sdl2.lib;sdl2_ttf.lib;sdl2_image.lib;sdl2main.lib;ass.lib;iconv.lib;avutil.lib;avcodec.lib;avformat.lib;swresample.lib;swscale.lib;fribidi.lib;harfbuzz.lib;freetype.lib;bz2.lib;libpng16.lib;zlib.lib;charset.lib;winmm.lib;version.lib;imm32.lib;bcrypt.lib;secur32.lib;ws2_32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x64-windows\lib;$(VCPKG_LIB_PATH)\x64-windows\lib\manual-link;lib/x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sdl2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x64-windows\lib\manual-link;lib/x64</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /y x64\Release\*.exe smallpot-x64\</Command>
@@ -228,6 +233,7 @@
     <ClCompile Include="src\PotSubtitleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\nb\fmt1.h" />
     <ClInclude Include="common\File.h" />
     <ClInclude Include="common\convert.h" />
     <ClInclude Include="common\Timer.h" />

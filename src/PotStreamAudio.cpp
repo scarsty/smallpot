@@ -96,7 +96,7 @@ void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
         }
         if (data_read_ >= f.info)
         {
-            //printf("drop %I64d\n", t->dataRead - f.info);
+            //fmt1::print("drop %I64d\n", t->dataRead - f.info);
             dropDecoded();
             if (data_read_ == f.info && time_shown_ != f.time)
             {
@@ -134,7 +134,7 @@ FrameContent PotStreamAudio::convertFrameToContent()
         return { -1, data_length_, nullptr };
     }
     //计算写入位置
-    //printf("%I64d,%I64d, %d\n", dataWrite, dataRead, _map.size());
+    //fmt1::print("%I64d,%I64d, %d\n", dataWrite, dataRead, _map.size());
     int pos = data_write_ % buffer_size_;
     int rest = buffer_size_ - pos;
     //够长一次写入，不够长两次写入，不考虑更长情况，如更长是缓冲区不够，效果也不会正常
@@ -157,7 +157,7 @@ int PotStreamAudio::setVolume(int v)
 {
     v = std::max(v, 0);
     v = std::min(v, engine_->getMaxVolume());
-    //printf("\rvolume is %d\t\t\t\t\t", v);
+    //fmt1::print("\rvolume is %d\t\t\t\t\t", v);
     return volume_ = v;
 }
 

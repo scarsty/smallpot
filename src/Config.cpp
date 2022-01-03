@@ -3,6 +3,7 @@
 #include "PotConv.h"
 #include "Timer.h"
 #include "convert.h"
+#include "fmt1.h"
 #include <iostream>
 #include <thread>
 
@@ -29,7 +30,7 @@ void Config::init(std::string filepath)
         filepath = filepath + "/";
     }
     filename_ = filepath + "smallpot.config.ini";
-    printf("try find config file: %s\n", filename_.c_str());
+    fmt1::print("try find config file: {}\n", filename_);
     ini_.loadFile(filename_);
     //setString("filepath", filepath);
     std::thread th{ [this]() { autoClearRecord(); return; } };
@@ -66,7 +67,7 @@ void Config::setString(const std::string& name, const std::string v)
 
 void Config::setInteger(const std::string& name, int v)
 {
-    setString(name, convert::formatString("%d", v));
+    setString(name, fmt1::format("{}", v));
 }
 
 int Config::getRecord(const std::string& name)
@@ -130,10 +131,10 @@ std::string Config::enStr(const std::string& in)
     {
         a += c;
     }
-    out += convert::formatString("%02x", a);
+    out += fmt1::format("{:02x}", a);
     for (auto& c : in)
     {
-        out += convert::formatString("%02x", uint8_t(c) ^ a);
+        out += fmt1::format("{:02x}", uint8_t(c) ^ a);
     }
     std::reverse(out.begin(), out.end());
     return out;

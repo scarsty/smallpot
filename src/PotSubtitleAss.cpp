@@ -121,7 +121,7 @@ void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_tim
         contents_.insert(str);
         ass_process_data(track_, (char*)str.c_str(), str.size());
 #ifdef _DEBUG
-        printf("%s\n", PotConv::conv(str, "utf-8", "cp936").c_str());
+        fmt1::print("{}\n", PotConv::conv(str, "utf-8", "cp936"));
 #endif
     }
 }

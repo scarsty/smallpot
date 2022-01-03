@@ -14,6 +14,8 @@ extern "C"
 #include <string>
 #include <vector>
 
+#include "fmt1.h"
+
 //这里是底层部分，将SDL的函数均封装了一次
 //如需更换底层，则要重新实现下面的全部功能，并重新定义全部常数和类型
 #define BP_AUDIO_MIX_MAXVOLUME SDL_MIX_MAXVOLUME
@@ -173,7 +175,7 @@ public:
     uint32_t tic() { return time_ = SDL_GetTicks(); }
     void toc()
     {
-        if (SDL_GetTicks() != time_) { printf("%d\n", SDL_GetTicks() - time_); }
+        if (SDL_GetTicks() != time_) { fmt1::print("{}\n", SDL_GetTicks() - time_); }
     }
     void getMouseState(int& x, int& y) { SDL_GetMouseState(&x, &y); }
     int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); }

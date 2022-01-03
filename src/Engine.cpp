@@ -98,7 +98,7 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
     SDL_AudioSpec want;
     SDL_zero(want);
 
-    printf("\naudio freq/channels: stream %d/%d, ", freq, channels);
+    fmt1::print("\naudio freq/channels: stream {}/{}, ", freq, channels);
     if (channels <= 2)
     {
         channels = 2;
@@ -125,7 +125,7 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
         want.channels--;
         i--;
     }
-    printf("device %d/%d\n", audio_spec_.freq, audio_spec_.channels);
+    fmt1::print("device {}/{}\n", audio_spec_.freq, audio_spec_.channels);
 
     audio_format_ = audio_spec_.format;
 
@@ -135,7 +135,7 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
     }
     else
     {
-        printf("failed to open audio: %s\n", SDL_GetError());
+        fmt1::print("failed to open audio: {}\n", SDL_GetError());
     }
 
     freq = audio_spec_.freq;
@@ -318,7 +318,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     SDL_RaiseWindow(window_);
 #endif
     renderer_ = SDL_GetRenderer(window_);
-    printf("%s\n", SDL_GetError());
+    fmt1::print("{}\n", SDL_GetError());
     if (renderer_ == nullptr)
     {
         renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE /*| SDL_RENDERER_PRESENTVSYNC*/);
@@ -345,7 +345,7 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
         min_y_ = r2.h - r1.h;
         max_y_ -= min_y_;
     }
-    printf("maximum width and height are: %d, %d\n", max_x_, max_y_);
+    fmt1::print("maximum width and height are: {}, {}\n", max_x_, max_y_);
     return 0;
 }
 
@@ -535,7 +535,7 @@ void Engine::setWindowSize(int w, int h)
     ratio = std::min(1.0 * win_w_ / w, 1.0 * win_h_ / h);
     win_w_ = w * ratio;
     win_h_ = h * ratio;
-    printf("%d, %d, %d, %d, %f\n", win_w_, win_h_, w, h, ratio);
+    fmt1::print("{}, {}, {}, {}, {}\n", win_w_, win_h_, w, h, ratio);
     if (!window_)
     {
         return;
@@ -547,7 +547,7 @@ void Engine::setWindowSize(int w, int h)
     SDL_ShowWindow(window_);
     SDL_RaiseWindow(window_);
     SDL_GetWindowSize(window_, &win_w_, &win_h_);
-    printf("%d, %d, %d, %d, %f\n", win_w_, win_h_, w, h, ratio);
+    fmt1::print("{}, {}, {}, {}, {}\n", win_w_, win_h_, w, h, ratio);
     //resetWindowsPosition();
     //renderPresent();
 }
