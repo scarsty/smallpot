@@ -278,7 +278,7 @@ BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::st
     //SDL_Color c = { 255, 255, 255, 128 };
     auto text_s = TTF_RenderUTF8_Blended(font, text.c_str(), c);
     auto text_t = SDL_CreateTextureFromSurface(renderer_, text_s);
-    SDL_FreeSurface(text_s);
+    //SDL_FreeSurface(text_s);
     TTF_CloseFont(font);
     return text_t;
 }

@@ -204,3 +204,21 @@ std::vector<Config::Record> Config::getSortedRecord()
     std::sort(rv.begin(), rv.end(), [](const Record& l, const Record& r) { return l.time > r.time; });
     return rv;
 }
+
+std::string Config::findSuitableFilename(const std::string& filename)
+{
+    //若试图打开的文件实际是一个目录，此处将其改为文件夹下最近打开过的文件
+    auto filename1 = filename;
+    for (auto& rv : getSortedRecord())
+    {
+        if (rv.filename == filename)
+        {
+            return filename;
+        }
+        if (rv.filename.find(filename) == 0)
+        {
+            filename1 = rv.filename;
+        }
+    }
+    return filename1;
+}

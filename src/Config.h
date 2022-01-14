@@ -53,4 +53,6 @@ public:
     std::string enStr(const std::string& in);
     std::string deStr(std::string out);
     std::vector<Record> getSortedRecord();
+
+    std::string findSuitableFilename(const std::string& filename);
 };

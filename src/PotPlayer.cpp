@@ -72,6 +72,8 @@ int PotPlayer::beginWithFile(std::string filename)
 
     //_subtitle->init();
 
+    play_filename = Config::getInstance()->findSuitableFilename(play_filename);
+
     while (running_)
     {
         /*if (count <= 1)
