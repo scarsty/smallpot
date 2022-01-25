@@ -196,7 +196,11 @@ std::vector<Config::Record> Config::getSortedRecord()
             auto v = convert::findNumbers<int64_t>(ini_.getString("record", s));
             if (v.size() >= 2)
             {
-                r.time = v[1];
+                r.second = v[1];
+            }
+            if (v.size() >= 3)
+            {
+                r.time = v[2];
             }
             rv.push_back(r);
         }
