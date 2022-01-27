@@ -64,15 +64,11 @@ int PotPlayer::beginWithFile(std::string filename)
         }
     }
     //首次运行拖拽的文件也认为是同一个
-    drop_filename_ = filename;
+    drop_filename_ = Config::getInstance()->findSuitableFilename(filename);
 
     fmt1::print("Begin with file: {}\n", filename);
     auto play_filename = drop_filename_;
     running_ = true;
-
-    //_subtitle->init();
-
-    play_filename = Config::getInstance()->findSuitableFilename(play_filename);
 
     while (running_)
     {
