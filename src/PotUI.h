@@ -16,7 +16,7 @@ public:
         ButtonSubtitle,
         ButtonLeft,
         ButtonRight,
-        //ButtonVolume,
+        ButtonVolume,
         ButtonNone2,
     };
 

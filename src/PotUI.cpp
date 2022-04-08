@@ -233,6 +233,10 @@ int PotUI::inButton()
             }
             button_x += button_w_ + 10;
         }
+        if (x > win_w_ - 10 - button_w_)
+        {
+            return ButtonVolume;
+        }
         return 0;
     }
     return -1;
@@ -256,11 +260,11 @@ void PotUI::init()
         if (!File::fileExist(fontname_))
         {
             fontname_ = "C:/Windows/Fonts/Cambria.ttf";
-        }
+    }
 #else
         fontname_ = "/System/Library/Fonts/Palatino.ttc";
 #endif
-    }
+}
 }
 
 void PotUI::destory()

@@ -258,19 +258,34 @@ int PotPlayer::eventLoop()
             break;
         case BP_MOUSEWHEEL:
         {
-            if (e.wheel.y > 0)
+            if (UI_.inButton() == PotUI::ButtonVolume)
             {
-                media_->seekTime(media_->getTime() - seek_step, -1);
-                UI_.setText("");
-                seeking = true;
-                //cur_volume_ = media_->getAudio()->changeVolume(volume_step);
+                if (e.wheel.y > 0)
+                {
+                    cur_volume_ = media_->getAudio()->changeVolume(volume_step);
+                }
+                else if (e.wheel.y < 0)
+                {
+                    cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
+                }
+                UI_.setText("v");
             }
-            else if (e.wheel.y < 0)
+            else
             {
-                media_->seekTime(media_->getTime() + seek_step, 1);
-                UI_.setText("");
-                seeking = true;
-                //cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
+                if (e.wheel.y > 0)
+                {
+                    media_->seekTime(media_->getTime() - seek_step, -1);
+                    UI_.setText("");
+                    seeking = true;
+                    //cur_volume_ = media_->getAudio()->changeVolume(volume_step);
+                }
+                else if (e.wheel.y < 0)
+                {
+                    media_->seekTime(media_->getTime() + seek_step, 1);
+                    UI_.setText("");
+                    seeking = true;
+                    //cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
+                }
             }
             //UI_.setText("v");
             break;
@@ -547,16 +562,16 @@ int PotPlayer::eventLoop()
         {
             loop = false;
             running_ = false;
-        }
+            }
 #endif
-    }
+        }
     engine_->renderClear();
     engine_->renderPresent();
 
     auto s = fmt1::format("{}", i);
     //engine_->showMessage(s);
     return exit_type_;
-}
+    }
 
 int PotPlayer::init()
 {
