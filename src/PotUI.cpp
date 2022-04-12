@@ -114,7 +114,14 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     }
     if (in_button > 0)
     {
-        engine_->renderCopy(frame_, button_x_ + (in_button - 1) * (button_w_ + 10) - 2, button_y_ - 2, button_w_ + 4, button_h_ + 4);
+        int x = button_x_ + (in_button - 1) * (button_w_ + 10) - 2;
+        int w = button_w_ + 4;
+        if (in_button == ButtonVolume)
+        {
+            x = win_w_ - 10 - button_w_ - 2;
+            w += 3;
+        }
+        engine_->renderCopy(frame_, x, button_y_ - 2, w, button_h_ + 4);
     }
 
     int button_x = win_w_ - 10 - button_w_;
@@ -225,7 +232,7 @@ int PotUI::inButton()
     if (y >= button_y_ && y <= button_y_ + button_h_)
     {
         int button_x = button_x_;
-        for (int i = 1; i < ButtonNone2; i++)
+        for (int i = 1; i < ButtonVolume; i++)
         {
             if (x >= button_x && x <= button_x + button_w_)
             {
@@ -260,11 +267,11 @@ void PotUI::init()
         if (!File::fileExist(fontname_))
         {
             fontname_ = "C:/Windows/Fonts/Cambria.ttf";
-    }
+        }
 #else
         fontname_ = "/System/Library/Fonts/Palatino.ttc";
 #endif
-}
+    }
 }
 
 void PotUI::destory()
