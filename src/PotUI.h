@@ -43,4 +43,6 @@ public:
     void setText(std::string t);
     double inProcess();
     int inButton();
+    int getButtonWidth(int b);
+    int getButtonPos(int b);
 };

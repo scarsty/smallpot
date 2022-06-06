@@ -15,7 +15,7 @@ PotUI::~PotUI()
 
 void PotUI::drawText(const std::string& text)
 {
-    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 20 - button_w_, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
+    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 30 - button_w_ * 2, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
     //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
 }
 
@@ -67,9 +67,9 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     engine_->setColor(hollow_, { 255, 255, 255 }, alpha_);
     button_y_ = win_h_ - 45;
 
-    for (int i = 1; i < ButtonNone2; i++)
+    for (int i = ButtonNone + 1; i < ButtonNone2; i++)
     {
-        int button_x = button_x_ + (i - 1) * (button_w_ + 10);
+        int button_x = getButtonPos(i);
         int button_y = button_y_;
         switch (i)
         {
@@ -114,22 +114,17 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     }
     if (in_button > 0)
     {
-        int x = button_x_ + (in_button - 1) * (button_w_ + 10) - 2;
-        int w = button_w_ + 4;
-        if (in_button == ButtonVolume)
-        {
-            x = win_w_ - 10 - button_w_ - 2;
-            w += 3;
-        }
+        int x = getButtonPos(in_button) - 2;
+        int w = getButtonWidth(in_button) + 4;
         engine_->renderCopy(frame_, x, button_y_ - 2, w, button_h_ + 4);
     }
 
-    int button_x = win_w_ - 10 - button_w_;
-    int one_square = BP_AUDIO_MIX_MAXVOLUME / 8;
+    int button_x = win_w_ - 20 - button_w_ * 2;
+    int one_square = BP_AUDIO_MIX_MAXVOLUME / 16;
     int v = volume;
-    for (int i_v = 0; i_v < 8; i_v++)
+    for (int i_v = 0; i_v < 16; i_v++)
     {
-        int h = (i_v + 1) * 2;
+        int h = (i_v + 1) * 1;
         v -= one_square;
         double r = 1;
         if (v < 0)
@@ -231,22 +226,34 @@ int PotUI::inButton()
     engine_->getMouseState(x, y);
     if (y >= button_y_ && y <= button_y_ + button_h_)
     {
-        int button_x = button_x_;
-        for (int i = 1; i < ButtonVolume; i++)
+        for (int i = ButtonNone + 1; i < ButtonNone2; i++)
         {
-            if (x >= button_x && x <= button_x + button_w_)
+            if (x >= getButtonPos(i) && x <= getButtonPos(i) + getButtonWidth(i))
             {
                 return i;
             }
-            button_x += button_w_ + 10;
-        }
-        if (x > win_w_ - 10 - button_w_)
-        {
-            return ButtonVolume;
         }
         return 0;
     }
     return -1;
+}
+
+int PotUI::getButtonWidth(int b)
+{
+    if (b == ButtonVolume)
+    {
+        return 49;
+    }
+    return 20;
+}
+
+int PotUI::getButtonPos(int b)
+{
+    if (b == ButtonVolume)
+    {
+        return win_w_ - 22 - button_w_ * 2;
+    }
+    return button_x_ + (b - 1) * (button_w_ + 10);
 }
 
 void PotUI::init()

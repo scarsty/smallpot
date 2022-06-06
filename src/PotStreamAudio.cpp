@@ -5,7 +5,7 @@ int PotStreamAudio::volume_;
 
 PotStreamAudio::PotStreamAudio()
 {
-    volume_ = engine_->getMaxVolume() / 2;
+    //volume_ = engine_->getMaxVolume() / 2;
     //预解包数量
     //除非知道音频包定长，否则不应设为0，一般情况下都不建议为0
     max_size_ = 100;
@@ -156,7 +156,7 @@ FrameContent PotStreamAudio::convertFrameToContent()
 int PotStreamAudio::setVolume(int v)
 {
     v = std::max(v, 0);
-    v = std::min(v, engine_->getMaxVolume());
+    v = std::min(v, Engine::getMaxVolume());
     //fmt1::print("\rvolume is %d\t\t\t\t\t", v);
     return volume_ = v;
 }

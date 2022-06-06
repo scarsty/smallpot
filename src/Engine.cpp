@@ -253,7 +253,7 @@ BP_Texture* Engine::createSpecialTexture(int size, int mode)
             if (mode == 7)
             {
                 uint8_t a = 0;
-                if (x == 0 || y == 0 || x == size - 1 || y == size - 1)
+                if (y == size - 1)
                 {
                     a = 255;
                 }

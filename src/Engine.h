@@ -159,7 +159,7 @@ private:
 public:
     void pauseAudio(int pause) { SDL_PauseAudioDevice(audio_device_, pause); }
     void closeAudio() { SDL_CloseAudioDevice(audio_device_); };
-    int getMaxVolume() { return BP_AUDIO_MIX_MAXVOLUME; };
+    static int getMaxVolume() { return BP_AUDIO_MIX_MAXVOLUME; };
     void mixAudio(Uint8* dst, const Uint8* src, Uint32 len, int volume);
     SDL_AudioFormat getAudioFormat() { return audio_format_; }
     int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);

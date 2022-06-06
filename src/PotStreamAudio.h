@@ -31,8 +31,8 @@ public:
     void openAudioDevice();
     int closeAudioDevice();
     void resetDecodeState();
-    int setVolume(int v);
-    int changeVolume(int v);
-    int getVolume() { return volume_; };
+    static int setVolume(int v);
+    static int changeVolume(int v);
+    static int getVolume() { return volume_; };
     virtual void setPause(bool pause) override;
 };

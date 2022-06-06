@@ -242,6 +242,13 @@ int PotPlayer::eventLoop()
                 {
                     switchSubtitle();
                 }
+                else if (button == PotUI::ButtonVolume)
+                {
+                    int x, y;
+                    engine_->getMouseState(x, y);
+                    int v = 128 * (x - UI_.getButtonPos(button)) / UI_.getButtonWidth(button);
+                    media_->getAudio()->setVolume(v);
+                }
             }
 #ifdef _WINDLL
             if (e.button.button == BP_BUTTON_RIGHT)
@@ -258,15 +265,15 @@ int PotPlayer::eventLoop()
             break;
         case BP_MOUSEWHEEL:
         {
-            if (UI_.inButton() == PotUI::ButtonVolume)
+            if (int(UI_.inButton()) == PotUI::ButtonVolume)
             {
                 if (e.wheel.y > 0)
                 {
-                    cur_volume_ = media_->getAudio()->changeVolume(volume_step);
+                    media_->getAudio()->changeVolume(volume_step);
                 }
                 else if (e.wheel.y < 0)
                 {
-                    cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
+                    media_->getAudio()->changeVolume(-volume_step);
                 }
                 UI_.setText("v");
             }
@@ -305,11 +312,11 @@ int PotPlayer::eventLoop()
                 seeking = true;
                 break;
             case BPK_UP:
-                cur_volume_ = media_->getAudio()->changeVolume(volume_step);
+                media_->getAudio()->changeVolume(volume_step);
                 UI_.setText("v");
                 break;
             case BPK_DOWN:
-                cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
+                media_->getAudio()->changeVolume(-volume_step);
                 UI_.setText("v");
                 break;
             case BPK_1:
@@ -537,7 +544,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getSubtitle()->show(audioTime);
             }
-            UI_.drawUI(audioTime, totalTime, cur_volume_, pause);
+            UI_.drawUI(audioTime, totalTime, media_->getAudio()->getVolume(), pause);
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
         }
@@ -562,16 +569,16 @@ int PotPlayer::eventLoop()
         {
             loop = false;
             running_ = false;
-            }
-#endif
         }
+#endif
+    }
     engine_->renderClear();
     engine_->renderPresent();
 
     auto s = fmt1::format("{}", i);
     //engine_->showMessage(s);
     return exit_type_;
-    }
+}
 
 int PotPlayer::init()
 {
@@ -586,6 +593,7 @@ int PotPlayer::init()
     sys_encode_ = Config::getInstance()->getString("sys_encode", "utf-8");
 #endif
     cur_volume_ = Config::getInstance()->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
+    PotStreamAudio::setVolume(cur_volume_);
     UI_.init();
     return 0;
 }
