@@ -238,6 +238,11 @@ int PotPlayer::eventLoop()
                     engine_->toggleFullscreen();
                     setSubtitleFrameSize();
                 }
+                else if (button == PotUI::ButtonAudio)
+                {
+                    media_->switchStream(BPMEDIA_TYPE_AUDIO);
+                    UI_.setText(fmt1::format("Switch audio stream to {}", media_->getAudio()->getStreamIndex()));
+                }
                 else if (button == PotUI::ButtonSubtitle)
                 {
                     switchSubtitle();

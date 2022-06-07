@@ -13,9 +13,10 @@ public:
         ButtonPause,
         ButtonNext,
         ButtonFullScreen,
-        ButtonSubtitle,
         ButtonLeft,
         ButtonRight,
+        ButtonAudio,
+        ButtonSubtitle,
         ButtonVolume,
         ButtonNone2,
     };

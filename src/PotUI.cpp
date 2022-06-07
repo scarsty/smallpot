@@ -98,10 +98,6 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
                 engine_->renderCopy(to_full_screen_, button_x, button_y, button_w_, button_h_);
             }
             break;
-        case ButtonSubtitle:
-            engine_->renderCopy(hollow_, button_x, button_y, button_w_, button_h_);
-            engine_->renderCopy(square_, button_x + button_w_ * 0.2, button_y + button_h_ * 0.6, button_w_ * 0.6, button_h_ * 0.2);
-            break;
         case ButtonLeft:
             engine_->renderCopy(triangle2_, button_x, button_y, button_w_ / 2, button_h_);
             engine_->renderCopy(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
@@ -109,6 +105,14 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         case ButtonRight:
             engine_->renderCopy(triangle_, button_x, button_y, button_w_ / 2, button_h_);
             engine_->renderCopy(triangle_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            break;
+        case ButtonAudio:
+            engine_->renderCopy(square_, button_x, button_y + 5, button_w_ / 2, button_h_ / 2+1);
+            engine_->renderCopy(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            break;
+        case ButtonSubtitle:
+            engine_->renderCopy(hollow_, button_x, button_y, button_w_, button_h_);
+            engine_->renderCopy(square_, button_x + button_w_ * 0.2, button_y + button_h_ * 0.6, button_w_ * 0.6, button_h_ * 0.2);
             break;
         }
     }
@@ -176,14 +180,17 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             text = "Full Screen";
         }
         break;
-    case ButtonSubtitle:
-        text = "Switch subtitles";
-        break;
     case ButtonLeft:
         text = "Backward some seconds";
         break;
     case ButtonRight:
         text = "Forward some seconds";
+        break;
+    case ButtonAudio:
+        text = "Switch audio stream";
+        break;
+    case ButtonSubtitle:
+        text = "Switch subtitles";
         break;
         //case ButtonVolume:
         //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
