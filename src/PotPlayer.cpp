@@ -668,6 +668,8 @@ void PotPlayer::openMedia(const std::string& filename)
     {
         cur_time_ = 0;
         cur_time_ = Config::getInstance()->getRecord(filename.c_str());
+        std::thread th{ [this]() { Config::getInstance()->autoClearRecord(); return; } };
+        th.detach();
         fmt1::print("Play from {:1.3}s\n", cur_time_ / 1000.0);
         if (cur_time_ > 0 && cur_time_ < media_->getTotalTime())
         {

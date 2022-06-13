@@ -33,8 +33,6 @@ void Config::init(std::string filepath)
     fmt1::print("try find config file: {}\n", filename_);
     ini_.loadFile(filename_);
     //setString("filepath", filepath);
-    std::thread th{ [this]() { autoClearRecord(); return; } };
-    th.detach();
 }
 
 void Config::write()
