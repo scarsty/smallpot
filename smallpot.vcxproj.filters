@@ -78,10 +78,10 @@
     <ClCompile Include="src\others\text_encoding_detect.cpp">
       <Filter>others</Filter>
     </ClCompile>
-    <ClCompile Include="..\nb\convert.cpp">
+    <ClCompile Include="..\mlcc\convert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\nb\File.cpp">
+    <ClCompile Include="..\mlcc\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,20 +143,8 @@
     <ClInclude Include="src\Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="common\File.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\others\text_encoding_detect.h">
       <Filter>others</Filter>
-    </ClInclude>
-    <ClInclude Include="common\convert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\nb\fmt1.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
