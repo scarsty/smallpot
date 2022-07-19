@@ -120,6 +120,9 @@ FrameContent PotStreamVideo::convertFrameToContent()
 {
     auto& f = frame_;
     auto tex = nullptr;
+    int width = getWidth();
+    int height = getHeight();
+    engine_->resizeMainTexture(width, height);
     switch (texture_pix_fmt_)
     {
     case SDL_PIXELFORMAT_UNKNOWN:
@@ -146,7 +149,7 @@ FrameContent PotStreamVideo::convertFrameToContent()
                 int pitch1[4];
                 pixels1[0] = (uint8_t*)buffer.data();
                 pitch1[0] = int(f->width / scale) * 3;
-                sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels1, pitch1);                
+                sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels1, pitch1);
                 run_module_(plugin_, f->width / scale, f->height / scale, 3, buffer.data(), (char*)pixels[0]);
                 engine_->unlockTexture(tex);
             }

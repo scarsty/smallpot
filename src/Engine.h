@@ -99,6 +99,7 @@ public:
     BP_Renderer* getRenderer() { return renderer_; }
 
     void createMainTexture(int pix_fmt, int w, int h);
+    void resizeMainTexture(int w, int h);
 
     void setPresentPosition();    //设置贴图的位置
 

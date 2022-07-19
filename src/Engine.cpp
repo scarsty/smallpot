@@ -406,6 +406,17 @@ void Engine::createMainTexture(int pix_fmt, int w, int h)
     setPresentPosition();
 }
 
+void Engine::resizeMainTexture(int w, int h)
+{
+    int w0, h0;
+    uint32_t pix_fmt;
+    SDL_QueryTexture(tex_, &pix_fmt, nullptr, &w0, &h0);
+    if (w0 != w || h0 != h)
+    {
+        createMainTexture(pix_fmt, w, h);
+    }
+}
+
 void Engine::setPresentPosition()
 {
     if (!tex_)
