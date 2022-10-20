@@ -104,9 +104,28 @@ void Config::clearAllRecord()
 void Config::autoClearRecord()
 {
     auto rv = getSortedRecord();
-    for (int i = 100; i < rv.size(); i++)
+    if (!rv.empty())
     {
-        ini_.eraseKey("record", rv[i].filename);
+        if (time(0) / 86400 == rv[0].time / 86400)
+        {
+            return;    //一天只清一次
+        }
+    }
+    int i = 0;
+    for (auto& r : rv)
+    {
+        if (i > 100)
+        {
+            ini_.eraseKey("record", rv[i].filename);
+        }
+        else
+        {
+            auto s1 = PotConv::conv(deStr(r.filename), "utf-8", getString("sys_encode"));
+            if (!File::fileExist(s1))
+            {
+                ini_.eraseKey("record", r.filename);
+            }
+        }
     }
 }
 
@@ -182,26 +201,18 @@ std::vector<Config::Record> Config::getSortedRecord()
     std::vector<Record> rv;
     for (auto& s : ini_.getAllKeys("record"))
     {
-        auto s1 = PotConv::conv(deStr(s), "utf-8", getString("sys_encode"));
-        if (!File::fileExist(s1))
+        Record r;
+        r.filename = s;
+        auto v = convert::findNumbers<int64_t>(ini_.getString("record", s));
+        if (v.size() >= 1)
         {
-            ini_.eraseKey("record", s);
+            r.second = v[0];
         }
-        else
+        if (v.size() >= 2)
         {
-            Record r;
-            r.filename = s;
-            auto v = convert::findNumbers<int64_t>(ini_.getString("record", s));
-            if (v.size() >= 1)
-            {
-                r.second = v[0];
-            }
-            if (v.size() >= 2)
-            {
-                r.time = v[1];
-            }
-            rv.push_back(r);
+            r.time = v[1];
         }
+        rv.push_back(r);
     }
     std::sort(rv.begin(), rv.end(), [](const Record& l, const Record& r) { return l.time > r.time; });
     return rv;
