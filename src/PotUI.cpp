@@ -1,9 +1,9 @@
 #include "PotUI.h"
 #include "Config.h"
-#include "File.h"
 #include "Font.h"
-#include "convert.h"
+#include "filefunc.h"
 #include "math.h"
+#include "strfunc.h"
 
 PotUI::PotUI()
 {
@@ -107,7 +107,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             engine_->renderCopy(triangle_, button_x + 10, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonAudio:
-            engine_->renderCopy(square_, button_x, button_y + 5, button_w_ / 2, button_h_ / 2+1);
+            engine_->renderCopy(square_, button_x, button_y + 5, button_w_ / 2, button_h_ / 2 + 1);
             engine_->renderCopy(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonSubtitle:
@@ -146,7 +146,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     //ÎÄ×Ö
     //if (text_ == "v")
     //{
-    //    text_ = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+    //    text_ = strfunc::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
     //    drawText(text_);
     //}
     //else
@@ -193,7 +193,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         text = "Switch subtitles";
         break;
         //case ButtonVolume:
-        //    text = convert::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
+        //    text = strfunc::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
         //    break;
     }
     Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, BP_ALIGN_LEFT);
@@ -274,11 +274,11 @@ void PotUI::init()
     hollow_ = engine_->createSpecialTexture(20, 6);
     frame_ = engine_->createSpecialTexture(20, 7);
     fontname_ = Config::getInstance()->getString("ui_font");
-    if (!File::fileExist(fontname_))
+    if (!filefunc::fileExist(fontname_))
     {
 #ifdef _WIN32
         fontname_ = "C:/Windows/Fonts/Cambria.ttc";
-        if (!File::fileExist(fontname_))
+        if (!filefunc::fileExist(fontname_))
         {
             fontname_ = "C:/Windows/Fonts/Cambria.ttf";
         }

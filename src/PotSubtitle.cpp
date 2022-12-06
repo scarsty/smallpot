@@ -1,13 +1,13 @@
 #include "PotSubtitle.h"
 #include "Config.h"
-#include "File.h"
 #include "PotSubtitleAss.h"
 #include "PotSubtitleSrt.h"
+#include "filefunc.h"
 
 PotSubtitle::PotSubtitle()
 {
     fontname_ = Config::getInstance()->getString("sub_font");
-    if (!File::fileExist(fontname_))
+    if (!filefunc::fileExist(fontname_))
     {
 #ifdef _WIN32
         fontname_ = "C:\\Windows\\Fonts\\msyh.ttc";

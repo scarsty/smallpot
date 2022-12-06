@@ -78,10 +78,10 @@
     <ClCompile Include="src\others\text_encoding_detect.cpp">
       <Filter>others</Filter>
     </ClCompile>
-    <ClCompile Include="..\mlcc\convert.cpp">
+    <ClCompile Include="..\mlcc\strfunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mlcc\File.cpp">
+    <ClCompile Include="..\mlcc\filefunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

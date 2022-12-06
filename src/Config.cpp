@@ -1,8 +1,8 @@
 #include "Config.h"
-#include "File.h"
+#include "filefunc.h"
 #include "PotConv.h"
 #include "Timer.h"
-#include "convert.h"
+#include "strfunc.h"
 #include "fmt1.h"
 #include <iostream>
 #include <thread>
@@ -121,7 +121,7 @@ void Config::autoClearRecord()
         else
         {
             auto s1 = PotConv::conv(deStr(r.filename), "utf-8", getString("sys_encode"));
-            if (!File::fileExist(s1))
+            if (!filefunc::fileExist(s1))
             {
                 ini_.eraseKey("record", r.filename);
             }
@@ -134,7 +134,7 @@ std::string Config::dealFilename(const std::string& s0)
     auto s = s0;
     for (auto str : ignore_strs_)
     {
-        s = convert::replaceAllSubString(s, str, "");
+        s = strfunc::replaceAllSubString(s, str, "");
     }
     return s;
 }
@@ -203,7 +203,7 @@ std::vector<Config::Record> Config::getSortedRecord()
     {
         Record r;
         r.filename = s;
-        auto v = convert::findNumbers<int64_t>(ini_.getString("record", s));
+        auto v = strfunc::findNumbers<int64_t>(ini_.getString("record", s));
         if (v.size() >= 1)
         {
             r.second = v[0];

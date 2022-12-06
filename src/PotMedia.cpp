@@ -1,6 +1,6 @@
 #include "PotMedia.h"
 #include "Config.h"
-#include "File.h"
+#include "filefunc.h"
 
 PotMedia::PotMedia()
 {
@@ -26,7 +26,7 @@ PotMedia::~PotMedia()
 
 int PotMedia::openFile(const std::string& filename)
 {
-    if (!File::fileExist(filename))
+    if (!filefunc::fileExist(filename))
     {
         return -1;
     }

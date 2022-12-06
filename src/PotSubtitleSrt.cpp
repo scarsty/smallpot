@@ -1,7 +1,7 @@
 #include "PotSubtitleSrt.h"
 #include "Font.h"
 #include "PotConv.h"
-#include "convert.h"
+#include "strfunc.h"
 
 PotSubtitleSrt::PotSubtitleSrt()
 {
@@ -14,7 +14,7 @@ PotSubtitleSrt::~PotSubtitleSrt()
 bool PotSubtitleSrt::openSubtitle(const std::string& filename)
 {
     exist_ = true;
-    content_ = convert::readStringFromFile(filename);
+    content_ = strfunc::readStringFromFile(filename);
     if (content_.empty())
     {
         return false;
@@ -96,7 +96,7 @@ bool PotSubtitleSrt::isUTF8(const void* pBuffer, long size)
 
 int PotSubtitleSrt::readIndex()
 {
-    auto lines = convert::splitString(content_, "\n");
+    auto lines = strfunc::splitString(content_, "\n");
 
     int lineno = 0;
     int state = -1;    //0: line number, 1: time, 2: content, -1: blank line
@@ -121,7 +121,7 @@ int PotSubtitleSrt::readIndex()
         }
         if (lines.empty() || line.find_first_not_of(" \t\r") == std::string::npos)
         {
-            pot.str = PotConv::conv(convert::replaceAllSubString(pot.str, "\r", ""), code_, "cp936");
+            pot.str = PotConv::conv(strfunc::replaceAllSubString(pot.str, "\r", ""), code_, "cp936");
             atom_list_.push_back(pot);
             pot.str.clear();
             state = -1;
@@ -129,7 +129,7 @@ int PotSubtitleSrt::readIndex()
         }
         else if (state == -1)
         {
-            auto ints = convert::findNumbers<int>(line);
+            auto ints = strfunc::findNumbers<int>(line);
             if (ints.size() == 1)
             {
                 state = 0;
@@ -137,7 +137,7 @@ int PotSubtitleSrt::readIndex()
         }
         else if (state == 0)
         {
-            auto ints = convert::findNumbers<int>(line);
+            auto ints = strfunc::findNumbers<int>(line);
             if (ints.size() >= 8 && lineno <= lines.size() - 1)
             {
                 int btimeh = ints[0], btimem = ints[1], btimes = ints[2], btimems = ints[3];

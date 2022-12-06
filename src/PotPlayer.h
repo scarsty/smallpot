@@ -1,11 +1,11 @@
 #pragma once
 
-#include "File.h"
 #include "PotBase.h"
 #include "PotConv.h"
 #include "PotMedia.h"
 #include "PotSubtitle.h"
 #include "PotUI.h"
+#include "filefunc.h"
 #include <functional>
 
 class PotPlayer : public PotBase

@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Font.h"
 #include "PotSubtitleManager.h"
-#include "convert.h"
+#include "strfunc.h"
 
 #ifdef _WIN32
 //#include <shlobj.h>
@@ -21,7 +21,7 @@ PotPlayer::PotPlayer()
 
 PotPlayer::PotPlayer(char* s) : PotPlayer()
 {
-    run_path_ = File::getFilePath(s);
+    run_path_ = filefunc::getParentPath(s);
 #if defined(_WIN32) && defined(_SINGLE_FILE)
     char szPath[MAX_PATH];
     //SHGetSpecialFolderPath(NULL, szPath, CSIDL_LOCAL_APPDATA, false);
@@ -58,7 +58,7 @@ int PotPlayer::beginWithFile(std::string filename)
     if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
     {
         filename = Config::getInstance()->getNewestRecord();
-        if (!File::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
+        if (!filefunc::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
         {
             filename = "";
         }
@@ -619,9 +619,9 @@ void PotPlayer::openMedia(const std::string& filename)
     media_ = new PotMedia;
 #ifndef _WINDLL
     //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
-    if (File::getFileExt(filename) == "m3u8")
+    if (filefunc::getFileExt(filename) == "m3u8")
     {
-        File::changePath(File::getFilePath(filename));
+        filefunc::changePath(filefunc::getParentPath(filename));
     }
 #endif
     //通过参数传入的字串被SDL转为utf-8
@@ -646,7 +646,7 @@ void PotPlayer::openMedia(const std::string& filename)
     {
         engine_->setWindowSize(width_, height_);
     }
-    engine_->setWindowTitle(PotConv::conv(File::getFilenameWithoutPath(open_filename), sys_encode_, BP_encode_));
+    engine_->setWindowTitle(PotConv::conv(filefunc::getFilenameWithoutPath(open_filename), sys_encode_, BP_encode_));
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
 
@@ -715,7 +715,7 @@ void PotPlayer::closeMedia(const std::string& filename)
     config->write();
 #endif
     delete media_;
-    File::changePath(run_path_);
+    filefunc::changePath(run_path_);
 }
 
 std::string PotPlayer::findNextFile(const std::string& filename, int direct)
@@ -733,14 +733,14 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     }
     std::string next_file;
     auto filename1 = PotConv::conv(drop_filename_, BP_encode_, sys_encode_);
-    auto path = File::getFilePath(filename1);
-    filename1 = File::getFilenameWithoutPath(filename1);
-    auto ext = File::getFileExt(filename1);
-    auto files = File::getFilesInPath(path);
+    auto path = filefunc::getParentPath(filename1);
+    filename1 = filefunc::getFilenameWithoutPath(filename1);
+    auto ext = filefunc::getFileExt(filename1);
+    auto files = filefunc::getFilesInPath(path);
     //只查找相同扩展名
     for (auto it = files.begin(); it != files.end();)
     {
-        if (File::getFileExt(*it) == ext)
+        if (filefunc::getFileExt(*it) == ext)
         {
             it++;
         }

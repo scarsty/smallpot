@@ -209,8 +209,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\mlcc\File.cpp" />
-    <ClCompile Include="..\mlcc\convert.cpp" />
+    <ClCompile Include="..\mlcc\filefunc.cpp" />
+    <ClCompile Include="..\mlcc\strfunc.cpp" />
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\others\text_encoding_detect.cpp" />
     <ClCompile Include="src\pot.cpp" />

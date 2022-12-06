@@ -1,8 +1,8 @@
 #include "PotSubtitleManager.h"
-#include "File.h"
 #include "PotSubtitleAss.h"
 #include "PotSubtitleSrt.h"
-#include "convert.h"
+#include "filefunc.h"
+#include "strfunc.h"
 
 std::vector<std::string> PotSubtitleManager::ext_names_;
 
@@ -17,7 +17,7 @@ PotSubtitleManager::~PotSubtitleManager()
 PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
 {
     PotSubtitle* ret = nullptr;
-    auto ext = convert::toLowerCase(File::getFileExt(filename));
+    auto ext = strfunc::toLowerCase(filefunc::getFileExt(filename));
     if (ext == "ass" || ext == "ssa")
     {
         ret = new PotSubtitleAss();
@@ -29,7 +29,7 @@ PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
     if (ret)
     {
         //ret->init();
-        if (File::getFileMainname(File::getFilenameWithoutPath(filename)) != "")
+        if (filefunc::getFileMainname(filefunc::getFilenameWithoutPath(filename)) != "")
         {
             ret->openSubtitle(filename);
         }
@@ -76,18 +76,18 @@ std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
     for (auto& ext : ext_names_)
     {
         std::string str = "";
-        str = File::changeFileExt(filename, ext);
-        if (File::fileExist(str))
+        str = filefunc::changeFileExt(filename, ext);
+        if (filefunc::fileExist(str))
         {
             return str;
         }
-        str = File::getFilePath(str) + "/subs/" + File::getFilenameWithoutPath(str);
-        if (File::fileExist(str))
+        str = filefunc::getParentPath(str) + "/subs/" + filefunc::getFilenameWithoutPath(str);
+        if (filefunc::fileExist(str))
         {
             return str;
         }
     }
-    //str = File::findFileWithMainName(filename);
+    //str = filefunc::findFileWithMainName(filename);
     //if (!isSubtitle(str))
     //{
     //    str = "";
@@ -103,7 +103,7 @@ bool PotSubtitleManager::tryOpenSubtitle(const std::string& filename)
 
 bool PotSubtitleManager::isSubtitle(const std::string& filename)
 {
-    auto ext = convert::toLowerCase(File::getFileExt(filename));
+    auto ext = strfunc::toLowerCase(filefunc::getFileExt(filename));
     bool b = false;
     for (auto& e : ext_names_)
     {

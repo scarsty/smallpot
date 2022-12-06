@@ -1,6 +1,6 @@
 #include "PotSubtitleAss.h"
 #include "PotConv.h"
-#include "convert.h"
+#include "strfunc.h"
 #include "others/text_encoding_detect.h"
 
 PotSubtitleAss::PotSubtitleAss()
@@ -25,7 +25,7 @@ void PotSubtitleAss::init()
 bool PotSubtitleAss::openSubtitle(const std::string& filename)
 {
     //函数的参数是char*,为免意外复制一份
-    auto s = convert::readStringFromFile(filename);
+    auto s = strfunc::readStringFromFile(filename);
 
     TextEncodingDetect textDetect;
     TextEncodingDetect::Encoding encoding = textDetect.DetectEncoding((const uint8_t*)s.c_str(), s.size());
