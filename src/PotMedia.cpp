@@ -26,11 +26,6 @@ PotMedia::~PotMedia()
 
 int PotMedia::openFile(const std::string& filename)
 {
-    if (!filefunc::fileExist(filename))
-    {
-        return -1;
-    }
-
     auto format_ctx = avformat_alloc_context();
 
     if (avformat_open_input(&format_ctx, filename.c_str(), nullptr, nullptr) == 0)

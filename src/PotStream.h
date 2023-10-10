@@ -48,7 +48,7 @@ protected:
     AVFormatContext* format_ctx_ = nullptr;
     AVStream* stream_ = nullptr;
     AVCodecContext* codec_ctx_ = nullptr;
-    AVCodec* codec_ = nullptr;
+    const AVCodec* codec_ = nullptr;
 
     AVFrame* frame_ = nullptr;
     AVPacket packet_;

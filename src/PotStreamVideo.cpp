@@ -104,7 +104,7 @@ int PotStreamVideo::getSDLPixFmt()
         if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
         {
             r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
-            fmt1::print("pixel format is %d\n", r);
+            fmt1::print("pixel format is {}\n", r);
         }
     }
     texture_pix_fmt_ = r;

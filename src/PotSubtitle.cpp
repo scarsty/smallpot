@@ -10,7 +10,7 @@ PotSubtitle::PotSubtitle()
     if (!filefunc::fileExist(fontname_))
     {
 #ifdef _WIN32
-        fontname_ = "C:\\Windows\\Fonts\\msyh.ttc";
+        fontname_ = "C:/Windows/Fonts/msyh.ttc";
 #endif
 #ifdef __APPLE__
         fontname_ = "/System/Library/Fonts/STHeiti Medium.ttc";

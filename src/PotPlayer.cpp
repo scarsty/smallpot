@@ -626,7 +626,7 @@ void PotPlayer::openMedia(const std::string& filename)
 #endif
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
-    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
+    auto open_filename = filename;    //PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
     if (media_->openFile(open_filename) != 0)
     {
         return;
@@ -668,7 +668,11 @@ void PotPlayer::openMedia(const std::string& filename)
     {
         cur_time_ = 0;
         cur_time_ = Config::getInstance()->getRecord(filename.c_str());
-        std::thread th{ [this]() { Config::getInstance()->autoClearRecord(); return; } };
+        std::thread th{ [this]()
+            {
+                Config::getInstance()->autoClearRecord();
+                return;
+            } };
         th.detach();
         fmt1::print("Play from {:1.3}s\n", cur_time_ / 1000.0);
         if (cur_time_ > 0 && cur_time_ < media_->getTotalTime())
