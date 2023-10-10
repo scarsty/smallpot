@@ -546,7 +546,7 @@ void Engine::setWindowSize(int w, int h)
     ratio = std::min(1.0 * win_w_ / w, 1.0 * win_h_ / h);
     win_w_ = w * ratio;
     win_h_ = h * ratio;
-    fmt1::print("{}, {}, {}, {}, {}\n", win_w_, win_h_, w, h, ratio);
+    //fmt1::print("{}, {}, {}, {}, {}\n", win_w_, win_h_, w, h, ratio);
     if (!window_)
     {
         return;
@@ -558,7 +558,7 @@ void Engine::setWindowSize(int w, int h)
     SDL_ShowWindow(window_);
     SDL_RaiseWindow(window_);
     SDL_GetWindowSize(window_, &win_w_, &win_h_);
-    fmt1::print("{}, {}, {}, {}, {}\n", win_w_, win_h_, w, h, ratio);
+    //fmt1::print("{}, {}, {}, {}, {}\n", win_w_, win_h_, w, h, ratio);
     //resetWindowsPosition();
     //renderPresent();
 }
