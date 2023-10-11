@@ -1,4 +1,4 @@
-#include "Config.h"
+ï»¿#include "Config.h"
 #include "PotConv.h"
 #include "Timer.h"
 #include "filefunc.h"
@@ -132,7 +132,7 @@ void Config::autoClearRecord()
     {
         if (Timer::getNowAsString().substr(0, 10) == rv[0].time.substr(0, 10))
         {
-            return;    //Ò»ÌìÖ»ÇåÒ»´Î
+            return;    //ä¸€å¤©åªæ¸…ä¸€æ¬¡
         }
     }
     int i = 0;
@@ -240,7 +240,7 @@ std::vector<Config::Record> Config::getSortedRecord()
 
 std::string Config::findSuitableFilename(const std::string& filename)
 {
-    //ÈôÊÔÍ¼´ò¿ªµÄÎÄ¼şÊµ¼ÊÊÇÒ»¸öÄ¿Â¼£¬´Ë´¦½«Æä¸ÄÎªÎÄ¼ş¼ĞÏÂ×î½ü´ò¿ª¹ıµÄÎÄ¼ş
+    //è‹¥è¯•å›¾æ‰“å¼€çš„æ–‡ä»¶å®é™…æ˜¯ä¸€ä¸ªç›®å½•ï¼Œæ­¤å¤„å°†å…¶æ”¹ä¸ºæ–‡ä»¶å¤¹ä¸‹æœ€è¿‘æ‰“å¼€è¿‡çš„æ–‡ä»¶
     auto filename1 = filename;
     for (auto& rv : getSortedRecord())
     {

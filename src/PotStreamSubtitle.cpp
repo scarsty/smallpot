@@ -1,5 +1,7 @@
 #include "PotStreamSubtitle.h"
 #include "PotSubtitleManager.h"
+#include "Timer.h"
+#include "strfunc.h"
 
 PotStreamSubtitle::PotStreamSubtitle()
 {
@@ -30,6 +32,12 @@ void PotStreamSubtitle::setFrameSize(int w, int h)
     }
 }
 
+int PotStreamSubtitle::avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet)
+{
+    int ret = avcodec_decode_subtitle2(cont, &avsubtitle_, n, packet);
+    return ret;
+}
+
 FrameContent PotStreamSubtitle::convertFrameToContent()
 {
     if (sub_ && avsubtitle_.num_rects > 0)
@@ -37,7 +45,9 @@ FrameContent PotStreamSubtitle::convertFrameToContent()
         auto& rect = avsubtitle_.rects[0];
         if (rect->ass)
         {
-            sub_->readOne(rect->ass, avsubtitle_.pts, avsubtitle_.end_display_time);
+            sub_->readOne(rect->ass,
+                avsubtitle_.pts / AV_TIME_BASE * 1000 + avsubtitle_.start_display_time,
+                avsubtitle_.pts / AV_TIME_BASE * 1000 + avsubtitle_.end_display_time);
         }
     }
     return { time_dts_, 0, nullptr };

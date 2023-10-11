@@ -17,11 +17,7 @@ public:
     void clear();
     virtual bool exist() { return PotStream::exist() && sub_ && sub_->exist(); }
 private:
-    virtual int avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet) override
-    {
-        int ret = avcodec_decode_subtitle2(cont, &avsubtitle_, n, packet);
-        return ret;
-    }
+    virtual int avcodec_decode_packet(AVCodecContext* cont, int* n, AVPacket* packet) override;
     virtual FrameContent convertFrameToContent() override;
 };
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "INIReader.h"
 #include <stdint.h>
@@ -33,14 +33,14 @@ public:
         return &c;
     }
 
-    //xmlÖ»ÓĞ×Ö´®£¬¹ÊÊ×ÏÈÍê³É×Ö´®¹¦ÄÜ
+    //xmlåªæœ‰å­—ä¸²ï¼Œæ•…é¦–å…ˆå®Œæˆå­—ä¸²åŠŸèƒ½
     std::string getString(const std::string& name, std::string def = "");
     int getInteger(const std::string& name, int def = 0);
 
     void setString(const std::string& name, const std::string v);
     void setInteger(const std::string& name, int v);
 
-    //¼ÇÂ¼
+    //è®°å½•
     int getRecord(const std::string& name);
     std::string getNewestRecord();
     void removeRecord(const std::string& name);

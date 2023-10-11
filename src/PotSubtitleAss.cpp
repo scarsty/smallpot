@@ -1,7 +1,8 @@
-#include "PotSubtitleAss.h"
+﻿#include "PotSubtitleAss.h"
 #include "PotConv.h"
-#include "strfunc.h"
+#include "Timer.h"
 #include "others/text_encoding_detect.h"
+#include "strfunc.h"
 
 PotSubtitleAss::PotSubtitleAss()
 {
@@ -24,7 +25,7 @@ void PotSubtitleAss::init()
 
 bool PotSubtitleAss::openSubtitle(const std::string& filename)
 {
-    //�����Ĳ�����char*,Ϊ�����⸴��һ��
+    //函数的参数是char*,为免意外复制一份
     auto s = strfunc::readStringFromFile(filename);
 
     TextEncodingDetect textDetect;
@@ -111,15 +112,31 @@ void PotSubtitleAss::setFrameSize(int w, int h)
 void PotSubtitleAss::openSubtitleFromMem(const std::string& str)
 {
     track_ = ass_read_memory(library_, (char*)str.c_str(), str.size(), NULL);
+#ifdef _DEBUG
+    fmt1::print("{}\n", PotConv::conv(str, "utf-8", "cp936"));
+#endif
     exist_ = (track_ != nullptr);
 }
 
 void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_time)
 {
+    //新版ffmpeg解码出来的格式与旧版不一样，此处重新格式化一条记录
     if (contents_.count(str) == 0)
     {
         contents_.insert(str);
-        ass_process_data(track_, (char*)str.c_str(), str.size());
+        auto str1 = fmt1::format("{},{}",
+            Timer::formatTime(start_time / 1000.0),
+            Timer::formatTime(end_time / 1000.0));
+        auto strs = strfunc::splitString(str, ",");
+        strs[0] = strs[1];
+        strs[1] = str1;
+        std::string str2 = "Dialogue:";
+        for (auto& s : strs)
+        {
+            str2 += s + ",";
+        }
+        str2.pop_back();
+        ass_process_data(track_, (char*)str2.c_str(), str2.size());
 #ifdef _DEBUG
         fmt1::print("{}\n", PotConv::conv(str, "utf-8", "cp936"));
 #endif
