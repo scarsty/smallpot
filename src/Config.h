@@ -10,7 +10,7 @@ class Config
     {
         std::string filename;
         int second;
-        int64_t time;
+        std::string time;
     };
 
 private:

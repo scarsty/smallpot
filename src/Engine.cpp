@@ -483,14 +483,12 @@ BP_Texture* Engine::transBitmapToTexture(const uint8_t* src, uint32_t color, int
 
 int Engine::showMessage(const std::string& content)
 {
-    const SDL_MessageBoxButtonData buttons[] =
-    {
+    const SDL_MessageBoxButtonData buttons[] = {
         { /* .flags, .buttonid, .text */ 0, 0, "no" },
         { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
         { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" },
     };
-    const SDL_MessageBoxColorScheme colorScheme =
-    {
+    const SDL_MessageBoxColorScheme colorScheme = {
         { /* .colors (.r, .g, .b) */
             /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
             { 255, 0, 0 },
@@ -501,11 +499,9 @@ int Engine::showMessage(const std::string& content)
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
             { 0, 0, 255 },
             /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
-            { 255, 0, 255 }
-        }
+            { 255, 0, 255 } }
     };
-    const SDL_MessageBoxData messageboxdata =
-    {
+    const SDL_MessageBoxData messageboxdata = {
         SDL_MESSAGEBOX_INFORMATION, /* .flags */
         NULL,                       /* .window */
         "Pot Player",               /* .title */
@@ -522,6 +518,18 @@ int Engine::showMessage(const std::string& content)
 bool Engine::getWindowIsMaximized()
 {
     return SDL_GetWindowFlags(window_) & SDL_WINDOW_MAXIMIZED;
+}
+
+void Engine::setWindowIsMaximized(bool b)
+{
+    if (b)
+    {
+        SDL_MaximizeWindow(window_);
+    }
+    else
+    {
+        SDL_RestoreWindow(window_);
+    }
 }
 
 void Engine::setWindowSize(int w, int h)

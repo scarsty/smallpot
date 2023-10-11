@@ -91,8 +91,14 @@ int PotPlayer::beginWithFile(std::string filename)
             auto y = max(0, (h-_h)/2);
             fmt1::print("{},{}\n",x,y);
             engine_->setWindowPosition(x, y);*/
+            int w, h;
+            engine_->getWindowSize(w, h);
+            w = Config::getInstance()->getInteger("windows_width", w);
+            h = Config::getInstance()->getInteger("windows_height", h);
+            setWindowSize(w, h);
             //首次打开文件窗口居中
             engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+            engine_->setWindowIsMaximized(Config::getInstance()->getInteger("windows_maximized", 0));
         }
 #endif
         this->eventLoop();
@@ -626,8 +632,8 @@ void PotPlayer::openMedia(const std::string& filename)
 #endif
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
-    auto open_filename = filename;    //PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
-    if (media_->openFile(open_filename) != 0)
+    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
+    if (media_->openFile(filename) != 0)
     {
         return;
     }
@@ -646,7 +652,7 @@ void PotPlayer::openMedia(const std::string& filename)
     {
         engine_->setWindowSize(width_, height_);
     }
-    engine_->setWindowTitle(open_filename);
+    engine_->setWindowTitle(filename);
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
 
@@ -715,7 +721,13 @@ void PotPlayer::closeMedia(const std::string& filename)
     }
     config->setString("sys_encode", sys_encode_);
     config->setInteger("volume", cur_volume_);
+    int w, h;
+    engine_->getWindowSize(w, h);
+    config->setInteger("windows_width", w);
+    config->setInteger("windows_height", h);
+    config->setInteger("windows_maximized", engine_->getWindowIsMaximized());
     //config->autoClearRecord();
+
     config->write();
 #endif
     delete media_;

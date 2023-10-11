@@ -39,9 +39,9 @@ private:
     bool seeking_ = false;
 
 public:
-    PotStreamVideo* getVideo() { return stream_video_; };
-    PotStreamAudio* getAudio() { return stream_audio_; };
-    PotStreamSubtitle* getSubtitle() { return stream_subtitle_; };
+    PotStreamVideo* getVideo() { return stream_video_; }
+    PotStreamAudio* getAudio() { return stream_audio_; }
+    PotStreamSubtitle* getSubtitle() { return stream_subtitle_; }
     int decodeFrame();
     int openFile(const std::string& filename);
     int getAudioTime();

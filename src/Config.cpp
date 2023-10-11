@@ -1,17 +1,16 @@
 #include "Config.h"
-#include "filefunc.h"
 #include "PotConv.h"
 #include "Timer.h"
-#include "strfunc.h"
+#include "filefunc.h"
 #include "fmt1.h"
+#include "strfunc.h"
 #include <iostream>
 #include <thread>
 
 Config::Config()
 {
     //init();
-    ignore_strs_ =
-    {
+    ignore_strs_ = {
         ".bt.td",
         ".td",
     };
@@ -33,6 +32,28 @@ void Config::init(std::string filepath)
     fmt1::print("try find config file: {}\n", filename_);
     ini_.loadFile(filename_);
     //setString("filepath", filepath);
+
+    for (auto& s : ini_["record"].getAllKeys())
+    {
+        if (!s.empty())
+        {
+            Record r;
+            uint64_t t;
+            r.filename = s;
+            auto v = strfunc::findNumbers<int64_t>(ini_.getString("record", s));
+            if (v.size() >= 1)
+            {
+                r.second = v[0];
+            }
+            if (v.size() >= 2)
+            {
+                t = v[1];
+            }
+            ini_["record"][s]["progress"] = r.second;
+            ini_["record"][s]["time_int"] = t;
+            ini_["record"][s]["time"] = Timer::timeToString(time_t(t));
+        }
+    }
 }
 
 void Config::write()
@@ -70,7 +91,8 @@ void Config::setInteger(const std::string& name, int v)
 
 int Config::getRecord(const std::string& name)
 {
-    return ini_.getInt("record", enStr(name));
+    //return ini_.getInt("record", enStr(name));
+    return ini_["record"][enStr(name)]["progress"].toInt();
 }
 
 std::string Config::getNewestRecord()
@@ -90,7 +112,9 @@ void Config::removeRecord(const std::string& name)
 
 void Config::setRecord(const std::string& name, int v)
 {
-    ini_.setKey("record", enStr(name), std::to_string(v) + "," + std::to_string(time(0)));
+    //ini_.setKey("record", enStr(name), std::to_string(v) + "," + std::to_string(time(0)));
+    ini_["record"][enStr(name)]["progress"] = v;
+    ini_["record"][enStr(name)]["time"] = Timer::getNowAsString();
 }
 
 void Config::clearAllRecord()
@@ -106,7 +130,7 @@ void Config::autoClearRecord()
     auto rv = getSortedRecord();
     if (!rv.empty())
     {
-        if (time(0) / 86400 == rv[0].time / 86400)
+        if (Timer::getNowAsString().substr(0, 10) == rv[0].time.substr(0, 10))
         {
             return;    //一天只清一次
         }
@@ -199,22 +223,18 @@ std::string Config::deStr(std::string out)
 std::vector<Config::Record> Config::getSortedRecord()
 {
     std::vector<Record> rv;
-    for (auto& s : ini_.getAllKeys("record"))
+    for (auto& s : ini_["record"].getAllSections())
     {
         Record r;
         r.filename = s;
-        auto v = strfunc::findNumbers<int64_t>(ini_.getString("record", s));
-        if (v.size() >= 1)
-        {
-            r.second = v[0];
-        }
-        if (v.size() >= 2)
-        {
-            r.time = v[1];
-        }
+        r.second = ini_["record"][s]["progress"].toInt();
+        r.time = ini_["record"][s]["time"].toString();
         rv.push_back(r);
     }
-    std::sort(rv.begin(), rv.end(), [](const Record& l, const Record& r) { return l.time > r.time; });
+    std::sort(rv.begin(), rv.end(), [](const Record& l, const Record& r)
+        {
+            return l.time > r.time;
+        });
     return rv;
 }
 

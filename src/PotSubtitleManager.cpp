@@ -2,6 +2,7 @@
 #include "PotSubtitleAss.h"
 #include "PotSubtitleSrt.h"
 #include "filefunc.h"
+#include "PotConv.h"
 #include "strfunc.h"
 
 std::vector<std::string> PotSubtitleManager::ext_names_;

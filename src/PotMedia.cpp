@@ -1,6 +1,7 @@
 #include "PotMedia.h"
 #include "Config.h"
 #include "filefunc.h"
+#include "PotConv.h"
 
 PotMedia::PotMedia()
 {
@@ -144,13 +145,13 @@ int PotMedia::decodeFrame()
             int a_dts = stream_audio_->getTimedts();
             int max_dts = std::max(v_dts, a_dts);
             int min_dts = std::min(v_dts, a_dts);
-            fmt1::print("seeking diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);
+            fmt1::print("seeking diff v{}-a{}={}\n", v_dts, a_dts, v_dts - a_dts);
             //一定时间以上才跳帧
             if (max_dts - min_dts > 100)
             {
                 int sv = stream_video_->skipFrame(max_dts);
                 int sa = stream_audio_->skipFrame(max_dts);
-                fmt1::print("drop %d audio frames, %d video frames\n", sa, sv);
+                fmt1::print("drop {} audio frames, {} video frames\n", sa, sv);
                 /*v_dts = _videoStream->getTimedts();
                 a_dts = _audioStream->getTimedts();
                 fmt1::print("seeking end diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);*/
