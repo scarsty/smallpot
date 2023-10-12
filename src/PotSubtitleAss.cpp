@@ -21,12 +21,17 @@ void PotSubtitleAss::init()
 {
     library_ = ass_library_init();
     renderer_ = ass_renderer_init(library_);
-    //todo: 改到线程里
-    for (auto& path : strfunc::splitString(fontpath_, ","))
-    {
-        ass_set_fonts_dir(library_, path.c_str());
-        ass_set_fonts(renderer_, NULL, NULL, 1, NULL, 0);
-    }
+
+    //size_t n = 0;
+    //ASS_DefaultFontProvider* p;
+    //ass_get_available_font_providers(library_, &p, &n);
+    //for (int i = 0; i < n; i++)
+    //{
+    //    fmt1::print("{} ", int(p[i]));
+    //}
+
+    ass_set_fonts(renderer_, NULL, NULL, 1, NULL, 1);
+    ass_set_extract_fonts(library_, 1);
 }
 
 bool PotSubtitleAss::openSubtitle(const std::string& filename)
@@ -144,7 +149,7 @@ void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_tim
         str2.pop_back();
         ass_process_data(track_, (char*)str2.c_str(), str2.size());
 #ifdef _DEBUG
-        fmt1::print("{}\n", PotConv::conv(str, "utf-8", "cp936"));
+        fmt1::print("{}\n", str);
 #endif
     }
 }
