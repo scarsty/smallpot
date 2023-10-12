@@ -125,7 +125,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows\include;$(USR_LOCAL)\include;../mlcc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows\include;$(USR_LOCAL)\include;../mlcc;./lib;$(VCPKG_LIB_PATH)\x64-windows\include/fribidi;$(VCPKG_LIB_PATH)\x64-windows\include/harfbuzz</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <SDLCheck>false</SDLCheck>

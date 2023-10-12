@@ -24,7 +24,7 @@ public:
 
 protected:
     PotPSubtitleType type_;
-    std::string subfilename_, fontname_;
+    std::string subfilename_, fontpath_;
     bool exist_ = false;
     std::set<std::string> contents_;
 

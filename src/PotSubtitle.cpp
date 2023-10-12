@@ -6,15 +6,16 @@
 
 PotSubtitle::PotSubtitle()
 {
-    fontname_ = Config::getInstance()->getString("sub_font");
-    if (!filefunc::fileExist(fontname_))
-    {
 #ifdef _WIN32
-        fontname_ = "C:/Windows/Fonts/msyh.ttc";
+    fontpath_ = R"(C:/Program Files/Microsoft Office/root/vfs/Fonts/private,C:/Windows/Fonts)";
 #endif
 #ifdef __APPLE__
-        fontname_ = "/System/Library/Fonts/STHeiti Medium.ttc";
+    fontpath_ = "/System/Library/Fonts";
 #endif
+    auto fontpath = Config::getInstance()->getString("sub_font");
+    if (filefunc::fileExist(fontpath))
+    {
+        fontpath_ += fontpath + "," + fontpath_;
     }
 }
 
@@ -22,6 +23,6 @@ PotSubtitle::~PotSubtitle()
 {
     if (Config::getInstance()->getString("sub_font") == "")
     {
-        Config::getInstance()->setString("sub_font", fontname_);
+        Config::getInstance()->setString("sub_font", fontpath_);
     }
 }

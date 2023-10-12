@@ -1,6 +1,7 @@
 ﻿#include "PotSubtitleAss.h"
 #include "PotConv.h"
 #include "Timer.h"
+#include "filefunc.h"
 #include "others/text_encoding_detect.h"
 #include "strfunc.h"
 
@@ -20,7 +21,12 @@ void PotSubtitleAss::init()
 {
     library_ = ass_library_init();
     renderer_ = ass_renderer_init(library_);
-    ass_set_fonts(renderer_, fontname_.c_str(), "Sans", 1, "", 0);
+    //todo: 改到线程里
+    for (auto& path : strfunc::splitString(fontpath_, ","))
+    {
+        ass_set_fonts_dir(library_, path.c_str());
+        ass_set_fonts(renderer_, NULL, NULL, 1, NULL, 0);
+    }
 }
 
 bool PotSubtitleAss::openSubtitle(const std::string& filename)
