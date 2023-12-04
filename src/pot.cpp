@@ -8,9 +8,8 @@ int main(int argc, char* argv[])
 #ifdef _WIN32
     system("chcp 65001");
 #endif
-    auto bp = new PotPlayer(argv[0]);
-    bp->beginWithFile(argc > 1 ? argv[1] : "");
-    delete bp;
+    PotPlayer bp(argv[0]);
+    bp.beginWithFile(argc > 1 ? argv[1] : "");
     return 0;
 }
 #endif

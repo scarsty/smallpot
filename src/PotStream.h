@@ -122,8 +122,8 @@ public:
     void resetDecoderState() { avcodec_flush_buffers(codec_ctx_); }
     double getRotation();
     void getRatio(int& x, int& y);
-    int getRatioX() { return exist() ? std::max(stream_->sample_aspect_ratio.num, 1) : 1; }
-    int getRatioY() { return exist() ? std::max(stream_->sample_aspect_ratio.den, 1) : 1; }
+    int getRatioX() { return exist() ? (std::max)(stream_->sample_aspect_ratio.num, 1) : 1; }
+    int getRatioY() { return exist() ? (std::max)(stream_->sample_aspect_ratio.den, 1) : 1; }
     bool isStopping() { return stopping_; }
 
     PotMediaType getType() { return type_; }
