@@ -77,7 +77,7 @@ private:
     int ratio_x_ = 1, ratio_y_ = 1;
 
 public:
-    int init(void* handle = nullptr, int handle_type = 0);
+    int init(void* handle = nullptr, int handle_type = 0, int maximized = 0);
 
     void getWindowSize(int& w, int& h) { SDL_GetWindowSize(window_, &w, &h); }
     void getWindowMaxSize(int& w, int& h) { SDL_GetWindowMaximumSize(window_, &w, &h); }

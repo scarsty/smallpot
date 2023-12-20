@@ -97,8 +97,13 @@ int PotPlayer::beginWithFile(std::string filename)
             h = Config::getInstance()->getInteger("windows_height", h);
             setWindowSize(w, h);
             //首次打开文件窗口居中
-            engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-            engine_->setWindowIsMaximized(Config::getInstance()->getInteger("windows_maximized", 0));
+            if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
+            {
+            }
+            else
+            {
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+            }
         }
 #endif
         this->eventLoop();
@@ -593,11 +598,12 @@ int PotPlayer::eventLoop()
 
 int PotPlayer::init()
 {
-    if (engine_->init(handle_, handle_type_))
+    Config::getInstance()->init(run_path_);
+    int maximum = Config::getInstance()->getInteger("windows_maximized", 0);
+    if (engine_->init(handle_, handle_type_, maximum))
     {
         return -1;
     }
-    Config::getInstance()->init(run_path_);
 #ifdef _WIN32
     sys_encode_ = Config::getInstance()->getString("sys_encode", "cp936");
 #else
@@ -644,14 +650,7 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL
-    if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
-    {
-        //此处原来是视频尺寸小于窗口则不改变，现移除此功能
-    }
-    else
-    {
         engine_->setWindowSize(width_, height_);
-    }
     engine_->setWindowTitle(filename);
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
@@ -723,8 +722,8 @@ void PotPlayer::closeMedia(const std::string& filename)
     config->setInteger("volume", cur_volume_);
     int w, h;
     engine_->getWindowSize(w, h);
-    config->setInteger("windows_width", w);
-    config->setInteger("windows_height", h);
+    //config->setInteger("windows_width", w);
+    //config->setInteger("windows_height", h);
     config->setInteger("windows_maximized", engine_->getWindowIsMaximized());
     //config->autoClearRecord();
 
@@ -802,7 +801,16 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
 
 void PotPlayer::setWindowSize(int w, int h)
 {
+    w = media_->getVideo()->getWidth();
+    h = media_->getVideo()->getHeight();
     engine_->setWindowSize(w, h);
+    if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
+    {
+    }
+    else
+    {
+        engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+    }
     engine_->getWindowSize(width_, height_);
     engine_->setPresentPosition();
     setSubtitleFrameSize();

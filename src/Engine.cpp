@@ -283,7 +283,7 @@ BP_Texture* Engine::createTextTexture(const std::string& fontname, const std::st
     return text_t;
 }
 
-int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
+int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/, int maximized)
 {
     if (inited_)
     {
@@ -310,7 +310,12 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/)
     }
     else
     {
-        window_ = SDL_CreateWindow("SmallPot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, start_w_, start_h_, SDL_WINDOW_RESIZABLE);
+        uint32_t flags = SDL_WINDOW_RESIZABLE;
+        if (maximized)
+        {
+            flags |= SDL_WINDOW_MAXIMIZED;
+        }
+        window_ = SDL_CreateWindow("SmallPot", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, start_w_, start_h_, flags);
     }
     //SDL_CreateWindowFrom()
 #ifndef _WINDLL
