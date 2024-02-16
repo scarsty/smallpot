@@ -12,7 +12,8 @@ file(GLOB SRC_LIST
     ./*.cpp
     ./others/*.cpp
     ../mlcc/strfunc.cpp
-    ../mlcc/filefunc.cpp)
+    ../mlcc/filefunc.cpp
+    ../mlcc/Engine.cpp)
 
 set(LINK_LIBRARIES iconv SDL2 SDL2_ttf SDL2_image SDL2main avutil avcodec avformat swresample swscale ass)
 

@@ -209,6 +209,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\mlcc\Engine.cpp" />
     <ClCompile Include="..\mlcc\filefunc.cpp" />
     <ClCompile Include="..\mlcc\strfunc.cpp" />
     <ClCompile Include="src\Font.cpp" />
@@ -229,10 +230,10 @@
     <ClCompile Include="src\PotSubtitleAss.cpp" />
     <ClCompile Include="src\PotSubtitleSrt.cpp" />
     <ClCompile Include="src\PotUI.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\PotSubtitleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\mlcc\Engine.h" />
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\others\text_encoding_detect.h" />
     <ClInclude Include="src\PotBase.h" />
@@ -250,7 +251,6 @@
     <ClInclude Include="src\PotSubtitleAss.h" />
     <ClInclude Include="src\PotSubtitleSrt.h" />
     <ClInclude Include="src\PotUI.h" />
-    <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\PotSubtitleManager.h" />
   </ItemGroup>

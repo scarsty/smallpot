@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Engine.h"
 #include <map>
 #include <string>
@@ -8,7 +8,7 @@ class Font
 private:
     Font();
     ~Font();
-    std::map<std::string, BP_Texture*> buffer_;    //»º´æËùÓĞÒÑ¾­»­¹ıµÄ×ÖÌå
+    std::map<std::string, BP_Texture*> buffer_;    //ç¼“å­˜æ‰€æœ‰å·²ç»ç”»è¿‡çš„å­—ä½“
     BP_Texture* indexTex(const std::string& fontname, uint16_t c, int size);
 
 public:
