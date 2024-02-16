@@ -75,8 +75,7 @@ int PotStreamVideo::getSDLPixFmt()
     {
         return SDL_PIXELFORMAT_UNKNOWN;
     }
-    std::map<int, int> pix_ffmpeg_sdl =
-    {
+    std::map<int, int> pix_ffmpeg_sdl = {
         { AV_PIX_FMT_RGB8, SDL_PIXELFORMAT_RGB332 },
         { AV_PIX_FMT_RGB444, SDL_PIXELFORMAT_RGB444 },
         { AV_PIX_FMT_RGB555, SDL_PIXELFORMAT_RGB555 },
@@ -113,16 +112,19 @@ int PotStreamVideo::getSDLPixFmt()
 
 void PotStreamVideo::freeContent(void* p)
 {
-    engine_->destroyTexture((BP_Texture*)p);
+    if (p != engine_->getMainTexture())
+    {
+        engine_->destroyTexture((BP_Texture*)p);
+    }
 }
 
 FrameContent PotStreamVideo::convertFrameToContent()
 {
     auto& f = frame_;
-    auto tex = nullptr;
     int width = getWidth();
     int height = getHeight();
     engine_->resizeMainTexture(width, height);
+    auto tex = engine_->getMainTexture();
     switch (texture_pix_fmt_)
     {
     case SDL_PIXELFORMAT_UNKNOWN:

@@ -53,18 +53,18 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     //进度条
     int x, y;
     y = win_h_ - 12;
-    engine_->setColor(square_, { 255, 255, 255 }, alpha_ / 2);
+    engine_->setColor(square_, { 255, 255, 255, uint8_t(alpha_ / 2) });
     engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
-    engine_->setColor(square_, { 255, 0, 0 }, alpha_);
+    engine_->setColor(square_, { 255, 0, 0, alpha_ });
     engine_->renderCopy(square_, 0, y - 1, 1.0 * time / totoal_time * win_w_, 4);
 
     //按钮
-    engine_->setColor(square_, { 255, 255, 255 }, alpha_);
-    engine_->setColor(triangle_, { 255, 255, 255 }, alpha_);
-    engine_->setColor(triangle2_, { 255, 255, 255 }, alpha_);
-    engine_->setColor(to_full_screen_, { 255, 255, 255 }, alpha_);
-    engine_->setColor(to_window_, { 255, 255, 255 }, alpha_);
-    engine_->setColor(hollow_, { 255, 255, 255 }, alpha_);
+    engine_->setColor(square_, { 255, 255, 255, alpha_ });
+    engine_->setColor(triangle_, { 255, 255, 255, alpha_ });
+    engine_->setColor(triangle2_, { 255, 255, 255, alpha_ });
+    engine_->setColor(to_full_screen_, { 255, 255, 255, alpha_ });
+    engine_->setColor(to_window_, { 255, 255, 255, alpha_ });
+    engine_->setColor(hollow_, { 255, 255, 255, alpha_ });
     button_y_ = win_h_ - 45;
 
     for (int i = ButtonNone + 1; i < ButtonNone2; i++)
@@ -265,23 +265,19 @@ int PotUI::getButtonPos(int b)
 
 void PotUI::init()
 {
-    square_ = engine_->createSquareTexture(40);
-    ball_ = engine_->createSpecialTexture(50);
-    triangle_ = engine_->createSpecialTexture(200, 1);
-    triangle2_ = engine_->createSpecialTexture(200, 2);
-    to_full_screen_ = engine_->createSpecialTexture(20, 4);
-    to_window_ = engine_->createSpecialTexture(20, 5);
-    hollow_ = engine_->createSpecialTexture(20, 6);
-    frame_ = engine_->createSpecialTexture(20, 7);
-    fontname_ = Config::getInstance()->getString("ui_font");
+    square_ = createSquareTexture(40);
+    ball_ = createSpecialTexture(50);
+    triangle_ = createSpecialTexture(200, 1);
+    triangle2_ = createSpecialTexture(200, 2);
+    to_full_screen_ = createSpecialTexture(20, 4);
+    to_window_ = createSpecialTexture(20, 5);
+    hollow_ = createSpecialTexture(20, 6);
+    frame_ = createSpecialTexture(20, 7);
+    //fontname_ = Config::getInstance()->getString("ui_font");
     if (!filefunc::fileExist(fontname_))
     {
 #ifdef _WIN32
-        fontname_ = "C:/Windows/Fonts/Cambria.ttc";
-        if (!filefunc::fileExist(fontname_))
-        {
-            fontname_ = "C:/Windows/Fonts/Cambria.ttf";
-        }
+        fontname_ = "C:/Windows/Fonts/calibri.ttf";
 #else
         fontname_ = "/System/Library/Fonts/Palatino.ttc";
 #endif
@@ -294,4 +290,119 @@ void PotUI::destory()
     {
         Config::getInstance()->setString("ui_font", fontname_);
     }
+}
+
+BP_Texture* PotUI::createSquareTexture(int size)
+{
+    int d = size;
+    auto square_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
+    SDL_FillRect(square_s, nullptr, 0xffffffff);
+    auto square = SDL_CreateTextureFromSurface(engine_->getRenderer(), square_s);
+    SDL_SetTextureBlendMode(square, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(square, 128);
+    SDL_FreeSurface(square_s);
+    return square;
+}
+
+BP_Texture* PotUI::createSpecialTexture(int size, int mode)
+{
+    int d = size;
+    auto ball_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
+    SDL_FillRect(ball_s, nullptr, 0);
+    SDL_Rect r = { 0, 0, 1, 1 };
+    auto& x = r.x;
+    auto& y = r.y;
+    double c = (d - 1) / 2.0;
+    for (x = 0; x < d; x++)
+    {
+        for (y = 0; y < d; y++)
+        {
+            if (mode == 0)
+            {
+                double ra = sqrt((x - c) * (x - c) + (y - c) * (y - c)) / c;
+                double a0 = 0;
+                if (ra > 1.05)
+                {
+                    a0 = 255;
+                    //a0 = (ra - 1) * 255 * 4;
+                }
+                if (ra < 1)
+                {
+                    a0 = 0;    // (1 - ra) * 255 * 2;
+                }
+                uint8_t a = a0 > 255 ? 255 : a0;
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 1)
+            {
+                uint8_t a = 255;
+                if (1.0 * abs(y - size / 2) / (size - x) > 0.5)
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 2)
+            {
+                uint8_t a = 255;
+                if (1.0 * abs(y - size / 2) / x > 0.5)
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 3)
+            {
+                uint8_t a = 255;
+                a = 225.0 / d * y;
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 0, 0, 0, a));
+            }
+            if (mode == 4)
+            {
+                uint8_t a = 255;
+                double center = (d - 1) / 2.0;
+                if ((abs(x - center) < d * 0.35 && abs(y - center) < d * 0.35)
+                    || (abs(x - center) < d * 0.1 || abs(y - center) < d * 0.1))
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 5)
+            {
+                uint8_t a = 255;
+                double center = (d - 1) / 2.0;
+                if ((abs(x - center) > d * 0.25 && abs(y - center) > d * 0.25)
+                    || (abs(x - center) < d * 0.1 || abs(y - center) < d * 0.1))
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 6)
+            {
+                uint8_t a = 255;
+                double center = (d - 1) / 2.0;
+                if ((abs(x - center) < d * 0.35 && abs(y - center) < d * 0.35))
+                {
+                    a = 0;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+            if (mode == 7)
+            {
+                uint8_t a = 0;
+                if (y == size - 1)
+                {
+                    a = 255;
+                }
+                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+            }
+        }
+    }
+    auto ball = SDL_CreateTextureFromSurface(engine_->getRenderer(), ball_s);
+    SDL_SetTextureBlendMode(ball, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(ball, 128);
+    SDL_FreeSurface(ball_s);
+    return ball;
 }

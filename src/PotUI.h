@@ -46,4 +46,8 @@ public:
     int inButton();
     int getButtonWidth(int b);
     int getButtonPos(int b);
+
+private:
+    BP_Texture* createSquareTexture(int size);
+    BP_Texture* createSpecialTexture(int size, int mode = 0);
 };

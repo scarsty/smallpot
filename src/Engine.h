@@ -1,24 +1,31 @@
 ﻿#pragma once
 
-extern "C"
-{
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
-}
 
 #include <algorithm>
-#include <atomic>
+#include <chrono>
 #include <functional>
 #include <map>
 #include <string>
+#include <thread>
 #include <vector>
 
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+
 #include "fmt1.h"
+
+#ifndef M_PI
+#define M_PI 3.1415926535897
+#endif
 
 //这里是底层部分，将SDL的函数均封装了一次
 //如需更换底层，则要重新实现下面的全部功能，并重新定义全部常数和类型
 #define BP_AUDIO_MIX_MAXVOLUME SDL_MIX_MAXVOLUME
+
+//每个SDL的函数和结构通常仅出现一次，其余的均用已封的功能完成
 
 using AudioCallback = std::function<void(uint8_t*, int)>;
 using BP_Renderer = SDL_Renderer;
@@ -26,6 +33,10 @@ using BP_Window = SDL_Window;
 using BP_Texture = SDL_Texture;
 using BP_Rect = SDL_Rect;
 using BP_Color = SDL_Color;
+using BP_Keycode = SDL_Keycode;
+using BP_Surface = SDL_Surface;
+using BP_GameController = SDL_GameController;
+using BP_Haptic = SDL_Haptic;
 
 enum BP_Align
 {
@@ -63,19 +74,26 @@ private:
     bool inited_ = false;
     BP_Window* window_ = nullptr;
     BP_Renderer* renderer_ = nullptr;
-    bool renderer_self_ = false;
-    int window_mode_ = 0;    //0-窗口和渲染器自行创建，1-窗口和渲染器由外部创建
-    BP_Texture* tex_ = nullptr, * tex2_ = nullptr, * logo_ = nullptr;
-    BP_AudioSpec audio_spec_;
+    BP_Texture* tex_ = nullptr;
+    BP_Texture* tex2_ = nullptr;
+    BP_Texture* logo_ = nullptr;
     BP_Rect rect_;
     bool full_screen_ = false;
     bool keep_ratio_ = true;
 
-    int start_w_ = 320, start_h_ = 150;    //320, 150
+    int start_w_ = 1024, start_h_ = 640;
     int win_w_, win_h_, min_x_, min_y_, max_x_, max_y_;
     double rotation_ = 0;
-    int ratio_x_ = 1, ratio_y_ = 1;
+    double ratio_x_ = 1, ratio_y_ = 1;
 
+    int render_times_ = 0;
+
+    BP_GameController* game_controller_ = nullptr;
+    BP_Haptic* haptic_ = nullptr;
+
+    int switch_ = 0;
+
+    int window_mode_ = 0;    //0-窗口和渲染器自行创建，1-窗口和渲染器由外部创建
 public:
     int init(void* handle = nullptr, int handle_type = 0, int maximized = 0);
 
@@ -86,7 +104,7 @@ public:
     int getMaxWindowWidth() { return max_x_ - min_x_; }
     int getMaxWindowHeight() { return max_y_ - min_y_; }
     void getWindowPosition(int& x, int& y) { SDL_GetWindowPosition(window_, &x, &y); }
-    bool getWindowIsMaximized();
+    bool getWindowIsMaximized() { return SDL_GetWindowFlags(window_) & SDL_WINDOW_MAXIMIZED; }
     void setWindowIsMaximized(bool b);
     void setWindowSize(int w, int h);
     void setStartWindowSize(int w, int h)
@@ -96,67 +114,78 @@ public:
     }
     void setWindowPosition(int x, int y);
     void setWindowTitle(const std::string& str) { SDL_SetWindowTitle(window_, str.c_str()); }
-    void raiseWindow() { SDL_RaiseWindow(window_); }
     BP_Renderer* getRenderer() { return renderer_; }
 
     void createMainTexture(int pix_fmt, int w, int h);
     void resizeMainTexture(int w, int h);
-
-    void setPresentPosition();    //设置贴图的位置
-
-    void getPresentSize(int& w, int& h)
-    {
-        w = rect_.w;
-        h = rect_.h;
-    }
+    void createAssistTexture(int w, int h);
+    void setPresentPosition(BP_Texture* tex);    //设置贴图的位置
+    //void getPresentSize(int& w, int& h) { w = rect_.w; h = rect_.h; }
     int getPresentWidth() { return rect_.w; }
     int getPresentHeight() { return rect_.h; }
-
-    void destroyMainTexture() { destroyTexture(tex_); }
-
-    static void destroyTexture(BP_Texture* t);
-
-    BP_Texture* tryMainTexture(BP_Texture* tex) { return tex ? tex : tex_; }
-    BP_Texture* createTexture(int pix_fmt, int w, int h);
-    void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
-    void updateARGBTexture(BP_Texture* t, uint8_t* buffer, int pitch);
-    int lockTexture(BP_Texture* t, BP_Rect* r, void** pixel, int* pitch);
-    void unlockTexture(BP_Texture* t) { SDL_UnlockTexture(tryMainTexture(t)); }
-
-    void renderCopy(BP_Texture* t = nullptr);
-    void showLogo() { SDL_RenderCopy(renderer_, logo_, nullptr, nullptr); }
-    void renderPresent()
+    BP_Texture* getMainTexture() { return tex_; }
+    void getMainTextureSize(int& w, int& h) { queryTexture(tex2_, &w, &h); }
+    void destroyAssistTexture()
     {
-        SDL_RenderPresent(renderer_);
-        renderClear();
-    };
+        if (tex2_)
+        {
+            destroyTexture(tex2_);
+        }
+    }
+    BP_Texture* createTexture(int pix_fmt, int w, int h);
+    static void destroyTexture(BP_Texture* t) { SDL_DestroyTexture(t); }
+    BP_Texture* createYUVTexture(int w, int h);
+    void updateYUVTexture(BP_Texture* t, uint8_t* data0, int size0, uint8_t* data1, int size1, uint8_t* data2, int size2);
+    BP_Texture* createARGBTexture(int w, int h);
+    BP_Texture* createARGBRenderedTexture(int w, int h);
+    static void updateARGBTexture(BP_Texture* t, uint8_t* buffer, int pitch);
+    static int lockTexture(BP_Texture* t, BP_Rect* r, void** pixel, int* pitch);
+    static void unlockTexture(BP_Texture* t);
+    void renderCopy(BP_Texture* t = nullptr, double angle = 0);
+    void showLogo() { renderCopy(logo_, nullptr, nullptr); }
+    void renderPresent();
     void renderClear() { SDL_RenderClear(renderer_); }
-    void setTextureAlphaMod(BP_Texture* t, uint8_t alpha) { SDL_SetTextureAlphaMod(t, alpha); };
+    void setTextureAlphaMod(BP_Texture* t, uint8_t alpha) { SDL_SetTextureAlphaMod(t, alpha); }
     void queryTexture(BP_Texture* t, int* w, int* h) { SDL_QueryTexture(t, nullptr, nullptr, w, h); }
     void setRenderTarget(BP_Texture* t) { SDL_SetRenderTarget(renderer_, t); }
-    void resetRenderTarget() { SDL_SetRenderTarget(renderer_, nullptr); }
+    BP_Texture* getRenderTarget() { return SDL_GetRenderTarget(renderer_); }
+    void resetRenderTarget() { setRenderTarget(nullptr); }
     void createWindow() {}
     void createRenderer() {}
-    void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0, int inPresent = 0);
+    void renderCopy(BP_Texture* t, int x, int y, int w = 0, int h = 0, double angle = 0, int inPresent = 0);
+    void renderCopy(BP_Texture* t, BP_Rect* rect0, BP_Rect* rect1, double angle = 0, int inPresent = 0);
     void destroy();
     bool isFullScreen();
     void toggleFullscreen();
-    BP_Texture* loadImage(const std::string& filename);
+    BP_Texture* loadImage(const std::string& filename, int as_white = 0);
+    BP_Texture* loadImageFromMemory(const std::string& content, int as_white = 0);
+    void toWhite(BP_Surface* sur);
     bool setKeepRatio(bool b);
     BP_Texture* transBitmapToTexture(const uint8_t* src, uint32_t color, int w, int h, int stride);
     double setRotation(double r) { return rotation_ = r; }
     void resetWindowPosition();
-    void setRatio(int x, int y)
+    void setRatio(double x, double y)
     {
         ratio_x_ = x;
         ratio_y_ = y;
     }
-    void setColor(BP_Texture* tex, BP_Color c, uint8_t alpha);
+    void setColor(BP_Texture* tex, BP_Color c);
+    void fillColor(BP_Color color, int x, int y, int w, int h);
+    void setRenderAssistTexture() { setRenderTarget(tex2_); }
+    void renderAssistTextureToWindow();
+    int setTextureBlendMode(BP_Texture* t) { return SDL_SetTextureBlendMode(t, SDL_BLENDMODE_BLEND); }
+
+    void resetRenderTimes(int t = 0) { render_times_ = t; }
+    int getRenderTimes() { return render_times_; }
+
+    BP_Texture* getRenderAssistTexture() { return tex2_; }
+
     //声音相关
 private:
     SDL_AudioDeviceID audio_device_;
     AudioCallback audio_callback_ = nullptr;
     SDL_AudioFormat audio_format_ = AUDIO_S16;
+    BP_AudioSpec audio_spec_;
 
 public:
     void pauseAudio(int pause) { SDL_PauseAudioDevice(audio_device_, pause); }
@@ -167,31 +196,67 @@ public:
     int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
     static void mixAudioCallback(void* userdata, Uint8* stream, int len);
     void setAudioCallback(AudioCallback cb = nullptr) { audio_callback_ = cb; }
+
     //事件相关
 private:
-    int time_;
+    uint64_t time_;
 
 public:
-    void delay(const int t) { SDL_Delay(t); }
-    uint32_t getTicks() { return SDL_GetTicks(); }
-    uint32_t tic() { return time_ = SDL_GetTicks(); }
+    static void delay(double t) { std::this_thread::sleep_for(std::chrono::nanoseconds(int64_t(t * 1e6))); }
+    static double getTicks() { return 1e-6 * std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()).time_since_epoch().count(); }
+    uint64_t tic() { return time_ = getTicks(); }
     void toc()
     {
-        if (SDL_GetTicks() != time_) { fmt1::print("{}\n", SDL_GetTicks() - time_); }
+        if (getTicks() != time_)
+        {
+            fmt1::print("{}\n", getTicks() - time_);
+        }
     }
-    void getMouseState(int& x, int& y) { SDL_GetMouseState(&x, &y); }
-    int pollEvent(BP_Event& e) { return SDL_PollEvent(&e); }
-    int pushEvent(BP_Event& e) { return SDL_PushEvent(&e); }
-    void free(void* mem) { SDL_free(mem); }
+    void getMouseState(int& x, int& y);
+    ;
+    void setMouseState(int x, int y);
+    ;
+    int pollEvent(BP_Event& e);
+    static int pollEvent() { return SDL_PollEvent(nullptr); }
+    static int pushEvent(BP_Event& e) { return SDL_PushEvent(&e); }
+    static void flushEvent() { SDL_FlushEvent(0); }
+    static void free(void* mem) { SDL_free(mem); }
+    static bool checkKeyPress(BP_Keycode key);
+    bool gameControllerGetButton(int key);
+    int16_t gameControllerGetAxis(int axis);
+
+    void gameControllerRumble(int l, int h, uint32_t time);
+
     //UI相关
 private:
     BP_Texture* square_;
 
 public:
-    BP_Texture* createSquareTexture(int size);
-    BP_Texture* createSpecialTexture(int size, int mode = 0);
+    BP_Texture* createRectTexture(int w, int h, int style);
     BP_Texture* createTextTexture(const std::string& fontname, const std::string& text, int size, BP_Color c);
     int showMessage(const std::string& content);
+    void renderSquareTexture(BP_Rect* rect, BP_Color color, uint8_t alpha);
+
+public:
+    //标题;
+    std::string title_ = "All Heroes in Kam Yung Stories";
+
+private:
+    void* tinypot_ = nullptr;
+
+public:
+    int playVideo(std::string filename);
+    int saveScreen(const char* filename);
+    int saveTexture(BP_Texture* tex, const char* filename);
+
+    //输入相关
+    void startTextInput() { SDL_StartTextInput(); }
+    void stopTextInput() { SDL_StopTextInput(); }
+    void setTextInputRect(int x, int y, int w = 0, int h = 0)
+    {
+        BP_Rect r = { x, y, w, h };
+        SDL_SetTextInputRect(&r);
+    }
 };
 
 //这里直接照搬SDL
@@ -215,6 +280,22 @@ enum BP_EventType
     BP_MOUSEBUTTONDOWN = SDL_MOUSEBUTTONDOWN,
     BP_MOUSEBUTTONUP = SDL_MOUSEBUTTONUP,
     BP_MOUSEWHEEL = SDL_MOUSEWHEEL,
+    //手柄
+    BP_JOYAXISMOTION = SDL_JOYAXISMOTION,
+    BP_JOYBALLMOTION = SDL_JOYBALLMOTION,
+    BP_JOYHATMOTION = SDL_JOYHATMOTION,
+    BP_JOYBUTTONDOWN = SDL_JOYBUTTONDOWN,
+    BP_JOYBUTTONUP = SDL_JOYBUTTONUP,
+    BP_JOYDEVICEADDED = SDL_JOYDEVICEADDED,
+    BP_JOYDEVICEREMOVED = SDL_JOYDEVICEREMOVED,
+    //游戏控制器
+    BP_CONTROLLERAXISMOTION = SDL_CONTROLLERAXISMOTION,
+    BP_CONTROLLERBUTTONDOWN = SDL_CONTROLLERBUTTONDOWN,
+    BP_CONTROLLERBUTTONUP = SDL_CONTROLLERBUTTONUP,
+    BP_CONTROLLERDEVICEADDED = SDL_CONTROLLERDEVICEADDED,
+    BP_CONTROLLERDEVICEREMOVED = SDL_CONTROLLERDEVICEREMOVED,
+    BP_CONTROLLERDEVICEREMAPPED = SDL_CONTROLLERDEVICEREMAPPED,
+
     //剪贴板
     BP_CLIPBOARDUPDATE = SDL_CLIPBOARDUPDATE,
     //拖放文件
@@ -222,7 +303,7 @@ enum BP_EventType
     //渲染改变
     BP_RENDER_TARGETS_RESET = SDL_RENDER_TARGETS_RESET,
 
-    BP_LASTEVENT = SDL_LASTEVENT,
+    BP_LASTEVENT = SDL_LASTEVENT
 };
 
 enum BP_WindowEventID
@@ -244,7 +325,7 @@ enum BP_WindowEventID
     BP_WINDOWEVENT_LEAVE = SDL_WINDOWEVENT_LEAVE,
     BP_WINDOWEVENT_FOCUS_GAINED = SDL_WINDOWEVENT_FOCUS_GAINED,
     BP_WINDOWEVENT_FOCUS_LOST = SDL_WINDOWEVENT_FOCUS_LOST,
-    BP_WINDOWEVENT_CLOSE = SDL_WINDOWEVENT_CLOSE,
+    BP_WINDOWEVENT_CLOSE = SDL_WINDOWEVENT_CLOSE
 };
 
 enum BP_KeyBoard
@@ -258,6 +339,7 @@ enum BP_KeyBoard
     BPK_RETURN = SDLK_RETURN,
     BPK_DELETE = SDLK_DELETE,
     BPK_BACKSPACE = SDLK_BACKSPACE,
+    BPK_TAB = SDLK_TAB,
     BPK_0 = SDLK_0,
     BPK_1 = SDLK_1,
     BPK_2 = SDLK_2,
@@ -268,11 +350,100 @@ enum BP_KeyBoard
     BPK_MINUS = SDLK_MINUS,
     BPK_PERIOD = SDLK_PERIOD,
     BPK_EQUALS = SDLK_EQUALS,
+    BPK_a = SDLK_a,
+    BPK_b = SDLK_b,
+    BPK_c = SDLK_c,
+    BPK_d = SDLK_d,
+    BPK_e = SDLK_e,
+    BPK_f = SDLK_f,
+    BPK_g = SDLK_g,
+    BPK_h = SDLK_h,
+    BPK_i = SDLK_i,
+    BPK_j = SDLK_j,
+    BPK_k = SDLK_k,
+    BPK_l = SDLK_l,
+    BPK_m = SDLK_m,
+    BPK_n = SDLK_n,
+    BPK_o = SDLK_o,
+    BPK_p = SDLK_p,
+    BPK_q = SDLK_q,
+    BPK_r = SDLK_r,
+    BPK_s = SDLK_s,
+    BPK_t = SDLK_t,
+    BPK_u = SDLK_u,
+    BPK_v = SDLK_v,
+    BPK_w = SDLK_w,
+    BPK_x = SDLK_x,
+    BPK_y = SDLK_y,
+    BPK_z = SDLK_z,
+    BPK_PAGEUP = SDLK_PAGEUP,
+    BPK_PAGEDOWN = SDLK_PAGEDOWN,
 };
 
 enum BP_Button
 {
     BP_BUTTON_LEFT = SDL_BUTTON_LEFT,
     BP_BUTTON_MIDDLE = SDL_BUTTON_MIDDLE,
-    BP_BUTTON_RIGHT = SDL_BUTTON_RIGHT,
+    BP_BUTTON_RIGHT = SDL_BUTTON_RIGHT
 };
+
+enum BP_State
+{
+    BP_PRESSED = SDL_PRESSED,
+    BP_RELEASED = SDL_RELEASED,
+};
+
+enum BP_GameControllerButton
+{
+    //xbox
+    BP_CONTROLLER_BUTTON_INVALID = SDL_CONTROLLER_BUTTON_INVALID,
+    BP_CONTROLLER_BUTTON_A = SDL_CONTROLLER_BUTTON_A,
+    BP_CONTROLLER_BUTTON_B = SDL_CONTROLLER_BUTTON_B,
+    BP_CONTROLLER_BUTTON_X = SDL_CONTROLLER_BUTTON_X,
+    BP_CONTROLLER_BUTTON_Y = SDL_CONTROLLER_BUTTON_Y,
+    BP_CONTROLLER_BUTTON_BACK = SDL_CONTROLLER_BUTTON_BACK,
+    BP_CONTROLLER_BUTTON_GUIDE = SDL_CONTROLLER_BUTTON_GUIDE,
+    BP_CONTROLLER_BUTTON_START = SDL_CONTROLLER_BUTTON_START,
+    BP_CONTROLLER_BUTTON_LEFTSTICK = SDL_CONTROLLER_BUTTON_LEFTSTICK,
+    BP_CONTROLLER_BUTTON_RIGHTSTICK = SDL_CONTROLLER_BUTTON_RIGHTSTICK,
+    BP_CONTROLLER_BUTTON_LEFTSHOULDER = SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+    BP_CONTROLLER_BUTTON_RIGHTSHOULDER = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
+    BP_CONTROLLER_BUTTON_DPAD_UP = SDL_CONTROLLER_BUTTON_DPAD_UP,
+    BP_CONTROLLER_BUTTON_DPAD_DOWN = SDL_CONTROLLER_BUTTON_DPAD_DOWN,
+    BP_CONTROLLER_BUTTON_DPAD_LEFT = SDL_CONTROLLER_BUTTON_DPAD_LEFT,
+    BP_CONTROLLER_BUTTON_DPAD_RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
+    BP_CONTROLLER_BUTTON_MISC1 = SDL_CONTROLLER_BUTTON_MISC1,
+    BP_CONTROLLER_BUTTON_PADDLE1 = SDL_CONTROLLER_BUTTON_PADDLE1,
+    BP_CONTROLLER_BUTTON_PADDLE2 = SDL_CONTROLLER_BUTTON_PADDLE2,
+    BP_CONTROLLER_BUTTON_PADDLE3 = SDL_CONTROLLER_BUTTON_PADDLE3,
+    BP_CONTROLLER_BUTTON_PADDLE4 = SDL_CONTROLLER_BUTTON_PADDLE4,
+    BP_CONTROLLER_BUTTON_TOUCHPAD = SDL_CONTROLLER_BUTTON_TOUCHPAD,
+    BP_CONTROLLER_BUTTON_MAX = SDL_CONTROLLER_BUTTON_MAX,
+};
+
+enum BP_GameControllerAxis
+{
+    BP_CONTROLLER_AXIS_INVALID = SDL_CONTROLLER_AXIS_INVALID,
+    BP_CONTROLLER_AXIS_LEFTX = SDL_CONTROLLER_AXIS_LEFTX,
+    BP_CONTROLLER_AXIS_LEFTY = SDL_CONTROLLER_AXIS_LEFTY,
+    BP_CONTROLLER_AXIS_RIGHTX = SDL_CONTROLLER_AXIS_RIGHTX,
+    BP_CONTROLLER_AXIS_RIGHTY = SDL_CONTROLLER_AXIS_RIGHTY,
+    BP_CONTROLLER_AXIS_TRIGGERLEFT = SDL_CONTROLLER_AXIS_TRIGGERLEFT,
+    BP_CONTROLLER_AXIS_TRIGGERRIGHT = SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
+    BP_CONTROLLER_AXIS_MAX = SDL_CONTROLLER_AXIS_MAX,
+};
+
+//mingw无std::mutex
+#ifdef __MINGW32__
+class mutex
+{
+private:
+    SDL_mutex* _mutex;
+
+public:
+    mutex() { _mutex = SDL_CreateMutex(); }
+    ~mutex() { SDL_DestroyMutex(_mutex); }
+    int lock() { return SDL_LockMutex(_mutex); }
+    int unlock() { return SDL_UnlockMutex(_mutex); }
+};
+#endif

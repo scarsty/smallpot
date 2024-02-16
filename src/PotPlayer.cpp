@@ -543,7 +543,7 @@ int PotPlayer::eventLoop()
             show = true;
             if (havevideo)
             {
-                engine_->renderCopy();
+                engine_->renderCopy(engine_->getMainTexture());
             }
             else
             {
@@ -618,7 +618,7 @@ int PotPlayer::init()
 void PotPlayer::destroy()
 {
     UI_.destory();
-    engine_->destroy();
+    //engine_->destroy();
 #ifndef _WINDLL
     Config::getInstance()->write();
 #endif
@@ -650,7 +650,7 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setRatio(media_->getVideo()->getRatioX(), media_->getVideo()->getRatioY());
     engine_->setRotation(media_->getVideo()->getRotation());
 #ifndef _WINDLL
-        engine_->setWindowSize(width_, height_);
+    engine_->setWindowSize(width_, height_);
     engine_->setWindowTitle(filename);
 #endif
     engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
@@ -692,9 +692,10 @@ void PotPlayer::setSubtitleFrameSize()
 {
     if (subtitle_)
     {
-        subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+        //subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+        subtitle_->setFrameSize(engine_->getWindowWidth(), engine_->getWindowHeight());
     }
-    media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+    media_->getSubtitle()->setFrameSize(engine_->getWindowWidth(), engine_->getWindowHeight());
 }
 
 void PotPlayer::closeMedia(const std::string& filename)
@@ -801,17 +802,17 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
 
 void PotPlayer::setWindowSize(int w, int h)
 {
-    w = media_->getVideo()->getWidth();
-    h = media_->getVideo()->getHeight();
+    //w = media_->getVideo()->getWidth();
+    //h = media_->getVideo()->getHeight();
     engine_->setWindowSize(w, h);
     if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
     {
     }
     else
     {
-        engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+        //ngine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
     }
     engine_->getWindowSize(width_, height_);
-    engine_->setPresentPosition();
+    engine_->setPresentPosition(engine_->getMainTexture());
     setSubtitleFrameSize();
 }

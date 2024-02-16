@@ -60,7 +60,8 @@ void Font::draw(const std::string& fontname, const std::string& text, int size, 
         Engine::getInstance()->queryTexture(tex, &w, &h);
         //Engine::getInstance()->setColor(tex, { uint8_t(color.r / 2), uint8_t(color.g / 2), uint8_t(color.b / 2), color.a }, alpha);
         //Engine::getInstance()->renderCopy(tex, x + 1, y, w, h);
-        Engine::getInstance()->setColor(tex, color, alpha);
+        color.a = alpha;
+        Engine::getInstance()->setColor(tex, color);
         Engine::getInstance()->renderCopy(tex, x, y, w, h);
         x += w;
     }
