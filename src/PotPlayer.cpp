@@ -692,10 +692,9 @@ void PotPlayer::setSubtitleFrameSize()
 {
     if (subtitle_)
     {
-        //subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
-        subtitle_->setFrameSize(engine_->getWindowWidth(), engine_->getWindowHeight());
+        subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
     }
-    media_->getSubtitle()->setFrameSize(engine_->getWindowWidth(), engine_->getWindowHeight());
+    media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
 }
 
 void PotPlayer::closeMedia(const std::string& filename)

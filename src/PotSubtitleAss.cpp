@@ -90,7 +90,7 @@ int PotSubtitleAss::show(int time)
         while (img)
         {
             auto t = engine_->transBitmapToTexture(img->bitmap, img->color, img->w, img->h, img->stride);
-            engine_->renderCopy(t, img->dst_x, img->dst_y, img->w, img->h, 1);
+            engine_->renderCopy(t, img->dst_x, img->dst_y, img->w, img->h, 0, 1);
             tex_vector_.push_back(t);
             img = img->next;
         }
@@ -100,7 +100,7 @@ int PotSubtitleAss::show(int time)
         int i = 0;
         while (img && i < tex_vector_.size())
         {
-            engine_->renderCopy(tex_vector_[i++], img->dst_x, img->dst_y, img->w, img->h, 1);
+            engine_->renderCopy(tex_vector_[i++], img->dst_x, img->dst_y, img->w, img->h, 0, 1);
             img = img->next;
         }
     }
