@@ -50,16 +50,20 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/, int maximi
         {
             flags |= SDL_WINDOW_MAXIMIZED;
         }
-        window_ = SDL_CreateWindow(title_.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            start_w_, start_h_, flags);
+        window_ = SDL_CreateWindow(title_.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, start_w_, start_h_, flags);
     }
     //SDL_CreateWindowFrom()
 #ifndef _WINDLL
     SDL_ShowWindow(window_);
     SDL_RaiseWindow(window_);
 #endif
-
-    renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE /*| SDL_RENDERER_PRESENTVSYNC*/);
+    renderer_ = SDL_GetRenderer(window_);
+    fmt1::print("{}\n", SDL_GetError());
+    if (renderer_ == nullptr)
+    {
+        renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE /*| SDL_RENDERER_PRESENTVSYNC*/);
+        renderer_self_ = true;
+    }
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
@@ -121,19 +125,29 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/, int maximi
 #if defined(_WIN32) && defined(WITH_SMALLPOT) && !defined(_DEBUG)
     tinypot_ = PotCreateFromWindow(window_);
 #endif
+    createMainTexture(start_w_, start_h_);
     return 0;
 }
 
 void Engine::destroy()
 {
-    //SDL_DestroyTexture(tex_);
+    destroyTexture(tex_);
     destroyAssistTexture();
-    SDL_DestroyRenderer(renderer_);
-    SDL_DestroyWindow(window_);
+    if (renderer_self_)
+    {
+        SDL_DestroyRenderer(renderer_);
+    }
+    if (window_mode_ == 0)
+    {
+        SDL_DestroyWindow(window_);
+    }
+
+#ifndef _WINDLL
+    SDL_Quit();
+#endif
 #if defined(_WIN32) && defined(WITH_SMALLPOT) && !defined(_DEBUG)
     PotDestory(tinypot_);
 #endif
-    SDL_Quit();
 }
 
 BP_Texture* Engine::createTexture(int pix_fmt, int w, int h)
@@ -199,8 +213,10 @@ void Engine::renderCopy(BP_Texture* t /*= nullptr*/, double angle)
 
 void Engine::renderPresent()
 {
+    renderMainTextureToWindow();
     SDL_RenderPresent(renderer_);
     SDL_RenderClear(renderer_);
+    setRenderMainTexture();
 }
 
 void Engine::renderCopy(BP_Texture* t, BP_Rect* rect0, BP_Rect* rect1, double angle, int inPresent /*= 0*/)
@@ -212,6 +228,10 @@ void Engine::renderCopy(BP_Texture* t, BP_Rect* rect0, BP_Rect* rect1, double an
 void Engine::getMouseState(int& x, int& y)
 {
     SDL_GetMouseState(&x, &y);
+    int w, h;
+    getWindowSize(w, h);
+    x = x * start_w_ / w;
+    y = y * start_h_ / h;
 }
 
 void Engine::setMouseState(int x, int y)
@@ -404,13 +424,13 @@ bool Engine::setKeepRatio(bool b)
     return keep_ratio_ = b;
 }
 
-void Engine::createMainTexture(int pix_fmt, int w, int h)
+void Engine::createMainTexture(int w, int h)
 {
     if (tex_)
     {
         SDL_DestroyTexture(tex_);
     }
-    tex_ = createTexture(pix_fmt, w, h);
+    tex_ = createARGBRenderedTexture(w, h);
     setPresentPosition(tex_);
 }
 
@@ -419,10 +439,12 @@ void Engine::resizeMainTexture(int w, int h)
     int w0, h0;
     uint32_t pix_fmt;
     if (!SDL_QueryTexture(tex_, &pix_fmt, nullptr, &w0, &h0))
+    {
         if (w0 != w || h0 != h)
         {
             //createMainTexture(pix_fmt, w, h);
         }
+    }
 }
 
 //创建一个专用于画场景的，后期放大
@@ -623,9 +645,15 @@ void Engine::fillColor(BP_Color color, int x, int y, int w, int h)
     SDL_RenderFillRect(renderer_, &r);
 }
 
-void Engine::renderAssistTextureToWindow()
+void Engine::renderMainTextureToWindow()
 {
     resetRenderTarget();
+    renderCopy(tex_, nullptr, nullptr);
+}
+
+void Engine::renderAssistTextureToMain()
+{
+    setRenderTarget(tex_);
     renderCopy(tex2_, nullptr, nullptr);
 }
 

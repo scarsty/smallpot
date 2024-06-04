@@ -94,6 +94,8 @@ private:
     int switch_ = 0;
 
     int window_mode_ = 0;    //0-窗口和渲染器自行创建，1-窗口和渲染器由外部创建
+    bool renderer_self_ = false;
+
 public:
     int init(void* handle = nullptr, int handle_type = 0, int maximized = 0);
 
@@ -101,6 +103,8 @@ public:
     void getWindowMaxSize(int& w, int& h) { SDL_GetWindowMaximumSize(window_, &w, &h); }
     int getWindowWidth();
     int getWindowHeight();
+    int getStartWindowWidth() { return start_w_; }
+    int getStartWindowHeight() { return start_h_; }
     int getMaxWindowWidth() { return max_x_ - min_x_; }
     int getMaxWindowHeight() { return max_y_ - min_y_; }
     void getWindowPosition(int& x, int& y) { SDL_GetWindowPosition(window_, &x, &y); }
@@ -112,11 +116,16 @@ public:
         start_w_ = w;
         start_h_ = h;
     }
+    void getStartWindowSize(int& w, int& h)
+    {
+        w = start_w_;
+        h = start_h_;
+    }
     void setWindowPosition(int x, int y);
     void setWindowTitle(const std::string& str) { SDL_SetWindowTitle(window_, str.c_str()); }
     BP_Renderer* getRenderer() { return renderer_; }
 
-    void createMainTexture(int pix_fmt, int w, int h);
+    void createMainTexture(int w, int h);
     void resizeMainTexture(int w, int h);
     void createAssistTexture(int w, int h);
     void setPresentPosition(BP_Texture* tex);    //设置贴图的位置
@@ -171,8 +180,10 @@ public:
     }
     void setColor(BP_Texture* tex, BP_Color c);
     void fillColor(BP_Color color, int x, int y, int w, int h);
+    void setRenderMainTexture() { setRenderTarget(tex_); }
+    void renderMainTextureToWindow();
     void setRenderAssistTexture() { setRenderTarget(tex2_); }
-    void renderAssistTextureToWindow();
+    void renderAssistTextureToMain();
     int setTextureBlendMode(BP_Texture* t) { return SDL_SetTextureBlendMode(t, SDL_BLENDMODE_BLEND); }
 
     void resetRenderTimes(int t = 0) { render_times_ = t; }
@@ -203,7 +214,11 @@ private:
 
 public:
     static void delay(double t) { std::this_thread::sleep_for(std::chrono::nanoseconds(int64_t(t * 1e6))); }
-    static double getTicks() { return 1e-6 * std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()).time_since_epoch().count(); }
+    static double getTicks()
+    {
+        static auto start = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()).time_since_epoch().count();
+        return 1e-6 * (std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()).time_since_epoch().count() - start); 
+    }
     uint64_t tic() { return time_ = getTicks(); }
     void toc()
     {
@@ -213,9 +228,7 @@ public:
         }
     }
     void getMouseState(int& x, int& y);
-    ;
     void setMouseState(int x, int y);
-    ;
     int pollEvent(BP_Event& e);
     static int pollEvent() { return SDL_PollEvent(nullptr); }
     static int pushEvent(BP_Event& e) { return SDL_PushEvent(&e); }
