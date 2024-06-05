@@ -29,40 +29,6 @@ PotStreamAudio::~PotStreamAudio()
     closeAudioDevice();
 }
 
-void PotStreamAudio::openAudioDevice()
-{
-    if (stream_index_ < 0)
-    {
-        return;
-    }
-    freq_ = codec_ctx_->sample_rate;
-    channels_ = Config::getInstance()->getInteger("channels", -1);
-    if (channels_ < 0)
-    {
-        channels_ = codec_ctx_->channels;
-    }
-    engine_->openAudio(freq_, channels_, codec_ctx_->frame_size, 2048, std::bind(&PotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
-
-    auto audio_format = AV_SAMPLE_FMT_S16;
-
-    std::map<SDL_AudioFormat, AVSampleFormat> SDL_FFMPEG_AUDIO_FORMAT =
-    {
-        { AUDIO_U8, AV_SAMPLE_FMT_U8 },
-        { AUDIO_S16, AV_SAMPLE_FMT_S16 },
-        { AUDIO_S32, AV_SAMPLE_FMT_S32 },
-        { AUDIO_F32, AV_SAMPLE_FMT_FLT },
-        //{ AUDIO_U8, AV_SAMPLE_FMT_DBL },
-    };
-
-    resample_.setOutFormat(SDL_FFMPEG_AUDIO_FORMAT[engine_->getAudioFormat()]);
-}
-
-int PotStreamAudio::closeAudioDevice()
-{
-    engine_->closeAudio();
-    return 0;
-}
-
 void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
 {
     if (buffer_ == nullptr) { return; }
@@ -153,6 +119,52 @@ FrameContent PotStreamAudio::convertFrameToContent()
     return f;
 }
 
+bool PotStreamAudio::needDecode2()
+{
+    if (buffer_ == nullptr) { return false; }
+    return (data_write_ - data_read_ < buffer_size_ / 2);
+}
+
+void PotStreamAudio::openAudioDevice()
+{
+    if (stream_index_ < 0)
+    {
+        return;
+    }
+    freq_ = codec_ctx_->sample_rate;
+    channels_ = Config::getInstance()->getInteger("channels", -1);
+    if (channels_ < 0)
+    {
+        channels_ = codec_ctx_->channels;
+    }
+    engine_->openAudio(freq_, channels_, codec_ctx_->frame_size, 2048, std::bind(&PotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
+
+    auto audio_format = AV_SAMPLE_FMT_S16;
+
+    std::map<SDL_AudioFormat, AVSampleFormat> SDL_FFMPEG_AUDIO_FORMAT =
+    {
+        { AUDIO_U8, AV_SAMPLE_FMT_U8 },
+        { AUDIO_S16, AV_SAMPLE_FMT_S16 },
+        { AUDIO_S32, AV_SAMPLE_FMT_S32 },
+        { AUDIO_F32, AV_SAMPLE_FMT_FLT },
+        //{ AUDIO_U8, AV_SAMPLE_FMT_DBL },
+    };
+
+    resample_.setOutFormat(SDL_FFMPEG_AUDIO_FORMAT[engine_->getAudioFormat()]);
+}
+
+int PotStreamAudio::closeAudioDevice()
+{
+    engine_->closeAudio();
+    return 0;
+}
+
+void PotStreamAudio::resetDecodeState()
+{
+    data_write_ = data_read_ = 0;
+    //memset(data, 0, screamSize);
+}
+
 int PotStreamAudio::setVolume(int v)
 {
     v = std::max(v, 0);
@@ -168,18 +180,6 @@ int PotStreamAudio::changeVolume(int v)
         return volume_;
     }
     return setVolume(volume_ + v);
-}
-
-bool PotStreamAudio::needDecode2()
-{
-    if (buffer_ == nullptr) { return false; }
-    return (data_write_ - data_read_ < buffer_size_ / 2);
-}
-
-void PotStreamAudio::resetDecodeState()
-{
-    data_write_ = data_read_ = 0;
-    //memset(data, 0, screamSize);
 }
 
 void PotStreamAudio::setPause(bool pause)

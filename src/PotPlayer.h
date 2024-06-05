@@ -41,13 +41,11 @@ private:
     //string getSysString(const string& str);
 
 public:
-    int beginWithFile(std::string filename);
     int init();
     void destroy();
+    int beginWithFile(std::string filename);
     void openMedia(const std::string& filename);
-
     void setSubtitleFrameSize();
-
     void closeMedia(const std::string& filename);
 
     //std::function<void(bool&, std::string&)> stop_callback = nullptr;

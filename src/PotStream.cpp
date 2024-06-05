@@ -25,55 +25,66 @@ PotStream::~PotStream()
     //DestroyMutex(mutex_cpp);
 }
 
-//返回为非负才正常
-int PotStream::openFile(const std::string& filename)
+int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* packet)
 {
-    //stream_index_ = -1;
-    stream_ = format_ctx_->streams[stream_index_];
-    if (stream_->r_frame_rate.den)
+    int ret;
+    *n = 0;
+    if (packet)
     {
-        time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
+        ret = avcodec_send_packet(ctx, packet);
+        if (ret < 0)
+        {
+            return ret == AVERROR_EOF ? 0 : ret;
+        }
     }
-    time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
-    total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
-    start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
-    codec_ = avcodec_find_decoder(stream_->codecpar->codec_id);
-    codec_ctx_ = avcodec_alloc_context3(codec_);
-    avcodec_parameters_to_context(codec_ctx_, stream_->codecpar);
-    codec_ctx_->pkt_timebase = stream_->time_base;
-    //codec_ctx_ = stream_->codec;
-    avcodec_open2(codec_ctx_, codec_, nullptr);
 
-    //for (int i = 0; i < format_ctx_->nb_streams; ++i)
-    //{
-    //    if (format_ctx_->streams[i]->codec->codec_type == type_)
-    //    {
-    //        stream_index_vector_.push_back(i);
-    //        if (stream_index_vector_.size() == 1)
-    //        {
-    //            //fmt1::print("finded media stream: %d\n", type);
-    //            stream_ = format_ctx_->streams[i];
-    //            codec_ctx_ = stream_->codec;
-    //            if (stream_->r_frame_rate.den)
-    //            {
-    //                time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
-    //            }
-    //            time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
-    //            total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
-    //            start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
-    //            codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
-    //            avcodec_open2(codec_ctx_, codec_, nullptr);
-    //        }
-    //    }
-    //}
+    ret = avcodec_receive_frame(ctx, frame_);
+    if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
+    {
+        return ret;
+    }
+    if (ret >= 0)
+    {
+        *n = 1;
+    }
+    return 0;
+}
 
-    //记录下来所有的流的编号，默认同类流用一个解码器
-    //这个设置可能存在问题
-    //if (!stream_index_vector_.empty())
-    //{
-    //    stream_index_ = stream_index_vector_[0];
-    //}
-    return stream_index_;
+int PotStream::dropContent()
+{
+    if (!data_map_.empty())
+    {
+        auto p = data_map_.begin()->second.data;
+        if (p)
+        {
+            freeContent(p);
+        }
+        data_map_.erase(data_map_.begin());
+    }
+    return 0;
+}
+
+void PotStream::setMap(int key, FrameContent f)
+{
+    data_map_[key] = f;
+}
+
+void PotStream::clearMap()
+{
+    for (auto& i : data_map_)
+    {
+        freeContent(i.second.data);
+    }
+    data_map_.clear();
+}
+
+bool PotStream::needDecode()
+{
+    if (!needDecode2())
+    {
+        return false;
+    }
+    return (data_map_.size() < max_size_);
 }
 
 //解压帧，同时会更新当前的时间戳
@@ -166,6 +177,86 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
     return ret;
 }
 
+void PotStream::setDecoded(bool b)
+{
+    decoded_ = b;
+}
+
+bool PotStream::haveDecoded()
+{
+    return data_map_.size() > 0;
+}
+
+void PotStream::dropAllDecoded()
+{
+    clearMap();
+    setDecoded(false);
+    need_read_packet_ = true;
+}
+
+FrameContent PotStream::getCurrentContent()
+{
+    if (!data_map_.empty())
+    {
+        return data_map_.begin()->second;
+    }
+    else
+    {
+        return { time_dts_, -1, nullptr };
+    }
+}
+
+//返回为非负才正常
+int PotStream::openFile(const std::string& filename)
+{
+    //stream_index_ = -1;
+    stream_ = format_ctx_->streams[stream_index_];
+    if (stream_->r_frame_rate.den)
+    {
+        time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
+    }
+    time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
+    total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
+    start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
+    codec_ = avcodec_find_decoder(stream_->codecpar->codec_id);
+    codec_ctx_ = avcodec_alloc_context3(codec_);
+    avcodec_parameters_to_context(codec_ctx_, stream_->codecpar);
+    codec_ctx_->pkt_timebase = stream_->time_base;
+    //codec_ctx_ = stream_->codec;
+    avcodec_open2(codec_ctx_, codec_, nullptr);
+
+    //for (int i = 0; i < format_ctx_->nb_streams; ++i)
+    //{
+    //    if (format_ctx_->streams[i]->codec->codec_type == type_)
+    //    {
+    //        stream_index_vector_.push_back(i);
+    //        if (stream_index_vector_.size() == 1)
+    //        {
+    //            //fmt1::print("finded media stream: %d\n", type);
+    //            stream_ = format_ctx_->streams[i];
+    //            codec_ctx_ = stream_->codec;
+    //            if (stream_->r_frame_rate.den)
+    //            {
+    //                time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
+    //            }
+    //            time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
+    //            total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
+    //            start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
+    //            codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
+    //            avcodec_open2(codec_ctx_, codec_, nullptr);
+    //        }
+    //    }
+    //}
+
+    //记录下来所有的流的编号，默认同类流用一个解码器
+    //这个设置可能存在问题
+    //if (!stream_index_vector_.empty())
+    //{
+    //    stream_index_ = stream_index_vector_[0];
+    //}
+    return stream_index_;
+}
+
 //参数为是否重置暂停时间和显示时间，一般seek后应立刻重置
 int PotStream::tryDecodeFrame(bool reset)
 {
@@ -204,6 +295,11 @@ int PotStream::tryDecodeFrame(bool reset)
     return 1;
 }
 
+void PotStream::dropDecoded()
+{
+    dropContent();
+}
+
 int PotStream::getTotalTime()
 {
     return total_time_;
@@ -236,95 +332,6 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
 
 void PotStream::setFrameTime()
 {
-}
-
-int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* packet)
-{
-    int ret;
-    *n = 0;
-    if (packet)
-    {
-        ret = avcodec_send_packet(ctx, packet);
-        if (ret < 0)
-        {
-            return ret == AVERROR_EOF ? 0 : ret;
-        }
-    }
-
-    ret = avcodec_receive_frame(ctx, frame_);
-    if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
-    {
-        return ret;
-    }
-    if (ret >= 0)
-    {
-        *n = 1;
-    }
-    return 0;
-}
-
-int PotStream::dropContent()
-{
-    if (!data_map_.empty())
-    {
-        auto p = data_map_.begin()->second.data;
-        if (p)
-        {
-            freeContent(p);
-        }
-        data_map_.erase(data_map_.begin());
-    }
-    return 0;
-}
-
-void PotStream::clearMap()
-{
-    for (auto& i : data_map_)
-    {
-        freeContent(i.second.data);
-    }
-    data_map_.clear();
-}
-
-void PotStream::setMap(int key, FrameContent f)
-{
-    data_map_[key] = f;
-}
-
-bool PotStream::needDecode()
-{
-    if (!needDecode2())
-    {
-        return false;
-    }
-    return (data_map_.size() < max_size_);
-}
-
-void PotStream::setDecoded(bool b)
-{
-    decoded_ = b;
-}
-
-void PotStream::dropDecoded()
-{
-    dropContent();
-}
-
-FrameContent PotStream::getCurrentContent()
-{
-    if (!data_map_.empty())
-    {
-        return data_map_.begin()->second;
-    }
-    else
-    {
-        return { time_dts_, -1, nullptr };
-    }
-}
-
-bool PotStream::haveDecoded()
-{
-    return data_map_.size() > 0;
 }
 
 int PotStream::getTime()
@@ -372,23 +379,16 @@ void PotStream::getSize(int& w, int& h)
     }
 }
 
-void PotStream::dropAllDecoded()
+void PotStream::resetTimeAxis(int time)
 {
-    clearMap();
-    setDecoded(false);
-    need_read_packet_ = true;
+    pause_time_ = time_shown_ = time;
+    ticks_shown_ = engine_->getTicks();
 }
 
 void PotStream::setPause(bool pause)
 {
     pause_ = pause;
     pause_time_ = getTime();
-    ticks_shown_ = engine_->getTicks();
-}
-
-void PotStream::resetTimeAxis(int time)
-{
-    pause_time_ = time_shown_ = time;
     ticks_shown_ = engine_->getTicks();
 }
 

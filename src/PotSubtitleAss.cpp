@@ -17,6 +17,15 @@ PotSubtitleAss::~PotSubtitleAss()
     destroy();
 }
 
+void PotSubtitleAss::destroyAllTex()
+{
+    for (auto t : tex_vector_)
+    {
+        engine_->destroyTexture(t);
+    }
+    tex_vector_.clear();
+}
+
 void PotSubtitleAss::init()
 {
     library_ = ass_library_init();
@@ -32,6 +41,12 @@ void PotSubtitleAss::init()
 
     ass_set_fonts(renderer_, NULL, NULL, 1, NULL, 1);
     ass_set_extract_fonts(library_, 1);
+}
+
+void PotSubtitleAss::destroy()
+{
+    ass_renderer_done(renderer_);
+    ass_library_done(library_);
 }
 
 bool PotSubtitleAss::openSubtitle(const std::string& filename)
@@ -78,6 +93,15 @@ bool PotSubtitleAss::openSubtitle(const std::string& filename)
     return exist_;
 }
 
+void PotSubtitleAss::closeSubtitle()
+{
+    if (track_)
+    {
+        ass_free_track(track_);
+    }
+    track_ = nullptr;
+}
+
 int PotSubtitleAss::show(int time)
 {
     int a = 0;
@@ -106,12 +130,6 @@ int PotSubtitleAss::show(int time)
     }
     return a;
     //cout << engine_->getTicks() << endl;
-}
-
-void PotSubtitleAss::destroy()
-{
-    ass_renderer_done(renderer_);
-    ass_library_done(library_);
 }
 
 void PotSubtitleAss::setFrameSize(int w, int h)
@@ -157,22 +175,4 @@ void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_tim
 void PotSubtitleAss::clear()
 {
     ass_flush_events(track_);
-}
-
-void PotSubtitleAss::closeSubtitle()
-{
-    if (track_)
-    {
-        ass_free_track(track_);
-    }
-    track_ = nullptr;
-}
-
-void PotSubtitleAss::destroyAllTex()
-{
-    for (auto t : tex_vector_)
-    {
-        engine_->destroyTexture(t);
-    }
-    tex_vector_.clear();
 }

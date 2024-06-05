@@ -13,6 +13,27 @@ PotUI::~PotUI()
 {
 }
 
+void PotUI::init()
+{
+    square_ = createSquareTexture(40);
+    ball_ = createSpecialTexture(50);
+    triangle_ = createSpecialTexture(200, 1);
+    triangle2_ = createSpecialTexture(200, 2);
+    to_full_screen_ = createSpecialTexture(20, 4);
+    to_window_ = createSpecialTexture(20, 5);
+    hollow_ = createSpecialTexture(20, 6);
+    frame_ = createSpecialTexture(20, 7);
+    //fontname_ = Config::getInstance()->getString("ui_font");
+    if (!filefunc::fileExist(fontname_))
+    {
+#ifdef _WIN32
+        fontname_ = "C:/Windows/Fonts/calibri.ttf";
+#else
+        fontname_ = "/System/Library/Fonts/Palatino.ttc";
+#endif
+    }
+}
+
 void PotUI::drawText(const std::string& text)
 {
     Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 30 - button_w_ * 2, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
@@ -199,6 +220,14 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, BP_ALIGN_LEFT);
 }
 
+void PotUI::destory()
+{
+    if (Config::getInstance()->getString("ui_font") == "")
+    {
+        Config::getInstance()->setString("ui_font", fontname_);
+    }
+}
+
 std::string PotUI::convertTimeToString(int time)
 {
     return fmt1::format("{}:{:02}:{:02}", time / 3600000, time % 3600000 / 60000, time % 60000 / 1000);
@@ -261,35 +290,6 @@ int PotUI::getButtonPos(int b)
         return win_w_ - 22 - button_w_ * 2;
     }
     return button_x_ + (b - 1) * (button_w_ + 10);
-}
-
-void PotUI::init()
-{
-    square_ = createSquareTexture(40);
-    ball_ = createSpecialTexture(50);
-    triangle_ = createSpecialTexture(200, 1);
-    triangle2_ = createSpecialTexture(200, 2);
-    to_full_screen_ = createSpecialTexture(20, 4);
-    to_window_ = createSpecialTexture(20, 5);
-    hollow_ = createSpecialTexture(20, 6);
-    frame_ = createSpecialTexture(20, 7);
-    //fontname_ = Config::getInstance()->getString("ui_font");
-    if (!filefunc::fileExist(fontname_))
-    {
-#ifdef _WIN32
-        fontname_ = "C:/Windows/Fonts/calibri.ttf";
-#else
-        fontname_ = "/System/Library/Fonts/Palatino.ttc";
-#endif
-    }
-}
-
-void PotUI::destory()
-{
-    if (Config::getInstance()->getString("ui_font") == "")
-    {
-        Config::getInstance()->setString("ui_font", fontname_);
-    }
 }
 
 BP_Texture* PotUI::createSquareTexture(int size)

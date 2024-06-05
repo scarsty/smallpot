@@ -21,8 +21,8 @@ private:
     int fram_w_, frame_h_;
 
 public:
-    PotSubtitleSrt();
-    virtual ~PotSubtitleSrt();
+    PotSubtitleSrt() = default;
+    virtual ~PotSubtitleSrt() = default;
 
     //virtual void init();
     //virtual void destroy();

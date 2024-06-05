@@ -45,79 +45,6 @@ PotPlayer::~PotPlayer()
     //delete media;
 }
 
-int PotPlayer::beginWithFile(std::string filename)
-{
-    int count = 0;
-    if (init() != 0)
-    {
-        return -1;
-    }
-    engine_->resetRenderTarget();
-    int start_time = engine_->getTicks();
-
-    if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
-    {
-        filename = Config::getInstance()->getNewestRecord();
-        if (!filefunc::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
-        {
-            filename = "";
-        }
-    }
-    //首次运行拖拽的文件也认为是同一个
-    drop_filename_ = Config::getInstance()->findSuitableFilename(filename);
-
-    fmt1::print("Begin with file: {}\n", filename);
-    auto play_filename = drop_filename_;
-    running_ = true;
-
-    while (running_)
-    {
-        /*if (count <= 1)
-        {
-        //_drop_filename = "";
-        //play_filename = "";
-        }*/
-
-        openMedia(play_filename);
-        bool add_cond = true;
-        //fmt1::print("{}", engine_->getTicks() - start_time);
-        add_cond = engine_->getTicks() - start_time < 2000;
-#ifndef _WINDLL
-        //if (count == 0 && add_cond)
-        {
-            /*auto w = engine_->getMaxWindowWidth();
-            auto h = engine_->getMaxWindowHeight();
-            auto x = max(0, (w-_w)/2);
-            auto y = max(0, (h-_h)/2);
-            fmt1::print("{},{}\n",x,y);
-            engine_->setWindowPosition(x, y);*/
-            int w, h;
-            engine_->getWindowSize(w, h);
-            w = Config::getInstance()->getInteger("windows_width", w);
-            h = Config::getInstance()->getInteger("windows_height", h);
-            setWindowSize(w, h);
-            //首次打开文件窗口居中
-            if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
-            {
-            }
-            else
-            {
-                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
-            }
-        }
-#endif
-        this->eventLoop();
-        closeMedia(play_filename);
-        if (play_filename != "")
-        {
-            count++;
-        }
-        play_filename = drop_filename_;
-    }
-    destroy();
-    return exit_type_;
-}
-
 int PotPlayer::eventLoop()
 {
     BP_Event e;
@@ -622,6 +549,79 @@ void PotPlayer::destroy()
 #ifndef _WINDLL
     Config::getInstance()->write();
 #endif
+}
+
+int PotPlayer::beginWithFile(std::string filename)
+{
+    int count = 0;
+    if (init() != 0)
+    {
+        return -1;
+    }
+    engine_->resetRenderTarget();
+    int start_time = engine_->getTicks();
+
+    if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
+    {
+        filename = Config::getInstance()->getNewestRecord();
+        if (!filefunc::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
+        {
+            filename = "";
+        }
+    }
+    //首次运行拖拽的文件也认为是同一个
+    drop_filename_ = Config::getInstance()->findSuitableFilename(filename);
+
+    fmt1::print("Begin with file: {}\n", filename);
+    auto play_filename = drop_filename_;
+    running_ = true;
+
+    while (running_)
+    {
+        /*if (count <= 1)
+        {
+        //_drop_filename = "";
+        //play_filename = "";
+        }*/
+
+        openMedia(play_filename);
+        bool add_cond = true;
+        //fmt1::print("{}", engine_->getTicks() - start_time);
+        add_cond = engine_->getTicks() - start_time < 2000;
+#ifndef _WINDLL
+        //if (count == 0 && add_cond)
+        {
+            /*auto w = engine_->getMaxWindowWidth();
+            auto h = engine_->getMaxWindowHeight();
+            auto x = max(0, (w-_w)/2);
+            auto y = max(0, (h-_h)/2);
+            fmt1::print("{},{}\n",x,y);
+            engine_->setWindowPosition(x, y);*/
+            int w, h;
+            engine_->getWindowSize(w, h);
+            w = Config::getInstance()->getInteger("windows_width", w);
+            h = Config::getInstance()->getInteger("windows_height", h);
+            setWindowSize(w, h);
+            //首次打开文件窗口居中
+            if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
+            {
+            }
+            else
+            {
+                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+            }
+        }
+#endif
+        this->eventLoop();
+        closeMedia(play_filename);
+        if (play_filename != "")
+        {
+            count++;
+        }
+        play_filename = drop_filename_;
+    }
+    destroy();
+    return exit_type_;
 }
 
 //参数为utf8编码

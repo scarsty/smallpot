@@ -1,10 +1,10 @@
-#include "PotStreamVideo.h"
+ï»¿#include "PotStreamVideo.h"
 #include "Config.h"
 #include "DynamicLibrary.h"
 
 PotStreamVideo::PotStreamVideo()
 {
-    //ÊÓÆµ»º³åÇø, ×ã¹»´óÊ±»á½ÏÁ÷³©£¬µ«ÊÇÌøÖ¡»áÉÁË¸
+    //è§†é¢‘ç¼“å†²åŒº, è¶³å¤Ÿå¤§æ—¶ä¼šè¾ƒæµç•…ï¼Œä½†æ˜¯è·³å¸§ä¼šé—ªçƒ
     type_ = BPMEDIA_TYPE_VIDEO;
 
     //create_module_ = (create_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "create_module");
@@ -37,77 +37,6 @@ PotStreamVideo::~PotStreamVideo()
     {
         destroy_module_(plugin_);
     }
-}
-
-//-1ÎŞÊÓÆµ
-//1ÓĞ¿ÉÏÔÊ¾µÄ°ü£¬Î´µ½Ê±¼ä
-//2ÒÑ¾­Ã»ÓĞ¿ÉÏÔÊ¾µÄ°ü
-int PotStreamVideo::show(int time)
-{
-    if (stream_index_ < 0)
-    {
-        return NoVideo;
-    }
-    if (haveDecoded())
-    {
-        auto f = getCurrentContent();
-        int time_c = f.time;
-        if (time >= time_c)
-        {
-            auto tex = (BP_Texture*)f.data;
-            engine_->renderCopy(tex);
-            time_shown_ = time_c;
-            ticks_shown_ = engine_->getTicks();
-            dropDecoded();
-            return VideoFrameShowed;
-        }
-        else
-        {
-            return VideoFrameBeforeTime;
-        }
-    }
-    return NoVideoFrame;
-}
-
-int PotStreamVideo::getSDLPixFmt()
-{
-    if (!exist())
-    {
-        return SDL_PIXELFORMAT_UNKNOWN;
-    }
-    std::map<int, int> pix_ffmpeg_sdl = {
-        { AV_PIX_FMT_RGB8, SDL_PIXELFORMAT_RGB332 },
-        { AV_PIX_FMT_RGB444, SDL_PIXELFORMAT_RGB444 },
-        { AV_PIX_FMT_RGB555, SDL_PIXELFORMAT_RGB555 },
-        { AV_PIX_FMT_BGR555, SDL_PIXELFORMAT_BGR555 },
-        { AV_PIX_FMT_RGB565, SDL_PIXELFORMAT_RGB565 },
-        { AV_PIX_FMT_BGR565, SDL_PIXELFORMAT_BGR565 },
-        { AV_PIX_FMT_RGB24, SDL_PIXELFORMAT_RGB24 },
-        { AV_PIX_FMT_BGR24, SDL_PIXELFORMAT_BGR24 },
-        { AV_PIX_FMT_0RGB32, SDL_PIXELFORMAT_RGB888 },
-        { AV_PIX_FMT_0BGR32, SDL_PIXELFORMAT_BGR888 },
-        { AV_PIX_FMT_NE(RGB0, 0BGR), SDL_PIXELFORMAT_RGBX8888 },
-        { AV_PIX_FMT_NE(BGR0, 0RGB), SDL_PIXELFORMAT_BGRX8888 },
-        { AV_PIX_FMT_RGB32, SDL_PIXELFORMAT_ARGB8888 },
-        { AV_PIX_FMT_RGB32_1, SDL_PIXELFORMAT_RGBA8888 },
-        { AV_PIX_FMT_BGR32, SDL_PIXELFORMAT_ABGR8888 },
-        { AV_PIX_FMT_BGR32_1, SDL_PIXELFORMAT_BGRA8888 },
-        { AV_PIX_FMT_YUV420P, SDL_PIXELFORMAT_IYUV },
-        { AV_PIX_FMT_YUYV422, SDL_PIXELFORMAT_YUY2 },
-        { AV_PIX_FMT_UYVY422, SDL_PIXELFORMAT_UYVY },
-        { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
-    };
-    int r = SDL_PIXELFORMAT_UNKNOWN;
-    if (plugin_ == nullptr)
-    {
-        if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
-        {
-            r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
-            fmt1::print("pixel format is {}\n", r);
-        }
-    }
-    texture_pix_fmt_ = r;
-    return r;
 }
 
 void PotStreamVideo::freeContent(void* p)
@@ -186,4 +115,75 @@ FrameContent PotStreamVideo::convertFrameToContent()
         }
     }
     return { time_dts_, f->linesize[0], tex };
+}
+
+//-1æ— è§†é¢‘
+//1æœ‰å¯æ˜¾ç¤ºçš„åŒ…ï¼Œæœªåˆ°æ—¶é—´
+//2å·²ç»æ²¡æœ‰å¯æ˜¾ç¤ºçš„åŒ…
+int PotStreamVideo::show(int time)
+{
+    if (stream_index_ < 0)
+    {
+        return NoVideo;
+    }
+    if (haveDecoded())
+    {
+        auto f = getCurrentContent();
+        int time_c = f.time;
+        if (time >= time_c)
+        {
+            auto tex = (BP_Texture*)f.data;
+            engine_->renderCopy(tex);
+            time_shown_ = time_c;
+            ticks_shown_ = engine_->getTicks();
+            dropDecoded();
+            return VideoFrameShowed;
+        }
+        else
+        {
+            return VideoFrameBeforeTime;
+        }
+    }
+    return NoVideoFrame;
+}
+
+int PotStreamVideo::getSDLPixFmt()
+{
+    if (!exist())
+    {
+        return SDL_PIXELFORMAT_UNKNOWN;
+    }
+    std::map<int, int> pix_ffmpeg_sdl = {
+        { AV_PIX_FMT_RGB8, SDL_PIXELFORMAT_RGB332 },
+        { AV_PIX_FMT_RGB444, SDL_PIXELFORMAT_RGB444 },
+        { AV_PIX_FMT_RGB555, SDL_PIXELFORMAT_RGB555 },
+        { AV_PIX_FMT_BGR555, SDL_PIXELFORMAT_BGR555 },
+        { AV_PIX_FMT_RGB565, SDL_PIXELFORMAT_RGB565 },
+        { AV_PIX_FMT_BGR565, SDL_PIXELFORMAT_BGR565 },
+        { AV_PIX_FMT_RGB24, SDL_PIXELFORMAT_RGB24 },
+        { AV_PIX_FMT_BGR24, SDL_PIXELFORMAT_BGR24 },
+        { AV_PIX_FMT_0RGB32, SDL_PIXELFORMAT_RGB888 },
+        { AV_PIX_FMT_0BGR32, SDL_PIXELFORMAT_BGR888 },
+        { AV_PIX_FMT_NE(RGB0, 0BGR), SDL_PIXELFORMAT_RGBX8888 },
+        { AV_PIX_FMT_NE(BGR0, 0RGB), SDL_PIXELFORMAT_BGRX8888 },
+        { AV_PIX_FMT_RGB32, SDL_PIXELFORMAT_ARGB8888 },
+        { AV_PIX_FMT_RGB32_1, SDL_PIXELFORMAT_RGBA8888 },
+        { AV_PIX_FMT_BGR32, SDL_PIXELFORMAT_ABGR8888 },
+        { AV_PIX_FMT_BGR32_1, SDL_PIXELFORMAT_BGRA8888 },
+        { AV_PIX_FMT_YUV420P, SDL_PIXELFORMAT_IYUV },
+        { AV_PIX_FMT_YUYV422, SDL_PIXELFORMAT_YUY2 },
+        { AV_PIX_FMT_UYVY422, SDL_PIXELFORMAT_UYVY },
+        { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
+    };
+    int r = SDL_PIXELFORMAT_UNKNOWN;
+    if (plugin_ == nullptr)
+    {
+        if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
+        {
+            r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
+            fmt1::print("pixel format is {}\n", r);
+        }
+    }
+    texture_pix_fmt_ = r;
+    return r;
 }
