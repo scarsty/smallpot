@@ -543,7 +543,7 @@ int PotPlayer::eventLoop()
             show = true;
             if (havevideo)
             {
-                engine_->renderCopy(engine_->getMainTexture());
+                //engine_->renderCopy(engine_->getMainTexture());
             }
             else
             {
@@ -653,7 +653,9 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setWindowSize(width_, height_);
     engine_->setWindowTitle(filename);
 #endif
-    engine_->createMainTexture(media_->getVideo()->getSDLPixFmt(), width_, height_);
+    auto pixfmt = media_->getVideo()->getSDLPixFmt();
+    engine_->createMainTexture(pixfmt, BP_TEXTUREACCESS_STREAMING, width_, height_);
+    //engine_->createAssistTexture(width_, height_);
 
     //重新获取尺寸，有可能与之前不同
     width_ = engine_->getWindowWidth();
