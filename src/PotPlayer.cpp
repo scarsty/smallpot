@@ -470,7 +470,7 @@ int PotPlayer::eventLoop()
             show = true;
             if (havevideo)
             {
-                //engine_->renderCopy(engine_->getMainTexture());
+                engine_->renderCopy(engine_->getMainTexture());
             }
             else
             {
