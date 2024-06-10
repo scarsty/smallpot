@@ -1,4 +1,4 @@
-#include "PotResample.h"
+ï»¿#include "PotResample.h"
 #include "fmt1.h"
 
 PotResample::PotResample()
@@ -14,8 +14,9 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     SwrContext* swr_ctx = NULL;
     int data_size = 0;
     int ret = 0;
-    int64_t src_ch_layout = codec_ctx->channel_layout;
-    int64_t dst_ch_layout = AV_CH_LAYOUT_STEREO;
+    AVChannelLayout src_ch_layout = codec_ctx->ch_layout;
+    AVChannelLayout dst_ch_layout = src_ch_layout;
+    
     int dst_nb_channels = 0;
     int dst_linesize = 0;
     int src_nb_samples = 0;
@@ -31,39 +32,39 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         return -1;
     }
 
-    if (codec_ctx->channels == av_get_channel_layout_nb_channels(codec_ctx->channel_layout))
+    if (codec_ctx->channels == codec_ctx->ch_layout.nb_channels)
     {
-        src_ch_layout = codec_ctx->channel_layout;
+        src_ch_layout = codec_ctx->ch_layout;
     }
     else
     {
-        src_ch_layout = av_get_default_channel_layout(codec_ctx->channels);
+        av_channel_layout_default(&src_ch_layout, codec_ctx->channels);
     }
 
-    //ÕâÀïµÄÉèÖÃºÜ´Ö²Ú£¬×îºÃÏêÏ¸´¦Àí
+    //è¿™é‡Œçš„è®¾ç½®å¾ˆç²—ç³™ï¼Œæœ€å¥½è¯¦ç»†å¤„ç†
     switch (out_channels)
     {
     case 1:
-        dst_ch_layout = AV_CH_LAYOUT_MONO;
+        dst_ch_layout.u.mask = AV_CH_LAYOUT_MONO;
         break;
     case 2:
-        dst_ch_layout = AV_CH_LAYOUT_STEREO;
+        dst_ch_layout.u.mask = AV_CH_LAYOUT_STEREO;
         break;
     case 3:
-        dst_ch_layout = AV_CH_LAYOUT_SURROUND;
+        dst_ch_layout.u.mask = AV_CH_LAYOUT_SURROUND;
         break;
     case 4:
-        dst_ch_layout = AV_CH_LAYOUT_QUAD;
+        dst_ch_layout.u.mask = AV_CH_LAYOUT_QUAD;
         break;
     case 5:
-        dst_ch_layout = AV_CH_LAYOUT_5POINT0;
+        dst_ch_layout.u.mask = AV_CH_LAYOUT_5POINT0;
         break;
     case 6:
-        dst_ch_layout = AV_CH_LAYOUT_5POINT1;
+        dst_ch_layout.u.mask = AV_CH_LAYOUT_5POINT1;
         break;
     }
 
-    if (src_ch_layout <= 0)
+    if (src_ch_layout.u.mask == 0)
     {
         fmt1::print("src_ch_layout error \n");
         return -1;
@@ -76,11 +77,11 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         return -1;
     }
 
-    av_opt_set_int(swr_ctx, "in_channel_layout", src_ch_layout, 0);
+    av_opt_set_int(swr_ctx, "in_channel_layout", src_ch_layout.u.mask, 0);
     av_opt_set_int(swr_ctx, "in_sample_rate", codec_ctx->sample_rate, 0);
     av_opt_set_sample_fmt(swr_ctx, "in_sample_fmt", codec_ctx->sample_fmt, 0);
 
-    av_opt_set_int(swr_ctx, "out_channel_layout", dst_ch_layout, 0);
+    av_opt_set_int(swr_ctx, "out_channel_layout", dst_ch_layout.u.mask, 0);
     av_opt_set_int(swr_ctx, "out_sample_rate", out_sample_rate, 0);
     av_opt_set_sample_fmt(swr_ctx, "out_sample_fmt", (AVSampleFormat)out_sample_format_, 0);
 
@@ -97,7 +98,7 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         return -1;
     }
 
-    dst_nb_channels = av_get_channel_layout_nb_channels(dst_ch_layout);
+    dst_nb_channels = dst_ch_layout.nb_channels;
     ret = av_samples_alloc_array_and_samples(&dst_data, &dst_linesize, dst_nb_channels, dst_nb_samples, (AVSampleFormat)out_sample_format_, 0);
     if (ret < 0)
     {
