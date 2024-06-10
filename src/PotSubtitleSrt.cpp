@@ -1,4 +1,5 @@
 #include "PotSubtitleSrt.h"
+#include "filefunc.h"
 #include "Font.h"
 #include "PotConv.h"
 #include "strfunc.h"
@@ -70,7 +71,7 @@ int PotSubtitleSrt::readIndex()
 bool PotSubtitleSrt::openSubtitle(const std::string& filename)
 {
     exist_ = true;
-    content_ = strfunc::readStringFromFile(filename);
+    content_ = filefunc::readFileToString(filename);
     if (content_.empty())
     {
         return false;

@@ -1,5 +1,4 @@
 #pragma once
-//#include <Windows.h>
 #ifdef _MSC_VER 
 #define MYTHAPI _stdcall
 #ifdef __cplusplus

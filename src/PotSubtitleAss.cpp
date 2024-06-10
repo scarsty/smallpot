@@ -52,7 +52,7 @@ void PotSubtitleAss::destroy()
 bool PotSubtitleAss::openSubtitle(const std::string& filename)
 {
     //函数的参数是char*,为免意外复制一份
-    auto s = strfunc::readStringFromFile(filename);
+    auto s = filefunc::readFileToString(filename);
 
     TextEncodingDetect textDetect;
     TextEncodingDetect::Encoding encoding = textDetect.DetectEncoding((const uint8_t*)s.c_str(), s.size());

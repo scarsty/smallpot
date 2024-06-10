@@ -79,7 +79,7 @@
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -94,7 +94,7 @@
     <TargetName>$(ProjectName)</TargetName>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgXUseBuiltInApplocalDeps>true</VcpkgXUseBuiltInApplocalDeps>
@@ -131,7 +131,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(VCPKG_LIB_PATH)\x64-windows\include;$(USR_LOCAL)\include;../mlcc;./lib;$(VCPKG_LIB_PATH)\x64-windows\include/fribidi;$(VCPKG_LIB_PATH)\x64-windows\include/harfbuzz;..\kys-cpp\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../mlcc;../../kys-cpp/src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <SDLCheck>false</SDLCheck>
@@ -190,7 +190,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../mlcc;../kys-cpp/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../mlcc;../../kys-cpp/src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -211,63 +211,63 @@
       <AdditionalLibraryDirectories>$(VCPKG_LIB_PATH)\x64-windows\lib\manual-link;lib/x64</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y x64\Release\*.exe smallpot-x64\</Command>
+      <Command>copy /y ..\x64\Release\*.exe ..\smallpot-x64\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\kys-cpp\src\Engine.cpp" />
-    <ClCompile Include="..\mlcc\filefunc.cpp" />
-    <ClCompile Include="..\mlcc\strfunc.cpp" />
-    <ClCompile Include="src\Font.cpp" />
-    <ClCompile Include="src\others\text_encoding_detect.cpp" />
-    <ClCompile Include="src\pot.cpp" />
-    <ClCompile Include="src\PotBase.cpp" />
-    <ClCompile Include="src\Config.cpp" />
-    <ClCompile Include="src\PotConv.cpp" />
-    <ClCompile Include="src\PotDll.cpp" />
-    <ClCompile Include="src\PotMedia.cpp" />
-    <ClCompile Include="src\PotPlayer.cpp" />
-    <ClCompile Include="src\PotResample.cpp" />
-    <ClCompile Include="src\PotStream.cpp" />
-    <ClCompile Include="src\PotStreamAudio.cpp" />
-    <ClCompile Include="src\PotStreamSubtitle.cpp" />
-    <ClCompile Include="src\PotStreamVideo.cpp" />
-    <ClCompile Include="src\PotSubtitle.cpp" />
-    <ClCompile Include="src\PotSubtitleAss.cpp" />
-    <ClCompile Include="src\PotSubtitleSrt.cpp" />
-    <ClCompile Include="src\PotUI.cpp" />
-    <ClCompile Include="src\PotSubtitleManager.cpp" />
+    <ClInclude Include="..\..\kys-cpp\mlcc\filefunc.h" />
+    <ClInclude Include="..\..\kys-cpp\mlcc\strfunc.h" />
+    <ClInclude Include="..\..\kys-cpp\src\Engine.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="others\text_encoding_detect.h" />
+    <ClInclude Include="PotBase.h" />
+    <ClInclude Include="PotConv.h" />
+    <ClInclude Include="PotMedia.h" />
+    <ClInclude Include="PotPlayer.h" />
+    <ClInclude Include="PotResample.h" />
+    <ClInclude Include="PotStream.h" />
+    <ClInclude Include="PotStreamAudio.h" />
+    <ClInclude Include="PotStreamSubtitle.h" />
+    <ClInclude Include="PotStreamVideo.h" />
+    <ClInclude Include="PotSubtitle.h" />
+    <ClInclude Include="PotSubtitleAss.h" />
+    <ClInclude Include="PotSubtitleManager.h" />
+    <ClInclude Include="PotSubtitleSrt.h" />
+    <ClInclude Include="PotUI.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\kys-cpp\src\Engine.h" />
-    <ClInclude Include="src\Font.h" />
-    <ClInclude Include="src\others\text_encoding_detect.h" />
-    <ClInclude Include="src\PotBase.h" />
-    <ClInclude Include="src\Config.h" />
-    <ClInclude Include="src\PotConv.h" />
-    <ClInclude Include="src\PotDll.h" />
-    <ClInclude Include="src\PotMedia.h" />
-    <ClInclude Include="src\PotPlayer.h" />
-    <ClInclude Include="src\PotResample.h" />
-    <ClInclude Include="src\PotStream.h" />
-    <ClInclude Include="src\PotStreamAudio.h" />
-    <ClInclude Include="src\PotStreamSubtitle.h" />
-    <ClInclude Include="src\PotStreamVideo.h" />
-    <ClInclude Include="src\PotSubtitle.h" />
-    <ClInclude Include="src\PotSubtitleAss.h" />
-    <ClInclude Include="src\PotSubtitleSrt.h" />
-    <ClInclude Include="src\PotUI.h" />
-    <ClInclude Include="src\resource.h" />
-    <ClInclude Include="src\PotSubtitleManager.h" />
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\pot.rc" />
+    <ClCompile Include="..\..\kys-cpp\mlcc\filefunc.cpp" />
+    <ClCompile Include="..\..\kys-cpp\mlcc\strfunc.cpp" />
+    <ClCompile Include="..\..\kys-cpp\src\Engine.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="others\text_encoding_detect.cpp" />
+    <ClCompile Include="pot.cpp" />
+    <ClCompile Include="PotBase.cpp" />
+    <ClCompile Include="PotConv.cpp" />
+    <ClCompile Include="PotMedia.cpp" />
+    <ClCompile Include="PotPlayer.cpp" />
+    <ClCompile Include="PotResample.cpp" />
+    <ClCompile Include="PotStream.cpp" />
+    <ClCompile Include="PotStreamAudio.cpp" />
+    <ClCompile Include="PotStreamSubtitle.cpp" />
+    <ClCompile Include="PotStreamVideo.cpp" />
+    <ClCompile Include="PotSubtitle.cpp" />
+    <ClCompile Include="PotSubtitleAss.cpp" />
+    <ClCompile Include="PotSubtitleManager.cpp" />
+    <ClCompile Include="PotSubtitleSrt.cpp" />
+    <ClCompile Include="PotUI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\pot.ico" />
+    <Image Include="pot.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\CMakeLists.txt" />
+    <ResourceCompile Include="pot.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

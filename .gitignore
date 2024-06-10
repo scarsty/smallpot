@@ -17,11 +17,10 @@ x64/
 Win32/
 *.lib
 *.aps
-*.dll
 *.exe
 *.7z
-common/*
-common
 *.bin
 *.param
 *.ini
+smallpot-win32/
+smallpot-x64/
