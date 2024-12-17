@@ -30,7 +30,7 @@ PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
     if (ret)
     {
         //ret->init();
-        if (filefunc::getFileMainname(filefunc::getFilenameWithoutPath(filename)) != "")
+        if (filefunc::getFileMainName(filefunc::getFilenameWithoutPath(filename)) != "")
         {
             ret->openSubtitle(filename);
         }

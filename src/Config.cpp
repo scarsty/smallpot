@@ -51,7 +51,7 @@ void Config::init(std::string filepath)
             }
             ini_["record"][s]["progress"] = r.second;
             ini_["record"][s]["time_int"] = t;
-            ini_["record"][s]["time"] = Timer::timeToString(time_t(t));
+            //ini_["record"][s]["time"] = Timer::timeToString(time_t(t));
         }
     }
 }

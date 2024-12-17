@@ -72,17 +72,17 @@
     <ClInclude Include="..\..\kys-cpp\src\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\kys-cpp\mlcc\filefunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\kys-cpp\mlcc\strfunc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="others\text_encoding_detect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mlcc\filefunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\mlcc\strfunc.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,13 +143,13 @@
     <ClCompile Include="..\..\kys-cpp\src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\kys-cpp\mlcc\strfunc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\kys-cpp\mlcc\filefunc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="others\text_encoding_detect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mlcc\filefunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mlcc\strfunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

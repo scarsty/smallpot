@@ -94,7 +94,21 @@ void PotStreamAudio::mixAudioData(uint8_t* stream, int len)
 
 FrameContent PotStreamAudio::convertFrameToContent()
 {
-    data_length_ = resample_.convert(codec_ctx_, frame_, freq_, channels_, resample_buffer_);
+    bool isplanar = av_sample_fmt_is_planar(codec_ctx_->sample_fmt) == 1;
+    //sdl不支持planar格式
+    //data_length_ = resample_.convert(codec_ctx_, frame_, freq_, channels_, resample_buffer_);
+    if (isplanar)
+    {
+        int size;
+        int bufsize = av_samples_get_buffer_size(&size, codec_ctx_->ch_layout.nb_channels, frame_->nb_samples, codec_ctx_->sample_fmt, 0);
+        memcpy(resample_buffer_, frame_->data[0] + size * codec_ctx_->ch_layout.nb_channels, size);
+        data_length_ = size;
+    }
+    else
+    {
+        memcpy(resample_buffer_, frame_->data[0], frame_->linesize[0]);
+        data_length_ = frame_->linesize[0];
+    }
     if (data_length_ <= 0)
     {
         return { -1, data_length_, nullptr };
@@ -135,20 +149,20 @@ void PotStreamAudio::openAudioDevice()
     channels_ = Config::getInstance()->getInteger("channels", -1);
     if (channels_ < 0)
     {
-        channels_ = codec_ctx_->channels;
+        channels_ = codec_ctx_->ch_layout.nb_channels;
     }
     engine_->openAudio(freq_, channels_, codec_ctx_->frame_size, 2048, std::bind(&PotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
 
     auto audio_format = AV_SAMPLE_FMT_S16;
 
     std::map<SDL_AudioFormat, AVSampleFormat> SDL_FFMPEG_AUDIO_FORMAT =
-    {
-        { AUDIO_U8, AV_SAMPLE_FMT_U8 },
-        { AUDIO_S16, AV_SAMPLE_FMT_S16 },
-        { AUDIO_S32, AV_SAMPLE_FMT_S32 },
-        { AUDIO_F32, AV_SAMPLE_FMT_FLT },
-        //{ AUDIO_U8, AV_SAMPLE_FMT_DBL },
-    };
+        {
+            { AUDIO_U8, AV_SAMPLE_FMT_U8 },
+            { AUDIO_S16, AV_SAMPLE_FMT_S16 },
+            { AUDIO_S32, AV_SAMPLE_FMT_S32 },
+            { AUDIO_F32, AV_SAMPLE_FMT_FLT },
+            //{ AUDIO_U8, AV_SAMPLE_FMT_DBL },
+        };
 
     resample_.setOutFormat(SDL_FFMPEG_AUDIO_FORMAT[engine_->getAudioFormat()]);
 }
