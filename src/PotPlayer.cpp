@@ -629,16 +629,16 @@ void PotPlayer::openMedia(const std::string& filename)
 {
     media_ = nullptr;
     media_ = new PotMedia;
-#ifndef _WINDLL
-    //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
-    if (filefunc::getFileExt(filename) == "m3u8")
-    {
-        filefunc::changePath(filefunc::getParentPath(filename));
-    }
-#endif
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
     auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
+#ifndef _WINDLL
+    //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
+    if (filefunc::getFileExt(open_filename) == "m3u8")
+    {
+        filefunc::changePath(filefunc::getParentPath(open_filename));
+    }
+#endif
     if (media_->openFile(filename) != 0)
     {
         return;

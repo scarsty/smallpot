@@ -32,11 +32,11 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         return -1;
     }
 
-    if (codec_ctx->ch_layout.nb_channels == codec_ctx->ch_layout.nb_channels)
+    //if (codec_ctx->ch_layout.nb_channels == codec_ctx->ch_layout.nb_channels)
     {
-        src_ch_layout = codec_ctx->ch_layout;
+    //    src_ch_layout = codec_ctx->ch_layout;
     }
-    else
+    //else
     {
         av_channel_layout_default(&src_ch_layout, codec_ctx->ch_layout.nb_channels);
     }
