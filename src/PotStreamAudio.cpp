@@ -99,10 +99,11 @@ FrameContent PotStreamAudio::convertFrameToContent()
     //data_length_ = resample_.convert(codec_ctx_, frame_, freq_, channels_, resample_buffer_);
     if (isplanar)
     {
-        int size;
-        int bufsize = av_samples_get_buffer_size(&size, codec_ctx_->ch_layout.nb_channels, frame_->nb_samples, codec_ctx_->sample_fmt, 0);
-        memcpy(resample_buffer_, frame_->data[0] + size * codec_ctx_->ch_layout.nb_channels, size);
-        data_length_ = size;
+        //int size;
+        //int bufsize = av_samples_get_buffer_size(&size, codec_ctx_->ch_layout.nb_channels, frame_->nb_samples, codec_ctx_->sample_fmt, 0);
+        //memcpy(resample_buffer_, frame_->data[0] + size * codec_ctx_->ch_layout.nb_channels, size);
+        //data_length_ = size;
+        data_length_ = resample_.convert(codec_ctx_, frame_, freq_, channels_, resample_buffer_);
     }
     else
     {

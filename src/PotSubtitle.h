@@ -32,7 +32,7 @@ public:
     bool exist() { return exist_; }
     bool reOpenSubtitle() { return openSubtitle(subfilename_); }
 
-    virtual void init() {};
+    virtual void init() {}
     virtual bool openSubtitle(const std::string& filename) { return false; }
     virtual void closeSubtitle() {}
     virtual int show(int time) { return 1; }

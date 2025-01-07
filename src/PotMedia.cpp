@@ -1,7 +1,7 @@
 ﻿#include "PotMedia.h"
 #include "Config.h"
-#include "filefunc.h"
 #include "PotConv.h"
+#include "filefunc.h"
 
 PotMedia::PotMedia()
 {

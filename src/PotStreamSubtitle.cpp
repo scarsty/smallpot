@@ -6,7 +6,7 @@
 PotStreamSubtitle::PotStreamSubtitle()
 {
     type_ = BPMEDIA_TYPE_SUBTITLE;
-    sub_ = PotSubtitleManager::createSubtitle(".ass");
+    sub_ = PotSubtitleManager::createSubtitle(" .ass");
 }
 
 PotStreamSubtitle::~PotStreamSubtitle()
