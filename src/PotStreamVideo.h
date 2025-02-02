@@ -39,7 +39,7 @@ public:
     virtual int getHeight() { return exist() ? int(codec_ctx_->height / 1) * scale_ : 0; }
 
 public:
-    int getSDLPixFmt();
+    SDL_PixelFormat getSDLPixFmt();
 
 private:
     int texture_pix_fmt_;

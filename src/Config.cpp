@@ -79,12 +79,26 @@ int Config::getInteger(const std::string& name, int def /*= 0*/)
     return ini_.getInt("", name);
 }
 
+float Config::getFloat(const std::string& name, float def)
+{
+    if (!ini_.hasKey("", name))
+    {
+        setString(name, fmt1::format("{}", def));
+    }
+    return ini_.getReal("", name);
+}
+
 void Config::setString(const std::string& name, const std::string v)
 {
     ini_.setKey("", name, v);
 }
 
 void Config::setInteger(const std::string& name, int v)
+{
+    setString(name, fmt1::format("{}", v));
+}
+
+void Config::setFloat(const std::string& name, float v)
 {
     setString(name, fmt1::format("{}", v));
 }

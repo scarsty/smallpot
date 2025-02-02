@@ -13,7 +13,7 @@ private:
     ASS_Track* track_ = nullptr;
     ASS_Image* image_ = nullptr;
 
-    std::vector<BP_Texture*> tex_vector_;
+    std::vector<Texture*> tex_vector_;
     void destroyAllTex();
 
 public:

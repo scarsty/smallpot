@@ -43,7 +43,7 @@ void PotStreamVideo::freeContent(void* p)
 {
     if (p != engine_->getMainTexture())
     {
-        engine_->destroyTexture((BP_Texture*)p);
+        engine_->destroyTexture((Texture*)p);
     }
 }
 
@@ -63,7 +63,7 @@ FrameContent PotStreamVideo::convertFrameToContent()
         if (plugin_ == nullptr)
         {
             img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width, f->height, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
-            if (!engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
+            if (engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
             {
                 sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels, pitch);
                 engine_->unlockTexture(tex);
@@ -73,7 +73,7 @@ FrameContent PotStreamVideo::convertFrameToContent()
         {
             double scale = 1;
             img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width / scale, f->height / scale, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
-            if (!engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
+            if (engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
             {
                 std::vector<char> buffer(f->width * f->height * 3);
                 uint8_t* pixels1[4];
@@ -132,8 +132,8 @@ int PotStreamVideo::show(int time)
         int time_c = f.time;
         if (time >= time_c)
         {
-            auto tex = (BP_Texture*)f.data;
-            engine_->renderCopy(tex);
+            auto tex = (Texture*)f.data;
+            engine_->renderTexture(tex);
             time_shown_ = time_c;
             ticks_shown_ = engine_->getTicks();
             dropDecoded();
@@ -147,23 +147,23 @@ int PotStreamVideo::show(int time)
     return NoVideoFrame;
 }
 
-int PotStreamVideo::getSDLPixFmt()
+SDL_PixelFormat PotStreamVideo::getSDLPixFmt()
 {
     if (!exist())
     {
         return SDL_PIXELFORMAT_UNKNOWN;
     }
-    std::map<int, int> pix_ffmpeg_sdl = {
+    std::map<int, SDL_PixelFormat> pix_ffmpeg_sdl = {
         { AV_PIX_FMT_RGB8, SDL_PIXELFORMAT_RGB332 },
-        { AV_PIX_FMT_RGB444, SDL_PIXELFORMAT_RGB444 },
-        { AV_PIX_FMT_RGB555, SDL_PIXELFORMAT_RGB555 },
-        { AV_PIX_FMT_BGR555, SDL_PIXELFORMAT_BGR555 },
+        { AV_PIX_FMT_RGB444, SDL_PIXELFORMAT_XRGB4444 },
+        { AV_PIX_FMT_RGB555, SDL_PIXELFORMAT_XRGB1555 },
+        { AV_PIX_FMT_BGR555, SDL_PIXELFORMAT_XBGR1555 },
         { AV_PIX_FMT_RGB565, SDL_PIXELFORMAT_RGB565 },
         { AV_PIX_FMT_BGR565, SDL_PIXELFORMAT_BGR565 },
         { AV_PIX_FMT_RGB24, SDL_PIXELFORMAT_RGB24 },
         { AV_PIX_FMT_BGR24, SDL_PIXELFORMAT_BGR24 },
-        { AV_PIX_FMT_0RGB32, SDL_PIXELFORMAT_RGB888 },
-        { AV_PIX_FMT_0BGR32, SDL_PIXELFORMAT_BGR888 },
+        { AV_PIX_FMT_0RGB32, SDL_PIXELFORMAT_XRGB8888 },
+        { AV_PIX_FMT_0BGR32, SDL_PIXELFORMAT_XBGR8888 },
         { AV_PIX_FMT_NE(RGB0, 0BGR), SDL_PIXELFORMAT_RGBX8888 },
         { AV_PIX_FMT_NE(BGR0, 0RGB), SDL_PIXELFORMAT_BGRX8888 },
         { AV_PIX_FMT_RGB32, SDL_PIXELFORMAT_ARGB8888 },
@@ -175,13 +175,13 @@ int PotStreamVideo::getSDLPixFmt()
         { AV_PIX_FMT_UYVY422, SDL_PIXELFORMAT_UYVY },
         { AV_PIX_FMT_NONE, SDL_PIXELFORMAT_UNKNOWN },
     };
-    int r = SDL_PIXELFORMAT_UNKNOWN;
+    auto r = SDL_PIXELFORMAT_UNKNOWN;
     if (plugin_ == nullptr)
     {
         if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
         {
             r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
-            fmt1::print("pixel format is {}\n", r);
+            fmt1::print("pixel format is {}\n", int(r));
         }
     }
     texture_pix_fmt_ = r;

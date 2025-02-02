@@ -32,7 +32,7 @@ private:
     bool running_ = true;
 
     std::string sys_encode_ = "cp936", BP_encode_ = "utf-8";
-    int cur_volume_;
+    float cur_volume_;
     int eventLoop();
     void* handle_;
     int handle_type_;

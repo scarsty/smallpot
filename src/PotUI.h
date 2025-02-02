@@ -22,9 +22,9 @@ public:
     };
 
 private:
-    BP_Texture *square_ = nullptr, *ball_ = nullptr, *triangle_ = nullptr, *triangle2_ = nullptr, *hollow_ = nullptr;
-    BP_Texture *to_full_screen_ = nullptr, *to_window_ = nullptr;
-    BP_Texture *frame_ = nullptr;
+    Texture *square_ = nullptr, *ball_ = nullptr, *triangle_ = nullptr, *triangle2_ = nullptr, *hollow_ = nullptr;
+    Texture *to_full_screen_ = nullptr, *to_window_ = nullptr;
+    Texture *frame_ = nullptr;
     int win_w_, win_h_;
 
     //int x = 0, y = 0, w = 0, h = 0;
@@ -38,7 +38,7 @@ private:
 public:
     void init();
     void drawText(const std::string& text);
-    void drawUI(int time, int totoal_time, int volume, bool pause);
+    void drawUI(int time, int totoal_time, float volume, bool pause);
     void destory();
     std::string convertTimeToString(int time);
     void setText(std::string t);
@@ -48,6 +48,6 @@ public:
     int getButtonPos(int b);
 
 private:
-    BP_Texture* createSquareTexture(int size);
-    BP_Texture* createSpecialTexture(int size, int mode = 0);
+    Texture* createSquareTexture(int size);
+    Texture* createSpecialTexture(int size, int mode = 0);
 };

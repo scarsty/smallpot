@@ -19,7 +19,8 @@ PotPlayer::PotPlayer()
     run_path_ = "./";
 }
 
-PotPlayer::PotPlayer(char* s) : PotPlayer()
+PotPlayer::PotPlayer(char* s) :
+    PotPlayer()
 {
     run_path_ = filefunc::getParentPath(s);
 #if defined(_WIN32) && defined(_SINGLE_FILE)
@@ -47,14 +48,14 @@ PotPlayer::~PotPlayer()
 
 int PotPlayer::eventLoop()
 {
-    BP_Event e;
+    EngineEvent e;
 
     bool hold_mouse = false;
     int64_t hold_time = 0;
     bool loop = true, pause = false, seeking = false;
     int finished, i = 0;
     const int seek_step = 1000;
-    int volume_step = 1;
+    float volume_step = 1.0 / 128;
     bool havevideo = media_->getVideo()->exist();
     bool havemedia = media_->getAudio()->exist() || havevideo;
     int totalTime = media_->getTotalTime();
@@ -118,7 +119,7 @@ int PotPlayer::eventLoop()
 
         auto seekButton = [&]()
         {
-            if (e.button.button == BP_BUTTON_LEFT)
+            if (e.button.button == BUTTON_LEFT)
             {
                 int button = UI_.inButton();
                 if (button == PotUI::ButtonLeft)
@@ -143,11 +144,11 @@ int PotPlayer::eventLoop()
 
         switch (e.type)
         {
-        case BP_MOUSEMOTION:
+        case EVENT_MOUSE_MOTION:
             break;
-        case BP_MOUSEBUTTONUP:
+        case EVENT_MOUSE_BUTTON_UP:
             hold_mouse = false;
-            if (e.button.button == BP_BUTTON_LEFT)
+            if (e.button.button == BUTTON_LEFT)
             {
                 double pos = UI_.inProcess();
                 int button = UI_.inButton();
@@ -201,12 +202,12 @@ int PotPlayer::eventLoop()
             }
 #endif
             break;
-        case BP_MOUSEBUTTONDOWN:
+        case EVENT_MOUSE_BUTTON_DOWN:
             hold_mouse = true;
             hold_time = engine_->getTicks();
             seekButton();
             break;
-        case BP_MOUSEWHEEL:
+        case EVENT_MOUSE_WHEEL:
         {
             if (int(UI_.inButton()) == PotUI::ButtonVolume)
             {
@@ -240,43 +241,43 @@ int PotPlayer::eventLoop()
             //UI_.setText("v");
             break;
         }
-        case BP_KEYDOWN:
+        case EVENT_KEY_DOWN:
         {
-            switch (e.key.keysym.sym)
+            switch (e.key.key)
             {
-            case BPK_LEFT:
+            case K_LEFT:
                 media_->seekTime(media_->getTime() - seek_step, -1);
                 UI_.setText("");
                 seeking = true;
                 break;
-            case BPK_RIGHT:
+            case K_RIGHT:
                 media_->seekTime(media_->getTime() + seek_step, 1);
                 UI_.setText("");
                 seeking = true;
                 break;
-            case BPK_UP:
+            case K_UP:
                 media_->getAudio()->changeVolume(volume_step);
                 UI_.setText("v");
                 break;
-            case BPK_DOWN:
+            case K_DOWN:
                 media_->getAudio()->changeVolume(-volume_step);
                 UI_.setText("v");
                 break;
-            case BPK_1:
+            case K_1:
                 media_->switchStream(BPMEDIA_TYPE_AUDIO);
                 UI_.setText(fmt1::format("Switch audio stream to {}", media_->getAudio()->getStreamIndex()));
                 break;
-            case BPK_2:
+            case K_2:
                 switchSubtitle();
                 break;
             }
             break;
         }
-        case BP_KEYUP:
+        case EVENT_KEY_UP:
         {
-            switch (e.key.keysym.sym)
+            switch (e.key.key)
             {
-            case BPK_ESCAPE:
+            case K_ESCAPE:
                 if (engine_->isFullScreen())
                 {
                     engine_->toggleFullscreen();
@@ -288,23 +289,23 @@ int PotPlayer::eventLoop()
                     running_ = false;
                 }
                 break;
-            case BPK_BACKSPACE:
+            case K_BACKSPACE:
                 media_->seekTime(0);
                 seeking = true;
                 break;
 #ifndef _WINDLL
-            case BPK_SPACE:
+            case K_SPACE:
                 pause = !pause;
                 media_->setPause(pause);
                 break;
-            case BPK_RETURN:
+            case K_RETURN:
                 engine_->toggleFullscreen();
                 setSubtitleFrameSize();
                 break;
-            case BPK_DELETE:
+            case K_DELETE:
                 Config::getInstance()->clearAllRecord();
                 break;
-            case BPK_PERIOD:
+            case K_PERIOD:
             {
                 find_direct = 1;
                 auto next_file = findNextFile(drop_filename_, find_direct);
@@ -315,7 +316,7 @@ int PotPlayer::eventLoop()
                 }
                 break;
             }
-            case BPK_COMMA:
+            case K_COMMA:
             {
                 find_direct = -60 * 1000;
                 auto next_file = findNextFile(drop_filename_, find_direct);
@@ -326,7 +327,7 @@ int PotPlayer::eventLoop()
                 }
                 break;
             }
-            case BPK_EQUALS:
+            case K_EQUALS:
             {
                 int w, h;
                 engine_->getWindowSize(w, h);
@@ -336,7 +337,7 @@ int PotPlayer::eventLoop()
                 engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
                 break;
             }
-            case BPK_MINUS:
+            case K_MINUS:
             {
                 int w, h;
                 engine_->getWindowSize(w, h);
@@ -346,7 +347,7 @@ int PotPlayer::eventLoop()
                 engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
                 break;
             }
-            case BPK_0:
+            case K_0:
                 setWindowSize(media_->getVideo()->getWidth(), media_->getVideo()->getHeight());
                 engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
                 break;
@@ -355,7 +356,7 @@ int PotPlayer::eventLoop()
             break;
         }
         //#ifndef _WINDLL
-        case BP_QUIT:
+        case EVENT_QUIT:
             //pause = true;
 #ifdef _WINDLL
             engine_->delay(10);
@@ -366,19 +367,15 @@ int PotPlayer::eventLoop()
             exit_type_ = 1;
             break;
             //#endif
-        case BP_WINDOWEVENT:
-            if (e.window.event == BP_WINDOWEVENT_RESIZED)
-            {
-                setWindowSize(e.window.data1, e.window.data2);
-            }
-            else if (e.window.event == BP_WINDOWEVENT_LEAVE)
-            {
-            }
+        case EVENT_WINDOW_RESIZED:
+            setWindowSize(e.window.data1, e.window.data2);
             break;
-        case BP_DROPFILE:
+        case EVENT_WINDOW_MOUSE_LEAVE:
+            break;
+        case EVENT_DROP_FILE:
             //有文件拖入先检查是不是字幕，不是字幕则当作媒体文件，打开失败活该
             //若将媒体文件当成字幕打开会非常慢，故限制字幕文件的扩展名
-            open_filename = PotConv::conv(e.drop.file, BP_encode_, sys_encode_);
+            open_filename = PotConv::conv(e.drop.data, BP_encode_, sys_encode_);
             fmt1::print("Change file: {}\n", open_filename);
             //检查是不是字幕，如果是则打开
             if (PotSubtitleManager::isSubtitle(open_filename))
@@ -393,15 +390,14 @@ int PotPlayer::eventLoop()
             }
             else
             {
-                drop_filename_ = e.drop.file;
+                drop_filename_ = e.drop.data;
                 loop = false;
             }
-            engine_->free(e.drop.file);
             break;
         default:
             break;
         }
-        e.type = BP_FIRSTEVENT;
+        e.type = EVENT_FIRST;
 
         if (!loop)
         {
@@ -409,6 +405,7 @@ int PotPlayer::eventLoop()
         }
         //在每个循环均尝试预解压
         media_->decodeFrame();
+        media_->getAudio()->show();
         //尝试以音频为基准显示视频
         int audioTime = media_->getTime();    //注意优先为音频时间，若音频不存在使用视频时间
         //if (seeking)
@@ -418,11 +415,11 @@ int PotPlayer::eventLoop()
 
         if (last_volume == media_->getAudio()->getVolume())
         {
-            volume_step = 1;
+            volume_step = 1.0 / 128;
         }
         else
         {
-            volume_step = (std::min)(volume_step + 1, 5);
+            volume_step = (std::min)(volume_step + 1.0 / 128, 5.0 / 128);
         }
 
         int time_s = audioTime;
@@ -460,7 +457,7 @@ int PotPlayer::eventLoop()
             int videoTime = (media_->getVideo()->getTimedts());
             int delay = -videoTime + audioTime;
             fmt1::print("\rvolume {}, audio {:4.3}, video {:4.3}, diff {:1.3} in loop {}\t",
-                media_->getAudio()->changeVolume(0), audioTime / 1e3, videoTime / 1e3, delay / 1e3, i);
+                media_->getAudio()->getVolume(), audioTime / 1e3, videoTime / 1e3, delay / 1e3, i);
 #endif
         }
         //静止时，无视频时，视频已放完时40毫秒显示一次
@@ -470,7 +467,7 @@ int PotPlayer::eventLoop()
             show = true;
             if (havevideo)
             {
-                engine_->renderCopy(engine_->getMainTexture());
+                engine_->renderTexture(engine_->getMainTexture());
             }
             else
             {
@@ -536,7 +533,7 @@ int PotPlayer::init()
 #else
     sys_encode_ = Config::getInstance()->getString("sys_encode", "utf-8");
 #endif
-    cur_volume_ = Config::getInstance()->getInteger("volume", BP_AUDIO_MIX_MAXVOLUME / 2);
+    cur_volume_ = Config::getInstance()->getFloat("volume", 0.5);
     PotStreamAudio::setVolume(cur_volume_);
     UI_.init();
     return 0;
@@ -654,7 +651,7 @@ void PotPlayer::openMedia(const std::string& filename)
     engine_->setWindowTitle(filename);
 #endif
     auto pixfmt = media_->getVideo()->getSDLPixFmt();
-    engine_->createMainTexture(pixfmt, BP_TEXTUREACCESS_STREAMING, width_, height_);
+    engine_->createMainTexture(pixfmt, TEXTUREACCESS_STREAMING, width_, height_);
     //engine_->createAssistTexture(width_, height_);
 
     //重新获取尺寸，有可能与之前不同

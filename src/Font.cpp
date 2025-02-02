@@ -9,7 +9,7 @@ Font::~Font()
 {
 }
 
-BP_Texture* Font::indexTex(const std::string& fontname, uint16_t c, int size)
+Texture* Font::indexTex(const std::string& fontname, uint16_t c, int size)
 {
     auto index = fontname + "-" + std::to_string(c) + "-" + std::to_string(size);
     if (buffer_.count(index) == 0)
@@ -37,13 +37,14 @@ int Font::getTextWidth(const std::string& fontname, const std::string& text, int
             p++;
         }
         auto tex = indexTex(fontname, c, size);
-        Engine::getInstance()->queryTexture(tex, &w, nullptr);
+        int h = 0;
+        Engine::getInstance()->getTextureSize(tex, w, h);
         x += w;
     }
     return x;
 }
 
-void Font::draw(const std::string& fontname, const std::string& text, int size, int x, int y, BP_Color color, uint8_t alpha)
+void Font::draw(const std::string& fontname, const std::string& text, int size, int x, int y, Color color, uint8_t alpha)
 {
     int p = 0;
     while (p < text.size())
@@ -57,12 +58,12 @@ void Font::draw(const std::string& fontname, const std::string& text, int size, 
             p++;
         }
         auto tex = indexTex(fontname, c, size);
-        Engine::getInstance()->queryTexture(tex, &w, &h);
+        Engine::getInstance()->getTextureSize(tex, w, h);
         //Engine::getInstance()->setColor(tex, { uint8_t(color.r / 2), uint8_t(color.g / 2), uint8_t(color.b / 2), color.a }, alpha);
-        //Engine::getInstance()->renderCopy(tex, x + 1, y, w, h);
+        //Engine::getInstance()->renderTexture(tex, x + 1, y, w, h);
         color.a = alpha;
         Engine::getInstance()->setColor(tex, color);
-        Engine::getInstance()->renderCopy(tex, x, y, w, h);
+        Engine::getInstance()->renderTexture(tex, x, y, w, h);
         x += w;
     }
 }
@@ -86,12 +87,12 @@ void Font::drawText(const std::string& fontname, const std::string& text, int si
     int w = Font::getInstance()->getTextWidth(fontname, text, size);
     switch (align)
     {
-    case BP_ALIGN_LEFT:
+    case ALIGN_LEFT:
         break;
-    case BP_ALIGN_RIGHT:
+    case ALIGN_RIGHT:
         x = x - w;
         break;
-    case BP_ALIGN_MIDDLE:
+    case ALIGN_MIDDLE:
         x = x - w / 2;
         break;
     }

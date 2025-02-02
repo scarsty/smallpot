@@ -1,7 +1,7 @@
 ﻿#include "PotStreamAudio.h"
 #include "Config.h"
 
-int PotStreamAudio::volume_;
+float PotStreamAudio::volume_;
 
 PotStreamAudio::PotStreamAudio()
 {
@@ -129,9 +129,77 @@ FrameContent PotStreamAudio::convertFrameToContent()
         memcpy((uint8_t*)buffer_, resample_buffer_, data_length_ - rest);
     }
     FrameContent f = { time_dts_, data_write_, buffer_ };
+    //std::vector<uint8_t> b(data_length_);
+    //Engine::getInstance()->mixAudio((Uint8*)b.data(), (Uint8*)resample_buffer_, data_length_, 1);
+    //Engine::getInstance()->putAudioStreamData(resample_buffer_, data_length_);
     data_write_ += data_length_;
+    //data_read_ += data_length_;
+    //dropDecoded();
     //返回的是指针位置
     return f;
+}
+
+int PotStreamAudio::show()
+{
+    if (data_map_.size() >= max_size_) { return 1; }
+    const int len = 3840;
+    if (buffer_ == nullptr) { return -1; }
+    if (data_write_ <= data_read_)
+    {
+        return -2;
+    }
+    //SDL_LockMutex(t->mutex_cpp);
+    auto data1 = (uint8_t*)buffer_;
+    int pos = data_read_ % buffer_size_;
+    int rest = buffer_size_ - pos;
+    //一次或者两次，保证缓冲区大小足够
+    if (len <= rest)
+    {
+        engine_->putAudioStreamData(data1 + pos, len);
+    }
+    else
+    {
+        engine_->putAudioStreamData(data1 + pos, rest);
+        engine_->putAudioStreamData(data1, len - rest);
+    }
+    while (haveDecoded())
+    {
+        auto f = getCurrentContent();
+        Engine::getInstance()->putAudioStreamData(resample_buffer_, data_length_);
+        if (!f.data || f.time < 0)
+        {
+            dropDecoded();
+            break;
+        }
+        if (data_read_ >= f.info)
+        {
+            //fmt1::print("drop %I64d\n", t->dataRead - f.info);
+            dropDecoded();
+            if (data_read_ == f.info && time_shown_ != f.time)
+            {
+                time_shown_ = f.time;
+                ticks_shown_ = engine_->getTicks();
+                break;
+            }
+            else
+            {
+                //获取下一个
+                auto f1 = getCurrentContent();
+                //后一个包如果时间是一样的不更新计时
+                if (f1.info > data_read_ && f.time != f1.time)
+                {
+                    time_shown_ = f.time + (f1.time - f.time) * (data_read_ - f.info) / (f1.info - f.info);
+                    ticks_shown_ = engine_->getTicks();
+                }
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+    data_read_ += len;
+    return 0;
 }
 
 bool PotStreamAudio::needDecode2()
@@ -156,14 +224,13 @@ void PotStreamAudio::openAudioDevice()
 
     auto audio_format = AV_SAMPLE_FMT_S16;
 
-    std::map<SDL_AudioFormat, AVSampleFormat> SDL_FFMPEG_AUDIO_FORMAT =
-        {
-            { AUDIO_U8, AV_SAMPLE_FMT_U8 },
-            { AUDIO_S16, AV_SAMPLE_FMT_S16 },
-            { AUDIO_S32, AV_SAMPLE_FMT_S32 },
-            { AUDIO_F32, AV_SAMPLE_FMT_FLT },
-            //{ AUDIO_U8, AV_SAMPLE_FMT_DBL },
-        };
+    std::map<SDL_AudioFormat, AVSampleFormat> SDL_FFMPEG_AUDIO_FORMAT = {
+        { SDL_AUDIO_U8, AV_SAMPLE_FMT_U8 },
+        { SDL_AUDIO_S16LE, AV_SAMPLE_FMT_S16 },
+        { SDL_AUDIO_S32LE, AV_SAMPLE_FMT_S32 },
+        { SDL_AUDIO_F32LE, AV_SAMPLE_FMT_FLT },
+        //{ AUDIO_U8, AV_SAMPLE_FMT_DBL },
+    };
 
     resample_.setOutFormat(SDL_FFMPEG_AUDIO_FORMAT[engine_->getAudioFormat()]);
 }
@@ -180,21 +247,21 @@ void PotStreamAudio::resetDecodeState()
     //memset(data, 0, screamSize);
 }
 
-int PotStreamAudio::setVolume(int v)
+void PotStreamAudio::setVolume(float v)
 {
-    v = std::max(v, 0);
+    v = std::max(v, 0.0f);
     v = std::min(v, Engine::getMaxVolume());
     //fmt1::print("\rvolume is %d\t\t\t\t\t", v);
-    return volume_ = v;
+    volume_ = v;
+    Engine::getInstance()->setAudioStreamGain(v);
 }
 
-int PotStreamAudio::changeVolume(int v)
+void PotStreamAudio::changeVolume(float v)
 {
-    if (v == 0)
+    if (v != 0)
     {
-        return volume_;
+        setVolume(volume_ + v);
     }
-    return setVolume(volume_ + v);
 }
 
 void PotStreamAudio::setPause(bool pause)

@@ -36,9 +36,11 @@ public:
     //xml只有字串，故首先完成字串功能
     std::string getString(const std::string& name, std::string def = "");
     int getInteger(const std::string& name, int def = 0);
+    float getFloat(const std::string& name, float def = 0.0f);
 
     void setString(const std::string& name, const std::string v);
     void setInteger(const std::string& name, int v);
+    void setFloat(const std::string& name, float v);
 
     //记录
     int getRecord(const std::string& name);

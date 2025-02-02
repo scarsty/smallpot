@@ -327,6 +327,7 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
         //avformat_seek_file(format_ctx_, -1, INT64_MIN, i, INT64_MAX, 0);
     }
     seek_record_ = engine_->getTicks();
+    Engine::getInstance()->clearAudioStream();
     return 0;
 }
 

@@ -92,9 +92,6 @@
     <ClCompile Include="..\src\Font.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\pot.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\PotBase.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

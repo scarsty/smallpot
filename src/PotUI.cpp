@@ -36,11 +36,11 @@ void PotUI::init()
 
 void PotUI::drawText(const std::string& text)
 {
-    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 30 - button_w_ * 2, win_h_ - 48, alpha_, BP_ALIGN_RIGHT);
-    //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, BP_ALIGN_RIGHT);
+    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 30 - button_w_ * 2, win_h_ - 48, alpha_, ALIGN_RIGHT);
+    //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, ALIGN_RIGHT);
 }
 
-void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
+void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
 {
     engine_->getWindowSize(win_w_, win_h_);
     int in_button = inButton();
@@ -75,9 +75,9 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     int x, y;
     y = win_h_ - 12;
     engine_->setColor(square_, { 255, 255, 255, uint8_t(alpha_ / 2) });
-    engine_->renderCopy(square_, 0, y - 1, win_w_, 4);
+    engine_->renderTexture(square_, 0, y - 1, win_w_, 4);
     engine_->setColor(square_, { 255, 0, 0, alpha_ });
-    engine_->renderCopy(square_, 0, y - 1, 1.0 * time / totoal_time * win_w_, 4);
+    engine_->renderTexture(square_, 0, y - 1, 1.0 * time / totoal_time * win_w_, 4);
 
     //°´Å¥
     engine_->setColor(square_, { 255, 255, 255, alpha_ });
@@ -97,43 +97,43 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         case ButtonPause:
             if (pause)
             {
-                engine_->renderCopy(triangle_, button_x, button_y, button_w_, button_h_);
+                engine_->renderTexture(triangle_, button_x, button_y, button_w_, button_h_);
             }
             else
             {
-                engine_->renderCopy(square_, button_x, button_y, 8, button_h_);
-                engine_->renderCopy(square_, button_x + 12, button_y, 8, button_h_);
+                engine_->renderTexture(square_, button_x, button_y, 8, button_h_);
+                engine_->renderTexture(square_, button_x + 12, button_y, 8, button_h_);
             }
             break;
         case ButtonNext:
-            engine_->renderCopy(triangle_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderCopy(square_, button_x + 12, button_y, 8, button_h_);
+            engine_->renderTexture(triangle_, button_x, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(square_, button_x + 12, button_y, 8, button_h_);
             break;
         case ButtonFullScreen:
             if (engine_->isFullScreen())
             {
-                engine_->renderCopy(to_window_, button_x, button_y, button_w_, button_h_);
+                engine_->renderTexture(to_window_, button_x, button_y, button_w_, button_h_);
             }
             else
             {
-                engine_->renderCopy(to_full_screen_, button_x, button_y, button_w_, button_h_);
+                engine_->renderTexture(to_full_screen_, button_x, button_y, button_w_, button_h_);
             }
             break;
         case ButtonLeft:
-            engine_->renderCopy(triangle2_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderCopy(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(triangle2_, button_x, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonRight:
-            engine_->renderCopy(triangle_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderCopy(triangle_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(triangle_, button_x, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(triangle_, button_x + 10, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonAudio:
-            engine_->renderCopy(square_, button_x, button_y + 5, button_w_ / 2, button_h_ / 2 + 1);
-            engine_->renderCopy(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(square_, button_x, button_y + 5, button_w_ / 2, button_h_ / 2 + 1);
+            engine_->renderTexture(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonSubtitle:
-            engine_->renderCopy(hollow_, button_x, button_y, button_w_, button_h_);
-            engine_->renderCopy(square_, button_x + button_w_ * 0.2, button_y + button_h_ * 0.6, button_w_ * 0.6, button_h_ * 0.2);
+            engine_->renderTexture(hollow_, button_x, button_y, button_w_, button_h_);
+            engine_->renderTexture(square_, button_x + button_w_ * 0.2, button_y + button_h_ * 0.6, button_w_ * 0.6, button_h_ * 0.2);
             break;
         }
     }
@@ -141,12 +141,12 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
     {
         int x = getButtonPos(in_button) - 2;
         int w = getButtonWidth(in_button) + 4;
-        engine_->renderCopy(frame_, x, button_y_ - 2, w, button_h_ + 4);
+        engine_->renderTexture(frame_, x, button_y_ - 2, w, button_h_ + 4);
     }
 
     int button_x = win_w_ - 20 - button_w_ * 2;
-    int one_square = BP_AUDIO_MIX_MAXVOLUME / 16;
-    int v = volume;
+    int one_square = 16;
+    int v = volume * 256;
     for (int i_v = 0; i_v < 16; i_v++)
     {
         int h = (i_v + 1) * 1;
@@ -157,7 +157,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
             r = 1.0 * (one_square + v) / one_square;
         }
         int hc = r * h;
-        engine_->renderCopy(square_, button_x + i_v * 3, button_y_ + button_h_ - hc, 2, hc);
+        engine_->renderTexture(square_, button_x + i_v * 3, button_y_ + button_h_ - hc, 2, hc);
         if (v < 0)
         {
             break;
@@ -217,7 +217,7 @@ void PotUI::drawUI(int time, int totoal_time, int volume, bool pause)
         //    text = strfunc::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
         //    break;
     }
-    Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, BP_ALIGN_LEFT);
+    Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, ALIGN_LEFT);
 }
 
 void PotUI::destory()
@@ -292,23 +292,23 @@ int PotUI::getButtonPos(int b)
     return button_x_ + (b - 1) * (button_w_ + 10);
 }
 
-BP_Texture* PotUI::createSquareTexture(int size)
+Texture* PotUI::createSquareTexture(int size)
 {
     int d = size;
-    auto square_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
-    SDL_FillRect(square_s, nullptr, 0xffffffff);
+    auto square_s = SDL_CreateSurface(d, d, SDL_GetPixelFormatForMasks(32, RMASK, GMASK, BMASK, AMASK));
+    SDL_FillSurfaceRect(square_s, nullptr, 0xffffffff);
     auto square = SDL_CreateTextureFromSurface(engine_->getRenderer(), square_s);
     SDL_SetTextureBlendMode(square, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(square, 128);
-    SDL_FreeSurface(square_s);
+    SDL_DestroySurface(square_s);
     return square;
 }
 
-BP_Texture* PotUI::createSpecialTexture(int size, int mode)
+Texture* PotUI::createSpecialTexture(int size, int mode)
 {
     int d = size;
-    auto ball_s = SDL_CreateRGBSurface(0, d, d, 32, RMASK, GMASK, BMASK, AMASK);
-    SDL_FillRect(ball_s, nullptr, 0);
+    auto ball_s = SDL_CreateSurface(d, d, SDL_GetPixelFormatForMasks(32, RMASK, GMASK, BMASK, AMASK));
+    SDL_FillSurfaceRect(ball_s, nullptr, 0);
     SDL_Rect r = { 0, 0, 1, 1 };
     auto& x = r.x;
     auto& y = r.y;
@@ -331,7 +331,7 @@ BP_Texture* PotUI::createSpecialTexture(int size, int mode)
                     a0 = 0;    // (1 - ra) * 255 * 2;
                 }
                 uint8_t a = a0 > 255 ? 255 : a0;
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 255, 255, 255, a));
             }
             if (mode == 1)
             {
@@ -340,7 +340,7 @@ BP_Texture* PotUI::createSpecialTexture(int size, int mode)
                 {
                     a = 0;
                 }
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 255, 255, 255, a));
             }
             if (mode == 2)
             {
@@ -349,13 +349,13 @@ BP_Texture* PotUI::createSpecialTexture(int size, int mode)
                 {
                     a = 0;
                 }
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 255, 255, 255, a));
             }
             if (mode == 3)
             {
                 uint8_t a = 255;
                 a = 225.0 / d * y;
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 0, 0, 0, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 0, 0, 0, a));
             }
             if (mode == 4)
             {
@@ -366,7 +366,7 @@ BP_Texture* PotUI::createSpecialTexture(int size, int mode)
                 {
                     a = 0;
                 }
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 255, 255, 255, a));
             }
             if (mode == 5)
             {
@@ -377,7 +377,7 @@ BP_Texture* PotUI::createSpecialTexture(int size, int mode)
                 {
                     a = 0;
                 }
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 255, 255, 255, a));
             }
             if (mode == 6)
             {
@@ -387,7 +387,7 @@ BP_Texture* PotUI::createSpecialTexture(int size, int mode)
                 {
                     a = 0;
                 }
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 255, 255, 255, a));
             }
             if (mode == 7)
             {
@@ -396,13 +396,13 @@ BP_Texture* PotUI::createSpecialTexture(int size, int mode)
                 {
                     a = 255;
                 }
-                SDL_FillRect(ball_s, &r, SDL_MapRGBA(ball_s->format, 255, 255, 255, a));
+                SDL_FillSurfaceRect(ball_s, &r, SDL_MapSurfaceRGBA(ball_s, 255, 255, 255, a));
             }
         }
     }
     auto ball = SDL_CreateTextureFromSurface(engine_->getRenderer(), ball_s);
     SDL_SetTextureBlendMode(ball, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(ball, 128);
-    SDL_FreeSurface(ball_s);
+    SDL_DestroySurface(ball_s);
     return ball;
 }
