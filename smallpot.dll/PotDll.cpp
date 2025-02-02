@@ -11,7 +11,7 @@ HBAPI void* MYTHAPI PotCreateFromHandle(void* handle)
 
 HBAPI void* MYTHAPI PotCreateFromWindow(void* handle)
 {
-    auto bp = new PotPlayer((BP_Window*)handle, 1);
+    auto bp = new PotPlayer((Window*)handle, 1);
     return bp;
 }
 

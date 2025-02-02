@@ -195,7 +195,7 @@ int PotPlayer::eventLoop()
                 }
             }
 #ifdef _WINDLL
-            if (e.button.button == BP_BUTTON_RIGHT)
+            if (e.button.button == BUTTON_RIGHT)
             {
                 loop = false;
                 running_ = false;
