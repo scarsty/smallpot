@@ -129,12 +129,7 @@ FrameContent PotStreamAudio::convertFrameToContent()
         memcpy((uint8_t*)buffer_, resample_buffer_, data_length_ - rest);
     }
     FrameContent f = { time_dts_, data_write_, buffer_ };
-    //std::vector<uint8_t> b(data_length_);
-    //Engine::getInstance()->mixAudio((Uint8*)b.data(), (Uint8*)resample_buffer_, data_length_, 1);
-    //Engine::getInstance()->putAudioStreamData(resample_buffer_, data_length_);
     data_write_ += data_length_;
-    //data_read_ += data_length_;
-    //dropDecoded();
     //返回的是指针位置
     return f;
 }
@@ -220,7 +215,11 @@ void PotStreamAudio::openAudioDevice()
     {
         channels_ = codec_ctx_->ch_layout.nb_channels;
     }
-    engine_->openAudio(freq_, channels_, codec_ctx_->frame_size, 2048, std::bind(&PotStreamAudio::mixAudioData, this, std::placeholders::_1, std::placeholders::_2));
+    //注意这里仍然使用的是回调，计算时间比较简单
+    engine_->openAudio(freq_, channels_, codec_ctx_->frame_size, 2048, [this](uint8_t* stream, int len)
+        {
+            mixAudioData(stream, len);
+        });
 
     auto audio_format = AV_SAMPLE_FMT_S16;
 

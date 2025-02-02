@@ -145,8 +145,8 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     }
 
     int button_x = win_w_ - 20 - button_w_ * 2;
-    int one_square = 16;
-    int v = volume * 256;
+    int one_square = 8;
+    int v = volume * 128;
     for (int i_v = 0; i_v < 16; i_v++)
     {
         int h = (i_v + 1) * 1;

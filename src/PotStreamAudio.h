@@ -33,6 +33,8 @@ public:
     void openAudioDevice();
     int closeAudioDevice();
     void resetDecodeState();
+
+    //音量看起来是全局的，并非是每个音频流的
     static void setVolume(float v);
     static void changeVolume(float v);
 

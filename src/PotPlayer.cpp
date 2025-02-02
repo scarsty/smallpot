@@ -405,7 +405,7 @@ int PotPlayer::eventLoop()
         }
         //在每个循环均尝试预解压
         media_->decodeFrame();
-        media_->getAudio()->show();
+        //media_->getAudio()->show();
         //尝试以音频为基准显示视频
         int audioTime = media_->getTime();    //注意优先为音频时间，若音频不存在使用视频时间
         //if (seeking)
