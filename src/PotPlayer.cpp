@@ -78,6 +78,9 @@ int PotPlayer::eventLoop()
     }
     int find_direct = 0;
 
+    float touch_start_x = 0, touch_start_y = 0;
+    double touch_start_time = 0;
+
     while (loop && engine_->pollEvent(e) >= 0)
     {
         seeking = false;
@@ -353,6 +356,7 @@ int PotPlayer::eventLoop()
                 break;
 #endif
             }
+
             break;
         }
         //#ifndef _WINDLL
@@ -394,6 +398,76 @@ int PotPlayer::eventLoop()
                 loop = false;
             }
             break;
+        case EVENT_FINGER_DOWN:    // 触摸开始
+            touch_start_x = e.tfinger.x;
+            touch_start_y = e.tfinger.y;
+            touch_start_time = engine_->getTicks();
+            break;
+        case EVENT_FINGER_MOTION:    // 触摸移动
+        {
+            float dx = e.tfinger.x - touch_start_x;
+            float dy = e.tfinger.y - touch_start_y;
+
+            // 判断主要滑动方向（横向/纵向）
+            if (fabsf(dx) > fabsf(dy))
+            {
+                // 横向滑动处理（进度调节）
+                if (fabsf(dx) > 0.05f)
+                {    // 滑动阈值
+                    if (dx > 0)
+                    {
+                        media_->seekTime(media_->getTime() + seek_step, 1);
+                    }
+                    else
+                    {
+                        media_->seekTime(media_->getTime() - seek_step, -1);
+                    }
+                    UI_.setText("");
+                    seeking = true;
+                    // 重置起始位置以便连续滑动
+                    touch_start_x = e.tfinger.x;
+                    touch_start_y = e.tfinger.y;
+                }
+            }
+            else
+            {
+                // 纵向滑动处理（音量调节）
+                if (fabsf(dy) > 0.05f)
+                {
+                    if (dy > 0)
+                    {
+                        media_->getAudio()->changeVolume(-volume_step);
+                    }
+                    else
+                    {
+                        media_->getAudio()->changeVolume(volume_step);
+                    }
+                    UI_.setText("v");
+                    // 重置起始位置
+                    touch_start_x = e.tfinger.x;
+                    touch_start_y = e.tfinger.y;
+                }
+            }
+            break;
+        }
+        case EVENT_FINGER_UP:    // 触摸结束
+        {
+            uint32_t duration = engine_->getTicks() - touch_start_time;
+            float dx = e.tfinger.x - touch_start_x;
+            float dy = e.tfinger.y - touch_start_y;
+
+            // 点击判断（短时间+小距离）
+            if (duration < 300 && (dx * dx + dy * dy) < 0.0001f)
+            {
+                // 检查右上角区域（归一化坐标）
+                if (e.tfinger.x > 0.8f && e.tfinger.y < 0.2f)
+                {
+                    loop = false;
+                    running_ = false;
+                }
+            }
+            break;
+        }
         default:
             break;
         }
