@@ -21,17 +21,14 @@ SmallPot是一个轻量级播放器。
 
 ## 编译
 
-首先需要取得mlcc工程。
+部分源码在mlcc和kys-cpp（Engine.h和Engine.cpp）中，需同时将这些工程放到同级别的目录。
 
 ```shell
 git clone https://github.com/scarsty/mlcc mlcc
+git clone https://github.com/scarsty/kys-cpp kys-cpp
 ```
 
-Engine.h和Engine.cpp在kys-cpp中。
-
-其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-image，SDL2-ttf等，推荐使用系统的包管理工具获取这些库，Windows下推荐使用vcpkg。其中SDL2_image仅有一处使用，且并不是必须的，可以简单修改后去除。
-
-Windows下也可以从<https://github.com/scarsty/lib-collection>取得头文件和导入库。
+其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-ttf等，推荐使用系统的包管理工具获取这些库，Windows下推荐使用vcpkg。
 
 <https://github.com/AutoItConsulting/text-encoding-detect>直接包含代码到工程中。
 
