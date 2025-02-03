@@ -67,7 +67,7 @@ int PotPlayer::eventLoop()
     exit_type_ = 0;
 
     int sub_state = 0;    //0不显示，1外部字幕，2及以上内部字幕
-    int internal_sub_count = media_->getStreamCount(BPMEDIA_TYPE_SUBTITLE);
+    int internal_sub_count = media_->getStreamCount(MEDIA_TYPE_SUBTITLE);
     if (internal_sub_count > 0)
     {
         sub_state = 2;
@@ -96,7 +96,7 @@ int PotPlayer::eventLoop()
             }
             else if (sub_state > 2)
             {
-                media_->switchStream(BPMEDIA_TYPE_SUBTITLE);
+                media_->switchStream(MEDIA_TYPE_SUBTITLE);
                 media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
             }
             if (sub_state >= 2 + internal_sub_count)
@@ -179,7 +179,7 @@ int PotPlayer::eventLoop()
                 }
                 else if (button == PotUI::ButtonAudio)
                 {
-                    media_->switchStream(BPMEDIA_TYPE_AUDIO);
+                    media_->switchStream(MEDIA_TYPE_AUDIO);
                     UI_.setText(fmt1::format("Switch audio stream to {}", media_->getAudio()->getStreamIndex()));
                 }
                 else if (button == PotUI::ButtonSubtitle)
@@ -264,7 +264,7 @@ int PotPlayer::eventLoop()
                 UI_.setText("v");
                 break;
             case K_1:
-                media_->switchStream(BPMEDIA_TYPE_AUDIO);
+                media_->switchStream(MEDIA_TYPE_AUDIO);
                 UI_.setText(fmt1::format("Switch audio stream to {}", media_->getAudio()->getStreamIndex()));
                 break;
             case K_2:
@@ -334,7 +334,7 @@ int PotPlayer::eventLoop()
                 w += width_ / 4;
                 h += height_ / 4;
                 setWindowSize(w, h);
-                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                engine_->setWindowPosition(WINDOWPOS_CENTERED, WINDOWPOS_CENTERED);
                 break;
             }
             case K_MINUS:
@@ -344,12 +344,12 @@ int PotPlayer::eventLoop()
                 w -= width_ / 4;
                 h -= height_ / 4;
                 setWindowSize(w, h);
-                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                engine_->setWindowPosition(WINDOWPOS_CENTERED, WINDOWPOS_CENTERED);
                 break;
             }
             case K_0:
                 setWindowSize(media_->getVideo()->getWidth(), media_->getVideo()->getHeight());
-                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                engine_->setWindowPosition(WINDOWPOS_CENTERED, WINDOWPOS_CENTERED);
                 break;
 #endif
             }
@@ -605,7 +605,7 @@ int PotPlayer::beginWithFile(std::string filename)
             }
             else
             {
-                engine_->setWindowPosition(BP_WINDOWPOS_CENTERED, BP_WINDOWPOS_CENTERED);
+                engine_->setWindowPosition(WINDOWPOS_CENTERED, WINDOWPOS_CENTERED);
             }
         }
 #endif

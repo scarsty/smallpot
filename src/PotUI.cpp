@@ -295,7 +295,7 @@ int PotUI::getButtonPos(int b)
 Texture* PotUI::createSquareTexture(int size)
 {
     int d = size;
-    auto square_s = SDL_CreateSurface(d, d, SDL_GetPixelFormatForMasks(32, RMASK, GMASK, BMASK, AMASK));
+    auto square_s = SDL_CreateSurface(d, d, SDL_PIXELFORMAT_RGBA8888);
     SDL_FillSurfaceRect(square_s, nullptr, 0xffffffff);
     auto square = SDL_CreateTextureFromSurface(engine_->getRenderer(), square_s);
     SDL_SetTextureBlendMode(square, SDL_BLENDMODE_BLEND);
@@ -307,7 +307,7 @@ Texture* PotUI::createSquareTexture(int size)
 Texture* PotUI::createSpecialTexture(int size, int mode)
 {
     int d = size;
-    auto ball_s = SDL_CreateSurface(d, d, SDL_GetPixelFormatForMasks(32, RMASK, GMASK, BMASK, AMASK));
+    auto ball_s = SDL_CreateSurface(d, d, SDL_PIXELFORMAT_RGBA8888);
     SDL_FillSurfaceRect(ball_s, nullptr, 0);
     SDL_Rect r = { 0, 0, 1, 1 };
     auto& x = r.x;

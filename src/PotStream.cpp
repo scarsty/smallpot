@@ -267,7 +267,7 @@ int PotStream::tryDecodeFrame(bool reset)
     int got_frame = 0;
     for (int i = 0; i < decode_frame_count_; i++)
     {
-        got_frame = decodeNextPacketToFrame(true, type_ != BPMEDIA_TYPE_SUBTITLE);
+        got_frame = decodeNextPacketToFrame(true, type_ != MEDIA_TYPE_SUBTITLE);
         if (got_frame <= 0)
         {
             continue;
@@ -318,7 +318,7 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
             flag = flag | AVSEEK_FLAG_BACKWARD;
         }
         //间隔比较大的情况重置播放器
-        if (type_ == BPMEDIA_TYPE_VIDEO && (pause_ || reset || engine_->getTicks() - seek_record_ > 100))
+        if (type_ == MEDIA_TYPE_VIDEO && (pause_ || reset || engine_->getTicks() - seek_record_ > 100))
         {
             avcodec_flush_buffers(codec_ctx_);
         }
@@ -360,7 +360,7 @@ int PotStream::skipFrame(int time)
     {
         n++;
         //视频需解码，因为关键帧不解后续一系列都有问题，音频可以只读不解
-        if (decodeNextPacketToFrame(type_ == BPMEDIA_TYPE_VIDEO, type_ != BPMEDIA_TYPE_SUBTITLE) < 0)
+        if (decodeNextPacketToFrame(type_ == MEDIA_TYPE_VIDEO, type_ != MEDIA_TYPE_SUBTITLE) < 0)
         {
             break;
         }
@@ -421,7 +421,7 @@ void PotStream::getRatio(int& x, int& y)
 
 //{
 //    //避免卡死
-//    if (type_ == BPMEDIA_TYPE_VIDEO && gotsize < 0)
+//    if (type_ == MEDIA_TYPE_VIDEO && gotsize < 0)
 //    {
 //        BP_Event e;
 //        //这里只接受QUIT和拖入事件，将其压回主序列，跳出

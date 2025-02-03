@@ -12,7 +12,7 @@ PotStreamAudio::PotStreamAudio()
     //缓冲区大小4M保存
     buffer_ = av_mallocz(buffer_size_);
     resample_buffer_ = (decltype(resample_buffer_))av_mallocz(convert_size_);
-    type_ = BPMEDIA_TYPE_AUDIO;
+    type_ = MEDIA_TYPE_AUDIO;
     decode_frame_count_ = 2;
 }
 

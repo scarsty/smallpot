@@ -90,7 +90,7 @@ int PotMedia::openFile(const std::string& filename)
         {
             switch (format_ctx->streams[i]->codecpar->codec_type)
             {
-            case BPMEDIA_TYPE_VIDEO:
+            case MEDIA_TYPE_VIDEO:
             {
                 auto st = new PotStreamVideo();
                 st->setFormatCtx(format_ctx_video_);
@@ -101,7 +101,7 @@ int PotMedia::openFile(const std::string& filename)
                 }
                 break;
             }
-            case BPMEDIA_TYPE_AUDIO:
+            case MEDIA_TYPE_AUDIO:
             {
                 auto st = new PotStreamAudio();
                 st->setFormatCtx(format_ctx_audio_);
@@ -112,7 +112,7 @@ int PotMedia::openFile(const std::string& filename)
                 }
                 break;
             }
-            case BPMEDIA_TYPE_SUBTITLE:
+            case MEDIA_TYPE_SUBTITLE:
             {
                 auto st = new PotStreamSubtitle();
                 st->setFormatCtx(format_ctx_subtitle_);
@@ -267,12 +267,12 @@ void PotMedia::switchStream(PotMediaType mt)
 
     switch (mt)
     {
-    case BPMEDIA_TYPE_VIDEO:
+    case MEDIA_TYPE_VIDEO:
     {
         stream_video_ = (PotStreamVideo*)st;
         break;
     }
-    case BPMEDIA_TYPE_AUDIO:
+    case MEDIA_TYPE_AUDIO:
     {
         //注意此处效果不佳
         //若假设所有音频使用同一解码器，则切换的效果会较好
@@ -285,7 +285,7 @@ void PotMedia::switchStream(PotMediaType mt)
         //stream_audio_->setStreamIndex(st->getStreamIndex());
         break;
     }
-    case BPMEDIA_TYPE_SUBTITLE:
+    case MEDIA_TYPE_SUBTITLE:
     {
         stream_subtitle_ = (PotStreamSubtitle*)st;
         stream_subtitle_->seek(getTime() - 5000);

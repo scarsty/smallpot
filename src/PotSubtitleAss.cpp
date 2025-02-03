@@ -113,7 +113,7 @@ int PotSubtitleAss::show(int time)
         destroyAllTex();
         while (img)
         {
-            auto t = engine_->transBitmapToTexture(img->bitmap, img->color, img->w, img->h, img->stride);
+            auto t = engine_->transRGBABitmapToTexture(img->bitmap, img->color, img->w, img->h, img->stride);
             engine_->renderTexture(t, img->dst_x, img->dst_y, img->w, img->h, 0, 1);
             tex_vector_.push_back(t);
             img = img->next;

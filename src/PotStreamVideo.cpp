@@ -5,7 +5,7 @@
 PotStreamVideo::PotStreamVideo()
 {
     //视频缓冲区, 足够大时会较流畅，但是跳帧会闪烁
-    type_ = BPMEDIA_TYPE_VIDEO;
+    type_ = MEDIA_TYPE_VIDEO;
 
     //create_module_ = (create_module_t)DynamicLibrary::getFunction(Config::getInstance()->getString("plugin"), "create_module");
     //if (create_module_)
@@ -56,13 +56,13 @@ FrameContent PotStreamVideo::convertFrameToContent()
     auto tex = engine_->getMainTexture();
     switch (texture_pix_fmt_)
     {
-    case SDL_PIXELFORMAT_UNKNOWN:
+    case SDL_PIXELFORMAT_UNKNOWN:    //实际使用SDL_PIXELFORMAT_RGBA8888
     {
         uint8_t* pixels[4];
         int pitch[4];
         if (plugin_ == nullptr)
         {
-            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width, f->height, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width, f->height, AV_PIX_FMT_RGB32_1, SWS_FAST_BILINEAR, NULL, NULL, NULL);
             if (engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
             {
                 sws_scale(img_convert_ctx_, (const uint8_t* const*)f->data, f->linesize, 0, f->height, pixels, pitch);
@@ -72,7 +72,7 @@ FrameContent PotStreamVideo::convertFrameToContent()
         else
         {
             double scale = 1;
-            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width / scale, f->height / scale, AV_PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+            img_convert_ctx_ = sws_getCachedContext(img_convert_ctx_, f->width, f->height, AVPixelFormat(f->format), f->width / scale, f->height / scale, AV_PIX_FMT_RGB32_1, SWS_FAST_BILINEAR, NULL, NULL, NULL);
             if (engine_->lockTexture(tex, nullptr, (void**)pixels, pitch))
             {
                 std::vector<char> buffer(f->width * f->height * 3);
@@ -107,11 +107,11 @@ FrameContent PotStreamVideo::convertFrameToContent()
     default:
         if (f->linesize[0] < 0)
         {
-            engine_->updateARGBTexture(tex, f->data[0] + f->linesize[0] * (f->height - 1), -f->linesize[0]);
+            engine_->updateTexture(tex, f->data[0] + f->linesize[0] * (f->height - 1), -f->linesize[0]);
         }
         else
         {
-            engine_->updateARGBTexture(tex, f->data[0], f->linesize[0]);
+            engine_->updateTexture(tex, f->data[0], f->linesize[0]);
         }
     }
     return { time_dts_, f->linesize[0], tex };
