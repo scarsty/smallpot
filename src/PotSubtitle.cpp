@@ -12,7 +12,7 @@ PotSubtitle::PotSubtitle()
 #ifdef __APPLE__
     fontpath_ = "/System/Library/Fonts";
 #endif
-    auto fontpath = Config::getInstance()->getString("sub_font");
+    auto fontpath = Config::getInstance()["sub_font"].toString();
     if (filefunc::fileExist(fontpath))
     {
         fontpath_ += fontpath + "," + fontpath_;
@@ -21,8 +21,8 @@ PotSubtitle::PotSubtitle()
 
 PotSubtitle::~PotSubtitle()
 {
-    if (Config::getInstance()->getString("sub_font") == "")
+    if (Config::getInstance()["sub_font"].toString() == "")
     {
-        Config::getInstance()->setString("sub_font", fontpath_);
+        Config::getInstance()["sub_font"] = fontpath_;
     }
 }

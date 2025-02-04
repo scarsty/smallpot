@@ -76,8 +76,8 @@ FrameContent PotStreamSubtitle::convertFrameToContent()
         if (rect->ass)
         {
             sub_->readOne(rect->ass,
-                avsubtitle_.pts / AV_TIME_BASE * 1000 + avsubtitle_.start_display_time,
-                avsubtitle_.pts / AV_TIME_BASE * 1000 + avsubtitle_.end_display_time);
+                1.0 * avsubtitle_.pts / AV_TIME_BASE * 1000 + avsubtitle_.start_display_time,
+                1.0 * avsubtitle_.pts / AV_TIME_BASE * 1000 + avsubtitle_.end_display_time);
         }
     }
     return { time_dts_, 0, nullptr };

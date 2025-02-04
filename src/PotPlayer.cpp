@@ -193,7 +193,7 @@ int PotPlayer::eventLoop()
                 {
                     int x, y;
                     engine_->getMouseState(x, y);
-                    int v = 128 * (x - UI_.getButtonPos(button)) / UI_.getButtonWidth(button);
+                    float v = 1.0 * (x - UI_.getButtonPos(button)) / UI_.getButtonWidth(button);
                     media_->getAudio()->setVolume(v);
                 }
             }
@@ -306,7 +306,7 @@ int PotPlayer::eventLoop()
                 setSubtitleFrameSize();
                 break;
             case K_DELETE:
-                Config::getInstance()->clearAllRecord();
+                Config::getInstance().clearAllRecord();
                 break;
             case K_PERIOD:
             {
@@ -566,17 +566,6 @@ int PotPlayer::eventLoop()
         engine_->delay(1);
         if (audioTime >= totalTime)
         {
-            if (Config::getInstance()->getInteger("loop", 0))
-            {
-                find_direct = 0;
-            }
-            auto next_file = findNextFile(drop_filename_, find_direct);
-            if (next_file != "")
-            {
-                drop_filename_ = next_file;
-                Config::getInstance()->setRecord(drop_filename_, 0);    //若是自动跳转，则设置从头开始
-                loop = false;
-            }
         }
 #ifdef _WINDLL
         if (videostate == PotStreamVideo::NoVideo || time_s >= totalTime)
@@ -596,18 +585,18 @@ int PotPlayer::eventLoop()
 
 int PotPlayer::init()
 {
-    Config::getInstance()->init(run_path_);
-    int maximum = Config::getInstance()->getInteger("windows_maximized", 0);
+    Config::getInstance().init(run_path_);
+    int maximum = Config::getInstance()["windows_maximized"];
     if (engine_->init(handle_, handle_type_, maximum))
     {
         return -1;
     }
 #ifdef _WIN32
-    sys_encode_ = Config::getInstance()->getString("sys_encode", "cp936");
+    sys_encode_ = Config::getInstance().get("sys_encode", "cp936");
 #else
-    sys_encode_ = Config::getInstance()->getString("sys_encode", "utf-8");
+    sys_encode_ = Config::getInstance().get("sys_encode", "utf-8");
 #endif
-    cur_volume_ = Config::getInstance()->getFloat("volume", 0.5);
+    cur_volume_ = Config::getInstance().get("volume", 0.5);
     PotStreamAudio::setVolume(cur_volume_);
     UI_.init();
     return 0;
@@ -618,7 +607,10 @@ void PotPlayer::destroy()
     UI_.destory();
     //engine_->destroy();
 #ifndef _WINDLL
-    Config::getInstance()->write();
+    if (!media_)
+    {
+        Config::getInstance().write();    //关闭媒体时已经保存了
+    }
 #endif
 }
 
@@ -632,16 +624,16 @@ int PotPlayer::beginWithFile(std::string filename)
     engine_->resetRenderTarget();
     int start_time = engine_->getTicks();
 
-    if (filename.empty() && Config::getInstance()->getInteger("auto_play_recent"))
+    if (filename.empty() && Config::getInstance()["auto_play_recent"].toInt())
     {
-        filename = Config::getInstance()->getNewestRecord();
+        filename = Config::getInstance().getNewestRecord();
         if (!filefunc::fileExist(PotConv::conv(filename, BP_encode_, sys_encode_)))
         {
             filename = "";
         }
-    }
+    } 
     //首次运行拖拽的文件也认为是同一个
-    drop_filename_ = Config::getInstance()->findSuitableFilename(filename);
+    drop_filename_ = Config::getInstance().findSuitableFilename(filename);
 
     fmt1::print("Begin with file: {}\n", filename);
     auto play_filename = drop_filename_;
@@ -670,8 +662,8 @@ int PotPlayer::beginWithFile(std::string filename)
             engine_->setWindowPosition(x, y);*/
             int w, h;
             engine_->getWindowSize(w, h);
-            w = Config::getInstance()->getInteger("windows_width", w);
-            h = Config::getInstance()->getInteger("windows_height", h);
+            w = Config::getInstance().get("windows_width", w);
+            h = Config::getInstance().get("windows_height", h);
             setWindowSize(w, h);
             //首次打开文件窗口居中
             if (engine_->isFullScreen() || engine_->getWindowIsMaximized())
@@ -745,10 +737,10 @@ void PotPlayer::openMedia(const std::string& filename)
     if (media_->isMedia())
     {
         cur_time_ = 0;
-        cur_time_ = Config::getInstance()->getRecord(filename.c_str());
+        cur_time_ = Config::getInstance().getRecord(filename.c_str());
         std::thread th{ [this]()
             {
-                Config::getInstance()->autoClearRecord();
+                Config::getInstance().autoClearRecord();
                 return;
             } };
         th.detach();
@@ -782,27 +774,31 @@ void PotPlayer::closeMedia(const std::string& filename)
 
     //如果是媒体文件就记录时间
 #ifndef _WINDLL
-    auto config = Config::getInstance();
+    auto& config = Config::getInstance();
     if (media_->isMedia() && cur_time_ < media_->getTotalTime() && cur_time_ > 0)
     {
-        config->setRecord(filename, cur_time_);
+        config.setRecord(filename, cur_time_);
     }
     else
     {
-        config->removeRecord(filename);
+        config["record"].erase(filename);
     }
-    config->setString("sys_encode", sys_encode_);
-    config->setInteger("volume", cur_volume_);
-    int w, h;
-    engine_->getWindowSize(w, h);
-    //config->setInteger("windows_width", w);
-    //config->setInteger("windows_height", h);
-    config->setInteger("windows_maximized", engine_->getWindowIsMaximized());
-    //config->autoClearRecord();
+    if (media_->isMedia())
+    {
+        config["sys_encode"] = sys_encode_;
+        config["volume"] = cur_volume_;
+        int w, h;
+        engine_->getWindowSize(w, h);
+        //config->setInteger("windows_width", w);
+        //config->setInteger("windows_height", h);
+        config["windows_maximized"] = int(engine_->getWindowIsMaximized());
+        //config->autoClearRecord();
 
-    config->write();
+        config.write();
+    }
 #endif
     delete media_;
+    media_ = nullptr;
     filefunc::changePath(run_path_);
 }
 

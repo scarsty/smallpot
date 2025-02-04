@@ -14,6 +14,7 @@ Config::Config()
         ".bt.td",
         ".td",
     };
+    fmt1::print("Config init\n");
 }
 
 Config::~Config()
@@ -28,85 +29,21 @@ void Config::init(std::string filepath)
     {
         filepath = filepath + "/";
     }
-    filename_ = filepath + "smallpot.config.ini";
+    filename_ = filepath + "smallpot.config.json";
     fmt1::print("try find config file: {}\n", filename_);
-    ini_.loadFile(filename_);
-    //setString("filepath", filepath);
-
-    for (auto& s : ini_["record"].getAllKeys())
-    {
-        if (!s.empty())
-        {
-            Record r;
-            uint64_t t;
-            r.filename = s;
-            auto v = strfunc::findNumbers<int64_t>(ini_.getString("record", s));
-            if (v.size() >= 1)
-            {
-                r.second = v[0];
-            }
-            if (v.size() >= 2)
-            {
-                t = v[1];
-            }
-            ini_["record"][s]["progress"] = r.second;
-            ini_["record"][s]["time_int"] = t;
-            //ini_["record"][s]["time"] = Timer::timeToString(time_t(t));
-        }
-    }
+    parse(filefunc::readFileToString(filename_));
+    fmt1::print("read config file\n");
 }
 
 void Config::write()
 {
-    ini_.saveFile(filename_);
-}
-
-std::string Config::getString(const std::string& name, std::string def /*= ""*/)
-{
-    if (!ini_.hasKey("", name))
-    {
-        setString(name, def);
-    }
-    return ini_.getString("", name);
-}
-
-int Config::getInteger(const std::string& name, int def /*= 0*/)
-{
-    if (!ini_.hasKey("", name))
-    {
-        setInteger(name, def);
-    }
-    return ini_.getInt("", name);
-}
-
-float Config::getFloat(const std::string& name, float def)
-{
-    if (!ini_.hasKey("", name))
-    {
-        setString(name, fmt1::format("{}", def));
-    }
-    return ini_.getReal("", name);
-}
-
-void Config::setString(const std::string& name, const std::string v)
-{
-    ini_.setKey("", name, v);
-}
-
-void Config::setInteger(const std::string& name, int v)
-{
-    setString(name, fmt1::format("{}", v));
-}
-
-void Config::setFloat(const std::string& name, float v)
-{
-    setString(name, fmt1::format("{}", v));
+    filefunc::writeStringToFile(allToString(), filename_);
+    fmt1::print("write config file\n");
 }
 
 int Config::getRecord(const std::string& name)
 {
-    //return ini_.getInt("record", enStr(name));
-    return ini_["record"][enStr(name)]["progress"].toInt();
+    return (*this)["record"][enStr(name)]["progress"].toInt();
 }
 
 std::string Config::getNewestRecord()
@@ -121,24 +58,21 @@ std::string Config::getNewestRecord()
 
 void Config::removeRecord(const std::string& name)
 {
-    ini_.eraseKey("record", enStr(name));
+    (*this)["record"].erase(enStr(name));
 }
 
 void Config::setRecord(const std::string& name, int v)
 {
-    //ini_.setKey("record", enStr(name), std::to_string(v) + "," + std::to_string(time(0)));
-    ini_["record"][enStr(name)]["progress"] = v;
-    ini_["record"][enStr(name)]["time"] = Timer::getNowAsString();
+    (*this)["record"][enStr(name)]["progress"] = v;
+    (*this)["record"][enStr(name)]["time"] = Timer::getNowAsString();
 }
 
 void Config::clearAllRecord()
 {
-    for (auto& s : ini_.getAllKeys("record"))
-    {
-        ini_.eraseKey("record", s);
-    }
+    (*this)["record"].clear();
 }
 
+//
 void Config::autoClearRecord()
 {
     auto rv = getSortedRecord();
@@ -154,29 +88,29 @@ void Config::autoClearRecord()
     {
         if (i > 100)
         {
-            ini_.eraseKey("record", rv[i].filename);
+            (*this)["record"].erase(rv[i].filename);
         }
         else
         {
-            auto s1 = PotConv::conv(deStr(r.filename), "utf-8", getString("sys_encode"));
+            auto s1 = PotConv::conv(deStr(r.filename), "utf-8", (*this)["sys_encode"].toString());
             if (!filefunc::fileExist(s1))
             {
-                ini_.eraseKey("record", r.filename);
+                (*this)["record"].erase(r.filename);
             }
         }
     }
 }
 
-std::string Config::dealFilename(const std::string& s0)
-{
-    auto s = s0;
-    for (auto str : ignore_strs_)
-    {
-        s = strfunc::replaceAllSubString(s, str, "");
-    }
-    return s;
-}
-
+//std::string Config::dealFilename(const std::string& s0)
+//{
+//    auto s = s0;
+//    for (auto str : ignore_strs_)
+//    {
+//        s = strfunc::replaceAllSubString(s, str, "");
+//    }
+//    return s;
+//}
+//
 std::string Config::enStr(const std::string& in)
 {
     return in;
@@ -237,12 +171,13 @@ std::string Config::deStr(std::string out)
 std::vector<Config::Record> Config::getSortedRecord()
 {
     std::vector<Record> rv;
-    for (auto& s : ini_["record"].getAllSections())
+    for (auto [k, v] : (*this)["record"].asMap())
     {
         Record r;
-        r.filename = s;
-        r.second = ini_["record"][s]["progress"].toInt();
-        r.time = ini_["record"][s]["time"].toString();
+        uint64_t t;
+        r.filename = k;
+        r.second = v["progress"].toInt();
+        r.time = v["time"].toString();
         rv.push_back(r);
     }
     std::sort(rv.begin(), rv.end(), [](const Record& l, const Record& r)
@@ -262,7 +197,7 @@ std::string Config::findSuitableFilename(const std::string& filename)
         {
             return filename;
         }
-        if (rv.filename.find(filename) == 0)
+        if (!filename.empty() && rv.filename.find(filename) == 0)
         {
             filename1 = rv.filename;
             return filename1;

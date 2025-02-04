@@ -214,6 +214,10 @@ void PotMedia::destroy()
 
 bool PotMedia::isMedia()
 {
+    if (streams_.empty())
+    {
+        return false;
+    }
     return stream_audio_->exist() || stream_video_->exist();
 }
 

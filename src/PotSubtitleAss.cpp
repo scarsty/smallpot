@@ -167,7 +167,7 @@ void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_tim
         str2.pop_back();
         ass_process_data(track_, (char*)str2.c_str(), str2.size());
 #ifdef _DEBUG
-        fmt1::print("{}\n", str);
+        fmt1::print("{}\n", str2);
 #endif
     }
 }

@@ -210,7 +210,7 @@ void PotStreamAudio::openAudioDevice()
         return;
     }
     freq_ = codec_ctx_->sample_rate;
-    channels_ = Config::getInstance()->getInteger("channels", -1);
+    channels_ = Config::getInstance().get("channels", -1);
     if (channels_ < 0)
     {
         channels_ = codec_ctx_->ch_layout.nb_channels;

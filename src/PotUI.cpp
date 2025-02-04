@@ -222,9 +222,9 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
 
 void PotUI::destory()
 {
-    if (Config::getInstance()->getString("ui_font") == "")
+    if (Config::getInstance()["ui_font"].toString() == "")
     {
-        Config::getInstance()->setString("ui_font", fontname_);
+        Config::getInstance()["ui_font"] = fontname_;
     }
 }
 
