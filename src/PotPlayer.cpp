@@ -609,6 +609,7 @@ void PotPlayer::destroy()
 #ifndef _WINDLL
     if (!media_)
     {
+        //从未打开过文件
         Config::getInstance().write();    //关闭媒体时已经保存了
     }
 #endif
@@ -798,7 +799,6 @@ void PotPlayer::closeMedia(const std::string& filename)
     }
 #endif
     delete media_;
-    media_ = nullptr;
     filefunc::changePath(run_path_);
 }
 
