@@ -1,4 +1,4 @@
-#include "PotSubtitle.h"
+﻿#include "PotSubtitle.h"
 #include "Config.h"
 #include "PotSubtitleAss.h"
 #include "PotSubtitleSrt.h"

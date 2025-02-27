@@ -40,12 +40,12 @@ void PotSubtitleAss::init()
     //}
 
 #ifdef _WIN32
-    fontpath_ = R"(C:/Program Files/Microsoft Office/root/vfs/Fonts/private)";
+    fontpath_ = R"(C:/Windows/Fonts)";
 #endif
 #ifdef __APPLE__
     fontpath_ = "/System/Library/Fonts";
 #endif
-    ass_set_fonts_dir(library_, fontpath_.c_str());    //附加的字体目录看起来只能设置一个
+    ass_set_fonts_dir(library_, fontpath_.c_str());    //字体目录看起来只能设置一个
     ass_set_fonts(renderer_, NULL, NULL, 1, NULL, 1);
     ass_set_extract_fonts(library_, 1);
 }

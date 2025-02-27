@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "PotBase.h"
 
 extern "C"
@@ -30,7 +30,6 @@ protected:
 
 public:
     bool exist() { return exist_; }
-    bool reOpenSubtitle() { return openSubtitle(subfilename_); }
 
     virtual void init() {}
     virtual bool openSubtitle(const std::string& filename) { return false; }
