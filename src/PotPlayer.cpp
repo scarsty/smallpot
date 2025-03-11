@@ -9,6 +9,11 @@
 //#pragma comment(lib,"shfolder.lib")
 #endif
 
+int xDir = 0;
+int yDir = 0;
+float axes[16] = {0.0f};
+const int CONTROLLER_DEAD_ZONE = 20000;
+
 PotPlayer::PotPlayer()
 {
     //_subtitle = new BigPotSubtitle;
@@ -147,12 +152,121 @@ int PotPlayer::eventLoop()
 
         switch (e.type)
         {
+		case SDL_CONTROLLERBUTTONDOWN:
+			//if( e.jaxis.which == 1 )
+			//{				
+				if (e.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
+				{
+                media_->getAudio()->changeVolume(volume_step);
+                UI_.setText("v");
+				}	
+				else if (e.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+				{
+                media_->getAudio()->changeVolume(-volume_step);
+                UI_.setText("v");
+				}
+				else if (e.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
+				{
+                media_->seekTime(media_->getTime() - seek_step, -1);
+                UI_.setText("");
+                seeking = true;
+				}	
+				else if (e.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
+				{
+                media_->seekTime(media_->getTime() + seek_step, 1);
+                UI_.setText("");
+                seeking = true;
+				}
+				else if (e.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+				{
+                pause = !pause;
+                media_->setPause(pause);
+				}
+				else if (e.cbutton.button == SDL_CONTROLLER_BUTTON_B)
+				{
+                loop = false;
+                running_ = false;
+				}
+				else
+				{
+				}
+			//}			
+			break;
+		case SDL_CONTROLLERAXISMOTION:
+			axes[e.caxis.axis] = e.caxis.value;
+				if ((axes[1] > CONTROLLER_DEAD_ZONE) && (axes[0] > CONTROLLER_DEAD_ZONE))//rightdown
+				{
+					xDir = 1073741905;
+					yDir = 1073741903;
+				}
+				else if ((axes[1] < -CONTROLLER_DEAD_ZONE) && (axes[0] > CONTROLLER_DEAD_ZONE))//rightup
+				{
+					xDir = 1073741906;
+					yDir = 1073741903;
+				}
+				else if ((axes[1] > CONTROLLER_DEAD_ZONE) && (axes[0] < -CONTROLLER_DEAD_ZONE))//leftdown
+				{
+					xDir = 1073741905;
+					yDir = 1073741904;
+				}
+				else if ((axes[1] < -CONTROLLER_DEAD_ZONE) && (axes[0] < -CONTROLLER_DEAD_ZONE))//leftup
+				{
+					xDir = 1073741906;
+					yDir = 1073741904;
+					break;
+				}
+				else if ((axes[1] > CONTROLLER_DEAD_ZONE) &&((xDir != 1073741905) || (yDir != 0)))//down of dead zone
+				{
+					xDir = 1073741905;
+					yDir = 0;
+					media_->getAudio()->changeVolume(-volume_step);
+					UI_.setText("v");
+					break;
+				}
+				else if ((axes[1] < -CONTROLLER_DEAD_ZONE) &&((xDir != 1073741906) || (yDir != 0)))// upof dead zone
+				{
+					xDir = 1073741906;
+					yDir = 0;
+					media_->getAudio()->changeVolume(volume_step);
+					UI_.setText("v");
+					break;
+				}
+				else if ((axes[0] < -CONTROLLER_DEAD_ZONE) && ((xDir != 0) || (yDir != 1073741904)))//left of dead zone
+				{
+					xDir = 0;
+					yDir = 1073741904;
+					media_->seekTime(media_->getTime() - seek_step, -1);
+					UI_.setText("");
+					seeking = true;
+					break;
+				}
+				else if ((axes[0] > CONTROLLER_DEAD_ZONE) && ((xDir != 0) || (yDir != 1073741903)))//Right of dead zone
+				{
+					xDir = 0;
+					yDir = 1073741903;
+					media_->seekTime(media_->getTime() + seek_step, 1);
+					UI_.setText("");
+					seeking = true;
+					break;
+				}
+				else if ((abs(axes[0]) < 4000 )&&(abs(axes[1]) < 4000 )&&(abs(axes[2]) < 4000 )&&(abs(axes[3]) < 4000 ))
+				{
+					xDir = 0;
+					yDir = 0;
+				}
         case EVENT_MOUSE_MOTION:
             break;
         case EVENT_MOUSE_BUTTON_UP:
             hold_mouse = false;
             if (e.button.button == BUTTON_LEFT)
             {
+            	int w, h;
+                engine_->getWindowSize(w, h);
+				if (e.motion.x > w - 150 && e.motion.y < 150) {
+					loop = false;
+					running_ = false;
+					break;
+				}
                 double pos = UI_.inProcess();
                 int button = UI_.inButton();
                 if (pos >= 0)
