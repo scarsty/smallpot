@@ -54,9 +54,9 @@ git clone https://github.com/scarsty/kys-cpp kys-cpp
 
 ### 单文件版
 
-如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决（vcpkg生成的fribidi静态库不正确，需手动修正）。
+如果需要编译单文件（全静态链接）版，导入库比动态链接版要多出很多，建议使用vcpkg之类解决。
 
-以下为参考（fribidi及以下是动态链接不需要的）：
+以下为参考。其中fribidi及以下是动态链接不需要的，winmm.lib及以下是Windows自带的库：
 
 ```
 sdl2.lib
@@ -83,6 +83,9 @@ imm32.lib
 bcrypt.lib
 secur32.lib
 ws2_32.Lib
+mfplat.lib
+mfuuid.lib
+strmiids.lib
 ```
 
 若是需要编译dll文件，用于在其他基于SDL2的游戏中播放视频时，则SmallPot和游戏均不应静态链接SDL。因为SDL的动态库中含有全局变量，多次静态链接后该变量会有多个副本，其中一个很可能是不正确的。

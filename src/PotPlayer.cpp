@@ -545,7 +545,7 @@ int PotPlayer::eventLoop()
             }
             else
             {
-                engine_->showLogo();
+                //engine_->showLogo();
             }
         }
         if (show)
