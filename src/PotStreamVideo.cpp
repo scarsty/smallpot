@@ -133,6 +133,7 @@ int PotStreamVideo::show(int time)
         if (time >= time_c)
         {
             auto tex = (BP_Texture*)f.data;
+            engine_->fillColor({ 0, 0, 0, 0 }, 0, 0, engine_->getPresentWidth(), engine_->getPresentHeight());
             engine_->renderCopy(tex);
             time_shown_ = time_c;
             ticks_shown_ = engine_->getTicks();

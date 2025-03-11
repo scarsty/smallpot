@@ -14,7 +14,7 @@ public:
     virtual ~PotStreamAudio();
 
 private:
-    const int buffer_size_ = 0x400000, convert_size_ = 192000;
+    const int buffer_size_ = 0x400000, convert_size_ = 0x400000;
     void* buffer_ = nullptr;
     static int volume_;
     int scream_length_ = 0;

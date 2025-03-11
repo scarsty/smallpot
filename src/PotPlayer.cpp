@@ -470,11 +470,12 @@ int PotPlayer::eventLoop()
             show = true;
             if (havevideo)
             {
+                engine_->fillColor({ 0, 0, 0, 0 }, 0, 0, engine_->getPresentWidth(), engine_->getPresentHeight());
                 engine_->renderCopy(engine_->getMainTexture());
             }
             else
             {
-                engine_->showLogo();
+                //engine_->showLogo();
             }
         }
         if (show)
