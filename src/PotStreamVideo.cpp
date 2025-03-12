@@ -1,6 +1,5 @@
 ﻿#include "PotStreamVideo.h"
 #include "Config.h"
-#include "DynamicLibrary.h"
 
 PotStreamVideo::PotStreamVideo()
 {

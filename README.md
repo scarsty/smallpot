@@ -1,6 +1,31 @@
 # smallpot
 <img src="https://raw.githubusercontent.com/scarsty/bigpot/master/logo.png" width = "20%" />
 
+## SDL2分支的补充说明
+
+目前此分支只用来编译用于SDL2游戏播放动画的插件，基本不会再更新。
+
+为方便使用，将kys-cpp和mlcc中的文件合并到了一起。
+
+建议将ffmpeg、libass和libiconv均静态链接成一个dll，Windows下使用vcpkg可以处理。
+
+但是SDL2及其插件应动态链接，游戏本身也应动态链接SDL2。
+
+链接附加库为：
+
+```
+sdl2.lib
+sdl2_ttf.lib
+sdl2_image.lib
+sdl2main.lib
+winmm.lib
+version.lib
+imm32.lib
+bcrypt.lib
+secur32.lib
+ws2_32.Lib
+```
+
 ## 简介
 
 SmallPot是一个轻量级播放器。
@@ -148,3 +173,4 @@ FFmpeg能解什么格式它就能放什么格式，FFmpeg不能解的，它也�
 ## 播放效果
 
 <img src="https://raw.githubusercontent.com/scarsty/smallpot/master/pic/1.png" width = "80%" />
+

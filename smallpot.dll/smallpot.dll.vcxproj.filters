@@ -72,10 +72,10 @@
     <ClInclude Include="..\..\mlcc\strfunc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mlcc\filefunc.h">
+    <ClInclude Include="..\mlcc\filefunc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\kys-cpp\src\Engine.h">
+    <ClInclude Include="..\src\Engine.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -137,13 +137,13 @@
     <ClCompile Include="..\src\others\text_encoding_detect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mlcc\strfunc.cpp">
+    <ClCompile Include="..\mlcc\strfunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mlcc\filefunc.cpp">
+    <ClCompile Include="..\mlcc\filefunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\kys-cpp\src\Engine.cpp">
+    <ClCompile Include="..\src\Engine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

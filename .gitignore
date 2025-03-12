@@ -24,3 +24,4 @@ Win32/
 *.ini
 smallpot-win32/
 smallpot-x64/
+Release
