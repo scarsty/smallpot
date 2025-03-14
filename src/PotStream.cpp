@@ -225,35 +225,8 @@ int PotStream::openFile(const std::string& filename)
     //codec_ctx_ = stream_->codec;
     avcodec_open2(codec_ctx_, codec_, nullptr);
 
-    //for (int i = 0; i < format_ctx_->nb_streams; ++i)
-    //{
-    //    if (format_ctx_->streams[i]->codec->codec_type == type_)
-    //    {
-    //        stream_index_vector_.push_back(i);
-    //        if (stream_index_vector_.size() == 1)
-    //        {
-    //            //fmt1::print("finded media stream: %d\n", type);
-    //            stream_ = format_ctx_->streams[i];
-    //            codec_ctx_ = stream_->codec;
-    //            if (stream_->r_frame_rate.den)
-    //            {
-    //                time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
-    //            }
-    //            time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
-    //            total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
-    //            start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
-    //            codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
-    //            avcodec_open2(codec_ctx_, codec_, nullptr);
-    //        }
-    //    }
-    //}
-
     //记录下来所有的流的编号，默认同类流用一个解码器
     //这个设置可能存在问题
-    //if (!stream_index_vector_.empty())
-    //{
-    //    stream_index_ = stream_index_vector_[0];
-    //}
     return stream_index_;
 }
 
@@ -317,7 +290,7 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
         {
             flag = flag | AVSEEK_FLAG_BACKWARD;
         }
-        //间隔比较大的情况重置播放器
+        //间隔比较大的情况重置解码器
         if (type_ == MEDIA_TYPE_VIDEO && (pause_ || reset || engine_->getTicks() - seek_record_ > 100))
         {
             avcodec_flush_buffers(codec_ctx_);
@@ -418,23 +391,3 @@ void PotStream::getRatio(int& x, int& y)
     x = stream_->sample_aspect_ratio.num;
     y = stream_->sample_aspect_ratio.den;
 }
-
-//{
-//    //避免卡死
-//    if (type_ == MEDIA_TYPE_VIDEO && gotsize < 0)
-//    {
-//        BP_Event e;
-//        //这里只接受QUIT和拖入事件，将其压回主序列，跳出
-//        if (engine_->pollEvent(e) > 0)
-//        {
-//
-//            if (e.type == BP_QUIT || e.type == BP_DROPFILE)
-//            {
-//                engine_->pushEvent(e);
-//                fmt1::print("decode error.\n");
-//                stopping = true;
-//                break;
-//            }
-//        }
-//    }
-//}
