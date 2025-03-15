@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PotBase.h"
 #include "PotConv.h"
@@ -53,9 +53,12 @@ public:
     void (*stop_callback)(bool*, char*) = nullptr;
     void (*play_callback)(int) = nullptr;
 
-    int exit_type_ = 0;    //0 - ²¥·ÅÍê±Ï»òÕß°´escÍË³ö£¬1 - °´¹Ø±ÕÍË³ö
+    int exit_type_ = 0;    //0 - æ’­æ”¾å®Œæ¯•æˆ–è€…æŒ‰escé€€å‡ºï¼Œ1 - æŒ‰å…³é—­é€€å‡º
 
     std::string findNextFile(const std::string& filename, int direct = 1);
 
     void setWindowSize(int w, int h);
+
+    void setVolume(float volume);
+    void seekTime(int time);
 };

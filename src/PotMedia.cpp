@@ -177,7 +177,7 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 {
     time = std::min(time, total_time_ - 100);
     stream_video_->seek(time, direct, 1);
-    stream_audio_->seek(time, direct, 1);
+    stream_audio_->seek(time, direct, reset);
     stream_subtitle_->seek(time - 5000, direct, reset);
 
     seeking_ = true;

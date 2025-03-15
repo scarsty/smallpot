@@ -884,3 +884,14 @@ void PotPlayer::setWindowSize(int w, int h)
     engine_->setPresentPosition(engine_->getMainTexture());
     setSubtitleFrameSize();
 }
+
+void PotPlayer::setVolume(float volume)
+{
+    cur_volume_ = volume;
+    media_->getAudio()->setVolume(volume);
+}
+
+void PotPlayer::seekTime(int time)
+{
+    media_->seekTime(time);
+}

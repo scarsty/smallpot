@@ -1,4 +1,4 @@
-#include "PotDll.h"
+﻿#include "PotDll.h"
 #include "PotPlayer.h"
 
 #ifdef _WINDLL
@@ -26,8 +26,25 @@ HBAPI int MYTHAPI PotInputVideo(void* pot, char* filename)
     return ret;
 }
 
+HBAPI int MYTHAPI PotPlayVideo(void* pot, char* filename, float volume)
+{
+    int ret = 0;
+    if (pot)
+    {
+        PotPlayer* bp = (PotPlayer*)pot;
+        ret = bp->beginWithFile(filename);
+        bp->setVolume(volume);
+    }
+    return ret;
+}
+
 HBAPI int MYTHAPI PotSeek(void* pot, int seek)
 {
+    if (pot)
+    {
+        PotPlayer* bp = (PotPlayer*)pot;
+        bp->seekTime(seek);
+    }
     return 0;
 }
 
