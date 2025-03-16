@@ -32,8 +32,8 @@ HBAPI int MYTHAPI PotPlayVideo(void* pot, char* filename, float volume)
     if (pot)
     {
         PotPlayer* bp = (PotPlayer*)pot;
-        ret = bp->beginWithFile(filename);
         bp->setVolume(volume);
+        ret = bp->beginWithFile(filename);
     }
     return ret;
 }
