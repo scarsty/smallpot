@@ -596,7 +596,10 @@ int PotPlayer::init()
 #else
     sys_encode_ = Config::getInstance().get("sys_encode", "utf-8");
 #endif
-    cur_volume_ = Config::getInstance().get("volume", 0.5);
+    if (cur_volume_ == -1.00f)
+    {
+        cur_volume_ = Config::getInstance().get("volume", 64);
+    }
     PotStreamAudio::setVolume(cur_volume_);
     UI_.init();
     return 0;
@@ -888,7 +891,6 @@ void PotPlayer::setWindowSize(int w, int h)
 void PotPlayer::setVolume(float volume)
 {
     cur_volume_ = volume;
-    media_->getAudio()->setVolume(volume);
 }
 
 void PotPlayer::seekTime(int time)
