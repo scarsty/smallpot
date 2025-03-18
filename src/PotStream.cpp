@@ -29,18 +29,34 @@ int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* pack
 {
     int ret;
     *n = 0;
-    if (packet)
+    //if (packet)
     {
         ret = avcodec_send_packet(ctx, packet);
         if (ret < 0)
         {
-            return ret == AVERROR_EOF ? 0 : ret;
+            if (ret == AVERROR(EAGAIN))
+            {
+            }
+            else if (ret == AVERROR_EOF)
+            {
+                return ret;
+            }
+            else if (ret == AVERROR(EINVAL))
+            {
+                avcodec_flush_buffers(ctx);
+                return ret;
+            }
+            else
+            {
+                return ret;
+            }
         }
     }
-
+    
     ret = avcodec_receive_frame(ctx, frame_);
-    if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
+    if (ret < 0)
     {
+        fmt1::print("Error while decoding frame {}\n", ret);
         return ret;
     }
     if (ret >= 0)
@@ -223,7 +239,8 @@ int PotStream::openFile(const std::string& filename)
     avcodec_parameters_to_context(codec_ctx_, stream_->codecpar);
     codec_ctx_->pkt_timebase = stream_->time_base;
     //codec_ctx_ = stream_->codec;
-    avcodec_open2(codec_ctx_, codec_, nullptr);
+    AVDictionary* opts = nullptr;
+    avcodec_open2(codec_ctx_, codec_, &opts);
 
     //记录下来所有的流的编号，默认同类流用一个解码器
     //这个设置可能存在问题

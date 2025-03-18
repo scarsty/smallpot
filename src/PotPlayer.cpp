@@ -598,7 +598,7 @@ int PotPlayer::init()
 #endif
     if (cur_volume_ == -1.00f)
     {
-        cur_volume_ = Config::getInstance().get("volume", 64);
+        cur_volume_ = Config::getInstance().get("volume", 0.5);
     }
     PotStreamAudio::setVolume(cur_volume_);
     UI_.init();

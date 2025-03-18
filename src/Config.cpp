@@ -197,7 +197,7 @@ std::string Config::findSuitableFilename(const std::string& filename)
         {
             return filename;
         }
-        if (!filename.empty() && rv.filename.find(filename) == 0)
+        if (filefunc::pathExist(filename) && rv.filename.find(filename) == 0)
         {
             filename1 = rv.filename;
             return filename1;
