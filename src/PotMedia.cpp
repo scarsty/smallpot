@@ -177,9 +177,11 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 {
     time = std::min(time, total_time_ - 100);
     stream_video_->seek(time, direct, reset);
+    auto ts = stream_video_->getTime();
     stream_audio_->seek(time, direct, reset);
     stream_subtitle_->seek(time - 5000, direct, reset);
-
+    auto ta = stream_audio_->getTime();
+    //fmt1::print("seeking to {}, video {}, audio {}\n", time, ts, ta);
     seeking_ = true;
     stream_audio_->resetDecodeState();
     return 0;

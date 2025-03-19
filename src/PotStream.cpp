@@ -32,6 +32,7 @@ int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* pack
     //if (packet)
     {
         ret = avcodec_send_packet(ctx, packet);
+        //fmt1::print("send packet {}\n", ret);
         if (ret < 0)
         {
             if (ret == AVERROR(EAGAIN))
@@ -52,11 +53,12 @@ int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* pack
             }
         }
     }
-    
+
     ret = avcodec_receive_frame(ctx, frame_);
+    //fmt1::print("receive frame {}\n", ret);
     if (ret < 0)
     {
-        fmt1::print("Error while decoding frame {}\n", ret);
+        //fmt1::print(stderr, "Error while decoding frame {}\n", ret);
         return ret;
     }
     if (ret >= 0)
@@ -119,9 +121,9 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
     }
     int ret = 0;
     int gotframe = 0;
-    int gotsize = 0;
+    int decoded_ret = 0;
     bool haveFrame = !need_read_packet_;
-    while (ret == 0)
+    while (ret == 0 || decoded_ret == AVERROR(EAGAIN))
     {
         if (need_read_packet_)
         {
@@ -135,20 +137,13 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
                 if (decode)
                 {
                     //循环处理多次才能解到一帧的情况
-                    while (gotframe == 0)
+                    //while (gotframe == 0)
                     {
-                        gotsize = avcodec_decode_packet(codec_ctx_, &gotframe, &packet_);    //返回为负表示有错误
-                        if (gotsize <= 0)
+                        decoded_ret = avcodec_decode_packet(codec_ctx_, &gotframe, &packet_);    //返回为负表示有错误
+                        //if (decoded_ret == 0)
                         {
-                            break;
+                            //break;
                         }    //没解压到则退出
-                        packet_.data += gotsize;
-                        packet_.size -= gotsize;
-                        need_read_packet_ = packet_.size <= 0;
-                        if (need_read_packet_)
-                        {
-                            break;
-                        }    //packet中已经无数据
                     }
                     if (gotframe)
                     {
@@ -185,7 +180,7 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
         {
             ret = -2;
         }
-        if (gotsize < 0)
+        if (decoded_ret < 0)
         {
             ret = -3;
         }
@@ -314,7 +309,7 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
         }
         dropAllDecoded();
         av_seek_frame(format_ctx_, -1, i, flag);
-        //avformat_seek_file(format_ctx_, -1, INT64_MIN, i, INT64_MAX, 0);
+        //avformat_seek_file(format_ctx_, -1, 0, i, INT64_MAX, flag);
     }
     seek_record_ = engine_->getTicks();
     Engine::getInstance()->clearAudioStream();
