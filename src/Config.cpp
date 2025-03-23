@@ -2,9 +2,9 @@
 #include "PotConv.h"
 #include "Timer.h"
 #include "filefunc.h"
-#include "fmt1.h"
 #include "strfunc.h"
 #include <iostream>
+#include <print>
 #include <thread>
 
 Config::Config()
@@ -14,7 +14,7 @@ Config::Config()
         ".bt.td",
         ".td",
     };
-    fmt1::print("Config init\n");
+    std::print("Config init\n");
 }
 
 Config::~Config()
@@ -30,15 +30,15 @@ void Config::init(std::string filepath)
         filepath = filepath + "/";
     }
     filename_ = filepath + "smallpot.config.json";
-    fmt1::print("try find config file: {}\n", filename_);
+    std::print("try find config file: {}\n", filename_);
     parse(filefunc::readFileToString(filename_));
-    fmt1::print("read config file\n");
+    std::print("read config file\n");
 }
 
 void Config::write()
 {
     filefunc::writeStringToFile(allToString(), filename_);
-    fmt1::print("write config file\n");
+    std::print("write config file\n");
 }
 
 int Config::getRecord(const std::string& name)
@@ -120,10 +120,10 @@ std::string Config::enStr(const std::string& in)
     {
         a += c;
     }
-    out += fmt1::format("{:02x}", a);
+    out += std::format("{:02x}", a);
     for (auto& c : in)
     {
-        out += fmt1::format("{:02x}", uint8_t(c) ^ a);
+        out += std::format("{:02x}", uint8_t(c) ^ a);
     }
     std::reverse(out.begin(), out.end());
     return out;

@@ -32,7 +32,7 @@ int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* pack
     //if (packet)
     {
         ret = avcodec_send_packet(ctx, packet);
-        //fmt1::print("send packet {}\n", ret);
+        //std::print("send packet {}\n", ret);
         if (ret < 0)
         {
             if (ret == AVERROR(EAGAIN))
@@ -55,10 +55,10 @@ int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* pack
     }
 
     ret = avcodec_receive_frame(ctx, frame_);
-    //fmt1::print("receive frame {}\n", ret);
+    //std::print("receive frame {}\n", ret);
     if (ret < 0)
     {
-        //fmt1::print(stderr, "Error while decoding frame {}\n", ret);
+        //std::print(stderr, "Error while decoding frame {}\n", ret);
         return ret;
     }
     if (ret >= 0)
@@ -258,7 +258,7 @@ int PotStream::tryDecodeFrame(bool reset)
             continue;
         }
         auto f = convertFrameToContent();
-        //fmt1::print("{}\n", _map.size());
+        //std::print("{}\n", _map.size());
         //如果只有一帧，则静止时间需更新
         if (data_map_.size() == 0)
         {

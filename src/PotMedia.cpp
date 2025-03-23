@@ -52,16 +52,16 @@ int PotMedia::decodeFrame()
             int a_dts = stream_audio_->getTimedts();
             int max_dts = std::max(v_dts, a_dts);
             int min_dts = std::min(v_dts, a_dts);
-            //fmt1::print("seeking diff v{}-a{}={}\n", v_dts, a_dts, v_dts - a_dts);
+            //std::print("seeking diff v{}-a{}={}\n", v_dts, a_dts, v_dts - a_dts);
             //一定时间以上才跳帧
             if (max_dts - min_dts > 100)
             {
                 int sv = stream_video_->skipFrame(max_dts);
                 int sa = stream_audio_->skipFrame(max_dts);
-                //fmt1::print("drop {} audio frames, {} video frames\n", sa, sv);
+                //std::print("drop {} audio frames, {} video frames\n", sa, sv);
                 /*v_dts = _videoStream->getTimedts();
                 a_dts = _audioStream->getTimedts();
-                fmt1::print("seeking end diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);*/
+                std::print("seeking end diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);*/
             }
         }
         //cout << "se"<<engine_->getTicks()-se << " "<<endl;
@@ -132,7 +132,7 @@ int PotMedia::openFile(const std::string& filename)
             //stream_index_vector_.push_back(i);
             //if (stream_index_vector_.size() == 1)
             //{
-            //    //fmt1::print("finded media stream: %d\n", type);
+            //    //std::print("finded media stream: %d\n", type);
             //    stream_ = format_ctx_->streams[i];
             //    codec_ctx_ = stream_->codec;
             //    if (stream_->r_frame_rate.den)
@@ -164,7 +164,7 @@ int PotMedia::openFile(const std::string& filename)
 
 int PotMedia::getAudioTime()
 {
-    //fmt1::print("\t\t\t\t\t\t\r%d,%d,%d", audioStream->time, videoStream->time, audioStream->getAudioTime());
+    //std::print("\t\t\t\t\t\t\r%d,%d,%d", audioStream->time, videoStream->time, audioStream->getAudioTime());
     return stream_audio_->getTime();
 }
 
@@ -181,7 +181,7 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
     stream_audio_->seek(time, direct, reset);
     stream_subtitle_->seek(time - 5000, direct, reset);
     auto ta = stream_audio_->getTime();
-    //fmt1::print("seeking to {}, video {}, audio {}\n", time, ts, ta);
+    //std::print("seeking to {}, video {}, audio {}\n", time, ts, ta);
     seeking_ = true;
     stream_audio_->resetDecodeState();
     return 0;
@@ -189,7 +189,7 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 
 int PotMedia::seekPos(double pos, int direct /*= 1*/, int reset /*= 0*/)
 {
-    //fmt1::print("\nseek %f pos, %f s\n", pos, pos * totalTime / 1e3);
+    //std::print("\nseek %f pos, %f s\n", pos, pos * totalTime / 1e3);
     return seekTime(pos * total_time_, direct, reset);
 }
 

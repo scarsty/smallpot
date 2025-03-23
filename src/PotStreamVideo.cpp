@@ -23,7 +23,7 @@ PotStreamVideo::PotStreamVideo()
     //}
     //else
     //{
-    //    fmt1::print("Load %s failed!\n", Config::getInstance()->getString("plugin"));
+    //    std::print("Load %s failed!\n", Config::getInstance()->getString("plugin"));
     //}
 }
 
@@ -101,7 +101,7 @@ FrameContent PotStreamVideo::convertFrameToContent()
         }
         else
         {
-            fmt1::print(stderr, "Mixed negative and positive line sizes are not supported.\n");
+            std::print(stderr, "Mixed negative and positive line sizes are not supported.\n");
         }
         break;
     default:
@@ -181,7 +181,7 @@ SDL_PixelFormat PotStreamVideo::getSDLPixFmt()
         if (codec_ctx_ && pix_ffmpeg_sdl.count(codec_ctx_->pix_fmt) > 0)
         {
             r = pix_ffmpeg_sdl[codec_ctx_->pix_fmt];
-            fmt1::print("pixel format is {}\n", int(r));
+            std::print("pixel format is {}\n", int(r));
         }
     }
     texture_pix_fmt_ = r;

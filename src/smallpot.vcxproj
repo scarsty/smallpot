@@ -98,7 +98,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgXUseBuiltInApplocalDeps>true</VcpkgXUseBuiltInApplocalDeps>
-    <VcpkgApplocalDeps>true</VcpkgApplocalDeps>
+    <VcpkgApplocalDeps>false</VcpkgApplocalDeps>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

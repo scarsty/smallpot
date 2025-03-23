@@ -36,7 +36,7 @@ void PotSubtitleAss::init()
     //ass_get_available_font_providers(library_, &p, &n);
     //for (int i = 0; i < n; i++)
     //{
-    //    fmt1::print("{} ", int(p[i]));
+    //    std::print("{} ", int(p[i]));
     //}
 
 #ifdef _WIN32
@@ -45,6 +45,11 @@ void PotSubtitleAss::init()
 #ifdef __APPLE__
     fontpath_ = "/System/Library/Fonts";
 #endif
+    //屏蔽libass的输出
+    ass_set_message_cb(library_, [](int level, const char* fmt, va_list args, void* data)
+        {
+        },
+        nullptr);
     ass_set_fonts_dir(library_, fontpath_.c_str());    //字体目录看起来只能设置一个
     ass_set_fonts(renderer_, NULL, NULL, 1, NULL, 1);
     ass_set_extract_fonts(library_, 1);
@@ -149,7 +154,7 @@ void PotSubtitleAss::openSubtitleFromMem(const std::string& str)
 {
     track_ = ass_read_memory(library_, (char*)str.c_str(), str.size(), NULL);
 #ifdef _DEBUG
-    fmt1::print("{}\n", PotConv::conv(str, "utf-8", "cp936"));
+    std::print("{}\n", PotConv::conv(str, "utf-8", "cp936"));
 #endif
     exist_ = (track_ != nullptr);
 }
@@ -160,7 +165,7 @@ void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_tim
     if (contents_.count(str) == 0)
     {
         contents_.insert(str);
-        auto str1 = fmt1::format("{},{}",
+        auto str1 = std::format("{},{}",
             Timer::formatTime(start_time / 1000.0),
             Timer::formatTime(end_time / 1000.0));
         auto strs = strfunc::splitString(str, ",");
@@ -174,7 +179,7 @@ void PotSubtitleAss::readOne(const std::string& str, int start_time, int end_tim
         str2.pop_back();
         ass_process_data(track_, (char*)str2.c_str(), str2.size());
 #ifdef _DEBUG
-        fmt1::print("{}\n", str2);
+        std::print("{}\n", str2);
 #endif
     }
 }

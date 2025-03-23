@@ -1,4 +1,4 @@
-#include "PotUI.h"
+ï»¿#include "PotUI.h"
 #include "Config.h"
 #include "Font.h"
 #include "filefunc.h"
@@ -71,7 +71,7 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     }
 
     alpha_ = (std::min)(uint8_t(128), alpha_count_);
-    //½ø¶ÈÌõ
+    //è¿›åº¦æ¡
     int x, y;
     y = win_h_ - 12;
     engine_->setColor(square_, { 255, 255, 255, uint8_t(alpha_ / 2) });
@@ -79,7 +79,7 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     engine_->setColor(square_, { 255, 0, 0, alpha_ });
     engine_->renderTexture(square_, 0, y - 1, 1.0 * time / totoal_time * win_w_, 4);
 
-    //°´Å¥
+    //æŒ‰é’®
     engine_->setColor(square_, { 255, 255, 255, alpha_ });
     engine_->setColor(triangle_, { 255, 255, 255, alpha_ });
     engine_->setColor(triangle2_, { 255, 255, 255, alpha_ });
@@ -164,7 +164,7 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
         }
     }
 
-    //ÎÄ×Ö
+    //æ–‡å­—
     //if (text_ == "v")
     //{
     //    text_ = strfunc::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
@@ -230,12 +230,12 @@ void PotUI::destory()
 
 std::string PotUI::convertTimeToString(int time)
 {
-    return fmt1::format("{}:{:02}:{:02}", time / 3600000, time % 3600000 / 60000, time % 60000 / 1000);
+    return std::format("{}:{:02}:{:02}", time / 3600000, time % 3600000 / 60000, time % 60000 / 1000);
 }
 
 void PotUI::setText(std::string t)
 {
-    //Ò»¶ÎÊ±¼äºóÎÄ×Ö×Ô¶¯±ä»ØÊ±¼ä
+    //ä¸€æ®µæ—¶é—´åæ–‡å­—è‡ªåŠ¨å˜å›æ—¶é—´
     text_count_ = 32;
     alpha_count_ = 192;
     text_ = t;
