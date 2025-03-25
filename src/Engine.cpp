@@ -4,10 +4,6 @@
 #include <windows.h>
 #pragma comment(lib, "user32.lib")
 #endif
-#include "ft2build.h"
-
-#include "freetype/freetype.h"
-#include "freetype/ftglyph.h"
 
 #if defined(_WIN32) && defined(WITH_SMALLPOT)
 #include "PotDll.h"
@@ -95,8 +91,9 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/, int maximi
     //logo_ = loadImage("logo.png");
     showLogo();
     renderPresent();
+#ifndef _WINDLL
     TTF_Init();
-
+#endif
 #ifdef _MSC_VER
     RECT r;
     SystemParametersInfo(SPI_GETWORKAREA, 0, (PVOID)&r, 0);
@@ -807,6 +804,7 @@ Texture* Engine::createRectTexture(int w, int h, int style) const
 
 Texture* Engine::createTextTexture(const std::string& fontname, const std::string& text, int size, Color c) const
 {
+#ifndef _WINDLL
     auto font = TTF_OpenFont(fontname.c_str(), size);
     if (!font)
     {
@@ -817,10 +815,13 @@ Texture* Engine::createTextTexture(const std::string& fontname, const std::strin
     SDL_DestroySurface(text_s);
     TTF_CloseFont(font);
     return text_t;
+#endif
+    return nullptr;
 }
 
 Texture* Engine::createTextTexture(const std::string& fontname, wchar_t text, int size, Color c) const
 {
+#ifndef _WINDLL
     FT_Library library{ nullptr };
     FT_Face face{ nullptr };
     FT_GlyphSlot slot{ nullptr };
@@ -880,6 +881,8 @@ Texture* Engine::createTextTexture(const std::string& fontname, wchar_t text, in
     SDL_DestroySurface(text_s);
     //TTF_CloseFont(font);
     return text_t;
+#endif
+    return nullptr;
 }
 
 int Engine::showMessage(const std::string& content) const

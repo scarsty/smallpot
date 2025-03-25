@@ -600,13 +600,16 @@ int PotPlayer::eventLoop()
 
 int PotPlayer::init()
 {
+    int maximum = 0;
 #ifndef _WINDLL
     Config::getInstance().init(run_path_);
-    int maximum = Config::getInstance()["windows_maximized"];
+    maximum = Config::getInstance()["windows_maximized"];
+#endif
     if (engine_->init(handle_, handle_type_, maximum))
     {
         return -1;
     }
+#ifndef _WINDLL
 #ifdef _WIN32
     sys_encode_ = Config::getInstance().get("sys_encode", "cp936");
 #else
@@ -655,6 +658,8 @@ int PotPlayer::beginWithFile(std::string filename)
     }
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = Config::getInstance().findSuitableFilename(filename);
+#else
+    drop_filename_ = filename;
 #endif
     std::print("Begin with file: {}\n", filename);
     auto play_filename = drop_filename_;
