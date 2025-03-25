@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "PotBase.h"
-#include "PotConv.h"
 #include "PotMedia.h"
 #ifndef WITHOUT_SUBTITLE
 #include "PotSubtitle.h"

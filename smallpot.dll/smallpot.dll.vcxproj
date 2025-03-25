@@ -20,10 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Engine.h" />
-    <ClInclude Include="..\src\FakeJson.h" />
     <ClInclude Include="..\src\filefunc.h" />
     <ClInclude Include="..\src\PotBase.h" />
-    <ClInclude Include="..\src\PotConv.h" />
     <ClInclude Include="..\src\PotMedia.h" />
     <ClInclude Include="..\src\PotPlayer.h" />
     <ClInclude Include="..\src\PotResample.h" />
@@ -39,7 +37,6 @@
     <ClCompile Include="..\src\Engine.cpp" />
     <ClCompile Include="..\src\filefunc.cpp" />
     <ClCompile Include="..\src\PotBase.cpp" />
-    <ClCompile Include="..\src\PotConv.cpp" />
     <ClCompile Include="..\src\PotMedia.cpp" />
     <ClCompile Include="..\src\PotPlayer.cpp" />
     <ClCompile Include="..\src\PotResample.cpp" />

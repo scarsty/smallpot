@@ -1,11 +1,12 @@
 ﻿#include "PotPlayer.h"
-#include "Font.h"
 #include "strfunc.h"
 #ifndef WITHOUT_SUBTITLE
 #include "PotSubtitleManager.h"
 #endif
 #ifndef _WINDLL
 #include "Config.h"
+#include "Font.h"
+#include "PotConv.h"
 #endif
 #ifdef _WIN32
 //#include <shlobj.h>
@@ -386,9 +387,9 @@ int PotPlayer::eventLoop()
         case EVENT_DROP_FILE:
             //有文件拖入先检查是不是字幕，不是字幕则当作媒体文件，打开失败活该
             //若将媒体文件当成字幕打开会非常慢，故限制字幕文件的扩展名
+#ifndef WITHOUT_SUBTITLE
             open_filename = PotConv::conv(e.drop.data, BP_encode_, sys_encode_);
             std::print("Change file: {}\n", open_filename);
-#ifndef WITHOUT_SUBTITLE
             //检查是不是字幕，如果是则打开
             if (PotSubtitleManager::isSubtitle(open_filename))
             {
@@ -714,8 +715,8 @@ void PotPlayer::openMedia(const std::string& filename)
     media_ = new PotMedia;
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
-    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
 #ifndef _WINDLL
+    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
     //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
     if (filefunc::getFileExt(open_filename) == "m3u8")
     {
@@ -829,9 +830,7 @@ void PotPlayer::closeMedia(const std::string& filename)
 
 std::string PotPlayer::findNextFile(const std::string& filename, int direct)
 {
-#ifdef _WINDLL
-    return "";
-#endif
+#ifndef _WINDLL
     if (filename == "")
     {
         return "";
@@ -891,6 +890,8 @@ std::string PotPlayer::findNextFile(const std::string& filename, int direct)
     {
         return "";
     }
+#endif
+    return "";
 }
 
 void PotPlayer::setWindowSize(int w, int h)

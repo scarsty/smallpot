@@ -45,12 +45,6 @@
     <ClInclude Include="..\src\Engine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\PotConv.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\FakeJson.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\filefunc.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -90,9 +84,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Engine.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\PotConv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\src\filefunc.cpp">
