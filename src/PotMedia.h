@@ -1,15 +1,18 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PotBase.h"
 #include "PotStream.h"
 #include "PotStreamAudio.h"
-#include "PotStreamSubtitle.h"
 #include "PotStreamVideo.h"
 
+#ifndef WITHOUT_SUBTITLE
+#include "PotStreamSubtitle.h"
+#endif
+
 /*
-    Ò»¸öÃ½ÌåÎÄ¼ş°üº¬3ÀàÁ÷£ºÊÓÆµ£¬ÒôÆµ£¬×ÖÄ»
-    ÊÓÆµÁ÷Í¨³£Ö»ÓĞÒ»¸ö£¬¶øÁíÍâÁ½ÀàÁ÷
-    ÕâÀïÊ¹ÓÃ3¸öÁ÷À´Í¬Ê±´ò¿ªÎÄ¼ş£¬ÆäÖĞÒôÆµºÍ×ÖÄ»¿ÉÒÔÍ¨¹ıĞŞ¸ÄË÷ÒıÀ´ÇĞ»»
+    ä¸€ä¸ªåª’ä½“æ–‡ä»¶åŒ…å«3ç±»æµï¼šè§†é¢‘ï¼ŒéŸ³é¢‘ï¼Œå­—å¹•
+    è§†é¢‘æµé€šå¸¸åªæœ‰ä¸€ä¸ªï¼Œè€Œå¦å¤–ä¸¤ç±»æµ
+    è¿™é‡Œä½¿ç”¨3ä¸ªæµæ¥åŒæ—¶æ‰“å¼€æ–‡ä»¶ï¼Œå…¶ä¸­éŸ³é¢‘å’Œå­—å¹•å¯ä»¥é€šè¿‡ä¿®æ”¹ç´¢å¼•æ¥åˆ‡æ¢
 */
 
 class PotMedia : public PotBase
@@ -21,15 +24,19 @@ public:
 private:
     std::vector<PotStream*> streams_;
 
-    AVFormatContext* format_ctx_video_, * format_ctx_audio_, * format_ctx_subtitle_;
+    AVFormatContext *format_ctx_video_, *format_ctx_audio_, *format_ctx_subtitle_;
 
     PotStreamVideo* stream_video_ = nullptr;
     PotStreamAudio* stream_audio_ = nullptr;
+#ifndef WITHOUT_SUBTITLE
     PotStreamSubtitle* stream_subtitle_ = nullptr;
+#endif
 
     PotStreamVideo blank_video_;
     PotStreamAudio blank_audio_;
+#ifndef WITHOUT_SUBTITLE
     PotStreamSubtitle blank_subtitle_;
+#endif
 
 private:
     int count_ = 0;
@@ -40,8 +47,11 @@ private:
 
 public:
     PotStreamVideo* getVideo() { return stream_video_; }
+
     PotStreamAudio* getAudio() { return stream_audio_; }
+#ifndef WITHOUT_SUBTITLE
     PotStreamSubtitle* getSubtitle() { return stream_subtitle_; }
+#endif
     int decodeFrame();
     int openFile(const std::string& filename);
     int getAudioTime();
@@ -49,7 +59,9 @@ public:
     int seekTime(int time, int direct = 1, int reset = 0);
     int seekPos(double pos, int direct = 1, int reset = 0);
     int showVideoFrame(int time);
+
     int getTotalTime() { return total_time_; }
+
     int getTime();
     void destroy();
     bool isMedia();

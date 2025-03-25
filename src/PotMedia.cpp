@@ -8,7 +8,9 @@ PotMedia::PotMedia()
     avformat_network_init();
     stream_video_ = &blank_video_;
     stream_audio_ = &blank_audio_;
+#ifndef WITHOUT_SUBTITLE
     stream_subtitle_ = &blank_subtitle_;
+#endif
     format_ctx_video_ = avformat_alloc_context();
     format_ctx_audio_ = avformat_alloc_context();
     format_ctx_subtitle_ = avformat_alloc_context();
@@ -35,7 +37,9 @@ int PotMedia::decodeFrame()
         return 0;
     }
     stream_audio_->tryDecodeFrame(need_reset);
+#ifndef WITHOUT_SUBTITLE
     stream_subtitle_->tryDecodeFrame(need_reset);
+#endif
     //int m = _audioStream->getTimedts();
     //int n = _videoStream->getTimedts();
 
@@ -114,6 +118,7 @@ int PotMedia::openFile(const std::string& filename)
             }
             case MEDIA_TYPE_SUBTITLE:
             {
+#ifndef WITHOUT_SUBTITLE
                 auto st = new PotStreamSubtitle();
                 st->setFormatCtx(format_ctx_subtitle_);
                 streams_[i] = st;
@@ -121,6 +126,7 @@ int PotMedia::openFile(const std::string& filename)
                 {
                     stream_subtitle_ = st;
                 }
+#endif
                 break;
             }
             }
@@ -179,7 +185,9 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
     stream_video_->seek(time, direct, reset);
     auto ts = stream_video_->getTime();
     stream_audio_->seek(time, direct, reset);
+#ifndef WITHOUT_SUBTITLE
     stream_subtitle_->seek(time - 5000, direct, reset);
+#endif
     auto ta = stream_audio_->getTime();
     //std::print("seeking to {}, video {}, audio {}\n", time, ts, ta);
     seeking_ = true;
@@ -240,7 +248,11 @@ void PotMedia::switchStream(PotMediaType mt)
     for (int i = 0; i < streams_.size(); i++)
     {
         if (streams_[i] && streams_[i]->getType() == mt
-            && (streams_[i] == stream_video_ || streams_[i] == stream_audio_ || streams_[i] == stream_subtitle_))
+            && (streams_[i] == stream_video_ || streams_[i] == stream_audio_
+#ifndef WITHOUT_SUBTITLE
+                || streams_[i] == stream_subtitle_
+#endif
+                ))
         {
             current_index = i;
             break;
@@ -293,8 +305,10 @@ void PotMedia::switchStream(PotMediaType mt)
     }
     case MEDIA_TYPE_SUBTITLE:
     {
+#ifndef WITHOUT_SUBTITLE
         stream_subtitle_ = (PotStreamSubtitle*)st;
         stream_subtitle_->seek(getTime() - 5000);
+#endif
         break;
     }
     }

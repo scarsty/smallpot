@@ -1,9 +1,12 @@
 ﻿#include "PotPlayer.h"
-#include "Config.h"
 #include "Font.h"
-#include "PotSubtitleManager.h"
 #include "strfunc.h"
-
+#ifndef WITHOUT_SUBTITLE
+#include "PotSubtitleManager.h"
+#endif
+#ifndef _WINDLL
+#include "Config.h"
+#endif
 #ifdef _WIN32
 //#include <shlobj.h>
 //#pragma comment(lib,"shfolder.lib")
@@ -72,10 +75,12 @@ int PotPlayer::eventLoop()
     {
         sub_state = 2;
     }
+#ifndef WITHOUT_SUBTITLE
     if (subtitle_ && subtitle_->exist())
     {
         sub_state = 1;
     }
+#endif
     int find_direct = 0;
 
     float touch_start_x = 0, touch_start_y = 0;
@@ -89,6 +94,7 @@ int PotPlayer::eventLoop()
 
         auto switchSubtitle = [&]()
         {
+#ifndef WITHOUT_SUBTITLE
             sub_state++;
             if (sub_state == 1)
             {
@@ -118,6 +124,7 @@ int PotPlayer::eventLoop()
             {
                 UI_.setText(std::format("Internal subtitles stream {}", media_->getSubtitle()->getStreamIndex()));
             }
+#endif
         };
 
         auto seekButton = [&]()
@@ -381,6 +388,7 @@ int PotPlayer::eventLoop()
             //若将媒体文件当成字幕打开会非常慢，故限制字幕文件的扩展名
             open_filename = PotConv::conv(e.drop.data, BP_encode_, sys_encode_);
             std::print("Change file: {}\n", open_filename);
+#ifndef WITHOUT_SUBTITLE
             //检查是不是字幕，如果是则打开
             if (PotSubtitleManager::isSubtitle(open_filename))
             {
@@ -397,6 +405,10 @@ int PotPlayer::eventLoop()
                 drop_filename_ = e.drop.data;
                 loop = false;
             }
+#else
+            drop_filename_ = e.drop.data;
+            loop = false;
+#endif
             break;
         case EVENT_FINGER_DOWN:    // 触摸开始
             touch_start_x = e.tfinger.x;
@@ -550,6 +562,7 @@ int PotPlayer::eventLoop()
         }
         if (show)
         {
+#ifndef WITHOUT_SUBTITLE
             if (sub_state == 1 && subtitle_ && subtitle_->exist())
             {
                 subtitle_->show(audioTime);
@@ -558,6 +571,7 @@ int PotPlayer::eventLoop()
             {
                 media_->getSubtitle()->show(audioTime);
             }
+#endif
             UI_.drawUI(audioTime, totalTime, media_->getAudio()->getVolume(), pause);
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
@@ -585,6 +599,7 @@ int PotPlayer::eventLoop()
 
 int PotPlayer::init()
 {
+#ifndef _WINDLL
     Config::getInstance().init(run_path_);
     int maximum = Config::getInstance()["windows_maximized"];
     if (engine_->init(handle_, handle_type_, maximum))
@@ -601,6 +616,7 @@ int PotPlayer::init()
         cur_volume_ = Config::getInstance().get("volume", 0.5);
     }
     PotStreamAudio::setVolume(cur_volume_);
+#endif
     UI_.init();
     return 0;
 }
@@ -627,7 +643,7 @@ int PotPlayer::beginWithFile(std::string filename)
     }
     engine_->resetRenderTarget();
     int start_time = engine_->getTicks();
-
+#ifndef _WINDLL
     if (filename.empty() && Config::getInstance()["auto_play_recent"].toInt())
     {
         filename = Config::getInstance().getNewestRecord();
@@ -635,10 +651,10 @@ int PotPlayer::beginWithFile(std::string filename)
         {
             filename = "";
         }
-    } 
+    }
     //首次运行拖拽的文件也认为是同一个
     drop_filename_ = Config::getInstance().findSuitableFilename(filename);
-
+#endif
     std::print("Begin with file: {}\n", filename);
     auto play_filename = drop_filename_;
     running_ = true;
@@ -731,10 +747,12 @@ void PotPlayer::openMedia(const std::string& filename)
     //音量
     media_->getAudio()->setVolume(cur_volume_);
 
+#ifndef WITHOUT_SUBTITLE
     //试图载入字幕
     auto open_subfilename = PotSubtitleManager::lookForSubtitle(open_filename);
     subtitle_ = PotSubtitleManager::createSubtitle(open_subfilename);
     setSubtitleFrameSize();
+#endif
 
 #ifndef _WINDLL
     //读取记录中的文件时间并跳转
@@ -759,11 +777,13 @@ void PotPlayer::openMedia(const std::string& filename)
 
 void PotPlayer::setSubtitleFrameSize()
 {
+#ifndef WITHOUT_SUBTITLE
     if (subtitle_)
     {
         subtitle_->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
     }
     media_->getSubtitle()->setFrameSize(engine_->getPresentWidth(), engine_->getPresentHeight());
+#endif
 }
 
 void PotPlayer::closeMedia(const std::string& filename)
@@ -772,9 +792,11 @@ void PotPlayer::closeMedia(const std::string& filename)
     cur_time_ = media_->getTime();
     cur_volume_ = media_->getAudio()->getVolume();
 
+#ifndef WITHOUT_SUBTITLE
     //关闭字幕
     PotSubtitleManager::destroySubtitle(subtitle_);
     //_subtitle->closeSubtitle();
+#endif
 
     //如果是媒体文件就记录时间
 #ifndef _WINDLL

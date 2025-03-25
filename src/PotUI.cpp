@@ -1,9 +1,12 @@
 ﻿#include "PotUI.h"
-#include "Config.h"
-#include "Font.h"
 #include "filefunc.h"
 #include "math.h"
 #include "strfunc.h"
+
+#ifndef _WINDLL
+#include "Config.h"
+#include "Font.h"
+#endif
 
 PotUI::PotUI()
 {
@@ -36,12 +39,14 @@ void PotUI::init()
 
 void PotUI::drawText(const std::string& text)
 {
+#ifndef _WINDLL
     Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 30 - button_w_ * 2, win_h_ - 48, alpha_, ALIGN_RIGHT);
-    //engine_->drawText(_fontname.c_str(), std::to_string(_volume / 128.0)+"%", 20, _win_w - 10, 35, _alpha, ALIGN_RIGHT);
+#endif
 }
 
 void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
 {
+#ifndef _WINDLL
     engine_->getWindowSize(win_w_, win_h_);
     int in_button = inButton();
     double process = inProcess();
@@ -164,18 +169,8 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
         }
     }
 
-    //文字
-    //if (text_ == "v")
-    //{
-    //    text_ = strfunc::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
-    //    drawText(text_);
-    //}
-    //else
-    //{
     drawText(convertTimeToString(time) + "/" + convertTimeToString(totoal_time));
-    //}
     std::string text;
-
     switch (in_button)
     {
     case ButtonPause:
@@ -218,14 +213,17 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
         //    break;
     }
     Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, ALIGN_LEFT);
+#endif
 }
 
 void PotUI::destory()
 {
+#ifndef _WINDLL
     if (Config::getInstance()["ui_font"].toString() == "")
     {
         Config::getInstance()["ui_font"] = fontname_;
     }
+#endif
 }
 
 std::string PotUI::convertTimeToString(int time)

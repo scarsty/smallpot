@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "filefunc.h"
 #include "strfunc.h"
+#include <algorithm>
 #include <iostream>
 #include <print>
 #include <thread>

@@ -1,5 +1,7 @@
 ﻿#include "PotStreamAudio.h"
+#ifndef _WINDLL
 #include "Config.h"
+#endif
 
 float PotStreamAudio::volume_;
 
@@ -210,7 +212,9 @@ void PotStreamAudio::openAudioDevice()
         return;
     }
     freq_ = codec_ctx_->sample_rate;
+#ifndef _WINDLL
     channels_ = Config::getInstance().get("channels", -1);
+#endif
     if (channels_ < 0)
     {
         channels_ = codec_ctx_->ch_layout.nb_channels;

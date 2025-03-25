@@ -19,12 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\kys-cpp\src\Engine.h" />
-    <ClInclude Include="..\..\mlcc\filefunc.h" />
-    <ClInclude Include="..\..\mlcc\strfunc.h" />
-    <ClInclude Include="..\src\Config.h" />
-    <ClInclude Include="..\src\Font.h" />
-    <ClInclude Include="..\src\others\text_encoding_detect.h" />
+    <ClInclude Include="..\src\Engine.h" />
+    <ClInclude Include="..\src\FakeJson.h" />
+    <ClInclude Include="..\src\filefunc.h" />
     <ClInclude Include="..\src\PotBase.h" />
     <ClInclude Include="..\src\PotConv.h" />
     <ClInclude Include="..\src\PotMedia.h" />
@@ -32,22 +29,15 @@
     <ClInclude Include="..\src\PotResample.h" />
     <ClInclude Include="..\src\PotStream.h" />
     <ClInclude Include="..\src\PotStreamAudio.h" />
-    <ClInclude Include="..\src\PotStreamSubtitle.h" />
     <ClInclude Include="..\src\PotStreamVideo.h" />
-    <ClInclude Include="..\src\PotSubtitle.h" />
-    <ClInclude Include="..\src\PotSubtitleAss.h" />
-    <ClInclude Include="..\src\PotSubtitleManager.h" />
-    <ClInclude Include="..\src\PotSubtitleSrt.h" />
     <ClInclude Include="..\src\PotUI.h" />
+    <ClInclude Include="..\src\strfunc.h" />
+    <ClInclude Include="..\src\Timer.h" />
     <ClInclude Include="PotDll.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\kys-cpp\src\Engine.cpp" />
-    <ClCompile Include="..\..\mlcc\filefunc.cpp" />
-    <ClCompile Include="..\..\mlcc\strfunc.cpp" />
-    <ClCompile Include="..\src\Config.cpp" />
-    <ClCompile Include="..\src\Font.cpp" />
-    <ClCompile Include="..\src\others\text_encoding_detect.cpp" />
+    <ClCompile Include="..\src\Engine.cpp" />
+    <ClCompile Include="..\src\filefunc.cpp" />
     <ClCompile Include="..\src\PotBase.cpp" />
     <ClCompile Include="..\src\PotConv.cpp" />
     <ClCompile Include="..\src\PotMedia.cpp" />
@@ -55,13 +45,9 @@
     <ClCompile Include="..\src\PotResample.cpp" />
     <ClCompile Include="..\src\PotStream.cpp" />
     <ClCompile Include="..\src\PotStreamAudio.cpp" />
-    <ClCompile Include="..\src\PotStreamSubtitle.cpp" />
     <ClCompile Include="..\src\PotStreamVideo.cpp" />
-    <ClCompile Include="..\src\PotSubtitle.cpp" />
-    <ClCompile Include="..\src\PotSubtitleAss.cpp" />
-    <ClCompile Include="..\src\PotSubtitleManager.cpp" />
-    <ClCompile Include="..\src\PotSubtitleSrt.cpp" />
     <ClCompile Include="..\src\PotUI.cpp" />
+    <ClCompile Include="..\src\strfunc.cpp" />
     <ClCompile Include="PotDll.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -160,11 +146,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;SMALLPOTDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WITHOUT_SUBTITLE;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../mlcc;../../kys-cpp/src;../src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -179,11 +165,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;SMALLPOTDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WITHOUT_SUBTITLE;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../mlcc;../../kys-cpp/src;../src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>

@@ -3,7 +3,9 @@
 #include "PotBase.h"
 #include "PotConv.h"
 #include "PotMedia.h"
+#ifndef WITHOUT_SUBTITLE
 #include "PotSubtitle.h"
+#endif
 #include "PotUI.h"
 #include "filefunc.h"
 #include <functional>
@@ -12,11 +14,14 @@ class PotPlayer : public PotBase
 {
 public:
     PotPlayer();
-    PotPlayer(void* handle, int handle_type = 0) : PotPlayer()
+
+    PotPlayer(void* handle, int handle_type = 0) :
+        PotPlayer()
     {
         handle_ = handle;
         handle_type_ = handle_type;
     }
+
     PotPlayer(char* s);
     virtual ~PotPlayer();
 
@@ -26,7 +31,9 @@ private:
 
     PotMedia* media_ = nullptr;
     PotUI UI_;
+#ifndef WITHOUT_SUBTITLE
     PotSubtitle* subtitle_ = nullptr;
+#endif
 
     int width_, height_;
     bool running_ = true;

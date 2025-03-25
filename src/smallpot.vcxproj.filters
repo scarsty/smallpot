@@ -27,9 +27,6 @@
     <ClInclude Include="PotBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PotConv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PotMedia.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -69,19 +66,28 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\kys-cpp\src\Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="others\text_encoding_detect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mlcc\filefunc.h">
+    <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mlcc\strfunc.h">
+    <ClInclude Include="PotConv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FakeJson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filefunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="strfunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,9 +108,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PotBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PotConv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PotMedia.cpp">
@@ -140,16 +143,19 @@
     <ClCompile Include="PotSubtitleSrt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\kys-cpp\src\Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="others\text_encoding_detect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mlcc\filefunc.cpp">
+    <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mlcc\strfunc.cpp">
+    <ClCompile Include="PotConv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filefunc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="strfunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

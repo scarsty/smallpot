@@ -18,16 +18,7 @@
     <ClInclude Include="PotDll.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Font.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\PotBase.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\PotConv.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\src\PotMedia.h">
@@ -45,37 +36,28 @@
     <ClInclude Include="..\src\PotStreamAudio.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\PotStreamSubtitle.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\PotStreamVideo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\PotSubtitle.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\PotSubtitleAss.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\PotSubtitleManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\PotSubtitleSrt.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\src\PotUI.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\others\text_encoding_detect.h">
+    <ClInclude Include="..\src\Engine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mlcc\strfunc.h">
+    <ClInclude Include="..\src\PotConv.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\mlcc\filefunc.h">
+    <ClInclude Include="..\src\FakeJson.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\kys-cpp\src\Engine.h">
+    <ClInclude Include="..\src\filefunc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strfunc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Timer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,16 +68,7 @@
     <ClCompile Include="..\src\PotUI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Font.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\PotBase.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\PotConv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\src\PotMedia.cpp">
@@ -113,34 +86,19 @@
     <ClCompile Include="..\src\PotStreamAudio.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PotStreamSubtitle.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\PotStreamVideo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PotSubtitle.cpp">
+    <ClCompile Include="..\src\Engine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PotSubtitleAss.cpp">
+    <ClCompile Include="..\src\PotConv.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PotSubtitleManager.cpp">
+    <ClCompile Include="..\src\filefunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PotSubtitleSrt.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\others\text_encoding_detect.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\mlcc\strfunc.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\mlcc\filefunc.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\kys-cpp\src\Engine.cpp">
+    <ClCompile Include="..\src\strfunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
