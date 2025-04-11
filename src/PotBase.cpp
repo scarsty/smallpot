@@ -1,6 +1,6 @@
-#include "PotBase.h"
+ï»¿#include "PotBase.h"
 
-//Ö÷ÒªÊÇ×Ö´®ºÍÎÄ¼þÃû´¦Àí£¬ËæÊ±¿ÉÄÜÊ¹ÓÃ
+//ä¸»è¦æ˜¯å­—ä¸²å’Œæ–‡ä»¶åå¤„ç†ï¼Œéšæ—¶å¯èƒ½ä½¿ç”¨
 
 PotBase::PotBase()
 {
