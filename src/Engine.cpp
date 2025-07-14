@@ -344,6 +344,8 @@ void Engine::renderTexture(Texture* t /*= nullptr*/, double angle)
 {
     FRect rectf;
     SDL_RectToFRect(&rect_, &rectf);
+    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 0);
+    SDL_RenderFillRect(renderer_, nullptr);
     SDL_RenderTextureRotated(renderer_, t, nullptr, &rectf, angle, nullptr, SDL_FLIP_NONE);
     render_times_++;
 }
