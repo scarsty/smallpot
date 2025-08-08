@@ -35,7 +35,7 @@ git clone https://github.com/scarsty/kys-cpp kys-cpp
 ### Windows
 
 请使用Visual Studio编译。
-若编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL2的游戏，用法非常简单。
+若编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL的游戏，用法非常简单。
 建议使用vcpkg安装依赖库。
 
 ### MacOS
@@ -59,10 +59,9 @@ git clone https://github.com/scarsty/kys-cpp kys-cpp
 以下为参考。其中fribidi及以下是动态链接不需要的，winmm.lib及以下是Windows自带的库：
 
 ```
-sdl2.lib
-sdl2_ttf.lib
-sdl2_image.lib
-sdl2main.lib
+sdl3.lib
+sdl3_ttf.lib
+sdl3_image.lib
 ass.lib
 libiconv.lib
 avutil.lib
