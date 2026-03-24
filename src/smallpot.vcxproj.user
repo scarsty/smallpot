@@ -21,5 +21,6 @@
     <LocalDebuggerCommandArguments>"Y:\dat\1.mp4"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)\smallpot-x64</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommandArgumentsHistory>"Y:\dat\1.mp4"|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
 </Project>
