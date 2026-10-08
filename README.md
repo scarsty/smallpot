@@ -13,7 +13,7 @@ SmallPot是一个轻量级播放器。
 
 ## 架构
 
-程序语言是C++，使用FFmpeg进行解码，SDL2硬件输出，还有SDL_image、SDL_ttf等库。字幕部分使用libass，该库又依赖Fontconfig、freetype和fribidi。配置文件使用的是ini。
+程序语言是 C++23，使用 FFmpeg 进行解码、SDL3 进行音视频输出，并使用 SDL3_ttf 显示界面文字。字幕功能使用 libass；该库还依赖 Fontconfig、FreeType 和 FriBidi。桌面版配置文件为运行目录下的 `smallpot.config.json`。
 
 该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解，原理如下图。在跳转的时候可能会稍慢于其他的主流播放器，但是相差并不明显。
 
@@ -21,22 +21,19 @@ SmallPot是一个轻量级播放器。
 
 ## 编译
 
-部分源码在mlcc和kys-cpp（Engine.h和Engine.cpp）中，需同时将这些工程放到同级别的目录。
+主程序源码和 `Engine` 已包含在本仓库的 `src` 目录中。CMake 构建仍会引用同级目录中的 `mlcc`：
 
 ```shell
-git clone https://github.com/scarsty/mlcc mlcc
-git clone https://github.com/scarsty/kys-cpp kys-cpp
+git clone https://github.com/scarsty/mlcc ../mlcc
 ```
 
-其余依赖库包括iconv，ffmpeg，libass，SDL2，SDL2-ttf等，推荐使用系统的包管理工具获取这些库，Windows下推荐使用vcpkg。
+其余依赖包括 iconv、FFmpeg、libass、SDL3 和 SDL3_ttf。推荐通过系统包管理器安装；Windows 下建议使用 vcpkg。CMake 要求 3.20 或更高版本以及支持 C++23 的编译器。
 
 <https://github.com/AutoItConsulting/text-encoding-detect>直接包含代码到工程中。
 
 ### Windows
 
-请使用Visual Studio编译。
-若编译为dll，可以嵌入其他程序的窗口播放。特别是基于SDL的游戏，用法非常简单。
-建议使用vcpkg安装依赖库。
+请使用支持 C++23 的 Visual Studio 编译。`src/smallpot.vcxproj` 用于构建桌面播放器，`smallpot.dll/smallpot.dll.vcxproj` 用于构建供游戏嵌入的视频播放 DLL。建议使用 vcpkg 安装依赖库。
 
 ### MacOS
 
@@ -61,7 +58,6 @@ git clone https://github.com/scarsty/kys-cpp kys-cpp
 ```
 sdl3.lib
 sdl3_ttf.lib
-sdl3_image.lib
 ass.lib
 libiconv.lib
 avutil.lib
@@ -87,7 +83,38 @@ mfuuid.lib
 strmiids.lib
 ```
 
-若是需要编译dll文件，用于在其他基于SDL2的游戏中播放视频时，则SmallPot和游戏均不应静态链接SDL。因为SDL的动态库中含有全局变量，多次静态链接后该变量会有多个副本，其中一个很可能是不正确的。
+### 在游戏中嵌入 DLL 播放视频（Windows）
+
+打开 `SmallPot.sln`，以 **x64** 配置生成 `smallpot.dll` 项目。该项目定义 `WITHOUT_SUBTITLE`，因此 DLL 版本不包含字幕功能。游戏进程、`smallpot.dll` 以及其依赖 DLL 必须使用相同的架构；发布时应将 `smallpot.dll` 及 SDL3、FFmpeg 等运行时依赖放在游戏可搜索的目录中。
+
+`smallpot.dll/PotDll.h` 导出 C ABI，并使用 `__stdcall` 调用约定。文件名参数必须是 UTF-8 编码的、以 `\0` 结尾的可写字符数组。`PotInputVideo` 和 `PotPlayVideo` 会进入播放事件循环，应从适合阻塞播放的游戏流程调用，而非每帧调用。
+
+| 函数 | 说明 |
+| --- | --- |
+| `PotCreateFromHandle(void* handle)` | 用原生 Win32 `HWND` 创建嵌入式播放器。 |
+| `PotCreateFromWindow(void* handle)` | 用已有的 `SDL_Window*` 创建播放器；适合 SDL3 游戏。 |
+| `PotInputVideo(void* pot, char* filename)` | 以当前音量同步播放文件。返回播放器退出类型。 |
+| `PotPlayVideo(void* pot, char* filename, float volume)` | 设置音量后同步播放文件。音量通常应在 $0.0$ 到 $1.0$ 范围内。 |
+| `PotSeek(void* pot, int seek)` | 跳转到从媒体开头算起的毫秒位置。应在播放器仍有效时调用。 |
+| `PotDestory(void* pot)` | 释放播放器实例。函数名按当前导出 API 保持 `Destory` 拼写。 |
+
+示例（SDL3 游戏窗口）：
+
+```cpp
+#include "PotDll.h"
+
+void PlayOpeningVideo(SDL_Window* gameWindow, char* filename)
+{
+    void* player = PotCreateFromWindow(gameWindow);
+    if (player != nullptr)
+    {
+        PotPlayVideo(player, filename, 0.8f);
+        PotDestory(player);
+    }
+}
+```
+
+当游戏和 SmallPot 都使用 SDL3 时，应让两者共享同一份 SDL3 动态库，避免分别静态链接 SDL。SDL 内部含有全局状态，多份静态副本可能导致行为异常。
 
 ## 使用方法
 
@@ -131,16 +158,19 @@ libass的字体文件只能设置一个目录，所以如果字体显示不正�
 
 直接点击音量部分也可以控制音量。
 
-### ini中的设置
+### `smallpot.config.json` 中的设置
 
-| 设置             | 功能                     |
-| ---------------- | ------------------------ |
-| volume           | 音量                     |
-| auto_play_recent | 自动播放上次关闭时的文件 |
-| record_name      | 是否记录文件名           |
-| sys_encode       | 系统字串编码             |
-| ui_font          | 显示界面的字体           |
-| sub_font         | 显示字幕的默认字体       |
+| 设置                | 功能                                      |
+| ------------------- | ----------------------------------------- |
+| `volume`            | 音量。                                    |
+| `auto_play_recent`  | 非零时自动播放上次关闭时的文件。          |
+| `sys_encode`        | Windows 文件路径使用的系统编码。           |
+| `ui_font`           | 显示界面使用的字体。                      |
+| `sub_font`          | 字幕的默认字体。                          |
+| `channels`          | 输出音频声道数；负数时使用媒体原始声道数。|
+| `windows_maximized` | 非零时以最大化窗口启动。                  |
+
+播放记录保存在同一配置文件的 `record` 节点中；`record_name` 不是当前版本支持的设置。
 
 ## 遗留问题
 

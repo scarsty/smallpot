@@ -38,8 +38,8 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/, int maximi
         {
             //window_ = SDL_CreateWindowFrom(handle);
             Prop props;
-            props.set(SDL_PROP_WINDOW_CREATE_WIN32_HWND_POINTER, handle);    //未测试
-            SDL_CreateWindowWithProperties(props.id());
+            props.set(SDL_PROP_WINDOW_CREATE_WIN32_HWND_POINTER, handle);
+            window_ = SDL_CreateWindowWithProperties(props.id());
         }
         else
         {

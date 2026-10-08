@@ -1,12 +1,15 @@
-project(smallpot)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.20)
+
+if(DEFINED ENV{CXX})
+    set(CMAKE_CXX_COMPILER $ENV{CXX})
+endif()
+
+project(smallpot LANGUAGES CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
-set(CMAKE_CXX_COMPILER $ENV{CXX})
-set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -pthread")
-
-include_directories(../include . ../mlcc /usr/local/include)
-link_directories(. ../lib /usr/local/lib)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 file(GLOB SRC_LIST
     ./*.cpp
@@ -15,7 +18,33 @@ file(GLOB SRC_LIST
     ../mlcc/filefunc.cpp
     ../mlcc/Engine.cpp)
 
-set(LINK_LIBRARIES iconv SDL2 SDL2_ttf SDL2_image SDL2main avutil avcodec avformat swresample swscale ass)
-
 add_executable(smallpot ${SRC_LIST})
-target_link_libraries(smallpot ${LINK_LIBRARIES})
+
+target_include_directories(smallpot PRIVATE
+    .
+    ../include
+    ../mlcc
+    /usr/local/include)
+
+target_link_directories(smallpot PRIVATE
+    .
+    ../lib
+    ../lib/x64
+    /usr/local/lib)
+
+if(NOT MSVC)
+    target_compile_options(smallpot PRIVATE -O3 -pthread)
+    target_link_options(smallpot PRIVATE -pthread)
+endif()
+
+target_link_libraries(smallpot PRIVATE
+    iconv
+    SDL3
+    SDL3_ttf
+    SDL3_image
+    avutil
+    avcodec
+    avformat
+    swresample
+    swscale
+    ass)
