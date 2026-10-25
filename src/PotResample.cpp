@@ -11,7 +11,7 @@ PotResample::~PotResample()
 
 int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_sample_rate, int out_channels, uint8_t* out_buf)
 {
-    SwrContext* swr_ctx = NULL;
+    SwrContextPtr swr_ctx(swr_alloc());
     int data_size = 0;
     int ret = 0;
     AVChannelLayout src_ch_layout = codec_ctx->ch_layout;
@@ -25,14 +25,16 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     uint8_t** dst_data = NULL;
     int resampled_data_size = 0;
 
-    swr_ctx = swr_alloc();
     if (!swr_ctx)
     {
         std::print("swr_alloc error \n");
         return -1;
     }
 
-    av_channel_layout_default(&src_ch_layout, codec_ctx->ch_layout.nb_channels);
+    if (src_ch_layout.nb_channels <= 0)
+    {
+        av_channel_layout_default(&src_ch_layout, codec_ctx->ch_layout.nb_channels);
+    }
 
     //这里的设置很粗糙，最好详细处理
     switch (out_channels)
@@ -70,15 +72,15 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         return -1;
     }
 
-    av_opt_set_chlayout(swr_ctx, "in_chlayout", &src_ch_layout, 0);
-    av_opt_set_chlayout(swr_ctx, "out_chlayout", &dst_ch_layout, 0);
+    av_opt_set_chlayout(swr_ctx.get(), "in_chlayout", &src_ch_layout, 0);
+    av_opt_set_chlayout(swr_ctx.get(), "out_chlayout", &dst_ch_layout, 0);
 
-    av_opt_set_int(swr_ctx, "in_sample_rate", codec_ctx->sample_rate, 0);
-    av_opt_set_int(swr_ctx, "out_sample_rate", out_sample_rate, 0);
-    av_opt_set_sample_fmt(swr_ctx, "in_sample_fmt", codec_ctx->sample_fmt, 0);
-    av_opt_set_sample_fmt(swr_ctx, "out_sample_fmt", (AVSampleFormat)out_sample_format_, 0);
+    av_opt_set_int(swr_ctx.get(), "in_sample_rate", codec_ctx->sample_rate, 0);
+    av_opt_set_int(swr_ctx.get(), "out_sample_rate", out_sample_rate, 0);
+    av_opt_set_sample_fmt(swr_ctx.get(), "in_sample_fmt", codec_ctx->sample_fmt, 0);
+    av_opt_set_sample_fmt(swr_ctx.get(), "out_sample_fmt", (AVSampleFormat)out_sample_format_, 0);
 
-    if ((ret = swr_init(swr_ctx)) < 0)
+    if ((ret = swr_init(swr_ctx.get())) < 0)
     {
         std::print("Failed to initialize the resampling context\n");
         return -1;
@@ -99,7 +101,7 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
         return -1;
     }
 
-    dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx, codec_ctx->sample_rate) + src_nb_samples, out_sample_rate, codec_ctx->sample_rate, AV_ROUND_UP);
+    dst_nb_samples = av_rescale_rnd(swr_get_delay(swr_ctx.get(), codec_ctx->sample_rate) + src_nb_samples, out_sample_rate, codec_ctx->sample_rate, AV_ROUND_UP);
     if (dst_nb_samples <= 0)
     {
         std::print("av_rescale_rnd error \n");
@@ -114,7 +116,7 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
 
     if (swr_ctx)
     {
-        ret = swr_convert(swr_ctx, dst_data, dst_nb_samples, (const uint8_t**)frame->data, frame->nb_samples);
+        ret = swr_convert(swr_ctx.get(), dst_data, dst_nb_samples, (const uint8_t**)frame->data, frame->nb_samples);
         if (ret < 0)
         {
             std::print("swr_convert error \n");
@@ -135,19 +137,11 @@ int PotResample::convert(AVCodecContext* codec_ctx, AVFrame* frame, int out_samp
     }
 
     memcpy(out_buf, dst_data[0], resampled_data_size);
-    swr_close(swr_ctx);
 
     if (dst_data)
     {
         av_freep(&dst_data[0]);
     }
     av_freep(&dst_data);
-    dst_data = NULL;
-
-    if (swr_ctx)
-    {
-        swr_free(&swr_ctx);
-    }
-    //std::print("%d\n", resampled_data_size);
     return resampled_data_size;
 }

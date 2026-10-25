@@ -172,6 +172,11 @@ int PotPlayer::eventLoop()
                 {
                     pause = !pause;
                     media_->setPause(pause);
+                    if (!pause)
+                    {
+                        media_->decodeFrame();
+                        media_->getAudio()->show();
+                    }
                 }
                 else if (button == PotUI::ButtonNext)
                 {
@@ -236,7 +241,7 @@ int PotPlayer::eventLoop()
             {
                 if (e.wheel.y > 0)
                 {
-                    media_->seekTime(media_->getTime() - seek_step, -1);
+                    media_->seekTime(std::max(0, media_->getTime() - seek_step), -1, 1);
                     UI_.setText("");
                     seeking = true;
                     //cur_volume_ = media_->getAudio()->changeVolume(volume_step);
@@ -257,7 +262,7 @@ int PotPlayer::eventLoop()
             switch (e.key.key)
             {
             case K_LEFT:
-                media_->seekTime(media_->getTime() - seek_step, -1);
+                media_->seekTime(std::max(0, media_->getTime() - seek_step), -1, 1);
                 UI_.setText("");
                 seeking = true;
                 break;
@@ -491,8 +496,11 @@ int PotPlayer::eventLoop()
             break;
         }
         //在每个循环均尝试预解压
-        media_->decodeFrame();
-        //media_->getAudio()->show();
+        if (!pause)
+        {
+            media_->decodeFrame();
+            media_->getAudio()->show();
+        }
         //尝试以音频为基准显示视频
         int audioTime = media_->getTime();    //注意优先为音频时间，若音频不存在使用视频时间
         //if (seeking)
@@ -716,7 +724,7 @@ int PotPlayer::beginWithFile(std::string filename)
 //参数为utf8编码
 void PotPlayer::openMedia(const std::string& filename)
 {
-    media_ = nullptr;
+    delete media_;
     media_ = new PotMedia;
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换

@@ -29,7 +29,7 @@ public:
 
 private:
     //void clear();
-    virtual void freeContent(void* p) override;
+    virtual void freeContent(const FrameContent& content) override;
     virtual FrameContent convertFrameToContent() override;
 
 public:

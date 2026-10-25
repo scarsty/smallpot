@@ -1,4 +1,4 @@
-﻿#include "PotMedia.h"
+#include "PotMedia.h"
 #include "Config.h"
 #include "PotConv.h"
 #include "filefunc.h"
@@ -11,20 +11,24 @@ PotMedia::PotMedia()
 #ifndef WITHOUT_SUBTITLE
     stream_subtitle_ = &blank_subtitle_;
 #endif
-    format_ctx_video_ = avformat_alloc_context();
-    format_ctx_audio_ = avformat_alloc_context();
-    format_ctx_subtitle_ = avformat_alloc_context();
+    format_ctx_.reset(avformat_alloc_context());
 }
 
 PotMedia::~PotMedia()
 {
+    if (stream_audio_->exist())
+    {
+        stream_audio_->closeAudioDevice();
+    }
     for (auto st : streams_)
     {
         delete st;
     }
-    avformat_close_input(&format_ctx_video_);
-    avformat_close_input(&format_ctx_audio_);
-    avformat_close_input(&format_ctx_subtitle_);
+    for (auto& packet : packet_queue_)
+    {
+        av_packet_unref(&packet);
+    }
+    packet_queue_.clear();
 }
 
 int PotMedia::decodeFrame()
@@ -43,119 +47,109 @@ int PotMedia::decodeFrame()
     //int m = _audioStream->getTimedts();
     //int n = _videoStream->getTimedts();
 
-    //同步
-    if (seeking_)
+    // 两路都从同一个 seek 点重新解码，不再用 skipFrame 让视频或音频追赶另一条路。
+    seeking_ = false;
+    return 0;
+}
+
+int PotMedia::readPacket(int stream_index, AVPacket* packet)
+{
+    while (true)
     {
-        seeking_ = false;
-        //seek之后，音频可能落后，需要追赶音频
-        if (stream_video_->exist() && stream_audio_->exist())
+        for (auto it = packet_queue_.begin(); it != packet_queue_.end(); ++it)
         {
-            //一定时间以上才跳帧
-            //查看延迟情况
-            int v_dts = stream_video_->getTimedts();
-            int a_dts = stream_audio_->getTimedts();
-            int max_dts = std::max(v_dts, a_dts);
-            int min_dts = std::min(v_dts, a_dts);
-            //std::print("seeking diff v{}-a{}={}\n", v_dts, a_dts, v_dts - a_dts);
-            //一定时间以上才跳帧
-            if (max_dts - min_dts > 100)
+            if (it->stream_index == stream_index)
             {
-                int sv = stream_video_->skipFrame(max_dts);
-                int sa = stream_audio_->skipFrame(max_dts);
-                //std::print("drop {} audio frames, {} video frames\n", sa, sv);
-                /*v_dts = _videoStream->getTimedts();
-                a_dts = _audioStream->getTimedts();
-                std::print("seeking end diff v%d-a%d=%d\n", v_dts, a_dts, v_dts - a_dts);*/
+                av_packet_move_ref(packet, &*it);
+                packet_queue_.erase(it);
+                return 0;
             }
         }
-        //cout << "se"<<engine_->getTicks()-se << " "<<endl;
+        if (!format_ctx_ || av_read_frame(format_ctx_.get(), packet) < 0)
+        {
+            return AVERROR_EOF;
+        }
+        if (packet->stream_index == stream_index)
+        {
+            return 0;
+        }
+        AVPacket queued_packet{};
+        av_packet_move_ref(&queued_packet, packet);
+        packet_queue_.push_back(queued_packet);
     }
-    return 0;
+}
+
+int PotMedia::seekDemux(int time, int direct, int reset)
+{
+    if (!format_ctx_ || seek_stream_index_ < 0 || seek_stream_index_ >= static_cast<int>(format_ctx_->nb_streams))
+    {
+        return AVERROR(EINVAL);
+    }
+    for (auto& packet : packet_queue_)
+    {
+        av_packet_unref(&packet);
+    }
+    packet_queue_.clear();
+    const int flags = direct < 0 ? AVSEEK_FLAG_BACKWARD : 0;
+    const AVRational milliseconds = { 1, 1000 };
+    const AVRational stream_time_base = format_ctx_->streams[seek_stream_index_]->time_base;
+    const int64_t timestamp = av_rescale_q(time, milliseconds, stream_time_base);
+    return av_seek_frame(format_ctx_.get(), seek_stream_index_, timestamp, flags);
 }
 
 int PotMedia::openFile(const std::string& filename)
 {
-    auto format_ctx = avformat_alloc_context();
-
-    if (avformat_open_input(&format_ctx, filename.c_str(), nullptr, nullptr) == 0)
+    AVFormatContext* raw_format_ctx = avformat_alloc_context();
+    if (!raw_format_ctx || avformat_open_input(&raw_format_ctx, filename.c_str(), nullptr, nullptr) < 0
+        || avformat_find_stream_info(raw_format_ctx, nullptr) < 0)
     {
-        avformat_find_stream_info(format_ctx, nullptr);
+        avformat_close_input(&raw_format_ctx);
+        return -1;
+    }
+    format_ctx_.reset(raw_format_ctx);
 
-        avformat_open_input(&format_ctx_video_, filename.c_str(), nullptr, nullptr);
-        avformat_open_input(&format_ctx_audio_, filename.c_str(), nullptr, nullptr);
-        avformat_open_input(&format_ctx_subtitle_, filename.c_str(), nullptr, nullptr);
-
-        avformat_find_stream_info(format_ctx_video_, nullptr);
-        avformat_find_stream_info(format_ctx_audio_, nullptr);
-        avformat_find_stream_info(format_ctx_subtitle_, nullptr);
-
-        streams_.resize(format_ctx->nb_streams);
-        for (int i = 0; i < format_ctx->nb_streams; i++)
+    streams_.resize(format_ctx_->nb_streams);
+    for (unsigned int i = 0; i < format_ctx_->nb_streams; i++)
+    {
+        switch (format_ctx_->streams[i]->codecpar->codec_type)
         {
-            switch (format_ctx->streams[i]->codecpar->codec_type)
-            {
-            case MEDIA_TYPE_VIDEO:
-            {
-                auto st = new PotStreamVideo();
-                st->setFormatCtx(format_ctx_video_);
-                streams_[i] = st;
-                if (!stream_video_->exist())
-                {
-                    stream_video_ = st;
-                }
-                break;
-            }
-            case MEDIA_TYPE_AUDIO:
-            {
-                auto st = new PotStreamAudio();
-                st->setFormatCtx(format_ctx_audio_);
-                streams_[i] = st;
-                if (!stream_audio_->exist())
-                {
-                    stream_audio_ = st;
-                }
-                break;
-            }
-            case MEDIA_TYPE_SUBTITLE:
-            {
+        case MEDIA_TYPE_VIDEO:
+        {
+            auto st = new PotStreamVideo();
+            streams_[i] = st;
+            if (!stream_video_->exist()) stream_video_ = st;
+            break;
+        }
+        case MEDIA_TYPE_AUDIO:
+        {
+            auto st = new PotStreamAudio();
+            streams_[i] = st;
+            if (!stream_audio_->exist()) stream_audio_ = st;
+            break;
+        }
+        case MEDIA_TYPE_SUBTITLE:
+        {
 #ifndef WITHOUT_SUBTITLE
-                auto st = new PotStreamSubtitle();
-                st->setFormatCtx(format_ctx_subtitle_);
-                streams_[i] = st;
-                if (!stream_subtitle_->exist())
-                {
-                    stream_subtitle_ = st;
-                }
+            auto st = new PotStreamSubtitle();
+            streams_[i] = st;
+            if (!stream_subtitle_->exist()) stream_subtitle_ = st;
 #endif
-                break;
-            }
-            }
-            if (streams_[i])
-            {
-                streams_[i]->setStreamIndex(i);
-                streams_[i]->openFile(filename);
-            }
-            //stream_index_vector_.push_back(i);
-            //if (stream_index_vector_.size() == 1)
-            //{
-            //    //std::print("finded media stream: %d\n", type);
-            //    stream_ = format_ctx_->streams[i];
-            //    codec_ctx_ = stream_->codec;
-            //    if (stream_->r_frame_rate.den)
-            //    {
-            //        time_per_frame_ = 1e3 / av_q2d(stream_->r_frame_rate);
-            //    }
-            //    time_base_packet_ = 1e3 * av_q2d(stream_->time_base);
-            //    total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
-            //    start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
-            //    codec_ = avcodec_find_decoder(codec_ctx_->codec_id);
-            //    avcodec_open2(codec_ctx_, codec_, nullptr);
-            //}
-            //}
+            break;
+        }
+        default:
+            break;
+        }
+        if (streams_[i])
+        {
+            streams_[i]->setFormatCtx(format_ctx_.get());
+            streams_[i]->setPacketReader([this](int stream_index, AVPacket* packet) { return readPacket(stream_index, packet); });
+            streams_[i]->setSeekHandler([this](int time, int direct, int reset) { return seekDemux(time, direct, reset); });
+            streams_[i]->setStreamIndex(static_cast<int>(i));
+            streams_[i]->openFile(filename);
         }
     }
-    avformat_close_input(&format_ctx);
 
+    seek_stream_index_ = stream_video_->exist() ? stream_video_->getStreamIndex() : stream_audio_->getStreamIndex();
     if (stream_audio_->exist())
     {
         total_time_ = stream_audio_->getTotalTime();
@@ -167,7 +161,6 @@ int PotMedia::openFile(const std::string& filename)
     }
     return 0;
 }
-
 int PotMedia::getAudioTime()
 {
     //std::print("\t\t\t\t\t\t\r%d,%d,%d", audioStream->time, videoStream->time, audioStream->getAudioTime());
@@ -181,17 +174,21 @@ int PotMedia::getVideoTime()
 
 int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 {
-    time = std::min(time, total_time_ - 100);
-    stream_video_->seek(time, direct, reset);
-    auto ts = stream_video_->getTime();
-    stream_audio_->seek(time, direct, reset);
+    time = std::max(0, std::min(time, total_time_ - 100));
+    const int seek_time = time;
+    if (format_ctx_ && seekDemux(seek_time, direct, reset) < 0)
+    {
+        return -1;
+    }
+    stream_video_->resetAfterSeek(seek_time, reset);
+    stream_audio_->resetAfterSeek(seek_time, reset);
 #ifndef WITHOUT_SUBTITLE
-    stream_subtitle_->seek(time - 5000, direct, reset);
+    stream_subtitle_->resetAfterSeek(std::max(0, seek_time - 5000), reset);
 #endif
-    auto ta = stream_audio_->getTime();
-    //std::print("seeking to {}, video {}, audio {}\n", time, ts, ta);
-    seeking_ = true;
     stream_audio_->resetDecodeState();
+    Engine::getInstance()->clearAudioStream();
+    stream_video_->setPause(stream_audio_->isPause());
+    seeking_ = true;
     return 0;
 }
 
@@ -326,3 +323,4 @@ int PotMedia::getStreamCount(PotMediaType mt)
     }
     return count;
 }
+

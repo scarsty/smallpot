@@ -4,21 +4,16 @@
 PotStream::PotStream()
 {
     //format_ctx_ = avformat_alloc_context();
-    frame_ = av_frame_alloc();
+    frame_.reset(av_frame_alloc());
     //subtitle_ = av_
     //mutex_cpp.;
     time_shown_ = 0;
     ticks_shown_ = engine_->getTicks();
-    av_init_packet(&packet_);
+    av_packet_unref(&packet_);
 }
 
 PotStream::~PotStream()
 {
-    av_frame_free(&frame_);
-    if (codec_ctx_)
-    {
-        avcodec_close(codec_ctx_);
-    }
     //avformat_close_input(&format_ctx_);
     clearMap();
     stream_index_ = -1;
@@ -54,7 +49,7 @@ int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* pack
         }
     }
 
-    ret = avcodec_receive_frame(ctx, frame_);
+    ret = avcodec_receive_frame(ctx, frame_.get());
     //std::print("receive frame {}\n", ret);
     if (ret < 0)
     {
@@ -72,11 +67,7 @@ int PotStream::dropContent()
 {
     if (!data_map_.empty())
     {
-        auto p = data_map_.begin()->second.data;
-        if (p)
-        {
-            freeContent(p);
-        }
+        freeContent(data_map_.begin()->second);
         data_map_.erase(data_map_.begin());
     }
     return 0;
@@ -91,7 +82,7 @@ void PotStream::clearMap()
 {
     for (auto& i : data_map_)
     {
-        freeContent(i.second.data);
+        freeContent(i.second);
     }
     data_map_.clear();
 }
@@ -127,7 +118,7 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
     {
         if (need_read_packet_)
         {
-            haveFrame = av_read_frame(format_ctx_, &packet_) == 0;
+            haveFrame = (read_packet_ ? read_packet_(stream_index_, &packet_) : av_read_frame(format_ctx_, &packet_)) == 0;
         }
         if (haveFrame)
         {
@@ -139,7 +130,7 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
                     //循环处理多次才能解到一帧的情况
                     //while (gotframe == 0)
                     {
-                        decoded_ret = avcodec_decode_packet(codec_ctx_, &gotframe, &packet_);    //返回为负表示有错误
+                        decoded_ret = avcodec_decode_packet(codec_ctx_.get(), &gotframe, &packet_);    //返回为负表示有错误
                         //if (decoded_ret == 0)
                         {
                             //break;
@@ -205,6 +196,21 @@ void PotStream::dropAllDecoded()
     need_read_packet_ = true;
 }
 
+void PotStream::resetAfterSeek(int time, int reset)
+{
+    av_packet_unref(&packet_);
+    dropAllDecoded();
+    time_dts_ = time_pts_ = time_shown_ = time;
+    pause_time_ = time;
+    ticks_shown_ = engine_->getTicks();
+    ended_ = false;
+    stopping_ = false;
+    if (codec_ctx_)
+    {
+        avcodec_flush_buffers(codec_ctx_.get());
+    }
+}
+
 FrameContent PotStream::getCurrentContent()
 {
     if (!data_map_.empty())
@@ -213,7 +219,7 @@ FrameContent PotStream::getCurrentContent()
     }
     else
     {
-        return { time_dts_, -1, nullptr };
+        return FrameContent{ time_dts_, -1, std::monostate{} };
     }
 }
 
@@ -230,15 +236,27 @@ int PotStream::openFile(const std::string& filename)
     total_time_ = format_ctx_->duration * 1e3 / AV_TIME_BASE;
     start_time_ = format_ctx_->start_time * 1e3 / AV_TIME_BASE;
     codec_ = avcodec_find_decoder(stream_->codecpar->codec_id);
-    codec_ctx_ = avcodec_alloc_context3(codec_);
-    avcodec_parameters_to_context(codec_ctx_, stream_->codecpar);
+    codec_ctx_.reset(avcodec_alloc_context3(codec_));
+    if (!codec_)
+    {
+        codec_ctx_.reset();
+        stream_index_ = -1;
+        return -1;
+    }
+    if (!codec_ctx_ || avcodec_parameters_to_context(codec_ctx_.get(), stream_->codecpar) < 0)
+    {
+        codec_ctx_.reset();
+        stream_index_ = -1;
+        return -1;
+    }
     codec_ctx_->pkt_timebase = stream_->time_base;
-    //codec_ctx_ = stream_->codec;
-    AVDictionary* opts = nullptr;
-    avcodec_open2(codec_ctx_, codec_, &opts);
+    if (avcodec_open2(codec_ctx_.get(), codec_, nullptr) < 0)
+    {
+        codec_ctx_.reset();
+        stream_index_ = -1;
+        return -1;
+    }
 
-    //记录下来所有的流的编号，默认同类流用一个解码器
-    //这个设置可能存在问题
     return stream_index_;
 }
 
@@ -302,13 +320,20 @@ int PotStream::seek(int time, int direct /*= 1*/, int reset /*= 0*/)
         {
             flag = flag | AVSEEK_FLAG_BACKWARD;
         }
-        //间隔比较大的情况重置解码器
+        //快速拖动时保留解码器状态，避免每次 seek 都 flush 导致卡顿；真正跳转或暂停时再重置视频解码器。
         if (type_ == MEDIA_TYPE_VIDEO && (pause_ || reset || engine_->getTicks() - seek_record_ > 100))
         {
-            avcodec_flush_buffers(codec_ctx_);
+            avcodec_flush_buffers(codec_ctx_.get());
         }
         dropAllDecoded();
-        av_seek_frame(format_ctx_, -1, i, flag);
+        if (seek_stream_)
+        {
+            seek_stream_(time, direct, reset);
+        }
+        else
+        {
+            av_seek_frame(format_ctx_, -1, i, flag);
+        }
         //avformat_seek_file(format_ctx_, -1, 0, i, INT64_MAX, flag);
     }
     seek_record_ = engine_->getTicks();
@@ -373,8 +398,9 @@ void PotStream::resetTimeAxis(int time)
 
 void PotStream::setPause(bool pause)
 {
+    const int current_time = getTime();
     pause_ = pause;
-    pause_time_ = getTime();
+    pause_time_ = current_time;
     ticks_shown_ = engine_->getTicks();
 }
 

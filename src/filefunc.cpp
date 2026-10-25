@@ -272,8 +272,14 @@ std::string filefunc::getFileTime(const std::string& filename, const std::string
     auto t = std::filesystem::last_write_time(filename);
     auto t1 = std::chrono::time_point_cast<std::chrono::system_clock::duration>(t - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
     auto t2 = std::chrono::system_clock::to_time_t(t1);
+    std::tm tm{};
+#ifdef _WIN32
+    localtime_s(&tm, &t2);
+#else
+    localtime_r(&t2, &tm);
+#endif
     char buf[64] = {};
-    strftime(buf, sizeof(buf), format.c_str(), localtime(&t2));
+    strftime(buf, sizeof(buf), format.c_str(), &tm);
     return buf;
 }
 

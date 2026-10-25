@@ -80,5 +80,5 @@ FrameContent PotStreamSubtitle::convertFrameToContent()
                 1.0 * avsubtitle_.pts / AV_TIME_BASE * 1000 + avsubtitle_.end_display_time);
         }
     }
-    return { time_dts_, 0, nullptr };
+    return FrameContent{ time_dts_, 0, std::monostate{} };
 }

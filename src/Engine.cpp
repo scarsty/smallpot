@@ -553,7 +553,7 @@ void Engine::mixAudio(uint8_t* dst, const uint8_t* src, uint32_t len, float volu
     //SDL_PutAudioStreamData(stream_, src, len);
 }
 
-int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f)
+int Engine::openAudio(int& freq, int& channels, int& size, int minsize, SDL_AudioFormat format, AudioCallback f)
 {
     SDL_AudioSpec want;
     SDL_zero(want);
@@ -564,7 +564,7 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, AudioCal
         channels = 2;
     }
     want.freq = freq;
-    want.format = SDL_AUDIO_F32LE;
+    want.format = format;
     want.channels = channels;
 
     audio_device_ = 0;

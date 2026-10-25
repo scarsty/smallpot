@@ -4,6 +4,8 @@
 #include "PotStream.h"
 #include "PotStreamAudio.h"
 #include "PotStreamVideo.h"
+#include <deque>
+#include <unordered_map>
 
 #ifndef WITHOUT_SUBTITLE
 #include "PotStreamSubtitle.h"
@@ -24,7 +26,7 @@ public:
 private:
     std::vector<PotStream*> streams_;
 
-    AVFormatContext *format_ctx_video_, *format_ctx_audio_, *format_ctx_subtitle_;
+    AVFormatContextPtr format_ctx_;
 
     PotStreamVideo* stream_video_ = nullptr;
     PotStreamAudio* stream_audio_ = nullptr;
@@ -44,6 +46,10 @@ private:
     int lastdts_ = 0;
     int timebase_ = 0;
     bool seeking_ = false;
+    int seek_stream_index_ = -1;
+    std::deque<AVPacket> packet_queue_;
+    int readPacket(int stream_index, AVPacket* packet);
+    int seekDemux(int time, int direct, int reset);
 
 public:
     PotStreamVideo* getVideo() { return stream_video_; }

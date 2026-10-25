@@ -3,10 +3,6 @@
 #include <chrono>
 #include <string>
 
-#ifdef _WIN32
-#define localtime _localtime64
-#endif
-
 class Timer
 {
 private:
@@ -26,7 +22,12 @@ public:
         //        return std::vformat(fmt, std::make_format_args(t1));
         //#else
         auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-        auto tm = *localtime(&t);
+        std::tm tm{};
+#ifdef _WIN32
+        localtime_s(&tm, &t);
+#else
+        localtime_r(&t, &tm);
+#endif
         char buffer[64] = {};
         strftime(buffer, sizeof(buffer), format.c_str(), &tm);
         return std::string(buffer);

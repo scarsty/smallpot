@@ -450,7 +450,7 @@ public:
 
     SDL_AudioFormat getAudioFormat() const { return audio_format_; }
 
-    int openAudio(int& freq, int& channels, int& size, int minsize, AudioCallback f);
+    int openAudio(int& freq, int& channels, int& size, int minsize, SDL_AudioFormat format, AudioCallback f);
 
     void setAudioCallback(AudioCallback cb = nullptr) { audio_callback_ = cb; }
 

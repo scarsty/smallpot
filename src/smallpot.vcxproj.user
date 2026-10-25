@@ -10,6 +10,7 @@
     <LocalDebuggerCommandArguments>D:\_sty\_bak\kys-all\水浒\发布版游戏\game\movie\1.wmv</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\smallpot-x64</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommandArgumentsHistory>D:\_sty\_bak\kys-all\水浒\发布版游戏\game\movie\1.wmv|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommandArguments>

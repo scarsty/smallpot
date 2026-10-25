@@ -23,8 +23,6 @@ private:
     int freq_, channels_;
     PotResample resample_;
 
-    void mixAudioData(uint8_t* stream, int len);
-
     virtual FrameContent convertFrameToContent() override;
     virtual bool needDecode2() override;
 

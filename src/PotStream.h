@@ -9,9 +9,12 @@ extern "C"
 
 #include "Engine.h"
 #include "PotBase.h"
+#include "FfmpegRAII.h"
 #include <algorithm>
 #include <map>
 #include <mutex>
+#include <variant>
+#include <functional>
 
 enum PotMediaType
 {
@@ -29,9 +32,9 @@ Content - 转换而得的可以直接显示或播放的数据，包含时间，�
 
 struct FrameContent
 {
-    int time;
-    int64_t info;
-    void* data;
+    int time = 0;
+    int64_t info = 0;
+    std::variant<std::monostate, Texture*, uint8_t*> data;
 };
 
 class PotStream : public PotBase
@@ -46,12 +49,14 @@ public:
 protected:
     PotMediaType type_;
     AVFormatContext* format_ctx_ = nullptr;
+    std::function<int(int, AVPacket*)> read_packet_;
+    std::function<int(int, int, int)> seek_stream_;
     AVStream* stream_ = nullptr;
-    AVCodecContext* codec_ctx_ = nullptr;
+    AVCodecContextPtr codec_ctx_;
     const AVCodec* codec_ = nullptr;
 
-    AVFrame* frame_ = nullptr;
-    AVPacket packet_;
+    AVFramePtr frame_;
+    AVPacket packet_{};
 
     bool need_read_packet_ = true;
     int stream_index_ = -1;
@@ -79,10 +84,10 @@ private:
     virtual int avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* packet);
 
 private:
-    virtual FrameContent convertFrameToContent() { return { 0, 0, nullptr }; }
+    virtual FrameContent convertFrameToContent() { return {}; }
     int dropContent();
     void setMap(int key, FrameContent f);
-    virtual void freeContent(void* p) {};
+    virtual void freeContent(const FrameContent&) {}
     void clearMap();
     bool needDecode();
     virtual bool needDecode2() { return true; };
@@ -96,6 +101,7 @@ protected:
 
 public:
     virtual int openFile(const std::string& filename);
+    void resetAfterSeek(int time, int reset = 0);
     int tryDecodeFrame(bool reset = false);
     void dropDecoded();
     int getTotalTime();
@@ -119,7 +125,7 @@ public:
     bool isPause() { return pause_; }
     bool isKeyFrame() { return key_frame_; }
     virtual void setPause(bool pause);
-    void resetDecoderState() { avcodec_flush_buffers(codec_ctx_); }
+    void resetDecoderState() { avcodec_flush_buffers(codec_ctx_.get()); }
     double getRotation();
     void getRatio(int& x, int& y);
     int getRatioX() { return exist() ? (std::max)(stream_->sample_aspect_ratio.num, 1) : 1; }
@@ -130,4 +136,6 @@ public:
     void setStreamIndex(int i) { stream_index_ = i; }
     int getStreamIndex() { return stream_index_; }
     void setFormatCtx(AVFormatContext* format_ctx) { format_ctx_ = format_ctx; }
+    void setPacketReader(std::function<int(int, AVPacket*)> reader) { read_packet_ = std::move(reader); }
+    void setSeekHandler(std::function<int(int, int, int)> handler) { seek_stream_ = std::move(handler); }
 };

@@ -39,11 +39,14 @@ PotStreamVideo::~PotStreamVideo()
     }
 }
 
-void PotStreamVideo::freeContent(void* p)
+void PotStreamVideo::freeContent(const FrameContent& content)
 {
-    if (p != engine_->getMainTexture())
+    if (const auto* texture = std::get_if<Texture*>(&content.data))
     {
-        engine_->destroyTexture((Texture*)p);
+        if (*texture && *texture != engine_->getMainTexture())
+        {
+            engine_->destroyTexture(*texture);
+        }
     }
 }
 
@@ -114,7 +117,7 @@ FrameContent PotStreamVideo::convertFrameToContent()
             engine_->updateTexture(tex, f->data[0], f->linesize[0]);
         }
     }
-    return { time_dts_, f->linesize[0], tex };
+    return FrameContent{ time_dts_, f->linesize[0], tex };
 }
 
 //-1无视频
@@ -132,7 +135,7 @@ int PotStreamVideo::show(int time)
         int time_c = f.time;
         if (time >= time_c)
         {
-            auto tex = (Texture*)f.data;
+            auto tex = std::get<Texture*>(f.data);
             engine_->renderTexture(tex);
             time_shown_ = time_c;
             ticks_shown_ = engine_->getTicks();
