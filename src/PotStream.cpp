@@ -205,7 +205,8 @@ void PotStream::resetAfterSeek(int time, int reset)
     ticks_shown_ = engine_->getTicks();
     ended_ = false;
     stopping_ = false;
-    if (codec_ctx_)
+    // Short seeks preserve video decoder references for this comparison build.
+    if (codec_ctx_ && (type_ != MEDIA_TYPE_VIDEO || reset || pause_))
     {
         avcodec_flush_buffers(codec_ctx_.get());
     }

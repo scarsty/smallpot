@@ -237,7 +237,7 @@ int PotPlayer::eventLoop()
             {
                 if (e.wheel.y > 0)
                 {
-                    media_->seekTime(std::max(0, media_->getTime() - seek_step), -1, 1);
+                    media_->seekTime(std::max(0, media_->getTime() - seek_step), -1);
                     UI_.setText("");
                     seeking = true;
                     //cur_volume_ = media_->getAudio()->changeVolume(volume_step);
@@ -258,7 +258,7 @@ int PotPlayer::eventLoop()
             switch (e.key.key)
             {
             case K_LEFT:
-                media_->seekTime(std::max(0, media_->getTime() - seek_step), -1, 1);
+                media_->seekTime(std::max(0, media_->getTime() - seek_step), -1);
                 UI_.setText("");
                 seeking = true;
                 break;
