@@ -838,7 +838,7 @@ void PotPlayer::closeMedia(const std::string& filename)
     }
     else
     {
-        config["record"].erase(filename);
+        config.removeRecord(filename);
     }
     if (media_->isMedia())
     {

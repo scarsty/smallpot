@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="CrashLog.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="filefunc.cpp" />
     <ClCompile Include="Font.cpp" />
