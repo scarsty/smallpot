@@ -424,6 +424,18 @@ private:
 public:
     void pauseAudio(int pause) const
     {
+        if (stream_)
+        {
+            if (pause)
+            {
+                SDL_PauseAudioStreamDevice(stream_);
+            }
+            else
+            {
+                SDL_ResumeAudioStreamDevice(stream_);
+            }
+            return;
+        }
         if (pause)
         {
             SDL_PauseAudioDevice(audio_device_);
@@ -441,6 +453,7 @@ public:
     void mixAudio(uint8_t* dst, const uint8_t* src, uint32_t len, float volume) const;
 
     void putAudioStreamData(const void* buf, int len) const { SDL_PutAudioStreamData(stream_, buf, len); }
+    int getQueuedAudioBytes() const { return stream_ ? SDL_GetAudioStreamQueued(stream_) : 0; }
 
     void clearAudioStream() const { SDL_ClearAudioStream(stream_); }
 

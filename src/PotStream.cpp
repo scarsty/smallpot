@@ -398,10 +398,13 @@ void PotStream::resetTimeAxis(int time)
 
 void PotStream::setPause(bool pause)
 {
+    if (pause_ == pause)
+    {
+        return;
+    }
     const int current_time = getTime();
     pause_ = pause;
-    pause_time_ = current_time;
-    ticks_shown_ = engine_->getTicks();
+    resetTimeAxis(current_time);
 }
 
 double PotStream::getRotation()

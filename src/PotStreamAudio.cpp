@@ -82,70 +82,58 @@ FrameContent PotStreamAudio::convertFrameToContent()
 
 int PotStreamAudio::show()
 {
-    if (pause_)
+    if (pause_ || !exist())
     {
         return 0;
     }
-    if (data_map_.size() >= max_size_) { return 1; }
-    const int requested = 3840;
-    if (buffer_ == nullptr) { return -1; }
-    const int64_t available = data_write_ - data_read_;
-    if (available <= 0)
+    const int bytes_per_frame = channels_ * av_get_bytes_per_sample(static_cast<AVSampleFormat>(resample_.out_sample_format_));
+    const int64_t bytes_per_second = int64_t(freq_) * bytes_per_frame;
+    if (!buffer_ || bytes_per_frame <= 0 || bytes_per_second <= 0)
     {
-        return -2;
+        return -1;
     }
-    const int len = int(std::min<int64_t>(requested, available));
-    auto data1 = (uint8_t*)buffer_;
-    int pos = int(data_read_ % buffer_size_);
-    int rest = buffer_size_ - pos;
-    if (len <= rest)
+    const int queued = engine_->getQueuedAudioBytes();
+    if (queued < 0)
     {
-        engine_->putAudioStreamData(data1 + pos, len);
+        return -1;
     }
-    else
+    // Submission is not playback: retain timestamp markers until SDL consumes the data.
+    const int64_t played = std::max<int64_t>(0, data_read_ - queued);
+    while (data_map_.size() > 1)
     {
-        engine_->putAudioStreamData(data1 + pos, rest);
-        engine_->putAudioStreamData(data1, len - rest);
-    }
-    while (haveDecoded())
-    {
-        auto f = getCurrentContent();
-        if (!std::get<uint8_t*>(f.data) || f.time < 0)
-        {
-            dropDecoded();
-            break;
-        }
-        if (data_read_ >= f.info)
-        {
-            //std::print("drop %I64d\n", t->dataRead - f.info);
-            dropDecoded();
-            if (data_read_ == f.info && time_shown_ != f.time)
-            {
-                time_shown_ = f.time;
-                ticks_shown_ = engine_->getTicks();
-                break;
-            }
-            else
-            {
-                //获取下一个
-                auto f1 = getCurrentContent();
-                //后一个包如果时间是一样的不更新计时
-                if (f1.info > data_read_ && f.time != f1.time)
-                {
-                    time_shown_ = f.time + (f1.time - f.time) * (data_read_ - f.info) / (f1.info - f.info);
-                    ticks_shown_ = engine_->getTicks();
-                }
-            }
-        }
-        else
+        auto next = std::next(data_map_.begin());
+        if (next->second.info > played)
         {
             break;
         }
+        dropDecoded();
+    }
+    if (haveDecoded())
+    {
+        const auto f = getCurrentContent();
+        if (std::holds_alternative<uint8_t*>(f.data) && f.time >= 0 && played >= f.info)
+        {
+            resetTimeAxis(f.time + int((played - f.info) * 1000 / bytes_per_second));
+        }
+    }
+    // Keep at most 80 ms queued, independent of the UI loop or display refresh rate.
+    const int64_t target = std::max<int64_t>(bytes_per_frame, bytes_per_second * 80 / 1000);
+    int64_t len = std::min<int64_t>(data_write_ - data_read_, std::max<int64_t>(0, target - queued));
+    len -= len % bytes_per_frame;
+    if (len <= 0)
+    {
+        return 0;
+    }
+    const int pos = int(data_read_ % buffer_size_);
+    const int first = int(std::min<int64_t>(len, buffer_size_ - pos));
+    engine_->putAudioStreamData(static_cast<uint8_t*>(buffer_) + pos, first);
+    if (len > first)
+    {
+        engine_->putAudioStreamData(buffer_, int(len - first));
     }
     data_read_ += len;
-    return len < requested ? 1 : 0;
+    return 0;
 }
-
 bool PotStreamAudio::needDecode2()
 {
     if (buffer_ == nullptr) { return false; }
@@ -232,13 +220,9 @@ void PotStreamAudio::changeVolume(float v)
 
 void PotStreamAudio::setPause(bool pause)
 {
-    const int current_time = getTime();
-    pause_ = pause;
-    pause_time_ = current_time;
-    ticks_shown_ = engine_->getTicks();
-    if (!pause)
+    PotStream::setPause(pause);
+    if (exist())
     {
-        engine_->clearAudioStream();
+        engine_->pauseAudio(pause);
     }
-    engine_->pauseAudio(pause);
 }

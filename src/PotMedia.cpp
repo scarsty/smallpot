@@ -90,11 +90,11 @@ int PotMedia::seekDemux(int time, int direct, int reset)
         av_packet_unref(&packet);
     }
     packet_queue_.clear();
-    const int flags = direct < 0 ? AVSEEK_FLAG_BACKWARD : 0;
-    const AVRational milliseconds = { 1, 1000 };
-    const AVRational stream_time_base = format_ctx_->streams[seek_stream_index_]->time_base;
-    const int64_t timestamp = av_rescale_q(time, milliseconds, stream_time_base);
-    return av_seek_frame(format_ctx_.get(), seek_stream_index_, timestamp, flags);
+    const int flags = 0;
+    const int64_t timestamp = av_rescale_q(time, AVRational{ 1, 1000 }, AV_TIME_BASE_Q);
+    const int64_t min_timestamp = direct < 0 ? INT64_MIN : timestamp;
+    const int64_t max_timestamp = direct < 0 ? timestamp : INT64_MAX;
+    return avformat_seek_file(format_ctx_.get(), -1, min_timestamp, timestamp, max_timestamp, flags);
 }
 
 int PotMedia::openFile(const std::string& filename)
@@ -187,7 +187,6 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 #endif
     stream_audio_->resetDecodeState();
     Engine::getInstance()->clearAudioStream();
-    stream_video_->setPause(stream_audio_->isPause());
     seeking_ = true;
     return 0;
 }
@@ -232,7 +231,9 @@ void PotMedia::setPause(bool pause)
 {
     stream_audio_->setPause(pause);
     stream_video_->setPause(pause);
-    //stream_subtitle_->setPause(pause);
+#ifndef WITHOUT_SUBTITLE
+    stream_subtitle_->setPause(pause);
+#endif
 }
 
 void PotMedia::switchStream(PotMediaType mt)

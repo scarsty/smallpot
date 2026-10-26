@@ -69,6 +69,10 @@ int Engine::init(void* handle /*= nullptr*/, int handle_type /*= 0*/, int maximi
         props.set(SDL_PROP_RENDERER_CREATE_WINDOW_POINTER, window_);
         renderer_ = SDL_CreateRendererWithProperties(props.id());
         renderer_self_ = true;
+        if (renderer_ && !SDL_SetRenderVSync(renderer_, 1))
+        {
+            std::print(stderr, "Unable to enable VSync: {}\n", SDL_GetError());
+        }
     }
 
     //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
@@ -592,7 +596,11 @@ int Engine::openAudio(int& freq, int& channels, int& size, int minsize, SDL_Audi
     audio_format_ = audio_spec_.format;
 
     std::print("device {}/{}\n", audio_spec_.freq, audio_spec_.channels);
-    if (audio_device_)
+    if (stream_)
+    {
+        SDL_ResumeAudioStreamDevice(stream_);
+    }
+    else if (audio_device_)
     {
         SDL_ResumeAudioDevice(audio_device_);
     }

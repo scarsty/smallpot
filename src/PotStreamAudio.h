@@ -20,7 +20,7 @@ private:
     int scream_length_ = 0;
     uint8_t* resample_buffer_ = nullptr;
     int64_t data_read_ = 0, data_write_ = 0;    //读取和写入字节数，实际位置由该值与尺寸的余数计算
-    int freq_, channels_;
+    int freq_ = 0, channels_ = -1;
     PotResample resample_;
 
     virtual FrameContent convertFrameToContent() override;
