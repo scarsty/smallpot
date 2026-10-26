@@ -15,9 +15,24 @@ SmallPot是一个轻量级播放器。
 
 程序语言是 C++23，使用 FFmpeg 进行解码、SDL3 进行音视频输出，并使用 SDL3_ttf 显示界面文字。字幕功能使用 libass；该库还依赖 Fontconfig、FreeType 和 FriBidi。桌面版配置文件为运行目录下的 `smallpot.config.json`。
 
-该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解，原理如下图。在跳转的时候可能会稍慢于其他的主流播放器，但是相差并不明显。
+该播放器的架构并未参考其他主流播放器，而是重新设计的单线程预解，原理如下图。播放和跳转仍由同一个主循环处理，但跳转采用协作式状态：输入事件只提交请求，主循环分阶段执行定位、解码器刷新和目标帧恢复；恢复期间继续显示当前视频纹理，首个新视频帧显示后再恢复音频输出。
 
 <img src="https://raw.githubusercontent.com/scarsty/smallpot/master/pic/ac.png" width = "50%" />
+
+### mpv 与 VLC 的跳转实现比较
+
+针对滚轮快速跳转的源码比较，固定参考版本为 mpv commit `baa3e11d42cb7978da634a8a6a3a55fe074d01be`，VLC commit `6ae433cc2c45c30563c4db9fb792ba0d64f8b059`。
+
+结论如下：
+
+- **mpv 不是通过完全不刷新解码器来实现快速跳转。** `player/playloop.c` 中的 `mp_seek()` 仍会执行 demux seek、清理音频输出和 `reset_playback_state()`。
+- mpv 的主要优势是 seek 请求先由 `queue_seek()` 排队，实际在播放循环的 `execute_queued_seek()` 阶段执行；播放循环在此之前仍会处理已有音视频输出，因此输入响应不必立即被同步 seek 阻塞。
+- mpv 使用 `hrseek_active`、`last_seek_pts` 等状态，先定位到目标附近，再从关键帧解码到目标时间，形成粗定位与精确定位两阶段。
+- VLC 也采用独立的 input、demux、decoder 和 audio/video output 链路，并且会重置解码器与时钟。其 `src/input/decoder.c`、`src/input/es_out.c` 维护 decoder FIFO、PCR/PTS 和 program clock；这些恢复步骤更容易在输出侧表现为短暂停顿。
+- VLC 的 `src/input/decoder_prevframe.c` 提供上一帧保存与逐帧后退支持，但不能据此断言普通滚轮 seek 一定使用该路径。
+- 因此，VLC“卡一下”与 mpv“更跟手”的主要差异，不应简单归因于“VLC flush、mpv 不 flush”或单一缓存开关，更可能来自 seek 执行时机、输出流水线、精确定位状态和音视频时钟恢复方式的组合。
+
+smallpot 当前通过 `PotPlayer::eventLoop()`、`PotMedia::requestSeek()`、`PotMedia::processSeekStep()` 和 `PotStream::resetAfterSeek()` 实现单线程协作式跳转：输入只提交 pending seek，播放步骤再执行 demux 定位和正常 decoder flush；恢复期间保留当前主纹理，限制音频提交，解码到目标位置并在首个新视频帧真正显示后结束 seek 状态。这样不依赖旧 H.265 参考帧，可避免通过不 flush 解码器换取响应速度时产生的马赛克。
 
 ## 编译
 

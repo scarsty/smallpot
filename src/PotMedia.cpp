@@ -31,10 +31,47 @@ PotMedia::~PotMedia()
     packet_queue_.clear();
 }
 
+void PotMedia::requestSeek(int time, int direct, int reset)
+{
+    pending_seek_time_ = std::max(0, std::min(time, total_time_ - 100));
+    pending_seek_direct_ = direct;
+    pending_seek_reset_ = reset;
+    seek_request_pending_ = true;
+}
+
+void PotMedia::processSeekStep()
+{
+    if (!seek_request_pending_ || seeking_)
+    {
+        return;
+    }
+    const int target = pending_seek_time_;
+    const int direct = pending_seek_direct_;
+    const int reset = pending_seek_reset_;
+    seek_request_pending_ = false;
+    seekTime(target, direct, reset);
+}
+
+void PotMedia::finishSeekAfterFrameShown()
+{
+    if (seeking_ && stream_video_->exist() && stream_video_->getTimeShown() >= seek_target_time_)
+    {
+        seeking_ = false;
+        seek_decode_to_target_ = false;
+    }
+    else if (seeking_ && !stream_video_->exist())
+    {
+        seeking_ = false;
+        seek_decode_to_target_ = false;
+    }
+}
+
 int PotMedia::decodeFrame()
 {
-    bool need_reset = seeking_;
-    //int se= engine_->getTicks();
+    processSeekStep();
+    const bool need_reset = seeking_;
+    // Decode only a bounded amount per loop. This keeps the single UI thread
+    // responsive while the flushed decoder catches up to the requested time.
     stream_video_->tryDecodeFrame(need_reset);
     if (stream_video_->isStopping())
     {
@@ -44,11 +81,23 @@ int PotMedia::decodeFrame()
 #ifndef WITHOUT_SUBTITLE
     stream_subtitle_->tryDecodeFrame(need_reset);
 #endif
-    //int m = _audioStream->getTimedts();
-    //int n = _videoStream->getTimedts();
 
-    // 两路都从同一个 seek 点重新解码，不再用 skipFrame 让视频或音频追赶另一条路。
-    seeking_ = false;
+    if (seeking_ && stream_video_->exist())
+    {
+        const int decoded_time = stream_video_->getTimedts();
+        if (seek_decode_to_target_ && decoded_time >= seek_target_time_)
+        {
+            seek_decode_to_target_ = false;
+        }
+        else if (!seek_decode_to_target_ && stream_video_->hasDecodedFrame())
+        {
+            // Keep the seek state until show() presents the first new frame.
+        }
+    }
+    else if (seeking_)
+    {
+        seeking_ = false;
+    }
     return 0;
 }
 
@@ -187,6 +236,10 @@ int PotMedia::seekTime(int time, int direct /*= 1*/, int reset /*= 0*/)
 #endif
     stream_audio_->resetDecodeState();
     Engine::getInstance()->clearAudioStream();
+    seek_target_time_ = seek_time;
+    // Wheel and keyboard seeks use a fast keyframe-oriented landing. Exact
+    // target-frame recovery is reserved for progress-bar seeks (reset != 0).
+    seek_decode_to_target_ = stream_video_->exist() && reset != 0;
     seeking_ = true;
     return 0;
 }

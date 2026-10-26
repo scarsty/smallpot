@@ -135,13 +135,13 @@ int PotPlayer::eventLoop()
                 int button = UI_.inButton();
                 if (button == PotUI::ButtonLeft)
                 {
-                    media_->seekTime(media_->getTime() - seek_step, -1);
+                    media_->requestSeek(media_->getTime() - seek_step, -1);
                     UI_.setText("");
                     seeking = true;
                 }
                 else if (button == PotUI::ButtonRight)
                 {
-                    media_->seekTime(media_->getTime() + seek_step, 1);
+                    media_->requestSeek(media_->getTime() + seek_step, 1);
                     UI_.setText("");
                     seeking = true;
                 }
@@ -165,7 +165,7 @@ int PotPlayer::eventLoop()
                 int button = UI_.inButton();
                 if (pos >= 0)
                 {
-                    media_->seekPos(pos, 1, 1);
+                    media_->requestSeek(static_cast<int>(pos * media_->getTotalTime()), 1, 1);
                     seeking = true;
                 }
                 if (button == PotUI::ButtonPause)
@@ -237,14 +237,14 @@ int PotPlayer::eventLoop()
             {
                 if (e.wheel.y > 0)
                 {
-                    media_->seekTime(std::max(0, media_->getTime() - seek_step), -1);
+                    media_->requestSeek(std::max(0, media_->getTime() - seek_step), -1);
                     UI_.setText("");
                     seeking = true;
                     //cur_volume_ = media_->getAudio()->changeVolume(volume_step);
                 }
                 else if (e.wheel.y < 0)
                 {
-                    media_->seekTime(media_->getTime() + seek_step, 1);
+                    media_->requestSeek(media_->getTime() + seek_step, 1);
                     UI_.setText("");
                     seeking = true;
                     //cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
@@ -258,12 +258,12 @@ int PotPlayer::eventLoop()
             switch (e.key.key)
             {
             case K_LEFT:
-                media_->seekTime(std::max(0, media_->getTime() - seek_step), -1);
+                media_->requestSeek(std::max(0, media_->getTime() - seek_step), -1);
                 UI_.setText("");
                 seeking = true;
                 break;
             case K_RIGHT:
-                media_->seekTime(media_->getTime() + seek_step, 1);
+                media_->requestSeek(media_->getTime() + seek_step, 1);
                 UI_.setText("");
                 seeking = true;
                 break;
@@ -302,7 +302,7 @@ int PotPlayer::eventLoop()
                 }
                 break;
             case K_BACKSPACE:
-                media_->seekTime(0);
+                media_->requestSeek(0);
                 seeking = true;
                 break;
 #ifndef _WINDLL
@@ -430,11 +430,11 @@ int PotPlayer::eventLoop()
                 {    // 滑动阈值
                     if (dx > 0)
                     {
-                        media_->seekTime(media_->getTime() + seek_step, 1);
+                        media_->requestSeek(media_->getTime() + seek_step, 1);
                     }
                     else
                     {
-                        media_->seekTime(media_->getTime() - seek_step, -1);
+                        media_->requestSeek(media_->getTime() - seek_step, -1);
                     }
                     UI_.setText("");
                     seeking = true;
@@ -493,7 +493,10 @@ int PotPlayer::eventLoop()
         }
         //在每个循环均尝试预解压
         media_->decodeFrame();
-        media_->getAudio()->show();
+        if (!media_->isSeeking())
+        {
+            media_->getAudio()->show();
+        }
         //尝试以音频为基准显示视频
         int audioTime = media_->getTime();    //注意优先为音频时间，若音频不存在使用视频时间
         //if (seeking)
@@ -516,6 +519,10 @@ int PotPlayer::eventLoop()
             time_s = 0;    //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
         }
         int videostate = media_->getVideo()->show(time_s);
+        if (videostate == PotStreamVideo::VideoFrameShowed)
+        {
+            media_->finishSeekAfterFrameShown();
+        }
 
         //播放回调
         if (play_callback)
@@ -536,6 +543,11 @@ int PotPlayer::eventLoop()
         //std::print("\nvideostate{}", videostate);
         //依据解视频的结果判断是否显示
         bool show = false;
+        if (media_->isSeeking() && havevideo)
+        {
+            engine_->renderTexture(engine_->getMainTexture());
+            show = true;
+        }
         //有视频显示成功，或者有静态视频，或者只有音频，均刷新
         if (videostate == PotStreamVideo::VideoFrameShowed)
         {
@@ -788,7 +800,7 @@ void PotPlayer::openMedia(const std::string& filename)
         std::print("Play from {:1.3}s\n", cur_time_ / 1000.0);
         if (cur_time_ > 0 && cur_time_ < media_->getTotalTime())
         {
-            media_->seekTime(cur_time_, -1);
+            media_->requestSeek(cur_time_, -1);
         }
     }
 #endif
@@ -936,5 +948,5 @@ void PotPlayer::setVolume(float volume)
 
 void PotPlayer::seekTime(int time)
 {
-    media_->seekTime(time);
+    media_->requestSeek(time);
 }

@@ -46,6 +46,12 @@ private:
     int lastdts_ = 0;
     int timebase_ = 0;
     bool seeking_ = false;
+    bool seek_request_pending_ = false;
+    int pending_seek_time_ = 0;
+    int pending_seek_direct_ = 1;
+    int pending_seek_reset_ = 0;
+    bool seek_decode_to_target_ = false;
+    int seek_target_time_ = 0;
     int seek_stream_index_ = -1;
     std::deque<AVPacket> packet_queue_;
     int readPacket(int stream_index, AVPacket* packet);
@@ -69,6 +75,10 @@ public:
     int getTotalTime() { return total_time_; }
 
     int getTime();
+    bool isSeeking() const { return seeking_ || seek_request_pending_; }
+    void requestSeek(int time, int direct = 1, int reset = 0);
+    void finishSeekAfterFrameShown();
+    void processSeekStep();
     void destroy();
     bool isMedia();
     void setPause(bool pause);
