@@ -574,7 +574,19 @@ int PotPlayer::eventLoop()
                 media_->getSubtitle()->show(audioTime);
             }
 #endif
-            UI_.drawUI(audioTime, totalTime, media_->getAudio()->getVolume(), pause);
+            int ui_time = media_->getTime();
+            const int ui_total_time = media_->getTotalTime();
+            // Do not extrapolate the progress bar while the first audio/video frame
+            // is still buffered. The playback clock is established when a frame is shown.
+            if (media_->getAudio()->exist() && media_->getAudio()->getTimeShown() <= 0)
+            {
+                ui_time = 0;
+            }
+            else if (!media_->getAudio()->exist() && media_->getVideo()->getTimeShown() <= 0)
+            {
+                ui_time = 0;
+            }
+            UI_.drawUI(ui_time, ui_total_time, media_->getAudio()->getVolume(), pause);
             engine_->renderPresent();
             prev_show_time = engine_->getTicks();
         }

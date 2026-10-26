@@ -82,7 +82,13 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     engine_->setColor(square_, { 255, 255, 255, uint8_t(alpha_ / 2) });
     engine_->renderTexture(square_, 0, y - 1, win_w_, 4);
     engine_->setColor(square_, { 255, 0, 0, alpha_ });
-    engine_->renderTexture(square_, 0, y - 1, 1.0 * time / totoal_time * win_w_, 4);
+    const int progress_width = totoal_time > 0
+        ? (std::clamp)(int(1.0 * (std::max)(time, 0) / totoal_time * win_w_), 0, win_w_)
+        : 0;
+    if (progress_width > 0)
+    {
+        engine_->renderTexture(square_, 0, y - 1, progress_width, 4);
+    }
 
     //按钮
     engine_->setColor(square_, { 255, 255, 255, alpha_ });
@@ -150,8 +156,9 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     }
 
     int button_x = win_w_ - 20 - button_w_ * 2;
+    const int volume_bottom = button_y_ + button_h_;
     int one_square = 8;
-    int v = volume * 128;
+    int v = (std::clamp)(int(volume * 128), 0, 128);
     for (int i_v = 0; i_v < 16; i_v++)
     {
         int h = (i_v + 1) * 1;
@@ -161,8 +168,11 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
         {
             r = 1.0 * (one_square + v) / one_square;
         }
-        int hc = r * h;
-        engine_->renderTexture(square_, button_x + i_v * 3, button_y_ + button_h_ - hc, 2, hc);
+        const int hc = (std::clamp)(int(r * h), 0, h);
+        if (hc > 0)
+        {
+            engine_->renderTexture(square_, button_x + i_v * 3, volume_bottom - hc, 2, hc);
+        }
         if (v < 0)
         {
             break;
