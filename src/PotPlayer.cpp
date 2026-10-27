@@ -135,7 +135,7 @@ int PotPlayer::eventLoop()
                 int button = UI_.inButton();
                 if (button == PotUI::ButtonLeft)
                 {
-                    media_->requestSeek(media_->getTime() - seek_step, -1);
+                    media_->requestRelativeSeek(-seek_step);
                     UI_.setText("");
                     seeking = true;
                 }
@@ -237,14 +237,14 @@ int PotPlayer::eventLoop()
             {
                 if (e.wheel.y > 0)
                 {
-                    media_->requestSeek(std::max(0, media_->getTime() - seek_step), -1);
+                    media_->requestRelativeSeek(-seek_step);
                     UI_.setText("");
                     seeking = true;
                     //cur_volume_ = media_->getAudio()->changeVolume(volume_step);
                 }
                 else if (e.wheel.y < 0)
                 {
-                    media_->requestSeek(media_->getTime() + seek_step, 1);
+                    media_->requestRelativeSeek(seek_step);
                     UI_.setText("");
                     seeking = true;
                     //cur_volume_ = media_->getAudio()->changeVolume(-volume_step);
@@ -258,12 +258,12 @@ int PotPlayer::eventLoop()
             switch (e.key.key)
             {
             case K_LEFT:
-                media_->requestSeek(std::max(0, media_->getTime() - seek_step), -1);
+                media_->requestRelativeSeek(-seek_step);
                 UI_.setText("");
                 seeking = true;
                 break;
             case K_RIGHT:
-                media_->requestSeek(media_->getTime() + seek_step, 1);
+                media_->requestRelativeSeek(seek_step);
                 UI_.setText("");
                 seeking = true;
                 break;
@@ -430,11 +430,11 @@ int PotPlayer::eventLoop()
                 {    // 滑动阈值
                     if (dx > 0)
                     {
-                        media_->requestSeek(media_->getTime() + seek_step, 1);
+                        media_->requestRelativeSeek(seek_step);
                     }
                     else
                     {
-                        media_->requestSeek(media_->getTime() - seek_step, -1);
+                        media_->requestRelativeSeek(-seek_step);
                     }
                     UI_.setText("");
                     seeking = true;
@@ -518,7 +518,7 @@ int PotPlayer::eventLoop()
         {
             time_s = 0;    //pause时不刷新视频时间轴，而依赖后面显示静止图像的语句
         }
-        int videostate = media_->getVideo()->show(time_s);
+        int videostate = media_->showVideoFrame(time_s);
         if (videostate == PotStreamVideo::VideoFrameShowed)
         {
             media_->finishSeekAfterFrameShown();

@@ -8,6 +8,15 @@
 #include <print>
 #include <thread>
 
+namespace
+{
+std::string recordBasename(const std::string& name)
+{
+    const auto separator = name.find_last_of("/\\\\");
+    return separator == std::string::npos ? name : name.substr(separator + 1);
+}
+}
+
 Config::Config()
 {
     //init();
@@ -44,7 +53,7 @@ void Config::write()
 
 int Config::getRecord(const std::string& name)
 {
-    const auto record_name = filefunc::getFilenameWithoutPath(name);
+    const auto record_name = recordBasename(name);
     return (*this)["record"][enStr(record_name)]["progress"].toInt();
 }
 
@@ -60,13 +69,13 @@ std::string Config::getNewestRecord()
 
 void Config::removeRecord(const std::string& name)
 {
-    const auto record_name = filefunc::getFilenameWithoutPath(name);
+    const auto record_name = recordBasename(name);
     (*this)["record"].erase(enStr(record_name));
 }
 
 void Config::setRecord(const std::string& name, int v)
 {
-    const auto record_name = filefunc::getFilenameWithoutPath(name);
+    const auto record_name = recordBasename(name);
     (*this)["record"][enStr(record_name)]["progress"] = v;
     (*this)["record"][enStr(record_name)]["time"] = Timer::getNowAsString();
 }
@@ -92,7 +101,7 @@ void Config::autoClearRecord()
     {
         if (i > 100)
         {
-            (*this)["record"].erase(enStr(filefunc::getFilenameWithoutPath(deStr(r.filename))));
+            (*this)["record"].erase(enStr(recordBasename(deStr(r.filename))));
         }
         ++i;
     }
@@ -190,12 +199,13 @@ std::string Config::findSuitableFilename(const std::string& filename)
     auto filename1 = filename;
     for (auto& rv : getSortedRecord())
     {
-        const auto record_name = filefunc::getFilenameWithoutPath(deStr(rv.filename));
-        if (record_name == filefunc::getFilenameWithoutPath(filename))
+        const auto record_name = recordBasename(deStr(rv.filename));
+        const auto input_name = recordBasename(filename);
+        if (record_name == input_name)
         {
             return filename;
         }
-        if (filefunc::pathExist(filename) && record_name == filefunc::getFilenameWithoutPath(filename))
+        if (filefunc::pathExist(filename) && record_name == input_name)
         {
             filename1 = deStr(rv.filename);
             return filename1;

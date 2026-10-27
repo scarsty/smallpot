@@ -120,6 +120,7 @@ public:
     virtual int getHeight() { return exist() ? codec_ctx_->height : 0; }
     int getTimedts() { return time_dts_ > 0 ? time_dts_ : time_pts_; }
     bool hasDecodedFrame() const { return !data_map_.empty(); }
+    bool hasEnded() const { return ended_; }
     int getTimeShown() { return time_shown_; }
     virtual bool exist() { return stream_index_ >= 0; }
     void resetTimeAxis(int time);

@@ -9,12 +9,18 @@
 #include <mutex>
 #include <string>
 #include <thread>
+#include <cstdlib>
+#include <stacktrace>
+
+#if defined(__unix__) || defined(__APPLE__)
+#include <csignal>
+#include <execinfo.h>
+#include <unistd.h>
+#endif
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <dbghelp.h>
-#pragma comment(lib, "dbghelp.lib")
 #endif
 
 namespace
@@ -48,53 +54,57 @@ void append_line(const std::string& line)
     }
 }
 
-#ifdef _WIN32
-void write_exception_details(EXCEPTION_POINTERS* exception)
+void write_stacktrace()
 {
-    if (!exception || !exception->ExceptionRecord)
+    try
     {
-        append_line("Windows exception without exception record");
-        return;
+        const auto trace = std::stacktrace::current();
+        for (std::size_t i = 0; i < trace.size(); ++i)
+        {
+            append_line(std::format("  frame {} {}", i, std::to_string(trace[i])));
+        }
     }
-    append_line(std::format("Windows exception code=0x{:08X} address=0x{:016X}",
-        static_cast<unsigned int>(exception->ExceptionRecord->ExceptionCode),
-        reinterpret_cast<std::uintptr_t>(exception->ExceptionRecord->ExceptionAddress)));
-
-    HANDLE process = GetCurrentProcess();
-    HANDLE thread = GetCurrentThread();
-    CONTEXT context = *exception->ContextRecord;
-    STACKFRAME64 frame{};
-#if defined(_M_X64)
-    DWORD machine = IMAGE_FILE_MACHINE_AMD64;
-    frame.AddrPC.Offset = context.Rip;
-    frame.AddrPC.Mode = AddrModeFlat;
-    frame.AddrFrame.Offset = context.Rbp;
-    frame.AddrFrame.Mode = AddrModeFlat;
-    frame.AddrStack.Offset = context.Rsp;
-    frame.AddrStack.Mode = AddrModeFlat;
-#else
-    DWORD machine = IMAGE_FILE_MACHINE_I386;
-    frame.AddrPC.Offset = context.Eip;
-    frame.AddrPC.Mode = AddrModeFlat;
-    frame.AddrFrame.Offset = context.Ebp;
-    frame.AddrFrame.Mode = AddrModeFlat;
-    frame.AddrStack.Offset = context.Esp;
-    frame.AddrStack.Mode = AddrModeFlat;
-#endif
-    SymInitialize(process, nullptr, TRUE);
-    for (int i = 0; i < 32 && StackWalk64(machine, process, thread, &frame, &context,
-        nullptr, SymFunctionTableAccess64, SymGetModuleBase64, nullptr); ++i)
+    catch (...)
     {
-        append_line(std::format("  frame {} pc=0x{:016X}", i,
-            static_cast<unsigned long long>(frame.AddrPC.Offset)));
+        append_line("Unable to capture C++ stacktrace");
     }
-    SymCleanup(process);
 }
 
+#ifdef _WIN32
 LONG WINAPI seh_filter(EXCEPTION_POINTERS* exception)
 {
-    write_exception_details(exception);
+    if (exception && exception->ExceptionRecord)
+    {
+        append_line(std::format("Windows exception code=0x{:08X} address=0x{:016X}",
+            static_cast<unsigned int>(exception->ExceptionRecord->ExceptionCode),
+            reinterpret_cast<std::uintptr_t>(exception->ExceptionRecord->ExceptionAddress)));
+    }
+    else
+    {
+        append_line("Windows exception without exception record");
+    }
+    write_stacktrace();
     return EXCEPTION_EXECUTE_HANDLER;
+}
+#endif
+
+#if defined(__unix__) || defined(__APPLE__)
+void signal_handler(int signal_number)
+{
+    append_line(std::format("Unix signal {}", signal_number));
+    write_stacktrace();
+    void* frames[32]{};
+    const int count = backtrace(frames, 32);
+    char** symbols = backtrace_symbols(frames, count);
+    if (symbols)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            append_line(std::format("  frame {} {}", i, symbols[i]));
+        }
+        free(symbols);
+    }
+    std::_Exit(128 + signal_number);
 }
 #endif
 
@@ -108,14 +118,17 @@ void smallpot_terminate_handler()
             std::rethrow_exception(exception);
         }
         append_line("std::terminate called without an active exception");
+        write_stacktrace();
     }
     catch (const std::exception& e)
     {
         append_line(std::format("Unhandled C++ exception: {}", e.what()));
+        write_stacktrace();
     }
     catch (...)
     {
         append_line("Unhandled non-standard C++ exception");
+        write_stacktrace();
     }
     std::_Exit(EXIT_FAILURE);
 }
@@ -127,12 +140,20 @@ void install(const char* executable_path)
 {
     try
     {
-        log_path = std::filesystem::path(executable_path ? executable_path : "smallpot.exe").parent_path()
-            / "smallpot-crash.log";
-        append_line("Crash logger installed");
+        const auto executable = std::filesystem::absolute(
+            executable_path ? std::filesystem::path(executable_path) : std::filesystem::path("smallpot.exe"));
+        log_path = executable.parent_path() / "smallpot-crash.log";
+        std::error_code error;
+        std::filesystem::remove(log_path, error);
         std::set_terminate(smallpot_terminate_handler);
 #ifdef _WIN32
         SetUnhandledExceptionFilter(seh_filter);
+#elif defined(__unix__) || defined(__APPLE__)
+        std::signal(SIGABRT, signal_handler);
+        std::signal(SIGBUS, signal_handler);
+        std::signal(SIGFPE, signal_handler);
+        std::signal(SIGILL, signal_handler);
+        std::signal(SIGSEGV, signal_handler);
 #endif
     }
     catch (...)

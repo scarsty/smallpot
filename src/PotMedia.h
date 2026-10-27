@@ -77,6 +77,7 @@ public:
     int getTime();
     bool isSeeking() const { return seeking_ || seek_request_pending_; }
     void requestSeek(int time, int direct = 1, int reset = 0);
+    void requestRelativeSeek(int delta_ms);
     void finishSeekAfterFrameShown();
     void processSeekStep();
     void destroy();

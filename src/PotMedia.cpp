@@ -33,15 +33,22 @@ PotMedia::~PotMedia()
 
 void PotMedia::requestSeek(int time, int direct, int reset)
 {
+    // Absolute targets must not be adjusted again after requestRelativeSeek().
     pending_seek_time_ = std::max(0, std::min(time, total_time_ - 100));
     pending_seek_direct_ = direct;
     pending_seek_reset_ = reset;
     seek_request_pending_ = true;
 }
 
+void PotMedia::requestRelativeSeek(int delta_ms)
+{
+    const int base_time = seek_request_pending_ ? pending_seek_time_ : (seeking_ ? seek_target_time_ : getTime());
+    requestSeek(base_time + delta_ms, delta_ms < 0 ? -1 : 1, 0);
+}
+
 void PotMedia::processSeekStep()
 {
-    if (!seek_request_pending_ || seeking_)
+    if (!seek_request_pending_)
     {
         return;
     }
@@ -54,7 +61,8 @@ void PotMedia::processSeekStep()
 
 void PotMedia::finishSeekAfterFrameShown()
 {
-    if (seeking_ && stream_video_->exist() && stream_video_->getTimeShown() >= seek_target_time_)
+    if (seeking_ && stream_video_->exist()
+        && (!seek_decode_to_target_ || stream_video_->getTimeShown() >= seek_target_time_))
     {
         seeking_ = false;
         seek_decode_to_target_ = false;
@@ -82,19 +90,13 @@ int PotMedia::decodeFrame()
     stream_subtitle_->tryDecodeFrame(need_reset);
 #endif
 
-    if (seeking_ && stream_video_->exist())
+    if (seeking_ && stream_video_->exist() && stream_video_->hasEnded()
+        && !stream_video_->hasDecodedFrame())
     {
-        const int decoded_time = stream_video_->getTimedts();
-        if (seek_decode_to_target_ && decoded_time >= seek_target_time_)
-        {
-            seek_decode_to_target_ = false;
-        }
-        else if (!seek_decode_to_target_ && stream_video_->hasDecodedFrame())
-        {
-            // Keep the seek state until show() presents the first new frame.
-        }
+        seeking_ = false;
+        seek_decode_to_target_ = false;
     }
-    else if (seeking_)
+    else if (seeking_ && !stream_video_->exist())
     {
         seeking_ = false;
     }
@@ -252,6 +254,18 @@ int PotMedia::seekPos(double pos, int direct /*= 1*/, int reset /*= 0*/)
 
 int PotMedia::showVideoFrame(int time)
 {
+    if (seeking_ && stream_video_->hasDecodedFrame())
+    {
+        const int frame_time = stream_video_->data_map_.begin()->first;
+        if (seek_decode_to_target_ && frame_time < seek_target_time_)
+        {
+            stream_video_->dropDecoded();
+            return PotStreamVideo::VideoFrameBeforeTime;
+        }
+        // The audio clock is suspended during recovery; it must not gate
+        // the first new video frame (including a paused seek).
+        return stream_video_->show(frame_time);
+    }
     return stream_video_->show(time);
 }
 

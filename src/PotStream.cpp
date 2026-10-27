@@ -27,6 +27,9 @@ int PotStream::avcodec_decode_packet(AVCodecContext* ctx, int* n, AVPacket* pack
     //if (packet)
     {
         ret = avcodec_send_packet(ctx, packet);
+        // EAGAIN means the packet was NOT accepted. Retain it until a later
+        // call succeeds, draining decoded output in the meantime.
+        need_read_packet_ = ret != AVERROR(EAGAIN);
         //std::print("send packet {}\n", ret);
         if (ret < 0)
         {
@@ -148,8 +151,22 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
                     ret = 2;    //有数据，跳过
                 }
             }
-            time_pts_ = packet_.pts * time_base_packet_ - start_time_;
-            time_dts_ = packet_.dts * time_base_packet_ - start_time_;
+            if (gotframe && type_ != MEDIA_TYPE_SUBTITLE)
+            {
+                const auto pts = frame_->best_effort_timestamp != AV_NOPTS_VALUE
+                    ? frame_->best_effort_timestamp : frame_->pts;
+                if (pts != AV_NOPTS_VALUE)
+                {
+                    time_dts_ = time_pts_ = static_cast<int>(pts * time_base_packet_ - start_time_);
+                }
+            }
+            else
+            {
+                if (packet_.pts != AV_NOPTS_VALUE)
+                    time_pts_ = static_cast<int>(packet_.pts * time_base_packet_ - start_time_);
+                if (packet_.dts != AV_NOPTS_VALUE)
+                    time_dts_ = static_cast<int>(packet_.dts * time_base_packet_ - start_time_);
+            }
             ended_ = false;
         }
         else
