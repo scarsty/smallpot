@@ -30,7 +30,7 @@ PotSubtitle* PotSubtitleManager::createSubtitle(const std::string& filename)
     if (ret)
     {
         //ret->init();
-        if (filefunc::getFileMainName(filefunc::getFilenameWithoutPath(filename)) != "")
+        if (!filename.empty())
         {
             ret->openSubtitle(filename);
         }
@@ -72,17 +72,28 @@ std::string PotSubtitleManager::lookForSubtitle(const std::string& filename)
         ext_names_.push_back("txt");
     }
 
-    bool b = false;
-    //检查默认类型
+    auto path = filename;
+#ifndef _WINDLL
+#ifdef _WIN32
+    path = PotConv::conv(filename, "utf-8", "cp936");
+#endif
+#endif
+
+    // Try matching subtitles beside the media file, then in its subs directory.
     for (auto& ext : ext_names_)
     {
         std::string str = "";
-        str = filefunc::changeFileExt(filename, ext);
+        str = filefunc::changeFileExt(path, ext);
         if (filefunc::fileExist(str))
         {
             return str;
         }
-        str = filefunc::getParentPath(str) + "/subs/" + filefunc::getFilenameWithoutPath(str);
+        auto parent = filefunc::getParentPath(str);
+        if (parent.empty())
+        {
+            parent = ".";
+        }
+        str = parent + filefunc::get_path_char() + "subs" + filefunc::get_path_char() + filefunc::getFilenameWithoutPath(str);
         if (filefunc::fileExist(str))
         {
             return str;

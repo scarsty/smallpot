@@ -50,7 +50,7 @@ public:
     int init();
     void destroy();
     int beginWithFile(std::string filename);
-    void openMedia(const std::string& filename);
+    bool openMedia(const std::string& filename);
     void setSubtitleFrameSize();
     void closeMedia(const std::string& filename);
 

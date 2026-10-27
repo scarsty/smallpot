@@ -31,7 +31,7 @@ namespace
 #ifdef _MSC_VER
 std::wstring str2wstr(const std::string& str)
 {
-    int wlen = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), nullptr, 0);
+    int wlen = MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.size()), nullptr, 0);
     std::wstring wstr;
     wstr.resize(wlen);
     MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.size(), wstr.data(), wlen);

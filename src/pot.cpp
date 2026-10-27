@@ -8,9 +8,6 @@
 int main(int argc, char* argv[])
 {
     crashlog::install(argc > 0 ? argv[0] : "smallpot.exe");
-#ifdef _WIN32
-    system("chcp 65001");
-#endif
     PotPlayer bp(argv[0]);
     bp.beginWithFile(argc > 1 ? argv[1] : "");
     return 0;

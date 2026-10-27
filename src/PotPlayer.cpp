@@ -1,12 +1,12 @@
 ﻿#include "PotPlayer.h"
 #include "strfunc.h"
+#include "PotConv.h"
 #ifndef WITHOUT_SUBTITLE
 #include "PotSubtitleManager.h"
 #endif
 #ifndef _WINDLL
 #include "Config.h"
 #include "Font.h"
-#include "PotConv.h"
 #endif
 #ifdef _WIN32
 //#include <shlobj.h>
@@ -698,7 +698,11 @@ int PotPlayer::beginWithFile(std::string filename)
         //play_filename = "";
         }*/
 
-        openMedia(play_filename);
+        if (!openMedia(play_filename))
+        {
+            running_ = false;
+            break;
+        }
         bool add_cond = true;
         //std::print("{}", engine_->getTicks() - start_time);
         add_cond = engine_->getTicks() - start_time < 2000;
@@ -739,14 +743,15 @@ int PotPlayer::beginWithFile(std::string filename)
 }
 
 //参数为utf8编码
-void PotPlayer::openMedia(const std::string& filename)
+bool PotPlayer::openMedia(const std::string& filename)
 {
     delete media_;
     media_ = new PotMedia;
     //通过参数传入的字串被SDL转为utf-8
     //打开文件, 需要进行转换
+    auto open_filename = filename;
 #ifndef _WINDLL
-    auto open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //windows下打开需要ansi
+    open_filename = PotConv::conv(filename, BP_encode_, sys_encode_);    //Windows 窄字符路径
     //某些格式的媒体是分开为很多个文件，这类文件最好先切换工作目录
     if (filefunc::getFileExt(open_filename) == "m3u8")
     {
@@ -755,7 +760,7 @@ void PotPlayer::openMedia(const std::string& filename)
 #endif
     if (media_->openFile(filename) != 0)
     {
-        return;
+        return false;
     }
 
     //窗口尺寸，时间
@@ -779,8 +784,9 @@ void PotPlayer::openMedia(const std::string& filename)
     media_->getAudio()->setVolume(cur_volume_);
 
 #ifndef WITHOUT_SUBTITLE
-    //试图载入字幕
-    auto open_subfilename = PotSubtitleManager::lookForSubtitle(open_filename);
+    //字幕管理器接收播放器统一使用的 UTF-8 路径，并在 Windows 内部
+    //转换为本地路径后查找和读取。
+    auto open_subfilename = PotSubtitleManager::lookForSubtitle(filename);
     subtitle_ = PotSubtitleManager::createSubtitle(open_subfilename);
     setSubtitleFrameSize();
 #endif
@@ -804,6 +810,7 @@ void PotPlayer::openMedia(const std::string& filename)
         }
     }
 #endif
+    return true;
 }
 
 void PotPlayer::setSubtitleFrameSize()

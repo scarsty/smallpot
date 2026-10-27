@@ -1,4 +1,4 @@
-#include "PotSubtitleSrt.h"
+ï»¿#include "PotSubtitleSrt.h"
 #include "filefunc.h"
 #include "Font.h"
 #include "PotConv.h"
@@ -65,6 +65,11 @@ int PotSubtitleSrt::readIndex()
             state = 2;
         }
     }
+    if (state == 2 && !pot.str.empty())
+    {
+        pot.str = PotConv::conv(strfunc::replaceAllSubString(pot.str, "\r", ""), code_, "cp936");
+        atom_list_.push_back(pot);
+    }
     return 0;
 }
 
@@ -72,6 +77,7 @@ bool PotSubtitleSrt::openSubtitle(const std::string& filename)
 {
     exist_ = true;
     content_ = filefunc::readFileToString(filename);
+    atom_list_.clear();
     if (content_.empty())
     {
         return false;
@@ -79,7 +85,8 @@ bool PotSubtitleSrt::openSubtitle(const std::string& filename)
     else
     {
         readIndex();
-        return true;
+        exist_ = !atom_list_.empty();
+        return exist_;
     }
 }
 
@@ -90,16 +97,16 @@ bool PotSubtitleSrt::isUTF8(const void* pBuffer, long size)
     unsigned char* end = (unsigned char*)pBuffer + size;
     while (start < end)
     {
-        if (*start < 0x80)    // (10000000): ÖµÐ¡ÓÚ0x80µÄÎªASCII×Ö·û
+        if (*start < 0x80)    // ASCII å­—èŠ‚
         {
             start++;
         }
-        else if (*start < (0xC0))    // (11000000): Öµ½éÓÚ0x80Óë0xC0Ö®¼äµÄÎªÎÞÐ§UTF-8×Ö·û
+        else if (*start < (0xC0))    // UTF-8 continuation bytes are invalid here
         {
             IsUTF8 = false;
             break;
         }
-        else if (*start < (0xE0))    // (11100000): ´Ë·¶Î§ÄÚÎª2×Ö½ÚUTF-8×Ö·û
+        else if (*start < (0xE0))    // Two-byte UTF-8 sequence
         {
             if (start >= end - 1)
             {
@@ -112,7 +119,7 @@ bool PotSubtitleSrt::isUTF8(const void* pBuffer, long size)
             }
             start += 2;
         }
-        else if (*start < (0xF0))    // (11110000): ´Ë·¶Î§ÄÚÎª3×Ö½ÚUTF-8×Ö·û
+        else if (*start < (0xF0))    // Three-byte UTF-8 sequence
         {
             if (start >= end - 2)
             {
