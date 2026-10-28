@@ -39,19 +39,14 @@ void PotSubtitleAss::init()
     //    std::print("{} ", int(p[i]));
     //}
 
-#ifdef _WIN32
-    fontpath_ = R"(C:/Windows/Fonts)";
-#endif
-#ifdef __APPLE__
-    fontpath_ = "/System/Library/Fonts";
-#endif
     //屏蔽libass的输出
     ass_set_message_cb(library_, [](int level, const char* fmt, va_list args, void* data)
         {
         },
         nullptr);
-    ass_set_fonts_dir(library_, fontpath_.c_str());    //字体目录看起来只能设置一个
-    ass_set_fonts(renderer_, NULL, NULL, 1, NULL, 1);
+    // The native font provider already indexes system fonts. Adding the system
+    // directory as extra fonts reloads every font for each subtitle renderer.
+    ass_set_fonts(renderer_, NULL, NULL, ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
     ass_set_extract_fonts(library_, 1);
 }
 
