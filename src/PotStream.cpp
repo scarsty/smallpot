@@ -121,7 +121,12 @@ int PotStream::decodeNextPacketToFrame(bool decode, bool til_got)
     {
         if (need_read_packet_)
         {
-            haveFrame = (read_packet_ ? read_packet_(stream_index_, &packet_) : av_read_frame(format_ctx_, &packet_)) == 0;
+            const int read_result = read_packet_ ? read_packet_(stream_index_, &packet_) : av_read_frame(format_ctx_, &packet_);
+            if (read_result == AVERROR(EAGAIN))
+            {
+                return -2;
+            }
+            haveFrame = read_result == 0;
         }
         if (haveFrame)
         {

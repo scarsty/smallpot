@@ -116,9 +116,21 @@ int PotMedia::readPacket(int stream_index, AVPacket* packet)
                 return 0;
             }
         }
-        if (!format_ctx_ || av_read_frame(format_ctx_.get(), packet) < 0)
+        // Sparse or empty subtitle tracks must not drive demux read-ahead.
+        // Audio/video reads enqueue their packets without waiting for subtitles.
+        if (stream_index >= 0 && stream_index < static_cast<int>(streams_.size())
+            && streams_[stream_index] && streams_[stream_index]->getType() == MEDIA_TYPE_SUBTITLE)
+        {
+            return AVERROR(EAGAIN);
+        }
+        if (!format_ctx_)
         {
             return AVERROR_EOF;
+        }
+        const int result = av_read_frame(format_ctx_.get(), packet);
+        if (result < 0)
+        {
+            return result;
         }
         if (packet->stream_index == stream_index)
         {
@@ -151,8 +163,16 @@ int PotMedia::seekDemux(int time, int direct, int reset)
 int PotMedia::openFile(const std::string& filename)
 {
     AVFormatContext* raw_format_ctx = avformat_alloc_context();
-    if (!raw_format_ctx || avformat_open_input(&raw_format_ctx, filename.c_str(), nullptr, nullptr) < 0
-        || avformat_find_stream_info(raw_format_ctx, nullptr) < 0)
+    if (!raw_format_ctx || avformat_open_input(&raw_format_ctx, filename.c_str(), nullptr, nullptr) < 0)
+    {
+        avformat_close_input(&raw_format_ctx);
+        return -1;
+    }
+    // Let FFmpeg complete missing codec parameters, but bound startup probing.
+    // These limits apply only to stream discovery, not normal packet playback.
+    raw_format_ctx->probesize = 1024 * 1024;
+    raw_format_ctx->max_analyze_duration = AV_TIME_BASE;
+    if (avformat_find_stream_info(raw_format_ctx, nullptr) < 0)
     {
         avformat_close_input(&raw_format_ctx);
         return -1;
