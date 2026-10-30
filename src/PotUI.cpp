@@ -40,7 +40,8 @@ void PotUI::init()
 void PotUI::drawText(const std::string& text)
 {
 #ifndef _WINDLL
-    Font::getInstance()->drawText(fontname_.c_str(), text, 22, win_w_ - 30 - button_w_ * 2, win_h_ - 48, alpha_, ALIGN_RIGHT);
+    const int text_y = button_y_ + button_h_ - ui_font_size_;
+    Font::getInstance()->drawText(fontname_.c_str(), text, ui_font_size_, getButtonPos(ButtonVolume) - 10, text_y, alpha_, ALIGN_RIGHT);
 #endif
 }
 
@@ -48,6 +49,7 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
 {
 #ifndef _WINDLL
     engine_->getWindowSize(win_w_, win_h_);
+    button_y_ = win_h_ - button_bottom_offset_;
     int in_button = inButton();
     double process = inProcess();
     if (text_count_ > 0)
@@ -58,7 +60,7 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     {
         text_ = "";
     }
-    if (in_button >= 0 || process > 0)
+    if (in_button >= 0 || process >= 0)
     {
         alpha_count_ = 192;
     }
@@ -77,17 +79,16 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
 
     alpha_ = (std::min)(uint8_t(128), alpha_count_);
     //进度条
-    int x, y;
-    y = win_h_ - 12;
+    const int progress_y = win_h_ - (progress_hit_height_ + progress_bar_height_) / 2;
     engine_->setColor(square_, { 255, 255, 255, uint8_t(alpha_ / 2) });
-    engine_->renderTexture(square_, 0, y - 1, win_w_, 4);
+    engine_->renderTexture(square_, 0, progress_y, win_w_, progress_bar_height_);
     engine_->setColor(square_, { 255, 0, 0, alpha_ });
     const int progress_width = totoal_time > 0
         ? (std::clamp)(int(1.0 * (std::max)(time, 0) / totoal_time * win_w_), 0, win_w_)
         : 0;
     if (progress_width > 0)
     {
-        engine_->renderTexture(square_, 0, y - 1, progress_width, 4);
+        engine_->renderTexture(square_, 0, progress_y, progress_width, progress_bar_height_);
     }
 
     //按钮
@@ -97,7 +98,6 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     engine_->setColor(to_full_screen_, { 255, 255, 255, alpha_ });
     engine_->setColor(to_window_, { 255, 255, 255, alpha_ });
     engine_->setColor(hollow_, { 255, 255, 255, alpha_ });
-    button_y_ = win_h_ - 45;
 
     for (int i = ButtonNone + 1; i < ButtonNone2; i++)
     {
@@ -112,13 +112,13 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
             }
             else
             {
-                engine_->renderTexture(square_, button_x, button_y, 8, button_h_);
-                engine_->renderTexture(square_, button_x + 12, button_y, 8, button_h_);
+                engine_->renderTexture(square_, button_x, button_y, button_w_ * 0.4, button_h_);
+                engine_->renderTexture(square_, button_x + button_w_ * 0.6, button_y, button_w_ * 0.4, button_h_);
             }
             break;
         case ButtonNext:
             engine_->renderTexture(triangle_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderTexture(square_, button_x + 12, button_y, 8, button_h_);
+            engine_->renderTexture(square_, button_x + button_w_ * 0.6, button_y, button_w_ * 0.4, button_h_);
             break;
         case ButtonFullScreen:
             if (engine_->isFullScreen())
@@ -132,15 +132,15 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
             break;
         case ButtonLeft:
             engine_->renderTexture(triangle2_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderTexture(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(triangle2_, button_x + button_w_ / 2, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonRight:
             engine_->renderTexture(triangle_, button_x, button_y, button_w_ / 2, button_h_);
-            engine_->renderTexture(triangle_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(triangle_, button_x + button_w_ / 2, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonAudio:
-            engine_->renderTexture(square_, button_x, button_y + 5, button_w_ / 2, button_h_ / 2 + 1);
-            engine_->renderTexture(triangle2_, button_x + 10, button_y, button_w_ / 2, button_h_);
+            engine_->renderTexture(square_, button_x, button_y + button_h_ / 4, button_w_ / 2, button_h_ / 2 + button_h_ / 20);
+            engine_->renderTexture(triangle2_, button_x + button_w_ / 2, button_y, button_w_ / 2, button_h_);
             break;
         case ButtonSubtitle:
             engine_->renderTexture(hollow_, button_x, button_y, button_w_, button_h_);
@@ -152,16 +152,16 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
     {
         int x = getButtonPos(in_button) - 2;
         int w = getButtonWidth(in_button) + 4;
-        engine_->renderTexture(frame_, x, button_y_ - 2, w, button_h_ + 4);
+        engine_->renderTexture(frame_, x, button_y_ + 2, w, button_h_ + 4);
     }
 
-    int button_x = win_w_ - 20 - button_w_ * 2;
+    int button_x = getButtonPos(ButtonVolume) + 2;
     const int volume_bottom = button_y_ + button_h_;
     int one_square = 8;
     int v = (std::clamp)(int(volume * 128), 0, 128);
     for (int i_v = 0; i_v < 16; i_v++)
     {
-        int h = (i_v + 1) * 1;
+        int h = (i_v + 1) * button_h_ / 20;
         v -= one_square;
         double r = 1;
         if (v < 0)
@@ -171,7 +171,7 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
         const int hc = (std::clamp)(int(r * h), 0, h);
         if (hc > 0)
         {
-            engine_->renderTexture(square_, button_x + i_v * 3, volume_bottom - hc, 2, hc);
+            engine_->renderTexture(square_, button_x + i_v * 3 * button_w_ / 20, volume_bottom - hc, button_w_ / 10, hc);
         }
         if (v < 0)
         {
@@ -222,7 +222,8 @@ void PotUI::drawUI(int time, int totoal_time, float volume, bool pause)
         //    text = strfunc::formatString("Volume %5.1f", 100.0 * volume / BP_AUDIO_MIX_MAXVOLUME);
         //    break;
     }
-    Font::getInstance()->drawText(fontname_.c_str(), text, 18, button_x_ - 2, button_y_ - 26, alpha_, ALIGN_LEFT);
+    const int text_y = button_y_ - ui_font_size_ - hover_text_gap_;
+    Font::getInstance()->drawText(fontname_.c_str(), text, ui_font_size_, button_x_ - 2, text_y, alpha_, ALIGN_LEFT);
 #endif
 }
 
@@ -253,7 +254,8 @@ double PotUI::inProcess()
 {
     int x, y;
     engine_->getMouseState(x, y);
-    if (y > win_h_ - 24)
+    engine_->getWindowSize(win_w_, win_h_);
+    if (win_w_ > 0 && y >= win_h_ - progress_hit_height_ && y < win_h_)
     {
         double p = 1.0 * x / win_w_;
         if (p >= 0 && p <= 1)
@@ -268,11 +270,15 @@ int PotUI::inButton()
 {
     int x, y;
     engine_->getMouseState(x, y);
-    if (y >= button_y_ && y <= button_y_ + button_h_)
+    engine_->getWindowSize(win_w_, win_h_);
+    button_y_ = win_h_ - button_bottom_offset_;
+    if (y >= button_y_ - button_hit_padding_y_
+        && y < button_y_ + button_h_ + button_hit_padding_y_)
     {
         for (int i = ButtonNone + 1; i < ButtonNone2; i++)
         {
-            if (x >= getButtonPos(i) && x <= getButtonPos(i) + getButtonWidth(i))
+            if (x >= getButtonPos(i) - button_hit_padding_x_
+                && x < getButtonPos(i) + getButtonWidth(i) + button_hit_padding_x_)
             {
                 return i;
             }
@@ -286,18 +292,18 @@ int PotUI::getButtonWidth(int b)
 {
     if (b == ButtonVolume)
     {
-        return 49;
+        return 49 * button_w_ / 20;
     }
-    return 20;
+    return button_w_;
 }
 
 int PotUI::getButtonPos(int b)
 {
     if (b == ButtonVolume)
     {
-        return win_w_ - 22 - button_w_ * 2;
+        return win_w_ - 20 - getButtonWidth(ButtonVolume);
     }
-    return button_x_ + (b - 1) * (button_w_ + 10);
+    return button_x_ + (b - 1) * (button_w_ + button_spacing_);
 }
 
 Texture* PotUI::createSquareTexture(int size)

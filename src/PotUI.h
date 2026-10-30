@@ -33,7 +33,15 @@ private:
     std::string text_;
     int text_count_ = 32;
 
-    int button_x_ = 10, button_y_, button_w_ = 20, button_h_ = 20;
+    static constexpr int progress_hit_height_ = 40;
+    static constexpr int progress_bar_height_ = 8;
+    static constexpr int button_bottom_offset_ = 92;
+    static constexpr int button_spacing_ = 14;
+    static constexpr int ui_font_size_ = 32;
+    static constexpr int hover_text_gap_ = 6;
+    static constexpr int button_hit_padding_x_ = 5;
+    static constexpr int button_hit_padding_y_ = 10;
+    int button_x_ = 10, button_y_ = 0, button_w_ = 40, button_h_ = 40;
 
 public:
     void init();
